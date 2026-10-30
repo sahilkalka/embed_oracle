@@ -109,9 +109,9 @@ router.get('/ads.txt', async (req, res) => {
       return res.send(fs.readFileSync(adsTxtPath, 'utf8').trim() + '\n');
     }
 
-    res.send('google.com, pub-2644536267352236, DIRECT, f08c47fec0942fa0\n');
+    res.send('google.com, pub-9044714811414113, DIRECT, f08c47fec0942fa0\n');
   } catch (err) {
-    res.send('google.com, pub-2644536267352236, DIRECT, f08c47fec0942fa0\n');
+    res.send('google.com, pub-9044714811414113, DIRECT, f08c47fec0942fa0\n');
   }
 });
 
