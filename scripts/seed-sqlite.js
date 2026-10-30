@@ -65,7 +65,7 @@ async function seed() {
   const upsertSetting = db.prepare(`
     INSERT INTO Setting (id, key, value, createdAt, updatedAt)
     VALUES (?, ?, ?, ?, ?)
-    ON CONFLICT(key) DO UPDATE SET value = excluded.value, updatedAt = excluded.updatedAt
+    ON CONFLICT(key) DO NOTHING
   `);
 
   for (const s of initialSettings) {

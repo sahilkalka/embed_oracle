@@ -460,6 +460,17 @@
           });
           const data = await res.json();
           if (data.success) {
+            if (pubInput && (data.publisherId || data.pubId)) {
+              pubInput.value = data.publisherId || data.pubId;
+            }
+            const adsTxtEl = document.getElementById('ads_txt_content');
+            if (adsTxtEl && data.adsTxtLine) {
+              adsTxtEl.value = data.adsTxtLine;
+            }
+            const enableInput = document.getElementById('enable_adsense');
+            if (enableInput) {
+              enableInput.value = 'true';
+            }
             resDiv.className = 'p-2.5 rounded-xl text-[11px] font-mono bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300';
             resDiv.innerText = `✅ Valid Google AdSense ID: ${data.publisherId || data.pubId || pubId}. ads.txt synced!`;
           } else {

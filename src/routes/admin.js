@@ -494,6 +494,27 @@ router.post('/settings', async (req, res) => {
       if (fields.adsense_pub_id && !/^ca-pub-\d{16}$/.test(fields.adsense_pub_id)) {
         return res.status(400).json({ success: false, error: 'Enter a valid AdSense publisher ID (ca-pub- followed by 16 digits).' });
       }
+      if (fields.adsense_pub_id) {
+        const purePub = fields.adsense_pub_id.replace(/^ca-/i, '');
+        const googleLine = `google.com, ${purePub}, DIRECT, f08c47fec0942fa0`;
+        if (Object.prototype.hasOwnProperty.call(fields, 'ads_txt_content')) {
+          if (fields.ads_txt_content && String(fields.ads_txt_content).trim()) {
+            fields.ads_txt_content = String(fields.ads_txt_content)
+              .replace(/google\.com\s*,\s*pub-\d{16}\s*,\s*DIRECT\s*,\s*f08c47fec0942fa0/gi, googleLine);
+            if (!fields.ads_txt_content.includes(purePub)) {
+              fields.ads_txt_content = `${googleLine}\n${fields.ads_txt_content.trim()}`;
+            }
+          } else {
+            fields.ads_txt_content = googleLine;
+          }
+        }
+        try {
+          const fs = require('fs');
+          const path = require('path');
+          const contentToWrite = (fields.ads_txt_content || googleLine).trim() + '\n';
+          fs.writeFileSync(path.join(__dirname, '../../public/ads.txt'), contentToWrite, 'utf8');
+        } catch (_) {}
+      }
     }
     if (Object.prototype.hasOwnProperty.call(fields, 'calendly_url')) {
       fields.calendly_url = String(fields.calendly_url).trim();
@@ -693,12 +714,19 @@ const handleValidateAd = async (req, res) => {
       create: { key: 'enable_adsense', value: 'true' }
     });
 
-    // Write public/ads.txt
+    // Write public/ads.txt and persist ads_txt_content in SQLite
     const fs = require('fs');
     const path = require('path');
     const adsTxtPath = path.join(__dirname, '../../public/ads.txt');
     const adsTxtContent = `google.com, ${purePub}, DIRECT, f08c47fec0942fa0\n`;
-    fs.writeFileSync(adsTxtPath, adsTxtContent, 'utf8');
+    await prisma.setting.upsert({
+      where: { key: 'ads_txt_content' },
+      update: { value: adsTxtContent.trim() },
+      create: { key: 'ads_txt_content', value: adsTxtContent.trim() }
+    });
+    try {
+      fs.writeFileSync(adsTxtPath, adsTxtContent, 'utf8');
+    } catch (_) {}
 
     clearSettingsCache();
 

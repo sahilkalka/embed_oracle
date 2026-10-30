@@ -71,31 +71,46 @@ Sitemap: ${appUrl}/sitemap.xml
 
 // Dynamic /ads.txt (IAB / Multi-Provider Ad Engine Validation)
 router.get('/ads.txt', async (req, res) => {
+  res.header('Content-Type', 'text/plain; charset=utf-8');
+  res.header('Cache-Control', 'no-cache, must-revalidate');
   try {
-    const customAdsTxt = res.locals.settings?.ads_txt_content;
-    if (customAdsTxt && customAdsTxt.trim()) {
-      res.header('Content-Type', 'text/plain; charset=utf-8');
-      return res.send(customAdsTxt.trim() + '\n');
+    const settings = res.locals.settings || {};
+    let configuredPub = (settings.adsense_pub_id || '').trim();
+    if (!configuredPub) {
+      const setting = await prisma.setting.findUnique({ where: { key: 'adsense_pub_id' } });
+      if (setting && setting.value) configuredPub = setting.value.trim();
+    }
+    const purePub = configuredPub ? configuredPub.replace(/^ca-/i, '') : '';
+    const customAdsTxt = (settings.ads_txt_content || '').trim();
+
+    if (customAdsTxt) {
+      let output = customAdsTxt;
+      // If a real AdSense publisher ID is configured, ensure the google.com DIRECT line uses it
+      // rather than the stale default placeholder pub-2644536267352236
+      if (/^pub-\d{16}$/i.test(purePub)) {
+        const googleLine = `google.com, ${purePub}, DIRECT, f08c47fec0942fa0`;
+        if (/google\.com\s*,\s*pub-\d{16}/i.test(output)) {
+          output = output.replace(/google\.com\s*,\s*pub-\d{16}\s*,\s*DIRECT\s*,\s*f08c47fec0942fa0/gi, googleLine);
+        } else {
+          output = `${googleLine}\n${output}`;
+        }
+      }
+      return res.send(output.trim() + '\n');
+    }
+
+    if (/^pub-\d{16}$/i.test(purePub)) {
+      return res.send(`google.com, ${purePub}, DIRECT, f08c47fec0942fa0\n`);
     }
 
     const fs = require('fs');
     const path = require('path');
     const adsTxtPath = path.join(__dirname, '../../public/ads.txt');
     if (fs.existsSync(adsTxtPath)) {
-      res.header('Content-Type', 'text/plain; charset=utf-8');
-      return res.send(fs.readFileSync(adsTxtPath, 'utf8'));
+      return res.send(fs.readFileSync(adsTxtPath, 'utf8').trim() + '\n');
     }
 
-    const setting = await prisma.setting.findUnique({ where: { key: 'adsense_pub_id' } });
-    let pubId = 'pub-2644536267352236';
-    if (setting && setting.value) {
-      pubId = setting.value.trim().replace(/^ca-/, '');
-    }
-    const content = `google.com, ${pubId}, DIRECT, f08c47fec0942fa0\n`;
-    res.header('Content-Type', 'text/plain; charset=utf-8');
-    res.send(content);
+    res.send('google.com, pub-2644536267352236, DIRECT, f08c47fec0942fa0\n');
   } catch (err) {
-    res.header('Content-Type', 'text/plain; charset=utf-8');
     res.send('google.com, pub-2644536267352236, DIRECT, f08c47fec0942fa0\n');
   }
 });

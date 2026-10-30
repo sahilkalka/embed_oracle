@@ -137,7 +137,10 @@
     </style>
   <% } %>
 
-  <!-- Monetization: Google AdSense Lazy/Async Script Tag -->
+  <!-- Monetization: Google AdSense Ownership Verification Meta + Lazy/Async Script Tag -->
+  <% if (/^ca-pub-\d{16}$/.test(settings.adsense_pub_id || '')) { %>
+    <meta name="google-adsense-account" content="<%= settings.adsense_pub_id %>">
+  <% } %>
   <% if (settings.enable_adsense === 'true' && /^ca-pub-\d{16}$/.test(settings.adsense_pub_id || '') && /^\/(tools|blogs)(\/|$)/.test(currentPath)) { %>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= settings.adsense_pub_id %>" crossorigin="anonymous"></script>
     <script defer src="/js/ads.js"></script>

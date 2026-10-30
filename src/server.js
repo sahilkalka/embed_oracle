@@ -134,11 +134,16 @@ app.use(cors());
 
 // Serve static files BEFORE cookie, CSRF, body-parser, and DB settings middleware
 // so static requests do not allocate cookies, CSRF tokens, or hit SQLite.
-app.use(express.static(path.join(__dirname, '../public'), {
+// Skip /ads.txt and /robots.txt so they are always served dynamically from SQLite settings.
+const staticMiddleware = express.static(path.join(__dirname, '../public'), {
   maxAge: process.env.NODE_ENV === 'production' ? '7d' : 0,
   etag: true,
   lastModified: true
-}));
+});
+app.use((req, res, next) => {
+  if (req.path === '/ads.txt' || req.path === '/robots.txt') return next();
+  return staticMiddleware(req, res, next);
+});
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
