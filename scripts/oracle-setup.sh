@@ -134,7 +134,7 @@ server {
     gzip_types text/plain text/css text/xml application/json application/javascript application/xml+rss image/svg+xml;
 
     # Offload static assets directly from OS RAM page cache without hitting Node.js
-    location ~ ^/(css|js|assets|downloads)/ {
+    location ~ ^/(css|js|assets|downloads|uploads)/ {
         root ${APP_DIR}/public;
         access_log off;
         expires 7d;

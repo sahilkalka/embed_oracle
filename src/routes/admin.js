@@ -16,6 +16,7 @@ const { renderMarkdown } = require('../services/markdown');
 const mailer = require('../services/mailer');
 const { PREDEFINED_PALETTES, PALETTE_ALIASES, getAvailablePaletteKey, resolveTheme } = require('../services/themeEngine');
 const { formatYouTubeEmbedUrl, YouTubeUrlError } = require('../utils/youtube');
+const { localizeAssetUrl, localizeMarkdownAssets, localizeObjectAssetFields } = require('../services/assetLocalizer');
 
 const PALETTE_OVERRIDE_FIELDS = ['bgPrimary', 'bgSurface', 'accentPrimary', 'accentSecondary', 'textPrimary'];
 
@@ -95,6 +96,35 @@ router.get('/logout', (req, res) => {
 
 // ALL SUBSEQUENT ROUTES REQUIRE AUTHENTICATION
 router.use(requireAuth);
+
+// POST /admin/assets/localize - Download remote internet asset URL(s) locally into /uploads/localized/
+router.post('/assets/localize', async (req, res) => {
+  try {
+    const { url, markdown } = req.body || {};
+    if (url && typeof url === 'string') {
+      const result = await localizeAssetUrl(url, { strict: true });
+      return res.json({
+        success: true,
+        localUrl: result.url,
+        localized: result.localized,
+        cached: Boolean(result.cached),
+        bytes: result.bytes || 0
+      });
+    }
+    if (typeof markdown === 'string') {
+      const mdResult = await localizeMarkdownAssets(markdown);
+      return res.json({
+        success: true,
+        markdown: mdResult.markdown,
+        localizedCount: mdResult.localizedCount,
+        replacements: mdResult.replacements
+      });
+    }
+    return res.status(400).json({ success: false, error: 'Provide a valid remote URL or Markdown text to localize.' });
+  } catch (err) {
+    return res.status(400).json({ success: false, error: err.message || 'Failed to localize remote asset.' });
+  }
+});
 
 // GET /admin - Dashboard Overview
 router.get('/', async (req, res) => {
@@ -342,7 +372,8 @@ router.post('/posts/new', async (req, res) => {
     const slug = slugify(cleanTitle, { lower: true, strict: true }) || 'post-' + Date.now();
 
     const validScheduledAt = scheduledAt && !isNaN(Date.parse(scheduledAt)) ? new Date(scheduledAt) : null;
-    const contentHtml = renderMarkdown(contentMarkdown || '');
+    const { markdown: localizedMarkdown } = await localizeMarkdownAssets(contentMarkdown || '');
+    const contentHtml = renderMarkdown(localizedMarkdown);
 
     await prisma.post.create({
       data: {
@@ -351,7 +382,7 @@ router.post('/posts/new', async (req, res) => {
         category: category || 'Embedded Electronics',
         tags: tags || 'embedded',
         summary: summary || '',
-        contentMarkdown: contentMarkdown || '',
+        contentMarkdown: localizedMarkdown,
         contentHtml,
         status: status || 'published',
         readingTime: parseInt(readingTime) || 4,
@@ -400,7 +431,10 @@ router.post('/posts/:id/edit', async (req, res) => {
     if (existing) return res.status(409).send('Another post already uses this URL. Edit the existing post or choose a different URL.');
 
     const validScheduledAt = scheduledAt && !isNaN(Date.parse(scheduledAt)) ? new Date(scheduledAt) : null;
-    const contentHtml = renderMarkdown(contentMarkdown || '');
+    const { markdown: localizedMarkdown } = await localizeMarkdownAssets(
+      contentMarkdown !== undefined ? contentMarkdown : ''
+    );
+    const contentHtml = renderMarkdown(localizedMarkdown);
 
     const postExists = await prisma.post.findUnique({ where: { id: req.params.id } });
     if (!postExists) return res.status(404).send('Post no longer exists. Reload the post list before saving.');
@@ -413,7 +447,7 @@ router.post('/posts/:id/edit', async (req, res) => {
         category: category || postExists.category,
         tags: tags || postExists.tags,
         summary: summary !== undefined ? summary : postExists.summary,
-        contentMarkdown: contentMarkdown !== undefined ? contentMarkdown : postExists.contentMarkdown,
+        contentMarkdown: contentMarkdown !== undefined ? localizedMarkdown : postExists.contentMarkdown,
         contentHtml,
         status: status || postExists.status,
         readingTime: parseInt(readingTime) || postExists.readingTime || 4,
@@ -536,6 +570,8 @@ router.post('/settings', async (req, res) => {
         return res.status(400).json({ success: false, error: 'Enter a Meta Pixel ID before enabling the pixel.' });
       }
     }
+
+    await localizeObjectAssetFields(fields, ['seo_og_image', 'sponsor_banner_img', 'lead_magnet_file']);
 
     for (const key of Object.keys(fields)) {
       await saveSetting(key, String(fields[key]));
@@ -1069,7 +1105,9 @@ router.post('/projects/new', async (req, res) => {
 
     const cleanTitle = (title || 'Untitled Project').trim();
     const slug = slugify(cleanTitle, { lower: true, strict: true }) || 'project-' + Date.now();
-    const descriptionHtml = renderMarkdown(contentMarkdown || '');
+    const localizedCover = coverImage ? (await localizeAssetUrl(coverImage)).url : '/assets/images/mission1.svg';
+    const { markdown: localizedMarkdown } = await localizeMarkdownAssets(contentMarkdown || '');
+    const descriptionHtml = renderMarkdown(localizedMarkdown);
 
     await prisma.project.create({
       data: {
@@ -1079,9 +1117,9 @@ router.post('/projects/new', async (req, res) => {
         industry: industry || 'Engineering',
         client: client || 'Confidential OEM',
         summary: summary || '',
-        descriptionMarkdown: contentMarkdown || '',
+        descriptionMarkdown: localizedMarkdown,
         descriptionHtml,
-        coverImage: coverImage || '/assets/images/mission1.svg',
+        coverImage: localizedCover || '/assets/images/mission1.svg',
         videoUrl: formatYouTubeEmbedUrl(videoUrl) || null,
         techStack: techStack || 'STM32, FreeRTOS',
         specs: specsJson || null,
@@ -1127,7 +1165,9 @@ router.post('/projects/:id/edit', async (req, res) => {
 
     const cleanTitle = (title || 'Untitled Project').trim();
     const cleanSlug = slugify(slug || cleanTitle, { lower: true, strict: true });
-    const descriptionHtml = renderMarkdown(contentMarkdown || '');
+    const localizedCover = coverImage ? (await localizeAssetUrl(coverImage)).url : null;
+    const { markdown: localizedMarkdown } = await localizeMarkdownAssets(contentMarkdown || '');
+    const descriptionHtml = renderMarkdown(localizedMarkdown);
 
     await prisma.project.update({
       where: { id: req.params.id },
@@ -1138,9 +1178,9 @@ router.post('/projects/:id/edit', async (req, res) => {
         industry: industry || 'Engineering',
         client: client || 'Confidential OEM',
         summary: summary || '',
-        descriptionMarkdown: contentMarkdown || '',
+        descriptionMarkdown: localizedMarkdown,
         descriptionHtml,
-        coverImage: coverImage || null,
+        coverImage: localizedCover,
         videoUrl: formatYouTubeEmbedUrl(videoUrl) || null,
         techStack: techStack || 'STM32, FreeRTOS',
         specs: specsJson || null,
@@ -1215,7 +1255,8 @@ router.get('/customizer', async (req, res) => {
 // POST /admin/customizer - Save Website Customizer Settings
 router.post('/customizer', async (req, res) => {
   try {
-    const fields = req.body;
+    const fields = { ...req.body };
+    await localizeObjectAssetFields(fields);
     for (const key of Object.keys(fields)) {
       await prisma.setting.upsert({
         where: { key },

@@ -106,8 +106,8 @@
           <p id="project-video-help" class="mt-1 text-xs text-slate-600 dark:text-slate-300">Accepts youtu.be sharing links, YouTube watch/embed links, or the full iframe code. Sharing parameters are removed when saved.</p>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Cover Image Path / URL</label>
-          <input type="text" name="coverImage" value="<%= project ? project.coverImage : '/assets/images/mission1.svg' %>" placeholder="/assets/images/mission1.svg" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Cover Image Path or Internet URL</label>
+          <input type="text" name="coverImage" data-asset-url="true" value="<%= project ? project.coverImage : '/assets/images/mission1.svg' %>" placeholder="Paste https://... image URL or /assets/images/mission1.svg" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
         </div>
       </div>
 
