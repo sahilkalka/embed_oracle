@@ -336,7 +336,7 @@ app.use('/projects', projectsRoutes);
 // 5. Contact Page
 app.get('/contact', (req, res) => {
   res.locals.seo.title = 'Contact - Embedded India';
-  res.locals.seo.description = 'Get in touch with Embedded India for turnkey electronic hardware and firmware development.';
+  res.locals.seo.description = 'Get in touch with Embedded India for end-to-end electronic hardware and firmware development.';
   res.render('pages/contact', { selectedService: req.query.service || '' });
 });
 

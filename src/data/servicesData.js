@@ -6,9 +6,9 @@ const servicesData = {
     slug: 'full-cycle-embedded-product-engineering',
     title: 'Full-Cycle Product Realization',
     discipline: 'System Architecture & Engineering',
-    contactCategory: 'Full Turnkey',
+    contactCategory: 'End-to-End Product',
     seoTitle: 'Full-Cycle Embedded Product Engineering Architecture - Embedded India',
-    seoDescription: 'Turnkey electronic product engineering from napkin architecture and high-speed simulation to volume mass manufacturing and lifecycle sustainment.',
+    seoDescription: 'End-to-end electronic product engineering from napkin architecture and high-speed simulation to volume mass manufacturing and lifecycle sustainment.',
     description: 'Complete electronic product engineering: schematic capture, BOM optimization, thermal simulation, DFM reviews, and production handover.',
     features: [
       {
@@ -32,7 +32,7 @@ const servicesData = {
         description: 'Hardware-in-the-Loop test bench automation, fault injection modeling, and automated regression suites.'
       },
       {
-        title: 'Turnkey NPI & Technical Documentation',
+        title: 'Production NPI & Technical Documentation',
         description: 'Essential documentation includes full manufacturing data package: Gerbers, ODB++, pick-and-place centroids, panelization, and custom test jig designs.'
       }
     ]

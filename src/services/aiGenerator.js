@@ -620,7 +620,7 @@ void WorkerTask(void *argument) {
       return {
         success: true,
         summary: `A high-performance ${safeCat.toLowerCase()} embedded system engineered for ${safeIndustry.toLowerCase()}. Features high-speed PCB routing, deterministic RTOS control loops, and mission-critical fault tolerance.`,
-        descriptionMarkdown: `## Project Background & Technical Objectives\n\nModern ${safeIndustry} deployments face severe challenges including high electrical noise, strict thermal limitations, and real-time deterministic communication deadlines. Embedded India was engaged to architect a turnkey hardware and firmware solution based on ${safeTech}.\n\n### System Architecture\n\n- **Microcontroller Core**: High-reliability ARM Cortex core with hardware floating-point unit and hardware cryptographic security.\n- **Mixed-Signal PCB Layout**: 4-to-6 layer stackup with dedicated continuous ground reference planes, controlled impedance differential traces, and TVS surge suppression.\n- **Firmware Stack**: Low-jitter FreeRTOS preemptive multitasking with zero-copy DMA ring buffering and fail-safe dual-bank bootloader.\n\n### Measurable Engineering Outcomes\n\n1. **Zero Field Resets**: Verified via 1,200 hours of continuous automated HIL fault-injection testing.\n2. **Compliance**: Pre-verified to pass CISPR 25 radiated and conducted emissions.\n3. **Power Optimization**: Achieved over 40% reduction in quiescent standby power.`,
+        descriptionMarkdown: `## Project Background & Technical Objectives\n\nModern ${safeIndustry} deployments face severe challenges including high electrical noise, strict thermal limitations, and real-time deterministic communication deadlines. Embedded India was engaged to architect an end-to-end hardware and firmware solution based on ${safeTech}.\n\n### System Architecture\n\n- **Microcontroller Core**: High-reliability ARM Cortex core with hardware floating-point unit and hardware cryptographic security.\n- **Mixed-Signal PCB Layout**: 4-to-6 layer stackup with dedicated continuous ground reference planes, controlled impedance differential traces, and TVS surge suppression.\n- **Firmware Stack**: Low-jitter FreeRTOS preemptive multitasking with zero-copy DMA ring buffering and fail-safe dual-bank bootloader.\n\n### Measurable Engineering Outcomes\n\n1. **Zero Field Resets**: Verified via 1,200 hours of continuous automated HIL fault-injection testing.\n2. **Compliance**: Pre-verified to pass CISPR 25 radiated and conducted emissions.\n3. **Power Optimization**: Achieved over 40% reduction in quiescent standby power.`,
         specs: {
           'Microcontroller': 'ARM Cortex-M4F / STM32 Architecture',
           'Operating Range': '-40°C to +85°C Industrial Grade',
@@ -629,7 +629,7 @@ void WorkerTask(void *argument) {
           'Compliance': 'Pre-compliance EMC Class B, RoHS & REACH Certified'
         },
         metrics: [
-          { label: 'Turnaround Time', value: '4 Weeks Turnkey' },
+          { label: 'Turnaround Time', value: '4 Weeks End-to-End' },
           { label: 'Reliability Rate', value: '99.99%' },
           { label: 'HIL Pass Rate', value: '100%' }
         ]
@@ -683,7 +683,7 @@ Respond strictly in valid JSON format with keys:
       return {
         success: true,
         seoTitle: `${safeTitle} | Embedded India Engineering Hub`,
-        seoDescription: `Discover how Embedded India engineers ${safeTitle} with high-speed PCB layout, deterministic RTOS firmware, and turnkey electronics manufacturing.`,
+        seoDescription: `Discover how Embedded India engineers ${safeTitle} with high-speed PCB layout, deterministic RTOS firmware, and full-cycle electronics manufacturing.`,
         seoKeywords: `embedded systems, hardware design, firmware, PCB layout, IoT, ${safeTitle.toLowerCase()}`
       };
     }

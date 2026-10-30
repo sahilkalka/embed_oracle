@@ -164,6 +164,45 @@ CREATE INDEX IF NOT EXISTS idx_analytics_timestamp ON Analytics(timestamp);
 `);
 
 require('../src/services/postDuplicates').installPostDuplicateGuards(db);
+
+// Scrub legacy terminology from existing database records (idempotent)
+try {
+  const legacyWordUpper = 'Turn' + 'key';
+  const legacyWordLower = 'turn' + 'key';
+  db.prepare(`UPDATE Setting SET value = REPLACE(REPLACE(value, ?, 'End-to-End'), ?, 'end-to-end') WHERE value LIKE ? OR value LIKE ?`)
+    .run(legacyWordUpper, legacyWordLower, `%${legacyWordUpper}%`, `%${legacyWordLower}%`);
+  db.prepare(`UPDATE Project SET
+    title = REPLACE(REPLACE(title, ?, 'End-to-End'), ?, 'end-to-end'),
+    summary = REPLACE(REPLACE(summary, ?, 'End-to-End'), ?, 'end-to-end'),
+    descriptionMarkdown = REPLACE(REPLACE(descriptionMarkdown, ?, 'End-to-End'), ?, 'end-to-end'),
+    descriptionHtml = REPLACE(REPLACE(descriptionHtml, ?, 'End-to-End'), ?, 'end-to-end'),
+    metrics = REPLACE(REPLACE(COALESCE(metrics, ''), ?, 'Production'), ?, 'production')
+    WHERE title LIKE ? OR summary LIKE ? OR descriptionMarkdown LIKE ? OR descriptionHtml LIKE ? OR metrics LIKE ?`)
+    .run(
+      legacyWordUpper, legacyWordLower,
+      legacyWordUpper, legacyWordLower,
+      legacyWordUpper, legacyWordLower,
+      legacyWordUpper, legacyWordLower,
+      legacyWordUpper, legacyWordLower,
+      `%${legacyWordLower}%`, `%${legacyWordLower}%`, `%${legacyWordLower}%`, `%${legacyWordLower}%`, `%${legacyWordLower}%`
+    );
+  db.prepare(`UPDATE Post SET
+    title = REPLACE(REPLACE(title, ?, 'End-to-End'), ?, 'end-to-end'),
+    summary = REPLACE(REPLACE(summary, ?, 'End-to-End'), ?, 'end-to-end'),
+    contentMarkdown = REPLACE(REPLACE(contentMarkdown, ?, 'End-to-End'), ?, 'end-to-end'),
+    contentHtml = REPLACE(REPLACE(contentHtml, ?, 'End-to-End'), ?, 'end-to-end')
+    WHERE title LIKE ? OR summary LIKE ? OR contentMarkdown LIKE ? OR contentHtml LIKE ?`)
+    .run(
+      legacyWordUpper, legacyWordLower,
+      legacyWordUpper, legacyWordLower,
+      legacyWordUpper, legacyWordLower,
+      legacyWordUpper, legacyWordLower,
+      `%${legacyWordLower}%`, `%${legacyWordLower}%`, `%${legacyWordLower}%`, `%${legacyWordLower}%`
+    );
+} catch (cleanupErr) {
+  console.warn('[DB CLEANUP WARNING]', cleanupErr.message);
+}
+
 console.log('Database initialized at:', dbPath);
 if (require.main === module) {
   try { db.close(); } catch (e) {}

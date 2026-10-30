@@ -15,8 +15,117 @@ const aiScheduler = require('../services/aiScheduler');
 const { renderMarkdown } = require('../services/markdown');
 const mailer = require('../services/mailer');
 const { PREDEFINED_PALETTES, PALETTE_ALIASES, getAvailablePaletteKey, resolveTheme } = require('../services/themeEngine');
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
 const { formatYouTubeEmbedUrl, YouTubeUrlError } = require('../utils/youtube');
 const { localizeAssetUrl, localizeMarkdownAssets, localizeObjectAssetFields } = require('../services/assetLocalizer');
+
+const PUBLIC_ROOT = path.resolve(__dirname, '../../public');
+const UPLOADS_ROOT = path.join(PUBLIC_ROOT, 'uploads');
+const ALLOWED_UPLOAD_EXTS = new Set([
+  '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.avif', '.ico', '.bmp',
+  '.pdf', '.zip', '.txt', '.csv', '.json', '.mp4', '.webm'
+]);
+const IMAGE_ASSET_EXTS = new Set([
+  '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.avif', '.ico', '.bmp'
+]);
+
+const assetUploadStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    try {
+      fs.mkdirSync(UPLOADS_ROOT, { recursive: true });
+      cb(null, UPLOADS_ROOT);
+    } catch (err) {
+      cb(err);
+    }
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    const rawBase = path.basename(file.originalname || 'asset', ext);
+    const safeBase = rawBase
+      .toLowerCase()
+      .replace(/[^a-z0-9._-]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60) || 'asset';
+    let candidate = `${safeBase}${ext}`;
+    if (fs.existsSync(path.join(UPLOADS_ROOT, candidate))) {
+      candidate = `${safeBase}-${Date.now().toString(36)}${ext}`;
+    }
+    cb(null, candidate);
+  }
+});
+
+const assetUpload = multer({
+  storage: assetUploadStorage,
+  limits: { fileSize: 20 * 1024 * 1024, files: 20 },
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    if (!ALLOWED_UPLOAD_EXTS.has(ext)) {
+      return cb(new Error(`Unsupported file extension (${ext || 'none'}). Allowed: ${Array.from(ALLOWED_UPLOAD_EXTS).join(', ')}`));
+    }
+    cb(null, true);
+  }
+});
+
+function collectServerAssets() {
+  const roots = [
+    { dir: path.join(PUBLIC_ROOT, 'uploads'), defaultCategory: 'Uploads' },
+    { dir: path.join(PUBLIC_ROOT, 'assets', 'images'), defaultCategory: 'Site Images' },
+    { dir: path.join(PUBLIC_ROOT, 'images'), defaultCategory: 'Site Images' },
+    { dir: path.join(PUBLIC_ROOT, 'downloads'), defaultCategory: 'Downloads' }
+  ];
+  const results = [];
+  const seenPaths = new Set();
+
+  function walk(currentDir, baseCategory) {
+    if (!fs.existsSync(currentDir)) return;
+    let entries = [];
+    try {
+      entries = fs.readdirSync(currentDir, { withFileTypes: true });
+    } catch (_) {
+      return;
+    }
+    for (const entry of entries) {
+      if (entry.name.startsWith('.')) continue;
+      const absPath = path.join(currentDir, entry.name);
+      if (entry.isDirectory()) {
+        const subCategory = entry.name === 'localized' ? 'Localized' : baseCategory;
+        walk(absPath, subCategory);
+      } else if (entry.isFile()) {
+        const relFromPublic = '/' + path.relative(PUBLIC_ROOT, absPath).replace(/\\/g, '/');
+        if (seenPaths.has(relFromPublic)) continue;
+        seenPaths.add(relFromPublic);
+        try {
+          const stat = fs.statSync(absPath);
+          const ext = path.extname(entry.name).toLowerCase();
+          const isImage = IMAGE_ASSET_EXTS.has(ext);
+          const isPdf = ext === '.pdf';
+          const isVideo = ext === '.mp4' || ext === '.webm';
+          results.push({
+            name: entry.name,
+            relPath: relFromPublic,
+            category: relFromPublic.startsWith('/uploads/localized/') ? 'Localized' : baseCategory,
+            ext: ext.replace(/^\./, '').toUpperCase() || 'FILE',
+            sizeBytes: stat.size,
+            mtimeMs: stat.mtimeMs,
+            updatedAt: stat.mtime.toISOString(),
+            isImage,
+            isPdf,
+            isVideo
+          });
+        } catch (_) {}
+      }
+    }
+  }
+
+  for (const r of roots) {
+    walk(r.dir, r.defaultCategory);
+  }
+
+  results.sort((a, b) => b.mtimeMs - a.mtimeMs);
+  return results;
+}
 
 const PALETTE_OVERRIDE_FIELDS = ['bgPrimary', 'bgSurface', 'accentPrimary', 'accentSecondary', 'textPrimary'];
 
@@ -96,6 +205,107 @@ router.get('/logout', (req, res) => {
 
 // ALL SUBSEQUENT ROUTES REQUIRE AUTHENTICATION
 router.use(requireAuth);
+
+// GET /admin/assets - Server Asset Manager Page
+router.get('/assets', (req, res) => {
+  try {
+    const assets = collectServerAssets();
+    const totalBytes = assets.reduce((sum, a) => sum + (a.sizeBytes || 0), 0);
+    res.render('admin/assets/index', {
+      assets,
+      totalBytes,
+      uploaded: req.query.uploaded === '1',
+      deleted: req.query.deleted === '1',
+      error: req.query.error || null
+    });
+  } catch (err) {
+    res.status(500).send('Error loading server assets: ' + err.message);
+  }
+});
+
+// POST /admin/assets/upload - Upload one or multiple asset files directly to /uploads/
+router.post('/assets/upload', (req, res) => {
+  assetUpload.array('assets', 20)(req, res, (err) => {
+    const wantsJson = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'));
+    if (err) {
+      if (wantsJson) return res.status(400).json({ success: false, error: err.message || 'Upload failed' });
+      return res.redirect('/admin/assets?error=' + encodeURIComponent(err.message || 'Upload failed'));
+    }
+    const files = Array.isArray(req.files) ? req.files : [];
+    if (files.length === 0) {
+      if (wantsJson) return res.status(400).json({ success: false, error: 'Please select at least one file to upload.' });
+      return res.redirect('/admin/assets?error=' + encodeURIComponent('Please select at least one file to upload.'));
+    }
+
+    const uploadedItems = [];
+    for (const file of files) {
+      // Sanitize SVG uploads to strip active scripts/handlers
+      if (path.extname(file.filename).toLowerCase() === '.svg') {
+        try {
+          const rawSvg = fs.readFileSync(file.path, 'utf8');
+          const cleanSvg = rawSvg
+            .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+            .replace(/\son[a-z]+\s*=\s*(['"]).*?\1/gi, '');
+          fs.writeFileSync(file.path, cleanSvg, 'utf8');
+        } catch (_) {}
+      }
+      uploadedItems.push({
+        name: file.filename,
+        relPath: '/uploads/' + file.filename,
+        sizeBytes: file.size
+      });
+    }
+
+    if (wantsJson) {
+      return res.json({ success: true, uploaded: uploadedItems });
+    }
+    return res.redirect('/admin/assets?uploaded=1');
+  });
+});
+
+// POST /admin/assets/delete - Safely delete an asset file from allowed public directories
+router.post('/assets/delete', (req, res) => {
+  const wantsJson = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'));
+  try {
+    const relPath = String((req.body && req.body.relPath) || '').trim();
+    if (!relPath || !relPath.startsWith('/') || relPath.includes('..') || relPath.includes('\0')) {
+      if (wantsJson) return res.status(400).json({ success: false, error: 'Invalid asset path.' });
+      return res.redirect('/admin/assets?error=' + encodeURIComponent('Invalid asset path.'));
+    }
+
+    const allowedRoots = [
+      path.join(PUBLIC_ROOT, 'uploads'),
+      path.join(PUBLIC_ROOT, 'assets', 'images'),
+      path.join(PUBLIC_ROOT, 'images'),
+      path.join(PUBLIC_ROOT, 'downloads')
+    ];
+
+    const resolvedTarget = path.resolve(PUBLIC_ROOT, '.' + relPath);
+    const isInsideAllowed = allowedRoots.some((root) => {
+      const normalizedRoot = path.resolve(root) + path.sep;
+      return resolvedTarget.startsWith(normalizedRoot);
+    });
+
+    if (!isInsideAllowed) {
+      if (wantsJson) return res.status(403).json({ success: false, error: 'Deleting files outside asset directories is not permitted.' });
+      return res.redirect('/admin/assets?error=' + encodeURIComponent('Deleting files outside asset directories is not permitted.'));
+    }
+
+    if (!fs.existsSync(resolvedTarget) || !fs.statSync(resolvedTarget).isFile()) {
+      if (wantsJson) return res.status(404).json({ success: false, error: 'Asset file not found on server.' });
+      return res.redirect('/admin/assets?error=' + encodeURIComponent('Asset file not found on server.'));
+    }
+
+    fs.unlinkSync(resolvedTarget);
+    if (wantsJson) {
+      return res.json({ success: true, deletedPath: relPath });
+    }
+    return res.redirect('/admin/assets?deleted=1');
+  } catch (err) {
+    if (wantsJson) return res.status(500).json({ success: false, error: err.message || 'Failed to delete asset.' });
+    return res.redirect('/admin/assets?error=' + encodeURIComponent(err.message || 'Failed to delete asset.'));
+  }
+});
 
 // POST /admin/assets/localize - Download remote internet asset URL(s) locally into /uploads/localized/
 router.post('/assets/localize', async (req, res) => {

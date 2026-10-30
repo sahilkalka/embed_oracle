@@ -45,10 +45,12 @@ function csrfProtection(req, res, next) {
 
   // Validate token on state-changing requests
   if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
-    const bodyToken = req.body[TOKEN_NAME];
-    const headerToken = req.headers['x-csrf-token'] || req.headers['x-xsrf-token'];
+    const bodyToken = req.body && req.body[TOKEN_NAME];
+    const queryToken = req.query && req.query[TOKEN_NAME];
+    const headerToken = req.headers['x-csrf-token'] || req.headers['x-xsrf-token'] || req.headers['csrf-token'];
+    const providedToken = bodyToken || headerToken || queryToken;
 
-    if (!bodyToken && !headerToken) {
+    if (!providedToken) {
       // If it's an HTML form submission (not JSON API), render error page
       if (req.headers['content-type']?.includes('application/json') || req.headers['accept']?.includes('application/json') || req.xhr) {
         return res.status(403).json({ success: false, message: 'CSRF token missing', error: 'CSRF token missing' });
@@ -62,7 +64,6 @@ function csrfProtection(req, res, next) {
       });
     }
 
-    const providedToken = bodyToken || headerToken;
     if (providedToken !== token) {
       if (req.headers['content-type']?.includes('application/json') || req.headers['accept']?.includes('application/json') || req.xhr) {
         return res.status(403).json({ success: false, message: 'CSRF token mismatch', error: 'CSRF token mismatch' });

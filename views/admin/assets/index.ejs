@@ -1,0 +1,448 @@
+<%- include('../layout_top') %>
+
+<%
+  function formatBytes(bytes) {
+    const n = Number(bytes) || 0;
+    if (n < 1024) return n + ' B';
+    if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
+    return (n / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+%>
+
+<div class="space-y-6">
+  <!-- Header & Stats -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs">
+    <div>
+      <div class="flex items-center gap-2.5">
+        <span class="w-9 h-9 rounded-xl bg-brand-500/10 dark:bg-accent/15 text-brand-600 dark:text-accent flex items-center justify-center font-bold">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </span>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Server Assets Library</h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Upload, preview, copy internal linking paths, or delete assets stored across the server.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 flex-wrap">
+      <div class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs">
+        <span class="text-slate-500 dark:text-slate-400 font-medium">Total Assets:</span>
+        <span id="assetTotalCount" class="font-black text-slate-900 dark:text-white ml-1"><%= assets.length %></span>
+      </div>
+      <div class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs">
+        <span class="text-slate-500 dark:text-slate-400 font-medium">Storage Used:</span>
+        <span class="font-black text-brand-600 dark:text-accent ml-1"><%= formatBytes(totalBytes) %></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <% if (uploaded) { %>
+    <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex items-center justify-between">
+      <span>Asset(s) uploaded to server successfully! You can copy their domain linking paths below.</span>
+      <button type="button" onclick="this.parentElement.remove()" class="text-emerald-600 hover:underline ml-4">Dismiss</button>
+    </div>
+  <% } %>
+  <% if (deleted) { %>
+    <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs font-bold flex items-center justify-between">
+      <span>Asset deleted from server storage.</span>
+      <button type="button" onclick="this.parentElement.remove()" class="text-amber-600 hover:underline ml-4">Dismiss</button>
+    </div>
+  <% } %>
+  <% if (error) { %>
+    <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold flex items-center justify-between">
+      <span><%= error %></span>
+      <button type="button" onclick="this.parentElement.remove()" class="text-rose-600 hover:underline ml-4">Dismiss</button>
+    </div>
+  <% } %>
+
+  <!-- Upload & Remote Fetch Action Cards -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    <!-- 1. Direct File Upload from Computer -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+      <div>
+        <h2 class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2 mb-1">
+          <svg class="w-4 h-4 text-brand-500 dark:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          Upload Files from Computer
+        </h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Saved directly into <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[11px]">/uploads/</code>. Supports PNG, JPG, WEBP, SVG, GIF, AVIF, ICO, PDF, ZIP, MP4 (up to 20 MB per file).</p>
+      </div>
+
+      <form action="/admin/assets/upload?_csrf=<%= encodeURIComponent(typeof csrfToken !== 'undefined' ? csrfToken : '') %>" method="POST" enctype="multipart/form-data" class="space-y-3">
+        <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+        <label for="assetFileInput" class="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-brand-500 dark:hover:border-accent rounded-xl p-4 cursor-pointer transition bg-slate-50/60 dark:bg-slate-950/40">
+          <input id="assetFileInput" type="file" name="assets" multiple required accept=".png,.jpg,.jpeg,.webp,.gif,.svg,.avif,.ico,.bmp,.pdf,.zip,.txt,.csv,.json,.mp4,.webm" class="block w-full text-xs text-slate-600 dark:text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-500/10 file:text-brand-600 dark:file:bg-accent/20 dark:file:text-accent hover:file:bg-brand-500/20 cursor-pointer">
+        </label>
+        <div class="flex justify-end">
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-sm transition cursor-pointer flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            Upload to Server
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 2. Pull & Localize Asset from Internet URL -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+      <div>
+        <h2 class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2 mb-1">
+          <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+          Import Asset from Internet URL
+        </h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Paste any external image or document URL (`https://...`) to download and host it locally under <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[11px]">/uploads/localized/</code>.</p>
+      </div>
+
+      <form id="remoteLocalizeForm" class="space-y-3" onsubmit="return handleRemoteImport(event)">
+        <div>
+          <input type="url" id="remoteAssetUrlInput" required placeholder="https://images.unsplash.com/photo-..." data-no-localize="true" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white font-mono focus:ring-2 focus:ring-brand-500 outline-none">
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span id="remoteImportStatus" class="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate"></span>
+          <button type="submit" id="remoteImportBtn" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition cursor-pointer flex items-center gap-1.5 shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Fetch &amp; Save to Server
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Search & Category Filter Bar -->
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+    <!-- Category Filter Buttons -->
+    <div class="flex items-center gap-1.5 flex-wrap" id="assetCategoryFilters">
+      <button type="button" data-filter="all" onclick="setAssetCategoryFilter('all')" class="asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-brand-600 text-white">
+        All (<%= assets.length %>)
+      </button>
+      <button type="button" data-filter="Uploads" onclick="setAssetCategoryFilter('Uploads')" class="asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+        Uploads (<%= assets.filter(a => a.category === 'Uploads').length %>)
+      </button>
+      <button type="button" data-filter="Localized" onclick="setAssetCategoryFilter('Localized')" class="asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+        Localized (<%= assets.filter(a => a.category === 'Localized').length %>)
+      </button>
+      <button type="button" data-filter="Site Images" onclick="setAssetCategoryFilter('Site Images')" class="asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+        Site Images (<%= assets.filter(a => a.category === 'Site Images').length %>)
+      </button>
+      <button type="button" data-filter="Downloads" onclick="setAssetCategoryFilter('Downloads')" class="asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+        Downloads (<%= assets.filter(a => a.category === 'Downloads').length %>)
+      </button>
+    </div>
+
+    <!-- Search Input -->
+    <div class="relative min-w-[240px] sm:min-w-[300px]">
+      <input type="search" id="assetSearchInput" oninput="filterAssetsGrid()" placeholder="Filter by filename or path (e.g. /uploads/)..." class="w-full pl-9 pr-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none">
+      <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    </div>
+  </div>
+
+  <!-- Assets Grid -->
+  <% if (assets.length === 0) { %>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center">
+      <p class="text-sm font-bold text-slate-700 dark:text-slate-300">No assets found on the server yet.</p>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Upload a file or import an internet URL above to get started.</p>
+    </div>
+  <% } else { %>
+    <div id="assetsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <% assets.forEach((asset) => { %>
+        <div class="asset-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-brand-500/60 dark:hover:border-accent/60 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between transition"
+             data-category="<%= asset.category %>"
+             data-search="<%= (asset.name + ' ' + asset.relPath + ' ' + asset.ext).toLowerCase() %>"
+             data-relpath="<%= asset.relPath %>">
+
+          <!-- Clickable Preview Thumbnail -->
+          <div>
+            <div onclick="openAssetPreview(<%= JSON.stringify(asset) %>)"
+                 title="Click to preview <%= asset.name %>"
+                 class="relative h-44 bg-slate-100 dark:bg-slate-950 flex items-center justify-center overflow-hidden cursor-pointer border-b border-slate-100 dark:border-slate-800/80">
+              <% if (asset.isImage) { %>
+                <img src="<%= asset.relPath %>" alt="<%= asset.name %>" loading="lazy" class="w-full h-full object-contain p-2 transition duration-300 group-hover:scale-105">
+              <% } else if (asset.isPdf) { %>
+                <div class="flex flex-col items-center justify-center text-rose-500 p-4 text-center">
+                  <svg class="w-12 h-12 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                  <span class="text-xs font-extrabold uppercase tracking-wider">PDF Document</span>
+                </div>
+              <% } else { %>
+                <div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 p-4 text-center">
+                  <svg class="w-12 h-12 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  <span class="text-xs font-extrabold uppercase tracking-wider"><%= asset.ext %> File</span>
+                </div>
+              <% } %>
+
+              <!-- Category & Extension Badges -->
+              <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-slate-900/75 text-white backdrop-blur-xs">
+                  <%= asset.category %>
+                </span>
+                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold bg-brand-600/90 text-white">
+                  <%= asset.ext %>
+                </span>
+              </div>
+
+              <!-- Hover Click-to-Preview Overlay -->
+              <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span class="px-3 py-1.5 rounded-xl bg-white text-slate-900 font-bold text-xs shadow-lg flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                  Click to Preview
+                </span>
+              </div>
+            </div>
+
+            <!-- File Name & Meta -->
+            <div class="p-3.5 space-y-2.5">
+              <div class="flex items-start justify-between gap-2">
+                <p class="text-xs font-extrabold text-slate-900 dark:text-white truncate" title="<%= asset.name %>"><%= asset.name %></p>
+                <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 shrink-0"><%= formatBytes(asset.sizeBytes) %></span>
+              </div>
+
+              <!-- Domain-Relative Linking Path Box -->
+              <div>
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Domain Linking Path</label>
+                <div class="flex items-center gap-1">
+                  <input type="text" readonly value="<%= asset.relPath %>" onclick="this.select()" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-700 dark:text-slate-300 select-all outline-none">
+                  <button type="button" onclick="copyTextWithFeedback(this, '<%= asset.relPath %>')" title="Copy relative path" class="px-2.5 py-1.5 rounded-lg bg-brand-500/10 dark:bg-accent/15 text-brand-600 dark:text-accent hover:bg-brand-600 hover:text-white text-[11px] font-bold transition cursor-pointer shrink-0">
+                    Copy
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Footer: Copy URL / Copy Markdown / Preview / Delete -->
+          <div class="px-3.5 py-2.5 bg-slate-50/70 dark:bg-slate-950/50 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-1.5 text-[11px]">
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="copyFullUrlWithFeedback(this, '<%= asset.relPath %>')" class="px-2 py-1 rounded-md bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold transition cursor-pointer" title="Copy full https:// domain URL">
+                Full URL
+              </button>
+              <button type="button" onclick="copyTextWithFeedback(this, '<%= asset.isImage ? `![${asset.name}](${asset.relPath})` : `[${asset.name}](${asset.relPath})` %>')" class="px-2 py-1 rounded-md bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold transition cursor-pointer" title="Copy Markdown embed link">
+                Markdown
+              </button>
+            </div>
+
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="openAssetPreview(<%= JSON.stringify(asset) %>)" class="px-2 py-1 rounded-md text-brand-600 dark:text-accent hover:bg-brand-500/10 font-bold transition cursor-pointer" title="Preview asset">
+                Preview
+              </button>
+              <button type="button" onclick="deleteServerAsset('<%= asset.relPath %>', this)" class="px-2 py-1 rounded-md text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 font-bold transition cursor-pointer" title="Delete asset from server">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<!-- Click-to-Preview Modal Lightbox -->
+<div id="assetPreviewModal" class="fixed inset-0 z-[99999] hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 sm:p-6" onclick="if(event.target === this) closeAssetPreview()">
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+    <!-- Modal Header -->
+    <div class="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+      <div class="min-w-0">
+        <h3 id="previewModalTitle" class="text-sm font-black text-slate-900 dark:text-white truncate"></h3>
+        <p id="previewModalMeta" class="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate"></p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <a id="previewModalOpenTab" href="#" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition">
+          Open in New Tab ↗
+        </a>
+        <button type="button" onclick="closeAssetPreview()" aria-label="Close preview" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-rose-500 hover:text-white flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold transition cursor-pointer">
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Body / Viewer -->
+    <div id="previewModalBody" class="flex-1 bg-slate-100 dark:bg-slate-950 flex items-center justify-center overflow-auto p-4 min-h-[320px] max-h-[65vh]">
+    </div>
+
+    <!-- Modal Footer: Quick Copy Paths -->
+    <div class="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div class="flex-1 flex items-center gap-2">
+        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">Link Path:</span>
+        <input id="previewModalPathInput" type="text" readonly onclick="this.select()" class="w-full px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white select-all outline-none">
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button type="button" id="previewCopyPathBtn" class="px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition cursor-pointer">
+          Copy Domain Path
+        </button>
+        <button type="button" id="previewCopyFullUrlBtn" class="px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition cursor-pointer">
+          Copy Full URL
+        </button>
+        <button type="button" id="previewCopyMdBtn" class="px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition cursor-pointer">
+          Copy Markdown
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let activeCategoryFilter = 'all';
+
+  function setAssetCategoryFilter(cat) {
+    activeCategoryFilter = cat;
+    document.querySelectorAll('.asset-filter-btn').forEach(btn => {
+      if (btn.getAttribute('data-filter') === cat) {
+        btn.className = 'asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-brand-600 text-white';
+      } else {
+        btn.className = 'asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700';
+      }
+    });
+    filterAssetsGrid();
+  }
+
+  function filterAssetsGrid() {
+    const query = (document.getElementById('assetSearchInput')?.value || '').trim().toLowerCase();
+    const cards = document.querySelectorAll('.asset-card');
+    cards.forEach(card => {
+      const cat = card.getAttribute('data-category');
+      const searchStr = card.getAttribute('data-search') || '';
+      const matchesCat = activeCategoryFilter === 'all' || cat === activeCategoryFilter;
+      const matchesSearch = !query || searchStr.includes(query);
+      card.style.display = (matchesCat && matchesSearch) ? '' : 'none';
+    });
+  }
+
+  async function copyTextWithFeedback(btn, text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      const prev = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = prev; }, 1400);
+    } catch (_) {
+      prompt('Copy path:', text);
+    }
+  }
+
+  function copyFullUrlWithFeedback(btn, relPath) {
+    const fullUrl = window.location.origin + relPath;
+    copyTextWithFeedback(btn, fullUrl);
+  }
+
+  function openAssetPreview(asset) {
+    const modal = document.getElementById('assetPreviewModal');
+    const titleEl = document.getElementById('previewModalTitle');
+    const metaEl = document.getElementById('previewModalMeta');
+    const bodyEl = document.getElementById('previewModalBody');
+    const pathInput = document.getElementById('previewModalPathInput');
+    const openTab = document.getElementById('previewModalOpenTab');
+
+    titleEl.textContent = asset.name;
+    const kb = ((asset.sizeBytes || 0) / 1024).toFixed(1) + ' KB';
+    metaEl.textContent = `${asset.category} • ${asset.ext} • ${kb} • ${asset.relPath}`;
+    pathInput.value = asset.relPath;
+    openTab.href = asset.relPath;
+
+    bodyEl.innerHTML = '';
+    if (asset.isImage) {
+      const img = document.createElement('img');
+      img.src = asset.relPath;
+      img.alt = asset.name;
+      img.className = 'max-w-full max-h-[58vh] object-contain rounded-lg shadow-sm';
+      bodyEl.appendChild(img);
+    } else if (asset.isPdf) {
+      const iframe = document.createElement('iframe');
+      iframe.src = asset.relPath;
+      iframe.className = 'w-full h-[58vh] rounded-lg border border-slate-300 dark:border-slate-700 bg-white';
+      bodyEl.appendChild(iframe);
+    } else if (asset.isVideo) {
+      const video = document.createElement('video');
+      video.src = asset.relPath;
+      video.controls = true;
+      video.className = 'max-w-full max-h-[58vh] rounded-lg';
+      bodyEl.appendChild(video);
+    } else {
+      bodyEl.innerHTML = `<div class="text-center p-8 space-y-3">
+        <p class="text-sm font-bold text-slate-700 dark:text-slate-200">${asset.name}</p>
+        <p class="text-xs text-slate-500">Direct link: <code>${asset.relPath}</code></p>
+        <a href="${asset.relPath}" target="_blank" rel="noopener" class="inline-block px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Download / View File</a>
+      </div>`;
+    }
+
+    document.getElementById('previewCopyPathBtn').onclick = function() {
+      copyTextWithFeedback(this, asset.relPath);
+    };
+    document.getElementById('previewCopyFullUrlBtn').onclick = function() {
+      copyFullUrlWithFeedback(this, asset.relPath);
+    };
+    document.getElementById('previewCopyMdBtn').onclick = function() {
+      const md = asset.isImage ? `![${asset.name}](${asset.relPath})` : `[${asset.name}](${asset.relPath})`;
+      copyTextWithFeedback(this, md);
+    };
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeAssetPreview() {
+    const modal = document.getElementById('assetPreviewModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.getElementById('previewModalBody').innerHTML = '';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAssetPreview();
+  });
+
+  async function handleRemoteImport(e) {
+    e.preventDefault();
+    const input = document.getElementById('remoteAssetUrlInput');
+    const status = document.getElementById('remoteImportStatus');
+    const btn = document.getElementById('remoteImportBtn');
+    const url = (input.value || '').trim();
+    if (!url) return false;
+
+    btn.disabled = true;
+    status.textContent = 'Downloading asset to server...';
+    status.className = 'text-xs font-semibold text-brand-600 dark:text-accent truncate';
+
+    try {
+      const res = await fetch('/admin/assets/localize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to import remote asset');
+      }
+      status.textContent = 'Saved as ' + data.localUrl + '! Reloading...';
+      status.className = 'text-xs font-bold text-emerald-600 dark:text-emerald-400 truncate';
+      setTimeout(() => { window.location.href = '/admin/assets?uploaded=1'; }, 500);
+    } catch (err) {
+      status.textContent = err.message || 'Error importing URL';
+      status.className = 'text-xs font-bold text-rose-600 dark:text-rose-400 truncate';
+      btn.disabled = false;
+    }
+    return false;
+  }
+
+  async function deleteServerAsset(relPath, btnEl) {
+    if (!confirm(`Delete asset "${relPath}" permanently from the server?`)) return;
+    btnEl.disabled = true;
+    btnEl.textContent = '...';
+    try {
+      const res = await fetch('/admin/assets/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ relPath })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to delete asset');
+      }
+      const card = btnEl.closest('.asset-card');
+      if (card) card.remove();
+      const countEl = document.getElementById('assetTotalCount');
+      if (countEl) countEl.textContent = Math.max(0, (parseInt(countEl.textContent, 10) || 1) - 1);
+    } catch (err) {
+      alert(err.message || 'Error deleting asset');
+      btnEl.disabled = false;
+      btnEl.textContent = 'Delete';
+    }
+  }
+</script>
+
+<%- include('../layout_bottom') %>

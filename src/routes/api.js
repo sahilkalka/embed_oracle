@@ -275,7 +275,7 @@ router.post('/estimator/calculate', (req, res) => {
     if (phase === 'prototype') {
       baseWeeks = 3;
       deliverables.push('Schematic Capture', 'Multi-Layer PCB Layout', 'First-Pass SMT Prototypes (5 pcs)');
-    } else if (phase === 'turnkey') {
+    } else if (phase === 'full-cycle' || phase === 'end-to-end') {
       baseWeeks = 7;
       deliverables.push('Schematic & PCB Layout', 'Deterministic RTOS Firmware', 'Pre-Compliance EMC Verification', 'Pilot Run Manufacturing (25-100 pcs)');
     } else if (phase === 'firmware') {
@@ -331,7 +331,7 @@ router.post('/estimator/calculate', (req, res) => {
 
     return res.json({
       success: true,
-      timeline: `${estimatedWeeksMin} - ${estimatedWeeksMax} Weeks Turnkey`,
+      timeline: `${estimatedWeeksMin} - ${estimatedWeeksMax} Weeks End-to-End`,
       complexityLabel,
       complianceLabel,
       deliverables,

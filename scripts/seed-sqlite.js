@@ -43,7 +43,7 @@ async function seed() {
     { key: 'lead_magnet_file', value: '/downloads/embedded-design-checklist.pdf' },
     { key: 'promo_banner_active', value: 'true' },
     { key: 'promo_banner_title', value: 'Accelerate Your Next IoT or High-Speed PCB Project' },
-    { key: 'promo_banner_text', value: 'From concept and schematics to turnkey production and firmware BSP. Partner with India’s leading embedded engineering team.' },
+    { key: 'promo_banner_text', value: 'From concept and schematics to full-cycle production and firmware BSP. Partner with India’s leading embedded engineering team.' },
     { key: 'promo_banner_cta', value: 'Book an Engineering Feasibility Call' },
     { key: 'promo_banner_url', value: '/contact?service=Hardware%20Design' },
     { key: 'hero_title', value: 'Think Big.' },
@@ -54,7 +54,7 @@ async function seed() {
     { key: 'enable_copilot', value: 'true' },
     { key: 'copilot_greeting', value: 'Hello! I am your Embedded India engineering copilot. Ask me about MCU selection, PCB layouts, RTOS firmware, or scoping your next project!' },
     { key: 'lab_status_text', value: 'Bangalore Lab: Online • 4 Active SMT Lines • HIL Station #2 Active' },
-    { key: 'typewriter_words', value: 'High-Speed PCB Layouts,Deterministic RTOS Firmware,Automotive CAN-FD ECUs,Turnkey IoT Hardware,Edge AI & TinyML Nodes' },
+    { key: 'typewriter_words', value: 'High-Speed PCB Layouts,Deterministic RTOS Firmware,Automotive CAN-FD ECUs,Connected IoT Hardware,Edge AI & TinyML Nodes' },
     { key: 'theme_bounce_intensity', value: 'bouncy' },
     { key: 'section_hero_enabled', value: 'true' },
     { key: 'section_sandbox_enabled', value: 'true' },
@@ -170,7 +170,7 @@ async function seed() {
 
 Commercial transit buses experience extreme thermal and vibrational stress. Standard consumer HVAC microcontrollers routinely suffer from electrical transients caused by alternator load-dumps, heavy inductive blower relays, and multi-zone temperature imbalances across 40-passenger cabins.
 
-Embedded India was commissioned to architect a turnkey electronic climate controller conforming to strict automotive durability standards.
+Embedded India was commissioned to architect an end-to-end electronic climate controller conforming to strict automotive durability standards.
 
 ### System Architecture & Hardware Engineering
 
