@@ -1,0 +1,62 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Microstrip Geometry</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">RF &amp; High Speed</span>
+    </div>
+
+    <div>
+      <label for="imp-w" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Trace Width W (mils)</label>
+      <input type="number" id="imp-w" value="15.0" step="0.5" min="1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="imp-h" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Dielectric Height H (mils to plane)</label>
+      <input type="number" id="imp-h" value="8.0" step="0.5" min="1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="imp-t" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Trace Thickness T (mils)</label>
+        <input type="number" id="imp-t" value="1.37" step="0.1" min="0.1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+      <div>
+        <label for="imp-er" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Dielectric Constant (εr)</label>
+        <input type="number" id="imp-er" value="4.4" step="0.1" min="1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 space-y-6">
+    <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">Characteristic Impedance</h3>
+      <div class="mt-6 p-5 bg-brand-50 dark:bg-brand-900/40 rounded-2xl border border-brand-200 dark:border-brand-700 text-center">
+        <span class="text-xs text-brand-800 dark:text-accent font-semibold block">Characteristic Impedance (Z₀)</span>
+        <span id="imp-resZo" class="text-4xl font-black text-brand-700 dark:text-white font-mono mt-1 block">--</span>
+        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block mt-1">Ohms (Ω)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  function calcImp() {
+    const w = parseFloat(document.getElementById('imp-w')?.value) || 15;
+    const h = parseFloat(document.getElementById('imp-h')?.value) || 8;
+    const t = parseFloat(document.getElementById('imp-t')?.value) || 1.37;
+    const er = parseFloat(document.getElementById('imp-er')?.value) || 4.4;
+
+    const term1 = 87 / Math.sqrt(er + 1.41);
+    const term2 = Math.log((5.98 * h) / (0.8 * w + t));
+    const zo = term1 * term2;
+
+    document.getElementById('imp-resZo').textContent = !isNaN(zo) && zo > 0 ? zo.toFixed(1) + ' Ω' : 'Invalid';
+  }
+
+  ['imp-w', 'imp-h', 'imp-t', 'imp-er'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', calcImp);
+  });
+  calcImp();
+})();
+</script>

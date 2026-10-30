@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="uuid-314e3fa2-8d54-44e1-90b9-5c39e7e44053" width="700" height="700" viewBox="0 0 700 700">
+  <defs>
+    <clipPath id="uuid-291705aa-d713-45c1-aab0-8890a930004c">
+      <rect width="700" height="700" fill="none"></rect>
+    </clipPath>
+    <radialGradient id="uuid-9d8ef7e5-4344-4d0a-bd4b-74d11f81c07e" cx="-19731.2537" cy="-17462.2676" fx="-19731.2537" fy="-17462.2676" r="77.95" gradientTransform="translate(-88625.3366 -5077.9456) rotate(-135) scale(3.3831 -3.3831)" gradientUnits="userSpaceOnUse">
+      <stop offset=".2" stop-color="#fff" stop-opacity="0"></stop>
+      <stop offset=".3811" stop-color="#fff" stop-opacity=".0099"></stop>
+      <stop offset=".4901" stop-color="#fff" stop-opacity=".0428"></stop>
+      <stop offset=".58" stop-color="#fff" stop-opacity=".099"></stop>
+      <stop offset=".6595" stop-color="#fff" stop-opacity=".1786"></stop>
+      <stop offset=".7322" stop-color="#fff" stop-opacity=".2819"></stop>
+      <stop offset=".7999" stop-color="#fff" stop-opacity=".4089"></stop>
+      <stop offset=".8637" stop-color="#fff" stop-opacity=".5599"></stop>
+      <stop offset=".9245" stop-color="#fff" stop-opacity=".7351"></stop>
+      <stop offset=".9809" stop-color="#fff" stop-opacity=".9276"></stop>
+      <stop offset="1" stop-color="#fff"></stop>
+    </radialGradient>
+    <mask id="uuid-c4495cbe-7ec9-47a8-b025-1b8b1873aef4" x="86.2857" y="86.2857" width="527.4286" height="527.4286" maskUnits="userSpaceOnUse">
+      <circle cx="350" cy="350" r="263.7143" fill="url(#uuid-9d8ef7e5-4344-4d0a-bd4b-74d11f81c07e)"></circle>
+    </mask>
+    <radialGradient id="uuid-3964ca6b-d903-4957-9007-ab5441ebb2c4" cx="-14455.6288" cy="-6405.8927" fx="-14455.6288" fy="-6405.8927" r="102.6928" gradientTransform="translate(22111.6159 -9293.4806) scale(1.5054 -1.5054)" gradientUnits="userSpaceOnUse">
+      <stop offset=".2" stop-color="#fff"></stop>
+      <stop offset=".3811" stop-color="#fff" stop-opacity=".9901"></stop>
+      <stop offset=".4901" stop-color="#fff" stop-opacity=".9572"></stop>
+      <stop offset=".58" stop-color="#fff" stop-opacity=".901"></stop>
+      <stop offset=".6595" stop-color="#fff" stop-opacity=".8214"></stop>
+      <stop offset=".7322" stop-color="#fff" stop-opacity=".7181"></stop>
+      <stop offset=".7999" stop-color="#fff" stop-opacity=".5911"></stop>
+      <stop offset=".8637" stop-color="#fff" stop-opacity=".4401"></stop>
+      <stop offset=".9245" stop-color="#fff" stop-opacity=".2649"></stop>
+      <stop offset=".9809" stop-color="#fff" stop-opacity=".0724"></stop>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
+    </radialGradient>
+    <mask id="uuid-724213d8-4903-4ebe-aedc-543406d7dce2" x="195.4054" y="195.4054" width="309.1892" height="309.1892" maskUnits="userSpaceOnUse">
+      <circle cx="350" cy="350" r="154.5946" fill="url(#uuid-3964ca6b-d903-4957-9007-ab5441ebb2c4)"></circle>
+    </mask>
+  </defs>
+  <g clip-path="url(#uuid-291705aa-d713-45c1-aab0-8890a930004c)">
+    <g mask="url(#uuid-c4495cbe-7ec9-47a8-b025-1b8b1873aef4)">
+      <circle cx="350" cy="350" r="260" fill="#2bac9d"></circle>
+    </g>
+    <g mask="url(#uuid-724213d8-4903-4ebe-aedc-543406d7dce2)">
+      <circle cx="350" cy="350" r="154.5946" fill="#1da94e"></circle>
+    </g>
+  </g>
+</svg>

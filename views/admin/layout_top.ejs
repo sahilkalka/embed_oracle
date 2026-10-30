@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Embedded India</title>
+  <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=block" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v=<%= assetVersion %>">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <% if (theme && theme.cssString) { %>
+    <style id="dynamic-theme-vars"><%- theme.cssString %></style>
+  <% } %>
+  <script>
+    const configuredThemeMode = '<%= settings.default_theme_mode === "light" ? "light" : "dark" %>';
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && configuredThemeMode === 'dark')) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    const savedPalette = localStorage.getItem('color-palette') || '<%= settings.active_theme_palette || "cyber-emerald" %>';
+    document.documentElement.setAttribute('data-palette', savedPalette);
+
+    window.csrfToken = '<%= typeof csrfToken !== "undefined" ? csrfToken : "" %>';
+    window.getCsrfToken = function() {
+      if (window.csrfToken) return window.csrfToken;
+      const meta = document.querySelector('meta[name="csrf-token"]');
+      if (meta && meta.content) return meta.content;
+      const input = document.querySelector('input[name="_csrf"]');
+      if (input && input.value) return input.value;
+      return '';
+    };
+
+    (function() {
+      const origFetch = window.fetch;
+      window.fetch = function(input, init) {
+        init = init || {};
+        const method = (init.method || 'GET').toUpperCase();
+        if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+          const token = window.getCsrfToken();
+          if (token) {
+            if (!init.headers) {
+              init.headers = { 'X-CSRF-Token': token };
+            } else if (typeof Headers !== 'undefined' && init.headers instanceof Headers) {
+              if (!init.headers.has('X-CSRF-Token') && !init.headers.has('x-csrf-token')) {
+                init.headers.set('X-CSRF-Token', token);
+              }
+            } else if (Array.isArray(init.headers)) {
+              const has = init.headers.some(([k]) => k.toLowerCase() === 'x-csrf-token');
+              if (!has) init.headers.push(['X-CSRF-Token', token]);
+            } else if (typeof init.headers === 'object') {
+              if (!init.headers['X-CSRF-Token'] && !init.headers['x-csrf-token']) {
+                init.headers['X-CSRF-Token'] = token;
+              }
+            }
+          }
+        }
+        return origFetch.call(this, input, init);
+      };
+    })();
+  </script>
+
+  <% if (settings) { %>
+    <style id="admin-header-styles">
+      <% 
+        const rawOp = settings.header_opacity || settings.header_transparency || '95';
+        const numOp = Number(rawOp);
+        const headerAlpha = !isNaN(numOp) ? (numOp > 1 ? (numOp / 100).toFixed(2) : numOp.toFixed(2)) : '0.95';
+        const cMaxWidth = settings.container_max_width || '80rem';
+      %>
+      :root {
+        --header-opacity: <%= headerAlpha %>;
+        --container-max-width: <%= cMaxWidth %>;
+      }
+      header.sticky,
+      .admin-shell header {
+        background-color: rgba(255, 255, 255, var(--header-opacity, <%= headerAlpha %>)) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+      }
+      html.dark header.sticky,
+      .dark .admin-shell header {
+        background-color: rgba(15, 23, 42, var(--header-opacity, <%= headerAlpha %>)) !important;
+      }
+      .admin-header-inner,
+      .admin-shell main,
+      .admin-main-container,
+      .custom-container {
+        max-width: var(--container-max-width, <%= cMaxWidth %>) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 100% !important;
+      }
+      .theme-dropdown-menu.hidden,
+      #admin-palette-dropdown-menu.hidden {
+        display: none !important;
+      }
+      .theme-dropdown-menu:not(.hidden),
+      #admin-palette-dropdown-menu:not(.hidden) {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 6px !important;
+        top: calc(100% + 8px) !important;
+        right: 0 !important;
+        width: auto !important;
+        max-width: none !important;
+        z-index: 999999 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+      }
+      .theme-dropdown-menu .palette-btn,
+      #admin-palette-dropdown-menu .palette-btn {
+        width: 15px !important;
+        height: 15px !important;
+        min-width: 15px !important;
+        min-height: 15px !important;
+        max-width: 15px !important;
+        max-height: 15px !important;
+        padding: 0 !important;
+        border-radius: 9999px !important;
+        flex-shrink: 0 !important;
+      }
+    </style>
+  <% } %>
+</head>
+<body class="ui-shell admin-shell bg-slate-100 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased transition-colors duration-200">
+
+  <!-- Skip to main content link for accessibility -->
+  <a href="#admin-main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-500 focus:text-white focus:rounded-lg focus:font-bold focus:text-sm">Skip to main content</a>
+
+  <!-- Top Admin Bar (Sticky with Dynamic Transparency and Max Width matching Public Header) -->
+  <header class="sticky top-0 z-50 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors duration-200 shadow-xs">
+    <div class="admin-header-inner mx-auto px-2 min-[360px]:px-3 sm:px-4 lg:px-6 h-16 flex items-center justify-between flex-nowrap gap-2 sm:gap-3" style="max-width: var(--container-max-width, <%= settings.container_max_width || '80rem' %>); margin: 0 auto; width: 100%;">
+      
+      <!-- Brand & Admin Badge -->
+      <a href="/admin" aria-label="Embedded India Admin" class="flex items-center min-h-[44px] py-1.5 space-x-2 sm:space-x-3 group flex-shrink-0">
+        <% if (settings.site_logo) { %>
+          <img src="<%= settings.site_logo %>" alt="<%= settings.site_name || 'Embedded India' %>" class="h-8 sm:h-10 w-auto object-contain flex-shrink-0">
+        <% } else { %>
+          <!-- Iconic Spaceship Delta Arrowhead Brandmark -->
+          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-accent p-0.5 shadow-md shadow-brand-500/20 group-hover:shadow-brand-500/40 transition duration-300 transform group-hover:scale-105 icon-bounce-container flex-shrink-0">
+            <div class="w-full h-full bg-white dark:bg-slate-900 rounded-[7px] sm:rounded-[10px] flex items-center justify-center p-1 sm:p-2">
+              <svg id="adminBrandmarkSvg" class="w-full h-full text-brand-500 dark:text-accent transition-colors duration-300" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M16 3C16.8 3 17.5 3.4 18 4.2L28.5 21.8C29.2 23 28.7 24.5 27.5 25.2C27.1 25.4 26.6 25.5 26.1 25.5H19.8C18.7 25.5 17.7 24.8 17.3 23.8L16 20.3L14.7 23.8C14.3 24.8 13.3 25.5 12.2 25.5H5.9C4.5 25.5 3.4 24.4 3.4 23C3.4 22.5 3.5 22.1 3.8 21.8L14 4.2C14.5 3.4 15.2 3 16 3Z"/>
+              </svg>
+            </div>
+          </div>
+        <% } %>
+
+        <!-- Semantic Brand Typography -->
+        <div class="hidden sm:flex flex-col">
+          <div class="text-xs min-[360px]:text-sm sm:text-xl lg:text-2xl font-black tracking-tight leading-none text-slate-900 dark:text-white flex items-center whitespace-nowrap">
+            <% const adminBrandParts = (settings.site_name || 'Embedded India').split(' '); %>
+            <span><%= adminBrandParts[0] %></span>
+            <% if (adminBrandParts.length > 1) { %>
+              <span class="text-brand-500 dark:text-accent ml-1 sm:ml-1.5 font-black"><%= adminBrandParts.slice(1).join(' ') %></span>
+            <% } %>
+          </div>
+          <span class="text-[8px] sm:text-[9px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-300 mt-0.5 sm:mt-1">ADMIN CONSOLE</span>
+        </div>
+
+        <span class="hidden sm:inline-block text-[10px] bg-brand-500/10 dark:bg-accent/20 text-brand-700 dark:text-accent font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider border border-brand-500/20 whitespace-nowrap ml-1">
+          Admin
+        </span>
+      </a>
+
+      <!-- Large Icon Button Navigation Bar (Matching Home Header) -->
+      <nav aria-label="Admin navigation" class="hidden md:flex items-center justify-center gap-1 lg:gap-1.5 text-slate-700 dark:text-slate-200 min-w-0 flex-1 whitespace-nowrap [&>a]:shrink-0">
+        <!-- Overview -->
+        <a href="/admin" aria-label="Overview" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath === '/admin' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-5a1 1 0 011-1h4a1 1 0 011 1v9a1 1 0 01-1 1h-4a1 1 0 01-1-1v-9z"/>
+          </svg>
+          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Overview</span>
+        </a>
+
+        <!-- Inquiries -->
+        <a href="/admin/inquiries" aria-label="Inquiries" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/inquiries') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Inquiries</span>
+        </a>
+
+        <!-- Subscribers -->
+        <a href="/admin/subscribers" aria-label="Subscribers" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/subscribers') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Subscribers</span>
+        </a>
+
+        <!-- Blog Posts -->
+        <a href="/admin/posts" aria-label="Blog Posts" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/posts') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+          </svg>
+          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Blog Posts</span>
+        </a>
+
+        <!-- Projects -->
+        <a href="/admin/projects" aria-label="Projects" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/projects') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Projects</span>
+        </a>
+
+        <!-- Reviews -->
+        <a href="/admin/testimonials" aria-label="Testimonials" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/testimonials') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+          </svg>
+          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Reviews</span>
+        </a>
+
+        <!-- Settings -->
+        <a href="/admin/settings" aria-label="Settings" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/settings') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Settings</span>
+        </a>
+      </nav>
+
+      <!-- Right Header Actions: Grouped Search + Theme, View Site & Sign Out -->
+      <div id="admin-header-actions" class="flex items-center flex-nowrap gap-1.5 sm:gap-2 text-xs flex-shrink-0 ml-auto lg:ml-2">
+        
+        <!-- Grouped Search & Theme Pill (Identical to Public Header) -->
+        <%- include('../partials/theme-button', { showSearch: true, searchLabel: 'Search admin pages and settings', wrapperId: 'admin-palette-dropdown-wrapper', btnId: 'admin-palette-dropdown-btn', menuId: 'admin-palette-dropdown-menu', chevronId: 'admin-palette-chevron', activeDotId: 'admin-active-scheme-dot', activeNameId: 'admin-active-palette-name' }) %>
+        <a href="/admin/logout" class="admin-signout" aria-label="Sign out" title="Sign out">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M14 8l4 4-4 4m-5-4h12"/></svg>
+          <span>Sign out</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Mobile Sub-Navigation Bar for Small Screens (< 768px) — Non-Scrolling 3x2 / 6x1 Icon Button Grid -->
+    <nav aria-label="Admin mobile navigation" class="md:hidden grid grid-cols-3 sm:grid-cols-6 gap-1.5 px-3 py-2 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-xs font-bold w-full" style="max-width: var(--container-max-width, <%= settings.container_max_width || '80rem' %>); margin: 0 auto;">
+      <a href="/admin" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath === '/admin' ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
+        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-5a1 1 0 011-1h4a1 1 0 011 1v9a1 1 0 01-1 1h-4a1 1 0 01-1-1v-9z"/></svg>
+        <span class="text-[11px] leading-tight">Overview</span>
+      </a>
+      <a href="/admin/inquiries" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/inquiries') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
+        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <span class="text-[11px] leading-tight">Inquiries</span>
+      </a>
+      <a href="/admin/subscribers" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/subscribers') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
+        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span class="text-[11px] leading-tight">Subscribers</span>
+      </a>
+      <a href="/admin/posts" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/posts') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
+        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        <span class="text-[11px] leading-tight">Posts</span>
+      </a>
+      <a href="/admin/projects" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/projects') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
+        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <span class="text-[11px] leading-tight">Projects</span>
+      </a>
+      <a href="/admin/settings" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/settings') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
+        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span class="text-[11px] leading-tight">Settings</span>
+      </a>
+    </nav>
+  </header>
+
+  <%- include('../partials/search-dialog', { adminSearch: true }) %>
+  <main id="admin-main-content" class="custom-container admin-main-container mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full min-w-0 box-border flex-grow" style="max-width: var(--container-max-width, <%= settings.container_max_width || '80rem' %>) !important; margin: 0 auto !important; width: 100% !important;">

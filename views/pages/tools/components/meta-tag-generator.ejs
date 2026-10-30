@@ -1,0 +1,102 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Metadata Input</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Open Graph &amp; Twitter</span>
+    </div>
+
+    <div>
+      <label for="meta-title" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Page Title (<span id="meta-title-cnt">0</span>/60)</label>
+      <input type="text" id="meta-title" value="Embedded Systems Engineering &amp; Turnkey IoT | Embedded India" maxlength="90" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="meta-desc" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Meta Description (<span id="meta-desc-cnt">0</span>/160)</label>
+      <textarea id="meta-desc" rows="3" maxlength="200" class="w-full px-4 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">Turnkey electronic product engineering from napkin architecture and high-speed simulation to volume mass manufacturing and lifecycle sustainment.</textarea>
+    </div>
+
+    <div>
+      <label for="meta-url" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Canonical URL</label>
+      <input type="url" id="meta-url" value="https://embeddedindia.in" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="meta-image" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Social Card Image URL (1200x630)</label>
+      <input type="url" id="meta-image" value="https://embeddedindia.in/images/og-card.png" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 space-y-6">
+    <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-xs font-mono font-bold text-brand-400 uppercase">Generated HTML Code</h3>
+        <button type="button" id="meta-copy-btn" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl">Copy Snippet</button>
+      </div>
+
+      <textarea id="meta-output" readonly rows="12" class="w-full px-4 py-3 rounded-2xl bg-slate-800/80 border border-slate-700 text-emerald-400 font-mono text-[11px] outline-none"></textarea>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const title = document.getElementById('meta-title');
+  const desc = document.getElementById('meta-desc');
+  const url = document.getElementById('meta-url');
+  const img = document.getElementById('meta-image');
+  const out = document.getElementById('meta-output');
+  const titleCnt = document.getElementById('meta-title-cnt');
+  const descCnt = document.getElementById('meta-desc-cnt');
+
+  function update() {
+    titleCnt.textContent = title.value.length;
+    descCnt.textContent = desc.value.length;
+
+    const t = escapeAttr(title.value);
+    const d = escapeAttr(desc.value);
+    const u = escapeAttr(url.value);
+    const i = escapeAttr(img.value);
+
+    const snippet = [
+      '<!-- Primary Meta Tags -->',
+      '<title>' + t + '</title>',
+      '<meta name="title" content="' + t + '">',
+      '<meta name="description" content="' + d + '">',
+      '<link rel="canonical" href="' + u + '">',
+      '',
+      '<!-- Open Graph / Facebook -->',
+      '<meta property="og:type" content="website">',
+      '<meta property="og:url" content="' + u + '">',
+      '<meta property="og:title" content="' + t + '">',
+      '<meta property="og:description" content="' + d + '">',
+      '<meta property="og:image" content="' + i + '">',
+      '',
+      '<!-- Twitter -->',
+      '<meta property="twitter:card" content="summary_large_image">',
+      '<meta property="twitter:url" content="' + u + '">',
+      '<meta property="twitter:title" content="' + t + '">',
+      '<meta property="twitter:description" content="' + d + '">',
+      '<meta property="twitter:image" content="' + i + '">'
+    ].join('\n');
+
+    out.value = snippet;
+  }
+
+  function escapeAttr(s) {
+    return (s || '').replace(/"/g, '&quot;');
+  }
+
+  [title, desc, url, img].forEach(el => el.addEventListener('input', update));
+
+  document.getElementById('meta-copy-btn').addEventListener('click', () => {
+    if (out.value) {
+      navigator.clipboard.writeText(out.value);
+      const btn = document.getElementById('meta-copy-btn');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = orig, 1500);
+    }
+  });
+
+  update();
+})();
+</script>

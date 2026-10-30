@@ -1,0 +1,149 @@
+<div class="space-y-6">
+  <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-brand-border pb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Regular Expression Pattern</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Test RegExp patterns in real-time with capture groups and flags.</p>
+      </div>
+      <div class="flex items-center gap-3 text-xs font-mono">
+        <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="rx-flag-g" checked class="rounded text-brand-500"> <span>g (global)</span></label>
+        <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="rx-flag-i" checked class="rounded text-brand-500"> <span>i (case-insensitive)</span></label>
+        <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="rx-flag-m" class="rounded text-brand-500"> <span>m (multiline)</span></label>
+        <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="rx-flag-s" class="rounded text-brand-500"> <span>s (dotAll)</span></label>
+      </div>
+    </div>
+
+    <div>
+      <label for="rx-pattern" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Regex Pattern (Without enclosing slashes)</label>
+      <div class="flex items-center bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border px-4 py-2.5">
+        <span class="text-slate-400 font-mono text-base mr-2">/</span>
+        <input type="text" id="rx-pattern" value="([a-zA-Z0-9_.+-]+)@([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)" class="w-full bg-transparent font-mono text-sm text-slate-900 dark:text-white outline-none" placeholder="Enter regex pattern...">
+        <span id="rx-flags-display" class="text-slate-400 font-mono text-base ml-2">/gi</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
+        <label for="rx-test-text" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Test String</label>
+        <textarea id="rx-test-text" rows="10" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-xs focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Enter test corpus...">Contact our engineering team at support@embeddedindia.in or sales@embeddedindia.in for hardware turnkey inquiries. Admin: admin@iot-lab.co.</textarea>
+      </div>
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Matched Highlights</span>
+          <span id="rx-match-count" class="text-xs font-mono font-bold text-brand-600 dark:text-accent">3 matches found</span>
+        </div>
+        <div id="rx-highlighted" class="w-full h-48 sm:h-52 overflow-auto p-4 rounded-2xl bg-slate-900 border border-slate-800 text-slate-200 font-mono text-xs whitespace-pre-wrap leading-relaxed"></div>
+      </div>
+    </div>
+
+    <div>
+      <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Match &amp; Capture Group Inspector</h4>
+      <div id="rx-groups-list" class="max-h-60 overflow-y-auto space-y-2 text-xs font-mono"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const patternInput = document.getElementById('rx-pattern');
+  const testInput = document.getElementById('rx-test-text');
+  const highlighted = document.getElementById('rx-highlighted');
+  const countEl = document.getElementById('rx-match-count');
+  const groupsList = document.getElementById('rx-groups-list');
+  const flagsDisplay = document.getElementById('rx-flags-display');
+
+  function getFlags() {
+    let f = '';
+    if (document.getElementById('rx-flag-g').checked) f += 'g';
+    if (document.getElementById('rx-flag-i').checked) f += 'i';
+    if (document.getElementById('rx-flag-m').checked) f += 'm';
+    if (document.getElementById('rx-flag-s').checked) f += 's';
+    return f;
+  }
+
+  function runRegex() {
+    const flags = getFlags();
+    flagsDisplay.textContent = '/' + flags;
+    const text = testInput.value;
+    const patStr = patternInput.value;
+
+    if (!patStr) {
+      highlighted.textContent = text;
+      countEl.textContent = '0 matches';
+      groupsList.innerHTML = '<p class="text-slate-400">No pattern entered.</p>';
+      return;
+    }
+
+    try {
+      const rx = new RegExp(patStr, flags);
+      const matches = [];
+      let m;
+
+      if (flags.includes('g')) {
+        while ((m = rx.exec(text)) !== null) {
+          matches.push(m);
+          if (m.index === rx.lastIndex) rx.lastIndex++;
+        }
+      } else {
+        m = rx.exec(text);
+        if (m) matches.push(m);
+      }
+
+      countEl.textContent = matches.length + (matches.length === 1 ? ' match found' : ' matches found');
+
+      // Highlight text
+      if (matches.length === 0) {
+        highlighted.textContent = text;
+      } else {
+        let html = '';
+        let lastIdx = 0;
+        for (const match of matches) {
+          const matchStart = match.index;
+          const matchEnd = matchStart + match[0].length;
+          html += escapeHtml(text.slice(lastIdx, matchStart));
+          html += '<mark class="bg-amber-400 text-slate-900 rounded px-1 font-bold">' + escapeHtml(match[0]) + '</mark>';
+          lastIdx = matchEnd;
+        }
+        html += escapeHtml(text.slice(lastIdx));
+        highlighted.innerHTML = html;
+      }
+
+      // Populate capture groups
+      if (matches.length === 0) {
+        groupsList.innerHTML = '<div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl text-slate-500">No matches found.</div>';
+      } else {
+        let gHtml = '';
+        matches.forEach((match, idx) => {
+          gHtml += '<div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200 dark:border-brand-border">';
+          gHtml += '<div class="font-bold text-brand-600 dark:text-accent mb-1">Match #' + (idx + 1) + ' (index ' + match.index + '): "' + escapeHtml(match[0]) + '"</div>';
+          if (match.length > 1) {
+            gHtml += '<ul class="pl-4 list-disc space-y-0.5 text-slate-600 dark:text-slate-300">';
+            for (let g = 1; g < match.length; g++) {
+              gHtml += '<li>Group ' + g + ': <span class="text-emerald-500 font-bold">"' + escapeHtml(match[g] || '') + '"</span></li>';
+            }
+            gHtml += '</ul>';
+          }
+          gHtml += '</div>';
+        });
+        groupsList.innerHTML = gHtml;
+      }
+    } catch (err) {
+      countEl.textContent = 'Regex Error';
+      countEl.className = 'text-xs font-mono font-bold text-red-500';
+      highlighted.innerHTML = '<span class="text-red-400">Syntax Error: ' + escapeHtml(err.message) + '</span>';
+      groupsList.innerHTML = '';
+    }
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  patternInput.addEventListener('input', runRegex);
+  testInput.addEventListener('input', runRegex);
+  ['g', 'i', 'm', 's'].forEach(f => {
+    document.getElementById('rx-flag-' + f).addEventListener('change', runRegex);
+  });
+
+  runRegex();
+})();
+</script>

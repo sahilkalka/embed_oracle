@@ -1,0 +1,176 @@
+<%- include('../layouts/header') %>
+
+<!-- Project Hero Section -->
+<section class="relative py-16 lg:py-24 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border spaceship-ambient-mesh circuit-grid overflow-hidden">
+  
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="max-w-4xl space-y-6 text-left">
+      
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="Breadcrumb" class="flex items-center space-x-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+        <a href="/" class="hover:text-brand-500 dark:hover:text-accent transition">Home</a>
+        <span>/</span>
+        <a href="/projects" class="hover:text-brand-500 dark:hover:text-accent transition">Projects</a>
+        <span>/</span>
+        <span class="text-slate-800 dark:text-slate-200 truncate"><%= project.title %></span>
+      </nav>
+
+      <!-- Category & Industry Badges -->
+      <div class="flex flex-wrap items-center gap-2 pt-2">
+        <span class="px-3.5 py-1 bg-brand-500/10 dark:bg-accent/20 text-brand-700 dark:text-accent text-xs font-black rounded-full uppercase tracking-wider border border-brand-500/20">
+          <%= project.category %>
+        </span>
+        <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-full border border-slate-200 dark:border-slate-700">
+          <%= project.industry %>
+        </span>
+        <% if (project.client) { %>
+        <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-semibold rounded-full">
+          Client: <%= project.client %>
+        </span>
+        <% } %>
+      </div>
+
+      <!-- Main Title -->
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+        <%= project.title %>
+      </h1>
+
+      <!-- Summary -->
+      <p class="text-base sm:text-xl text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+        <%= project.summary %>
+      </p>
+
+      <!-- Tech Stack Badges -->
+      <% if (project.techStack) { %>
+      <div class="pt-2 flex flex-wrap items-center gap-2 text-xs font-mono font-bold">
+        <% project.techStack.split(',').forEach(function(tech) { %>
+          <span class="px-3 py-1 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-lg shadow-xs">
+            <%= tech.trim() %>
+          </span>
+        <% }); %>
+      </div>
+      <% } %>
+
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <% if (metrics && metrics.length > 0) { %>
+    <div class="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <% metrics.forEach(function(m) { %>
+      <div class="p-5 bg-white/90 dark:bg-slate-800/90 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm backdrop-blur-md spring-card text-left">
+        <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block"><%= m.label %></span>
+        <span class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-mono mt-1 block text-brand-500 dark:text-accent"><%= m.value %></span>
+      </div>
+      <% }); %>
+    </div>
+    <% } %>
+
+  </div>
+</section>
+
+<!-- Content & Technical Breakdown Section -->
+<section class="py-16 bg-slate-50 dark:bg-[#13221f]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      
+      <!-- Main Content Area -->
+      <div class="lg:col-span-8 space-y-10">
+        
+        <!-- Video or Featured Visual -->
+        <% if (project.videoUrl) { %>
+        <div class="rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 bg-black aspect-video w-full">
+          <iframe 
+            class="w-full h-full"
+            src="<%= project.videoUrl %>" 
+            title="<%= project.title %> Technical Walkthrough" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen>
+          </iframe>
+        </div>
+        <% } else if (project.coverImage) { %>
+        <div class="rounded-3xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 flex items-center justify-center">
+          <img src="<%= project.coverImage %>" alt="<%= project.title %> Architecture" class="max-h-80 w-auto object-contain">
+        </div>
+        <% } %>
+
+        <!-- Markdown Article Body -->
+        <article class="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-slate-800 shadow-sm prose prose-slate dark:prose-invert max-w-none text-left leading-relaxed">
+          <%- project.descriptionHtml || project.descriptionMarkdown %>
+        </article>
+
+        <!-- Turnkey Engineering CTA Banner -->
+        <div class="bg-gradient-to-r from-brand-600 via-brand-500 to-accent rounded-3xl p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 text-left">
+          <div class="space-y-2 flex-1 min-w-0 max-w-xl">
+            <span class="px-3 py-1 bg-white/20 text-white rounded-full text-xs font-black uppercase tracking-wider">Turnkey Engineering Lab</span>
+            <h3 class="text-2xl sm:text-3xl font-black">Need Similar Hardware Engineered?</h3>
+            <p class="text-white/90 text-sm leading-relaxed">
+              We provide full-cycle turnkey realization from napkin architecture and high-speed multi-layer PCB design to volume SMT production and HIL automated validation.
+            </p>
+          </div>
+          <a href="/contact?service=<%= encodeURIComponent(project.category) %>&subject=<%= encodeURIComponent('Inquiry: ' + project.title) %>" class="btn-shimmer whitespace-nowrap flex-shrink-0 inline-flex items-center justify-center px-8 py-4 bg-white text-slate-900 hover:text-brand-600 font-black rounded-2xl shadow-xl transition transform hover:scale-105 active:scale-95 text-sm">
+            <span>Book Feasibility Call &rarr;</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Sticky Technical Specifications Sidebar -->
+      <aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
+        
+        <!-- Hardware Specs Matrix Card -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm text-left space-y-6">
+          <div class="flex items-center space-x-2 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <svg class="w-5 h-5 text-brand-500 dark:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+            <h3 class="font-black text-base text-slate-900 dark:text-white tracking-tight">System Specifications</h3>
+          </div>
+
+          <% if (specs && Object.keys(specs).length > 0) { %>
+          <div class="space-y-4 text-xs divide-y divide-slate-100 dark:divide-slate-800/80">
+            <% Object.entries(specs).forEach(function([key, val]) { %>
+            <div class="pt-3 first:pt-0">
+              <span class="font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block text-[10px]"><%= key %></span>
+              <span class="font-black text-slate-900 dark:text-white mt-1 block text-sm leading-snug"><%= val %></span>
+            </div>
+            <% }); %>
+          </div>
+          <% } else { %>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Specifications available upon NDA review.</p>
+          <% } %>
+
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+            <a href="/contact?service=<%= encodeURIComponent(project.category) %>" class="w-full inline-flex items-center justify-center space-x-2 px-5 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow-md active:scale-95">
+              <span>Request Architecture Review</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Calculator Shortcuts -->
+        <div class="bg-gradient-to-br from-brand-50 to-slate-100 dark:from-slate-800/60 dark:to-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 text-left space-y-3">
+          <h4 class="font-extrabold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300">Engineering Calculators</h4>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Verify trace ampacity, baud rates, and battery lifespan with our interactive engineering tools.
+          </p>
+          <div class="space-y-2 pt-1 text-xs font-bold">
+            <a href="/tools/pcb-trace" class="block p-2.5 rounded-xl bg-white dark:bg-slate-800 hover:text-brand-500 dark:hover:text-accent border border-slate-200 dark:border-slate-700 transition shadow-xs">
+              &bull; IPC-2221 PCB Trace Width
+            </a>
+            <a href="/tools/battery-life" class="block p-2.5 rounded-xl bg-white dark:bg-slate-800 hover:text-brand-500 dark:hover:text-accent border border-slate-200 dark:border-slate-700 transition shadow-xs">
+              &bull; IoT Battery Life &amp; Duty Cycle
+            </a>
+            <a href="/tools/trace-impedance" class="block p-2.5 rounded-xl bg-white dark:bg-slate-800 hover:text-brand-500 dark:hover:text-accent border border-slate-200 dark:border-slate-700 transition shadow-xs">
+              &bull; 50Ω Microstrip Impedance
+            </a>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/footer') %>
+

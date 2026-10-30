@@ -1,0 +1,78 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-5 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">PCB Length &amp; Mils</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Engineering Units</span>
+    </div>
+
+    <div>
+      <label for="la-val" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Value</label>
+      <input type="number" id="la-val" value="10" step="any" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="la-unit" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Source Unit</label>
+      <select id="la-unit" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+        <option value="mil" selected>Mils / Thou (0.001 in)</option>
+        <option value="mm">Millimeters (mm)</option>
+        <option value="um">Micrometers (µm)</option>
+        <option value="in">Inches (in)</option>
+        <option value="cm">Centimeters (cm)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="lg:col-span-7 space-y-6">
+    <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-5">
+      <h3 class="text-xs font-bold text-brand-400 uppercase tracking-wider border-b border-slate-800 pb-3">Dimension Conversions</h3>
+
+      <div class="grid grid-cols-2 gap-4 text-xs font-mono">
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Mils (thou)</span>
+          <p id="la-res-mils" class="text-lg font-bold text-white">0 mils</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Millimeters</span>
+          <p id="la-res-mm" class="text-lg font-bold text-emerald-400">0 mm</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Micrometers</span>
+          <p id="la-res-um" class="text-lg font-bold text-brand-300">0 µm</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Inches</span>
+          <p id="la-res-in" class="text-lg font-bold text-amber-400">0 in</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const valEl = document.getElementById('la-val');
+  const unitEl = document.getElementById('la-unit');
+
+  const TO_MM = {
+    mil: 0.0254,
+    mm: 1.0,
+    um: 0.001,
+    in: 25.4,
+    cm: 10.0
+  };
+
+  function update() {
+    const val = parseFloat(valEl.value) || 0;
+    const unit = unitEl.value;
+    const mm = val * (TO_MM[unit] || 1);
+
+    document.getElementById('la-res-mils').textContent = (mm / 0.0254).toFixed(3) + ' mils';
+    document.getElementById('la-res-mm').textContent = mm.toFixed(4) + ' mm';
+    document.getElementById('la-res-um').textContent = (mm * 1000).toFixed(1) + ' µm';
+    document.getElementById('la-res-in').textContent = (mm / 25.4).toFixed(4) + ' in';
+  }
+
+  valEl.addEventListener('input', update);
+  unitEl.addEventListener('change', update);
+  update();
+})();
+</script>

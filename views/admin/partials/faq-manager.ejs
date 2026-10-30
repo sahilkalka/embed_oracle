@@ -1,0 +1,13 @@
+<section id="faq-manager" aria-labelledby="faq-manager-title" class="settings-section hidden">
+  <form class="settings-module-form space-y-6" action="/admin/settings" method="POST" data-module="Homepage FAQs" id="faqManagerForm">
+    <%- csrfField %>
+    <input type="hidden" name="_active_tab" value="faq-manager">
+    <input type="hidden" id="custom_faqs" name="custom_faqs" value="<%= settings.custom_faqs || '[]' %>">
+    <%- include('settings-module-header', {"sectionId":"faq-manager","title":"Homepage FAQs","icon":"quiz","description":"Add, edit, reorder, or remove additional homepage questions and answers.","saveLabel":"Save FAQs"}) %>
+    <div id="faqEditorRows" class="space-y-4"></div>
+    <button type="button" id="addFaqRow" class="inline-flex items-center px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-brand-dark text-xs font-bold text-brand-700 dark:text-accent">+ Add FAQ</button>
+    <p id="faqEditorStatus" class="text-sm text-slate-600 dark:text-slate-300" aria-live="polite"></p>
+    <div class="settings-module-footer"><%- include('module-save-button', { label: 'Save FAQs' }) %></div>
+  </form>
+</section>
+<script src="/js/faq-manager.js?v=20261026-settings-1" defer></script>

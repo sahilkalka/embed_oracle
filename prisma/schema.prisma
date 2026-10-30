@@ -1,0 +1,130 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  role         String   @default("admin") // admin, editor
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Post {
+  id              String    @id @default(uuid())
+  title           String
+  slug            String    @unique
+  category        String    @default("Embedded Electronics") // Embedded Electronics, Guides, Troubleshooting, Industry Info
+  tags            String    @default("embedded,firmware,hardware")
+  summary         String
+  contentMarkdown String
+  contentHtml     String
+  coverImage      String?
+  author          String    @default("Embedded India Team")
+  status          String    @default("published") // draft, scheduled, published
+  scheduledAt     DateTime?
+  publishedAt     DateTime? @default(now())
+  views           Int       @default(0)
+  readingTime     Int       @default(3) // minutes
+  seoTitle        String?
+  seoDescription  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Inquiry {
+  id              String   @id @default(uuid())
+  name            String
+  email           String
+  phone           String?
+  subject         String
+  serviceCategory String   @default("General") // Hardware Design, Firmware/BSP, IoT Solutions, Automotive, Prototype
+  message         String
+  status          String   @default("new") // new, in_progress, resolved, archived
+  ipAddress       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Subscriber {
+  id             String    @id @default(uuid())
+  email          String    @unique
+  status         String    @default("pending") // pending, active, unsubscribed
+  verifyToken    String?   @unique
+  verifiedAt     DateTime?
+  leadMagnetSent Boolean   @default(false)
+  source         String    @default("website")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Setting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Analytics {
+  id        String   @id @default(uuid())
+  path      String
+  referrer  String?
+  userAgent String?
+  ipHash    String?
+  timestamp DateTime @default(now())
+}
+
+model CalculatorStat {
+  id             String   @id @default(uuid())
+  toolName       String
+  executionCount Int      @default(0)
+  updatedAt      DateTime @updatedAt
+}
+
+model Testimonial {
+  id         String   @id @default(uuid())
+  name       String
+  role       String
+  company    String?
+  quote      String
+  rating     Int      @default(5)
+  isApproved Boolean  @default(false)
+  isPublic   Boolean  @default(true)
+  source     String   @default("admin")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Project {
+  id                  String   @id @default(uuid())
+  title               String
+  slug                String   @unique
+  category            String   @default("Automotive") // Automotive, IoT, Industrial, Healthcare, Robotics, Firmware
+  industry            String   @default("Automotive HVAC")
+  summary             String
+  client              String?  @default("Tier-1 Automotive OEM")
+  descriptionMarkdown String
+  descriptionHtml     String
+  coverImage          String?
+  gallery             String?  // JSON array of image URLs
+  videoUrl            String?  // YouTube embed URL or direct video
+  techStack           String   @default("STM32, FreeRTOS, CAN-FD, Altium Designer")
+  specs               String?  // JSON key-values: e.g. {"Supply Voltage": "9V - 36V DC", "Protocols": "CAN 2.0B / LIN 2.2"}
+  metrics             String?  // JSON array: e.g. [{"label": "Power Efficiency", "value": "45% gain"}]
+  featured            Boolean  @default(false)
+  order               Int      @default(0)
+  status              String   @default("completed") // completed, in-progress, prototype
+  liveUrl             String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}

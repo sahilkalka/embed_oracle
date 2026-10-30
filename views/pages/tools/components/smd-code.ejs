@@ -1,0 +1,146 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Enter SMD Marking Code</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">EIA &amp; Standard</span>
+    </div>
+
+    <div>
+      <label for="smdInput" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+        Marking Code (e.g. 103, 4702, 01C, 4R7)
+      </label>
+      <input type="text" id="smdInput" value="103" maxlength="6" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-2xl uppercase tracking-wider focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <span class="text-xs font-bold text-slate-500 dark:text-slate-400 block mb-2 uppercase tracking-wider">Try Examples:</span>
+      <div class="flex flex-wrap gap-2 text-xs font-mono">
+        <button type="button" class="smd-ex-btn px-2.5 py-1 bg-slate-100 dark:bg-brand-dark rounded-lg hover:bg-brand-500 hover:text-white transition" data-code="103">103</button>
+        <button type="button" class="smd-ex-btn px-2.5 py-1 bg-slate-100 dark:bg-brand-dark rounded-lg hover:bg-brand-500 hover:text-white transition" data-code="4R7">4R7</button>
+        <button type="button" class="smd-ex-btn px-2.5 py-1 bg-slate-100 dark:bg-brand-dark rounded-lg hover:bg-brand-500 hover:text-white transition" data-code="4702">4702</button>
+        <button type="button" class="smd-ex-btn px-2.5 py-1 bg-slate-100 dark:bg-brand-dark rounded-lg hover:bg-brand-500 hover:text-white transition" data-code="01C">01C</button>
+        <button type="button" class="smd-ex-btn px-2.5 py-1 bg-slate-100 dark:bg-brand-dark rounded-lg hover:bg-brand-500 hover:text-white transition" data-code="R050">R050</button>
+      </div>
+    </div>
+
+    <div class="p-6 bg-slate-900 rounded-2xl text-center">
+      <p class="text-[11px] font-mono text-slate-400 mb-3">SMD Chip Package View</p>
+      <div class="inline-flex items-center justify-center p-1 bg-slate-700 rounded-lg shadow-inner">
+        <div class="w-8 h-14 bg-slate-300 rounded-l-sm border-r border-slate-500"></div>
+        <div class="w-32 h-14 bg-slate-800 flex items-center justify-center border-y border-slate-700">
+          <span id="chipText" class="text-white font-mono font-bold text-xl tracking-widest">103</span>
+        </div>
+        <div class="w-8 h-14 bg-slate-300 rounded-r-sm border-l border-slate-500"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 space-y-6">
+    <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">
+        Decoded Value &amp; Tolerance
+      </h3>
+
+      <div class="mt-6 p-5 bg-brand-50 dark:bg-brand-900/40 rounded-2xl border border-brand-200 dark:border-brand-700">
+        <span class="text-xs text-brand-800 dark:text-accent font-semibold block">Resistance</span>
+        <span id="resResistance" class="text-3xl font-black text-brand-700 dark:text-white font-mono">10 kΩ</span>
+        <span id="resOhmsExact" class="text-xs text-slate-500 dark:text-slate-400 font-semibold block mt-1">(10,000 Ohms)</span>
+      </div>
+
+      <div class="mt-4 grid grid-cols-2 gap-3 text-xs">
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+          <span class="text-slate-500 dark:text-slate-400 font-semibold block">Coding Standard</span>
+          <span id="resStandard" class="font-bold text-slate-800 dark:text-white font-mono text-sm mt-0.5 block">3-Digit Standard (5%)</span>
+        </div>
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+          <span class="text-slate-500 dark:text-slate-400 font-semibold block">Typical Tolerance</span>
+          <span id="resTolerance" class="font-bold text-slate-800 dark:text-white font-mono text-sm mt-0.5 block">± 5%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const eia96Codes = {
+    '01':100,'02':102,'03':105,'04':107,'05':110,'06':113,'07':115,'08':118,'09':121,'10':124,
+    '11':127,'12':130,'13':133,'14':137,'15':140,'16':143,'17':147,'18':150,'19':154,'20':158,
+    '21':162,'22':165,'23':169,'24':174,'25':178,'26':182,'27':187,'28':191,'29':196,'30':200,
+    '31':205,'32':210,'33':215,'34':221,'35':226,'36':232,'37':237,'38':243,'39':249,'40':255,
+    '41':261,'42':267,'43':274,'44':280,'45':287,'46':294,'47':301,'48':309,'49':316,'50':324,
+    '51':332,'52':340,'53':348,'54':357,'55':365,'56':374,'57':383,'58':392,'59':402,'60':412,
+    '61':422,'62':432,'63':442,'64':453,'65':464,'66':475,'67':487,'68':499,'69':511,'70':523,
+    '71':536,'72':549,'73':562,'74':576,'75':590,'76':604,'77':619,'78':634,'79':649,'80':665,
+    '81':681,'82':698,'83':715,'84':732,'85':750,'86':768,'87':787,'88':806,'89':825,'90':845,
+    '91':866,'92':887,'93':909,'94':931,'95':953,'96':976
+  };
+  const eia96Mult = {'Z':0.001,'Y':0.01,'X':0.1,'A':1,'B':10,'C':100,'D':1000,'E':10000,'F':100000};
+
+  function fmtR(ohms) {
+    if (isNaN(ohms)) return { text: 'Invalid Code', exact: '' };
+    let text = '';
+    if (ohms >= 1e6) text = (ohms / 1e6).toFixed(2).replace(/\.00$/, '') + ' MΩ';
+    else if (ohms >= 1e3) text = (ohms / 1e3).toFixed(2).replace(/\.00$/, '') + ' kΩ';
+    else if (ohms >= 1) text = ohms.toFixed(2).replace(/\.00$/, '') + ' Ω';
+    else text = (ohms * 1000).toFixed(1) + ' mΩ';
+    return { text, exact: '(' + ohms.toLocaleString('en-US') + ' Ohms)' };
+  }
+
+  function decodeSMD() {
+    const raw = (document.getElementById('smdInput')?.value || '').trim().toUpperCase();
+    const chipText = document.getElementById('chipText');
+    if (chipText) chipText.textContent = raw || '---';
+
+    let ohms = NaN, standard = 'Unknown Code', tolerance = 'N/A';
+
+    if (/^[0-9]R[0-9]$/.test(raw)) {
+      ohms = parseFloat(raw.replace('R', '.'));
+      standard = 'Standard with Decimal (R)';
+      tolerance = '± 5%';
+    } else if (/^R[0-9]{2,3}$/.test(raw)) {
+      ohms = parseFloat('0.' + raw.slice(1));
+      standard = 'Current Sense (Milliohm)';
+      tolerance = '± 1%';
+    } else if (/^[0-9]{3}$/.test(raw)) {
+      const sig = parseInt(raw.slice(0, 2), 10);
+      const mult = Math.pow(10, parseInt(raw[2], 10));
+      ohms = sig * mult;
+      standard = '3-Digit Standard (E24)';
+      tolerance = '± 5%';
+    } else if (/^[0-9]{4}$/.test(raw)) {
+      const sig = parseInt(raw.slice(0, 3), 10);
+      const mult = Math.pow(10, parseInt(raw[3], 10));
+      ohms = sig * mult;
+      standard = '4-Digit Precision (E96)';
+      tolerance = '± 1%';
+    } else if (/^[0-9]{2}[A-Z]$/.test(raw)) {
+      const codeDigits = raw.slice(0, 2);
+      const multLetter = raw[2];
+      if (eia96Codes[codeDigits] && eia96Mult[multLetter] !== undefined) {
+        ohms = eia96Codes[codeDigits] * eia96Mult[multLetter];
+        standard = 'EIA-96 High Precision';
+        tolerance = '± 1%';
+      }
+    }
+
+    const res = fmtR(ohms);
+    document.getElementById('resResistance').textContent = res.text;
+    document.getElementById('resOhmsExact').textContent = res.exact;
+    document.getElementById('resStandard').textContent = standard;
+    document.getElementById('resTolerance').textContent = tolerance;
+  }
+
+  document.getElementById('smdInput')?.addEventListener('input', decodeSMD);
+  document.querySelectorAll('.smd-ex-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById('smdInput');
+      if (input) {
+        input.value = btn.getAttribute('data-code');
+        decodeSMD();
+      }
+    });
+  });
+  decodeSMD();
+})();
+</script>

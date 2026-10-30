@@ -1,0 +1,88 @@
+<div class="space-y-6">
+  <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-brand-border pb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Text &amp; Density Analyzer</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Live word, character, sentence, and readability duration metrics.</p>
+      </div>
+      <div class="flex gap-2">
+        <button type="button" id="wc-sample-btn" class="px-3 py-1.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-xl shadow">Sample Text</button>
+        <button type="button" id="wc-clear-btn" class="px-3 py-1.5 bg-slate-100 dark:bg-brand-dark text-slate-600 dark:text-slate-300 font-bold text-xs rounded-xl">Clear</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 text-center">
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <span class="text-[11px] font-mono text-slate-500 uppercase">Words</span>
+        <p id="wc-count-words" class="text-2xl font-bold font-mono text-brand-600 dark:text-accent mt-1">0</p>
+      </div>
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <span class="text-[11px] font-mono text-slate-500 uppercase">Characters</span>
+        <p id="wc-count-chars" class="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">0</p>
+      </div>
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <span class="text-[11px] font-mono text-slate-500 uppercase">Chars (No Space)</span>
+        <p id="wc-count-chars-nospace" class="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">0</p>
+      </div>
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <span class="text-[11px] font-mono text-slate-500 uppercase">Sentences</span>
+        <p id="wc-count-sentences" class="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">0</p>
+      </div>
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <span class="text-[11px] font-mono text-slate-500 uppercase">Reading Time</span>
+        <p id="wc-count-read-time" class="text-2xl font-bold font-mono text-emerald-500 mt-1">0m</p>
+      </div>
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <span class="text-[11px] font-mono text-slate-500 uppercase">Speaking Time</span>
+        <p id="wc-count-speak-time" class="text-2xl font-bold font-mono text-amber-500 mt-1">0m</p>
+      </div>
+    </div>
+
+    <div>
+      <textarea id="wc-input" rows="12" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-xs focus:ring-2 focus:ring-brand-500 outline-none leading-relaxed" placeholder="Type or paste text to analyze..."></textarea>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const input = document.getElementById('wc-input');
+  const wordsEl = document.getElementById('wc-count-words');
+  const charsEl = document.getElementById('wc-count-chars');
+  const noSpaceEl = document.getElementById('wc-count-chars-nospace');
+  const sentEl = document.getElementById('wc-count-sentences');
+  const readEl = document.getElementById('wc-count-read-time');
+  const speakEl = document.getElementById('wc-count-speak-time');
+
+  function update() {
+    const text = input.value;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const chars = text.length;
+    const noSpace = text.replace(/\s/g, '').length;
+    const sentences = text.trim() ? (text.match(/[^.!?]+[.!?]+/g) || []).length : 0;
+
+    const readMin = Math.ceil(words / 200);
+    const speakMin = Math.ceil(words / 130);
+
+    wordsEl.textContent = words.toLocaleString();
+    charsEl.textContent = chars.toLocaleString();
+    noSpaceEl.textContent = noSpace.toLocaleString();
+    sentEl.textContent = Math.max(sentences, words > 0 ? 1 : 0).toLocaleString();
+    readEl.textContent = readMin + 'm';
+    speakEl.textContent = speakMin + 'm';
+  }
+
+  input.addEventListener('input', update);
+
+  document.getElementById('wc-clear-btn').addEventListener('click', () => {
+    input.value = '';
+    update();
+  });
+
+  document.getElementById('wc-sample-btn').addEventListener('click', () => {
+    input.value = "Embedded India provides end-to-end hardware product engineering services based in Hyderabad, India. Our laboratory specializes in high-speed multi-layer PCB design, impedance control, embedded C/C++ firmware development, FreeRTOS architectures, and turnkey IoT connectivity spanning BLE, Wi-Fi, and LoRaWAN. Every prototype is manufactured and validated under strict IPC Class 2 and Class 3 reliability standards.";
+    update();
+  });
+
+  document.getElementById('wc-sample-btn').click();
+})();
+</script>

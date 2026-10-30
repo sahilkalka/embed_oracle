@@ -1,0 +1,410 @@
+<%- include('../layout_top') %>
+
+<div class="space-y-6">
+  
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+      <a href="/admin/posts" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline">&larr; Back to Articles</a>
+      <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
+        <%= post ? 'Edit Article' : 'Write New Technical Guide' %>
+      </h1>
+    </div>
+  </div>
+
+  <!-- AI Agent Co-Pilot Card -->
+  <div class="bg-gradient-to-r from-brand-50 to-emerald-50 dark:from-brand-900/30 dark:to-slate-900 rounded-2xl p-4 sm:p-5 border border-brand-200 dark:border-brand-800 shadow-sm space-y-3">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 via-brand-500 to-accent p-0.5 flex items-center justify-center text-white shadow-sm">
+          <span>🤖</span>
+        </div>
+        <div>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5">
+            <span>AI Engineering Agent Co-Pilot</span>
+            <span class="text-[9px] bg-brand-500/20 text-brand-700 dark:text-accent font-extrabold px-1.5 py-0.2 rounded border border-brand-500/30">Active</span>
+          </h2>
+          <p class="text-[11px] text-slate-500">Auto-suggest topics, synthesize technical outlines, or draft complete engineering articles</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" id="btnAiSuggestTopics" class="px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-sm flex items-center space-x-1 active:scale-95">
+          <span>🎲 Suggest Topics</span>
+        </button>
+        <button type="button" id="btnAiDraft" class="px-3.5 py-1.5 bg-slate-800 dark:bg-slate-700 hover:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold text-xs rounded-xl transition shadow flex items-center space-x-1.5 active:scale-95">
+          <span>📑 Generate Outline</span>
+        </button>
+        <button type="button" id="btnAiFullDraft" class="px-4 py-1.5 bg-gradient-to-r from-brand-600 via-brand-500 to-accent hover:from-brand-500 hover:to-brand-600 text-white font-bold text-xs rounded-xl transition shadow-md flex items-center space-x-1.5 active:scale-95">
+          <span>🚀 Draft Full Article</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- AI Suggestion Chips Container (Populated via AI Agent) -->
+    <div id="aiTopicsContainer" class="hidden pt-2 border-t border-brand-200/50 dark:border-brand-800/50">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Click any AI suggested topic to populate:</div>
+      <div id="aiTopicsPills" class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <!-- Live Status Banner -->
+    <div id="aiAgentStatus" class="hidden p-3 rounded-xl text-xs font-mono"></div>
+  </div>
+
+  <form action="<%= post ? '/admin/posts/' + post.id + '/edit' : '/admin/posts/new' %>" method="POST" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <%- csrfField %>
+    <!-- Left: Content Inputs (8 Cols) -->
+    <div class="lg:col-span-8 space-y-5 bg-white dark:bg-brand-surface rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-sm">
+      
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+          Article Title <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="postTitle"
+          name="title" 
+          required 
+          value="<%= post ? post.title : '' %>"
+          placeholder="e.g. Understanding CAN-FD Bus Timing &amp; Bit-Rate Switching in Automotive ECUs"
+          class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-bold text-base focus:ring-2 focus:ring-brand-500"
+        >
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+            Category
+          </label>
+          <select aria-label="Article category" name="category" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs font-bold focus:ring-2 focus:ring-brand-500">
+            <% categories.forEach(cat => { %>
+              <option value="<%= cat %>" <%= post && post.category === cat ? 'selected' : '' %>><%= cat %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+            Tags (comma-separated)
+          </label>
+          <input 
+            type="text" 
+            name="tags" 
+            value="<%= post ? post.tags : 'embedded,hardware,firmware' %>"
+            placeholder="can-bus,automotive,hil,c++"
+            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-brand-500"
+          >
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+          Executive Summary / Meta Description
+        </label>
+        <textarea 
+          id="postSummary"
+          name="summary" 
+          rows="3" 
+          required
+          placeholder="A concise 2-3 sentence technical overview for Google SERP snippet..."
+          class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs leading-relaxed focus:ring-2 focus:ring-brand-500"
+        ><%= post ? post.summary : '' %></textarea>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            Technical Content (Markdown with Code Blocks)
+          </label>
+          <span class="text-[10px] text-slate-400 font-mono">Supports ```c, ```python, ```text</span>
+        </div>
+        <textarea 
+          id="postMarkdown"
+          name="contentMarkdown" 
+          rows="16" 
+          required
+          placeholder="Write your article in Markdown. Include code blocks with language identifiers..."
+          class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-xs leading-relaxed focus:ring-2 focus:ring-brand-500"
+        ><%= post ? post.contentMarkdown : '' %></textarea>
+      </div>
+
+    </div>
+
+    <!-- Right: Publishing & Live SEO Score (4 Cols) -->
+    <div class="lg:col-span-4 space-y-6">
+      
+      <!-- Publishing Controls -->
+      <div class="bg-white dark:bg-brand-surface rounded-2xl p-6 border border-slate-200 dark:border-brand-border shadow-sm space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-2">Publishing Status</h2>
+
+        <div>
+          <label for="postStatus" class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1">Status</label>
+          <select id="postStatus" name="status" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-bold">
+            <option value="published" <%= post && post.status === 'published' ? 'selected' : '' %>>Published (Live Immediately)</option>
+            <option value="scheduled" <%= post && post.status === 'scheduled' ? 'selected' : '' %>>Scheduled (Auto-Publish via Cron)</option>
+            <option value="draft" <%= post && post.status === 'draft' ? 'selected' : '' %>>Draft</option>
+          </select>
+        </div>
+
+        <div id="scheduleGroup" style="<%= post && post.status === 'scheduled' ? '' : 'display:none;' %>">
+          <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1">Scheduled Date &amp; Time</label>
+          <input 
+            type="datetime-local" 
+            name="scheduledAt" 
+            value="<%= post && post.scheduledAt ? new Date(post.scheduledAt).toISOString().slice(0,16) : '' %>"
+            class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1">Reading Time (Minutes)</label>
+          <input 
+            type="number" 
+            name="readingTime" 
+            aria-label="Reading time in minutes"
+            value="<%= post ? post.readingTime : 5 %>"
+            min="1" 
+            max="60"
+            class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono"
+          >
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow-lg tracking-wide"
+        >
+          <%= post ? 'Update Article' : 'Publish Article' %>
+        </button>
+      </div>
+
+      <!-- Live Real-Time SEO Analyzer -->
+      <div class="bg-white dark:bg-brand-surface rounded-2xl p-6 border border-slate-200 dark:border-brand-border shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-2">
+          <h2 class="text-sm font-bold text-slate-900 dark:text-white">Live SEO Score</h2>
+          <span id="seoScoreBadge" class="px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800">
+            92 / 100
+          </span>
+        </div>
+
+        <ul class="space-y-2 text-xs">
+          <li id="seoRuleTitle" class="flex items-center text-slate-600 dark:text-slate-300">
+            <span class="mr-2">⚪</span> Title Length: <span id="titleCount" class="font-mono ml-1">0</span> chars (Ideal: 40-65)
+          </li>
+          <li id="seoRuleSummary" class="flex items-center text-slate-600 dark:text-slate-300">
+            <span class="mr-2">⚪</span> Summary Length: <span id="summaryCount" class="font-mono ml-1">0</span> chars (Ideal: 120-160)
+          </li>
+          <li id="seoRuleHeadings" class="flex items-center text-slate-600 dark:text-slate-300">
+            <span class="mr-2">⚪</span> Subheadings (## H2 / ### H3): <span id="headingStatus" class="ml-1">Checking...</span>
+          </li>
+          <li id="seoRuleCode" class="flex items-center text-slate-600 dark:text-slate-300">
+            <span class="mr-2">⚪</span> Technical Code Blocks: <span id="codeStatus" class="ml-1">Checking...</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+  // Show / Hide Schedule Group
+  const statusSelect = document.getElementById('postStatus');
+  const scheduleGroup = document.getElementById('scheduleGroup');
+  statusSelect.addEventListener('change', () => {
+    scheduleGroup.style.display = statusSelect.value === 'scheduled' ? 'block' : 'none';
+  });
+
+  // Real-Time SEO Analyzer
+  const titleInput = document.getElementById('postTitle');
+  const summaryInput = document.getElementById('postSummary');
+  const mdInput = document.getElementById('postMarkdown');
+
+  function analyzeSEO() {
+    let score = 0;
+    const title = titleInput.value.trim();
+    const summary = summaryInput.value.trim();
+    const md = mdInput.value;
+
+    document.getElementById('titleCount').textContent = title.length;
+    document.getElementById('summaryCount').textContent = summary.length;
+
+    // Rule 1: Title Length (40-70)
+    const ruleTitle = document.getElementById('seoRuleTitle');
+    if (title.length >= 35 && title.length <= 70) {
+      ruleTitle.children[0].textContent = '✅';
+      score += 30;
+    } else {
+      ruleTitle.children[0].textContent = '⚠️';
+      score += 10;
+    }
+
+    // Rule 2: Summary Length (100-180)
+    const ruleSummary = document.getElementById('seoRuleSummary');
+    if (summary.length >= 100 && summary.length <= 180) {
+      ruleSummary.children[0].textContent = '✅';
+      score += 30;
+    } else {
+      ruleSummary.children[0].textContent = '⚠️';
+      score += 10;
+    }
+
+    // Rule 3: Headings (##)
+    const ruleHeadings = document.getElementById('seoRuleHeadings');
+    const hasHeadings = /^#{2,3}\s+.+/m.test(md);
+    if (hasHeadings) {
+      ruleHeadings.children[0].textContent = '✅';
+      document.getElementById('headingStatus').textContent = 'Present';
+      score += 20;
+    } else {
+      ruleHeadings.children[0].textContent = '❌';
+      document.getElementById('headingStatus').textContent = 'Missing H2/H3';
+    }
+
+    // Rule 4: Code Blocks
+    const ruleCode = document.getElementById('seoRuleCode');
+    const hasCode = /```[a-z0-9]*/i.test(md);
+    if (hasCode) {
+      ruleCode.children[0].textContent = '✅';
+      document.getElementById('codeStatus').textContent = 'Present';
+      score += 20;
+    } else {
+      ruleCode.children[0].textContent = '❌';
+      document.getElementById('codeStatus').textContent = 'None detected';
+    }
+
+    const badge = document.getElementById('seoScoreBadge');
+    badge.textContent = `${score} / 100`;
+    if (score >= 80) {
+      badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800';
+    } else if (score >= 50) {
+      badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-black bg-yellow-100 text-yellow-800';
+    } else {
+      badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-black bg-red-100 text-red-800';
+    }
+  }
+
+  [titleInput, summaryInput, mdInput].forEach(el => el.addEventListener('input', analyzeSEO));
+  analyzeSEO();
+
+  // AI Agent Co-Pilot Interactive Handlers
+  const aiAgentStatus = document.getElementById('aiAgentStatus');
+  const aiTopicsContainer = document.getElementById('aiTopicsContainer');
+  const aiTopicsPills = document.getElementById('aiTopicsPills');
+  const categorySelect = document.querySelector('select[name="category"]');
+  const tagsInput = document.querySelector('input[name="tags"]');
+
+  function showAiStatus(message, type = 'info') {
+    aiAgentStatus.classList.remove('hidden');
+    if (type === 'loading') {
+      aiAgentStatus.className = 'p-3 rounded-xl text-xs font-mono bg-blue-50 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 block animate-pulse';
+    } else if (type === 'success') {
+      aiAgentStatus.className = 'p-3 rounded-xl text-xs font-mono bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 block';
+    } else {
+      aiAgentStatus.className = 'p-3 rounded-xl text-xs font-mono bg-red-50 dark:bg-red-950/50 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800 block';
+    }
+    aiAgentStatus.innerHTML = message;
+  }
+
+  // 1. Suggest Topics via AI Agent (with curated fallback)
+  document.getElementById('btnAiSuggestTopics').addEventListener('click', async () => {
+    showAiStatus('🔄 <strong>AI Agent:</strong> Querying connected AI model for trending engineering topics...', 'loading');
+    try {
+      const res = await fetch('/admin/ai/suggest-topics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category: categorySelect ? categorySelect.value : 'Embedded Electronics' })
+      });
+      const data = await res.json();
+      if (data.success && data.topics && data.topics.length > 0) {
+        aiTopicsPills.innerHTML = '';
+        data.topics.forEach(t => {
+          const pill = document.createElement('button');
+          pill.type = 'button';
+          pill.className = 'text-left px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-brand-500 hover:text-white dark:hover:bg-brand-500 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-semibold transition active:scale-95 shadow-sm';
+          pill.textContent = t;
+          pill.addEventListener('click', () => {
+            titleInput.value = t;
+            aiTopicsContainer.classList.add('hidden');
+            analyzeSEO();
+            showAiStatus(`✅ Topic populated: <strong>${t}</strong>. Click <em>Generate Outline</em> or <em>Draft Full Article</em> to synthesize content.`, 'success');
+          });
+          aiTopicsPills.appendChild(pill);
+        });
+        aiTopicsContainer.classList.remove('hidden');
+        showAiStatus(`✅ <strong>${data.source === 'ai_agent' ? 'AI Model (' + (data.provider || 'Cloud') + ')' : 'Local Engine'}:</strong> Generated ${data.topics.length} trending topics. Click any pill below to apply.`, 'success');
+      } else {
+        showAiStatus('❌ Unable to retrieve topics: ' + (data.error || 'Unknown error'), 'error');
+      }
+    } catch (err) {
+      showAiStatus('❌ Request failed: ' + err.message, 'error');
+    }
+  });
+
+  // 2. Generate Technical Outline via AI Agent (with curated fallback)
+  document.getElementById('btnAiDraft').addEventListener('click', async () => {
+    const currentTopic = titleInput.value.trim() || 'Optimizing Ultra-Low Power Sleep Modes on ESP32-S3 IoT Endpoints';
+    showAiStatus(`⚙️ <strong>AI Agent:</strong> Generating technical outline and firmware skeleton for "<em>${currentTopic}</em>"...`, 'loading');
+
+    try {
+      const res = await fetch('/admin/ai/generate-outline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topic: currentTopic,
+          category: categorySelect ? categorySelect.value : 'Embedded Electronics'
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (!titleInput.value.trim() && data.title) titleInput.value = data.title;
+        if (data.summary) summaryInput.value = data.summary;
+        if (data.tags && tagsInput) tagsInput.value = data.tags;
+        if (data.contentMarkdown) mdInput.value = data.contentMarkdown;
+        analyzeSEO();
+        showAiStatus(`🎉 <strong>Outline Ready (${data.source === 'ai_agent' ? 'AI Model' : 'Local Engine'}):</strong> Technical headings, register configurations, and firmware code skeleton injected!`, 'success');
+      } else {
+        showAiStatus('❌ Outline generation failed: ' + (data.error || 'Unknown error'), 'error');
+      }
+    } catch (err) {
+      showAiStatus('❌ Request failed: ' + err.message, 'error');
+    }
+  });
+
+  // 3. Draft Full Article with AI Agent (with curated fallback)
+  document.getElementById('btnAiFullDraft').addEventListener('click', async () => {
+    let currentTopic = titleInput.value.trim();
+    if (!currentTopic) {
+      currentTopic = 'Deterministic CAN-FD Bus Timing & Bit-Rate Switching in Automotive ECUs';
+      titleInput.value = currentTopic;
+    }
+
+    showAiStatus(`🚀 <strong>AI Agent:</strong> Drafting comprehensive technical article, code snippets, and schematics for "<em>${currentTopic}</em>"...`, 'loading');
+
+    try {
+      const res = await fetch('/admin/ai/draft-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topic: currentTopic,
+          category: categorySelect ? categorySelect.value : 'Embedded Electronics'
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.post) {
+        titleInput.value = data.post.title || currentTopic;
+        summaryInput.value = data.post.summary || '';
+        if (data.post.tags && tagsInput) tagsInput.value = data.post.tags;
+        mdInput.value = data.post.contentMarkdown || '';
+        analyzeSEO();
+        showAiStatus(`🎉 <strong>Full Article Drafted:</strong> In-depth engineering article generated! Review sections below and click <em>Save Draft</em> or <em>Publish Article</em>.`, 'success');
+      } else {
+        showAiStatus('❌ Article drafting failed: ' + (data.error || 'Unknown error'), 'error');
+      }
+    } catch (err) {
+      showAiStatus('❌ Request failed: ' + err.message, 'error');
+    }
+  });
+</script>
+
+<%- include('../layout_bottom') %>

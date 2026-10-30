@@ -1,0 +1,102 @@
+<%- include('layout_top') %>
+
+<div class="w-full space-y-6 mx-auto">
+  
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+        <span>📊 Lead / RFQ Pipeline &amp; Customer Inquiries</span>
+      </h1>
+      <p class="text-xs text-slate-500 mt-1">Track inbound RFQ leads through each lifecycle stage, export data, and verify outgoing notifications</p>
+    </div>
+
+    <!-- Top Action Buttons -->
+    <div class="flex items-center flex-wrap gap-2">
+      <a href="/admin/inquiries/export" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5 active:scale-95 whitespace-nowrap flex-shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span class="whitespace-nowrap flex-shrink-0">Export CSV</span>
+      </a>
+    </div>
+  </div>
+
+  <% if (inquiries.length === 0) { %>
+    <div class="bg-white dark:bg-brand-surface rounded-2xl p-12 text-center border border-slate-200 dark:border-brand-border">
+      <p class="text-slate-500 text-sm">No RFQ inquiries found in this pipeline stage.</p>
+    </div>
+  <% } %>
+
+  <div class="space-y-4">
+    <% inquiries.forEach(inq => { %>
+      <div class="bg-white dark:bg-brand-surface rounded-2xl p-6 border border-slate-200 dark:border-brand-border shadow-sm space-y-4">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-brand-border gap-3">
+          <div>
+            <div class="flex items-center space-x-3 flex-wrap gap-1">
+              <h2 class="text-base font-extrabold text-slate-900 dark:text-white"><%= inq.name %></h2>
+              <% if (inq.company) { %>
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">(<%= inq.company %>)</span>
+              <% } %>
+              
+              <% 
+                let badgeClass = 'bg-slate-100 text-slate-700';
+                if (inq.status === 'new') badgeClass = 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800';
+                if (inq.status === 'in_progress') badgeClass = 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800';
+                if (inq.status === 'quoted') badgeClass = 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800';
+                if (inq.status === 'won') badgeClass = 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
+                if (inq.status === 'archived' || inq.status === 'resolved') badgeClass = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700';
+              %>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase <%= badgeClass %>">
+                <%= (inq.status || 'new').replace('_', ' ') %>
+              </span>
+              <span class="text-xs text-brand-600 dark:text-accent font-semibold"><%= inq.serviceCategory || 'General Inquiry' %></span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">
+              <%= new Date(inq.createdAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) %> &bull; IP: <%= inq.ipAddress || 'unknown' %>
+            </p>
+          </div>
+
+          <!-- Pipeline Controls & Actions -->
+          <div class="flex items-center justify-between sm:justify-end gap-2">
+            <!-- Pipeline Status Selector -->
+            <form action="/admin/inquiries/<%= inq.id %>/status" method="POST" class="inline flex-1 sm:flex-initial">
+              <%- csrfField %>
+              <select name="status" aria-label="Pipeline stage for <%= inq.name %>" onchange="this.form.submit()" class="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-brand-500 !min-h-[36px]">
+                <option value="new" <%= inq.status === 'new' ? 'selected' : '' %>>Stage: New</option>
+                <option value="in_progress" <%= inq.status === 'in_progress' ? 'selected' : '' %>>Stage: In Progress</option>
+                <option value="quoted" <%= inq.status === 'quoted' ? 'selected' : '' %>>Stage: Quoted</option>
+                <option value="won" <%= inq.status === 'won' ? 'selected' : '' %>>Stage: Won</option>
+                <option value="archived" <%= (inq.status === 'archived' || inq.status === 'resolved') ? 'selected' : '' %>>Stage: Archived</option>
+              </select>
+            </form>
+
+            <div class="flex items-center gap-1.5 shrink-0">
+              <a href="mailto:<%= inq.email %>?subject=Re:%20<%= encodeURIComponent(inq.subject || 'RFQ Inquiry - Embedded India') %>" aria-label="Reply via Email" title="Reply via Email" class="w-9 h-9 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-accent hover:bg-brand-100 dark:hover:bg-brand-900/70 transition inline-flex items-center justify-center shadow-xs">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </a>
+
+              <form action="/admin/inquiries/<%= inq.id %>/delete" method="POST" onsubmit="return confirm('Delete this inquiry?')" class="inline">
+                <%- csrfField %>
+                <button type="submit" aria-label="Delete inquiry" title="Delete Inquiry" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 transition inline-flex items-center justify-center">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-xs">
+          <p class="break-words">
+            <strong>Email:</strong> <a href="mailto:<%= inq.email %>" class="text-brand-500 hover:underline break-all"><%= inq.email %></a> 
+            <% if (inq.phone) { %> &bull; <strong>Phone:</strong> <a href="tel:<%= inq.phone.replace(/[^0-9+]/g, '') %>" class="hover:underline"><%= inq.phone %></a> <% } %>
+          </p>
+          <p class="mt-1 font-bold text-slate-800 dark:text-slate-200 break-words">Subject: <%= inq.subject %></p>
+          <div class="mt-2 p-3 bg-slate-50 dark:bg-brand-dark rounded-xl text-slate-700 dark:text-slate-300 whitespace-pre-wrap break-words leading-relaxed font-sans"><%= (inq.message || '').trim() %></div>
+        </div>
+
+      </div>
+    <% }) %>
+  </div>
+
+</div>
+
+<%- include('layout_bottom') %>

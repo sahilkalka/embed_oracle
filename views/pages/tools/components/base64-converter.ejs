@@ -1,0 +1,109 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Plain Text Input</h3>
+      <div class="flex gap-2">
+        <button type="button" id="b64-encode-btn" class="px-3 py-1 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-lg shadow">Encode &rarr;</button>
+        <button type="button" id="b64-clear-plain" class="px-2.5 py-1 bg-slate-100 dark:bg-brand-dark text-slate-600 dark:text-slate-300 text-xs rounded-lg">Clear</button>
+      </div>
+    </div>
+    <div>
+      <label for="b64-plain" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Raw Text / UTF-8 String</label>
+      <textarea id="b64-plain" rows="10" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-xs focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Enter plain text to encode into Base64..."></textarea>
+    </div>
+    <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+      <input type="checkbox" id="b64-url-safe" class="rounded text-brand-500 focus:ring-brand-500">
+      <label for="b64-url-safe">URL-Safe Base64 (replace + with -, / with _, remove padding =)</label>
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Base64 Output</h3>
+      <div class="flex gap-2">
+        <button type="button" id="b64-decode-btn" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-lg shadow">&larr; Decode</button>
+        <button type="button" id="b64-copy-btn" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs rounded-lg">Copy</button>
+      </div>
+    </div>
+    <div>
+      <label for="b64-encoded" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Base64 Encoded String</label>
+      <textarea id="b64-encoded" rows="10" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-emerald-400 font-mono text-xs focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Paste Base64 to decode or copy result..."></textarea>
+    </div>
+    <div id="b64-error" class="text-xs font-mono font-bold text-red-500 hidden"></div>
+  </div>
+</div>
+<script>
+(function() {
+  const plain = document.getElementById('b64-plain');
+  const encoded = document.getElementById('b64-encoded');
+  const urlSafe = document.getElementById('b64-url-safe');
+  const errorEl = document.getElementById('b64-error');
+
+  function toBase64(str) {
+    const bytes = new TextEncoder().encode(str);
+    let bin = '';
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    let b64 = btoa(bin);
+    if (urlSafe.checked) {
+      b64 = b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+    return b64;
+  }
+
+  function fromBase64(b64) {
+    let clean = b64.trim();
+    if (urlSafe.checked) {
+      clean = clean.replace(/-/g, '+').replace(/_/g, '/');
+      while (clean.length % 4) clean += '=';
+    }
+    const bin = atob(clean);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  function doEncode() {
+    errorEl.classList.add('hidden');
+    try {
+      encoded.value = toBase64(plain.value);
+    } catch (e) {
+      errorEl.textContent = 'Encoding error: ' + e.message;
+      errorEl.classList.remove('hidden');
+    }
+  }
+
+  function doDecode() {
+    errorEl.classList.add('hidden');
+    try {
+      plain.value = fromBase64(encoded.value);
+    } catch (e) {
+      errorEl.textContent = 'Invalid Base64 string: ' + e.message;
+      errorEl.classList.remove('hidden');
+    }
+  }
+
+  document.getElementById('b64-encode-btn').addEventListener('click', doEncode);
+  document.getElementById('b64-decode-btn').addEventListener('click', doDecode);
+  plain.addEventListener('input', doEncode);
+  urlSafe.addEventListener('change', doEncode);
+
+  document.getElementById('b64-clear-plain').addEventListener('click', () => {
+    plain.value = '';
+    encoded.value = '';
+    errorEl.classList.add('hidden');
+  });
+
+  document.getElementById('b64-copy-btn').addEventListener('click', () => {
+    if (encoded.value) {
+      navigator.clipboard.writeText(encoded.value);
+      const btn = document.getElementById('b64-copy-btn');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = orig, 1500);
+    }
+  });
+
+  plain.value = "Embedded India: High-reliability electronic system design & turnkey hardware engineering.";
+  doEncode();
+})();
+</script>

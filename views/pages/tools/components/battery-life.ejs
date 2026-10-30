@@ -1,0 +1,103 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Load Profile Parameters</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Duty Cycle</span>
+    </div>
+
+    <div>
+      <label for="bat-cap" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Battery Capacity (mAh)</label>
+      <input type="number" id="bat-cap" value="220" step="10" min="1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="bat-iactive" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Active Current (mA)</label>
+        <input type="number" id="bat-iactive" value="18" step="0.5" min="0.01" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+      <div>
+        <label for="bat-tactive" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Active Time (ms)</label>
+        <input type="number" id="bat-tactive" value="150" step="10" min="1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="bat-isleep" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Sleep Current (µA)</label>
+        <input type="number" id="bat-isleep" value="3.5" step="0.1" min="0" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+      <div>
+        <label for="bat-tsleep" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Sleep Time (seconds)</label>
+        <input type="number" id="bat-tsleep" value="60" step="1" min="0.1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+    </div>
+
+    <div>
+      <label for="bat-derate" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Capacity Derating (%)</label>
+      <input type="number" id="bat-derate" value="15" step="1" min="0" max="50" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 space-y-6">
+    <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">Estimated Operating Lifespan</h3>
+      <div class="mt-6 grid grid-cols-2 gap-4">
+        <div class="p-4 bg-brand-50 dark:bg-brand-900/40 rounded-2xl border border-brand-200 dark:border-brand-700">
+          <span class="text-xs text-brand-800 dark:text-accent font-semibold block">Total Days</span>
+          <span id="bat-resDays" class="text-3xl font-black text-brand-700 dark:text-white font-mono">--</span>
+          <span id="bat-resYears" class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block mt-0.5">-- Years</span>
+        </div>
+        <div class="p-4 bg-accent/15 dark:bg-accent/20 rounded-2xl border border-accent/30">
+          <span class="text-xs text-accent-dark dark:text-accent font-semibold block">Average Current</span>
+          <span id="bat-resIavg" class="text-3xl font-black text-slate-900 dark:text-white font-mono">--</span>
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block mt-0.5">Microamps (µA)</span>
+        </div>
+      </div>
+      <div class="mt-4 grid grid-cols-2 gap-3">
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-semibold">Total Hours</span>
+          <span id="bat-resHours" class="text-sm font-bold text-slate-900 dark:text-white font-mono">--</span>
+        </div>
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-semibold">Active Duty %</span>
+          <span id="bat-resDuty" class="text-sm font-bold text-slate-900 dark:text-white font-mono">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  function calcBat() {
+    const cap = parseFloat(document.getElementById('bat-cap')?.value) || 220;
+    const iactive = parseFloat(document.getElementById('bat-iactive')?.value) || 18;
+    const tactiveMs = parseFloat(document.getElementById('bat-tactive')?.value) || 150;
+    const isleepUa = parseFloat(document.getElementById('bat-isleep')?.value) || 3.5;
+    const tsleepS = parseFloat(document.getElementById('bat-tsleep')?.value) || 60;
+    const deratePct = parseFloat(document.getElementById('bat-derate')?.value) || 15;
+
+    const tactiveS = tactiveMs / 1000;
+    const totalCycleS = tactiveS + tsleepS;
+    const isleepMa = isleepUa / 1000;
+
+    const iavgMa = (iactive * tactiveS + isleepMa * tsleepS) / totalCycleS;
+    const effectiveCapMah = cap * (1 - deratePct / 100);
+    const hours = iavgMa > 0 ? (effectiveCapMah / iavgMa) : 0;
+    const days = hours / 24;
+    const years = days / 365.25;
+    const dutyPct = (tactiveS / totalCycleS) * 100;
+
+    document.getElementById('bat-resDays').textContent = days.toFixed(0);
+    document.getElementById('bat-resYears').textContent = '(' + years.toFixed(2) + ' Years)';
+    document.getElementById('bat-resIavg').textContent = (iavgMa * 1000).toFixed(1) + ' µA';
+    document.getElementById('bat-resHours').textContent = Math.round(hours).toLocaleString() + ' hrs';
+    document.getElementById('bat-resDuty').textContent = dutyPct.toFixed(3) + '%';
+  }
+
+  ['bat-cap', 'bat-iactive', 'bat-tactive', 'bat-isleep', 'bat-tsleep', 'bat-derate'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', calcBat);
+  });
+  calcBat();
+})();
+</script>

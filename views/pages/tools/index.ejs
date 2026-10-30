@@ -1,0 +1,151 @@
+<%- include('../../layouts/header') %>
+
+<!-- Tools Suite Hero -->
+<section class="py-16 lg:py-20 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border spaceship-ambient-mesh circuit-grid">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
+    <div class="max-w-3xl">
+      <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold uppercase tracking-wider shadow-sm backdrop-blur-md animate-float-slow">
+        <span class="w-2 h-2 rounded-full bg-brand-500 dark:bg-accent animate-ping flex-shrink-0"></span>
+        <span class="font-extrabold text-slate-800 dark:text-slate-100"><%= categories.length %> Engineering &amp; Developer Hubs</span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white mt-4 tracking-tight leading-tight">
+        Engineering &amp; Developer Tools
+      </h1>
+      <p class="mt-4 text-base sm:text-lg text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+        Fast, mathematically precise, client-side browser utilities for hardware designers, high-speed PCB specialists, firmware architects, and full-stack engineers.
+      </p>
+
+      <!-- Instant Search Bar -->
+      <div class="mt-8 relative max-w-xl">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+        <input type="text" id="tools-search-input" placeholder="Search <%= totalTools %> tools (e.g. PCB trace, Ohm, JSON, QR, SIP, UUID)..." class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-slate-50 dark:bg-brand-dark/90 border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm shadow-md focus:ring-2 focus:ring-brand-500 outline-none placeholder:text-slate-400">
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><%- include('../../partials/ad-slot', { slot: settings.adsense_tools_top_slot, format: 'auto' }) %></div>
+<!-- 8 Category Hubs Large Tiles Grid -->
+<section class="py-16 lg:py-20 bg-slate-50 dark:bg-[#13221f]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+      <div>
+        <span class="text-xs font-mono font-bold uppercase tracking-wider text-brand-600 dark:text-accent">Tool Ecosystem</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Dedicated Category Hubs</h2>
+      </div>
+    </div>
+
+    <!-- 8 Responsive Hub Tiles -->
+    <div id="category-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <% categories.forEach(function(cat) { %>
+        <div class="category-card group bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-7 border border-slate-200 dark:border-brand-border hover:border-brand-500 dark:hover:border-accent transition duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between"
+             data-title="<%= cat.title.toLowerCase() %>"
+             data-keywords="<%= (cat.tools || []).map(function(t){ return (t.title + ' ' + t.slug + ' ' + (t.keywords || []).join(' ')).toLowerCase(); }).join(' ') %>">
+          
+          <div>
+            <!-- Header with Icon & Count -->
+            <div class="flex items-center justify-between mb-5">
+              <div class="w-12 h-12 rounded-2xl bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-accent group-hover:scale-110 transition duration-200">
+                <%- cat.icon %>
+              </div>
+              <span class="text-xs font-mono font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-brand-border/60">
+                <%= cat.toolCount || cat.tools.length %> Tools
+              </span>
+            </div>
+
+            <!-- Category Title & Badge -->
+            <span class="text-[11px] font-bold uppercase text-brand-600 dark:text-accent tracking-wider block mb-1">
+              <%= cat.badge %>
+            </span>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-brand-500 dark:group-hover:text-accent transition">
+              <a href="/tools/<%= cat.slug %>" class="focus:outline-none">
+                <%= cat.title %>
+              </a>
+            </h3>
+
+            <!-- Description -->
+            <p class="text-xs text-slate-600 dark:text-slate-300 mt-2.5 leading-relaxed line-clamp-3">
+              <%= cat.description %>
+            </p>
+
+            <!-- Tool Quick Preview Chips -->
+            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-brand-border/60">
+              <span class="text-[10px] font-mono uppercase text-slate-400 block mb-2 font-bold">Featured Tools:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <% (cat.tools || []).slice(0, 3).forEach(function(t) { %>
+                  <a href="/tools/<%= cat.slug %>/<%= t.slug %>" class="px-2 py-0.5 rounded-lg bg-slate-50 dark:bg-brand-dark text-[11px] font-medium text-slate-600 dark:text-slate-300 hover:bg-brand-500 hover:text-white transition">
+                    <%= t.shortTitle || t.title %>
+                  </a>
+                <% }); %>
+                <% if ((cat.tools || []).length > 3) { %>
+                  <span class="px-2 py-0.5 text-[11px] font-mono text-slate-400">+<%= cat.tools.length - 3 %> more</span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Prominent CTA Button -->
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border/60">
+            <a href="/tools/<%= cat.slug %>" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-brand-dark group-hover:bg-brand-500 text-slate-700 dark:text-slate-200 group-hover:text-white text-xs font-bold transition shadow-sm">
+              <span>Open Category Hub</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
+
+        </div>
+      <% }); %>
+    </div>
+
+    <!-- Search No-Results State -->
+    <div id="search-no-results" class="hidden text-center py-16">
+      <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-brand-surface mx-auto flex items-center justify-center text-slate-400 mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">No tools found matching your query</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Try searching for keywords like "trace", "resistor", "json", "emi", or "storage".</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Reusable Turnkey Engineering CTA Banner -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><%- include('../../partials/ad-slot', { slot: settings.adsense_tools_bottom_slot, format: 'auto' }) %></div>
+<%- include('../../partials/cta-banner') %>
+
+<!-- Client-side Fast Search Script -->
+<script>
+(function() {
+  const searchInput = document.getElementById('tools-search-input');
+  const cards = document.querySelectorAll('.category-card');
+  const noResults = document.getElementById('search-no-results');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function(e) {
+      const q = e.target.value.toLowerCase().trim();
+      let visible = 0;
+
+      cards.forEach(function(card) {
+        const title = card.getAttribute('data-title') || '';
+        const keywords = card.getAttribute('data-keywords') || '';
+        if (!q || title.includes(q) || keywords.includes(q)) {
+          card.classList.remove('hidden');
+          visible++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      if (visible === 0) {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+      }
+    });
+  }
+})();
+</script>
+
+<%- include('../../layouts/footer') %>

@@ -1,0 +1,85 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Clock &amp; Baud Rate</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Framing Error</span>
+    </div>
+
+    <div>
+      <label for="uart-fosc" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">MCU Clock Frequency (MHz)</label>
+      <input type="number" id="uart-fosc" value="16.0" step="0.5" min="0.1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="uart-target" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Target Baud Rate</label>
+      <select id="uart-target" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+        <option value="9600">9600 baud</option>
+        <option value="19200">19200 baud</option>
+        <option value="38400">38400 baud</option>
+        <option value="57600">57600 baud</option>
+        <option value="115200" selected>115200 baud (Standard)</option>
+        <option value="230400">230400 baud</option>
+        <option value="921600">921600 baud (High Speed)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 space-y-6">
+    <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">Error &amp; Reload Registers</h3>
+      <div class="mt-6 grid grid-cols-2 gap-4">
+        <div class="p-4 bg-brand-50 dark:bg-brand-900/40 rounded-2xl border border-brand-200 dark:border-brand-700">
+          <span class="text-xs text-brand-800 dark:text-accent font-semibold block">Actual Baud</span>
+          <span id="uart-resActual" class="text-2xl sm:text-3xl font-black text-brand-700 dark:text-white font-mono">--</span>
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block mt-0.5">Bits per second</span>
+        </div>
+        <div class="p-4 bg-accent/15 dark:bg-accent/20 rounded-2xl border border-accent/30">
+          <span class="text-xs text-accent-dark dark:text-accent font-semibold block">Clock Error</span>
+          <span id="uart-resError" class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono">--</span>
+          <span id="uart-errorStatus" class="text-[10px] font-bold block mt-0.5">--</span>
+        </div>
+      </div>
+      <div class="mt-4 p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+        <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-semibold">UBRR / Divisor Value</span>
+        <span id="uart-resUbrr" class="text-sm font-bold text-slate-900 dark:text-white font-mono">--</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  function calcUart() {
+    const foscMhz = parseFloat(document.getElementById('uart-fosc')?.value) || 16.0;
+    const targetBaud = parseInt(document.getElementById('uart-target')?.value, 10) || 115200;
+    const fosc = foscMhz * 1e6;
+
+    const divisorFloat = (fosc / (16 * targetBaud)) - 1;
+    const ubrr = Math.max(0, Math.round(divisorFloat));
+    const actualBaud = fosc / (16 * (ubrr + 1));
+    const errorPct = ((actualBaud - targetBaud) / targetBaud) * 100;
+
+    document.getElementById('uart-resActual').textContent = Math.round(actualBaud).toLocaleString();
+    const elErr = document.getElementById('uart-resError');
+    const elStatus = document.getElementById('uart-errorStatus');
+
+    elErr.textContent = (errorPct > 0 ? '+' : '') + errorPct.toFixed(2) + '%';
+    if (Math.abs(errorPct) <= 2.0) {
+      elStatus.textContent = '✓ Excellent (< 2% error)';
+      elStatus.className = 'text-[10px] font-bold text-emerald-500 mt-0.5';
+    } else if (Math.abs(errorPct) <= 3.0) {
+      elStatus.textContent = '⚠ Marginal (2-3% error)';
+      elStatus.className = 'text-[10px] font-bold text-amber-500 mt-0.5';
+    } else {
+      elStatus.textContent = '❌ Excessive Framing Errors (> 3%)';
+      elStatus.className = 'text-[10px] font-bold text-red-500 mt-0.5';
+    }
+
+    document.getElementById('uart-resUbrr').textContent = 'UBRR = ' + ubrr + ' (Float exact: ' + divisorFloat.toFixed(3) + ')';
+  }
+
+  document.getElementById('uart-fosc')?.addEventListener('input', calcUart);
+  document.getElementById('uart-target')?.addEventListener('change', calcUart);
+  calcUart();
+})();
+</script>

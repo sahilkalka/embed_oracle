@@ -1,0 +1,344 @@
+  </main>
+
+  <!-- Newsletter Lead Magnet Strip (Rendered on public pages if enabled in Section Feature Flags) -->
+  <% if (settings.section_newsletter_enabled !== 'false') { %>
+  <%- include('../partials/lead-magnet') %>
+  <% } %>
+
+  <!-- Footer -->
+  <footer class="bg-white dark:bg-[#0d1715] border-t border-slate-200 dark:border-brand-border text-slate-600 dark:text-slate-400 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
+        
+        <!-- Brand Info -->
+        <div class="lg:col-span-2 space-y-4">
+          <a href="/" class="inline-flex items-center min-h-[44px] py-1.5 space-x-3 group">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-accent p-0.5 shadow-md shadow-brand-500/20 group-hover:scale-105 transition">
+              <div class="w-full h-full bg-white dark:bg-[#0b1412] rounded-[10px] flex items-center justify-center p-1.5">
+                <svg class="w-full h-full text-brand-500 dark:text-accent transition-colors duration-300" viewBox="0 0 32 32" fill="currentColor">
+                  <path d="M16 3C16.8 3 17.5 3.4 18 4.2L28.5 21.8C29.2 23 28.7 24.5 27.5 25.2C27.1 25.4 26.6 25.5 26.1 25.5H19.8C18.7 25.5 17.7 24.8 17.3 23.8L16 20.3L14.7 23.8C14.3 24.8 13.3 25.5 12.2 25.5H5.9C4.5 25.5 3.4 24.4 3.4 23C3.4 22.5 3.5 22.1 3.8 21.8L14 4.2C14.5 3.4 15.2 3 16 3Z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <% const footerParts = (settings.site_name || 'Embedded India').split(' '); %>
+              <span class="text-xl font-black text-slate-900 dark:text-white leading-none">
+                <%= footerParts[0] %> <% if (footerParts.length > 1) { %><span class="text-brand-500 dark:text-accent"><%= footerParts.slice(1).join(' ') %></span><% } %>
+              </span>
+              <span class="text-[9px] font-bold tracking-widest uppercase text-slate-700 dark:text-slate-300 mt-1"><%= settings.site_tagline || 'Engineering Hub' %></span>
+            </div>
+          </a>
+          <p class="text-sm leading-relaxed max-w-sm">
+            <%= settings.site_name || 'Embedded India' %> is India's premier engineering partner for full-cycle embedded system design, TouchGFX (STM32 MCU) &amp; Qt (MPU) industrial/medical HMIs, custom PCB layouts, and robust firmware solutions.
+          </p>
+          <div class="pt-2">
+            <p class="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Engineering Headquarters &amp; Locations</p>
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-200 mt-1"><%= settings.contact_address || 'Hyderabad, India' %></p>
+            <p class="text-sm mt-1">
+              Email: <a href="mailto:<%= settings.contact_email || 'info@embeddedindia.in' %>" class="text-brand-500 dark:text-accent font-medium hover:underline"><%= settings.contact_email || 'info@embeddedindia.in' %></a>
+            </p>
+            <% if (settings.contact_phone) { %>
+            <p class="text-sm mt-1">
+              Phone: <a href="tel:<%= settings.contact_phone.replace(/[^0-9+]/g, '') %>" class="text-slate-700 dark:text-slate-200 font-medium hover:underline"><%= settings.contact_phone %></a>
+            </p>
+            <% } %>
+          </div>
+
+          <!-- Social Links -->
+          <div class="flex items-center space-x-3 pt-2">
+            <% if (settings.social_linkedin) { %>
+              <a href="<%= settings.social_linkedin %>" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-brand-500 transition" aria-label="LinkedIn">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+            <% } %>
+            <% if (settings.social_github) { %>
+              <a href="<%= settings.social_github %>" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-brand-500 transition" aria-label="GitHub">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            <% } %>
+            <% if (settings.social_twitter) { %>
+              <a href="<%= settings.social_twitter %>" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-brand-500 transition" aria-label="Twitter">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+            <% } %>
+            <% if (settings.social_youtube) { %>
+              <a href="<%= settings.social_youtube %>" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-brand-500 transition" aria-label="YouTube">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              </a>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Services -->
+        <div>
+          <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Services</h3>
+          <ul class="mt-4 space-y-2.5 text-sm">
+            <li><a href="/services/hardware-design-engineering" class="hover:text-brand-500 dark:hover:text-accent transition">Hardware Design &amp; Schematics</a></li>
+            <li><a href="/services/embedded-software-firmware-development" class="hover:text-brand-500 dark:hover:text-accent transition">Firmware &amp; BSP Development</a></li>
+            <li><a href="/services/embedded-ui-hmi-development" class="hover:text-brand-500 dark:hover:text-accent transition">Embedded UI / HMI (TouchGFX &amp; Qt)</a></li>
+            <li><a href="/services/iot-edge-computing-solutions" class="hover:text-brand-500 dark:hover:text-accent transition">IoT Edge Computing Solutions</a></li>
+            <li><a href="/services/automotive-embedded-systems" class="hover:text-brand-500 dark:hover:text-accent transition">Automotive Embedded &amp; HIL</a></li>
+          </ul>
+        </div>
+
+        <!-- Engineering Tools -->
+        <div>
+          <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Engineering &amp; Developer Tools</h3>
+          <ul class="mt-4 space-y-2.5 text-sm">
+            <% toolCategories.forEach(category => { %>
+            <li><a href="/tools/<%= category.slug %>" class="hover:text-brand-500 dark:hover:text-accent transition"><%= category.shortTitle %> (<%= category.toolCount %>)</a></li>
+            <% }); %>
+            <li><a href="/tools" class="hover:text-brand-500 dark:hover:text-accent transition font-bold text-brand-500 dark:text-accent">View All <%= totalTools %> Tools &rarr;</a></li>
+          </ul>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Company &amp; Legal</h3>
+          <ul class="mt-4 space-y-2.5 text-sm">
+            <li><a href="/about" class="hover:text-brand-500 dark:hover:text-accent transition">About Us</a></li>
+            <li><a href="/projects" class="hover:text-brand-500 dark:hover:text-accent transition">Projects Portfolio</a></li>
+            <li><a href="/blogs" class="hover:text-brand-500 dark:hover:text-accent transition">Engineering Blogs</a></li>
+            <li><a href="/contact" class="hover:text-brand-500 dark:hover:text-accent transition">Connect</a></li>
+            <li><a href="/privacy-policy" class="hover:text-brand-500 dark:hover:text-accent transition">Privacy Policy</a></li>
+            <li><a href="/sitemap.xml" class="hover:text-brand-500 dark:hover:text-accent transition">Sitemap (XML)</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="mt-12 pt-8 border-t border-slate-200 dark:border-brand-border flex flex-col sm:flex-row items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+        <p><%= settings.footer_copyright || ('© ' + new Date().getFullYear() + ' ' + (settings.site_name || 'Embedded India') + '. All rights reserved. Built for performance, security, and precision.') %></p>
+        <div class="flex flex-wrap gap-4 sm:gap-6 mt-4 sm:mt-0 text-slate-600 dark:text-slate-400 items-center">
+          <a href="/privacy-policy" class="min-h-[44px] py-3.5 inline-flex items-center hover:underline hover:text-slate-900 dark:hover:text-white">Privacy Policy</a>
+          <a href="/contact" class="min-h-[44px] py-3.5 inline-flex items-center hover:underline hover:text-slate-900 dark:hover:text-white">Engineering Inquiries</a>
+          <a href="/robots.txt" class="min-h-[44px] py-3.5 inline-flex items-center hover:underline hover:text-slate-900 dark:hover:text-white">Robots.txt</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <%- include('../partials/mobile-cta') %>
+
+  <!-- Cookie Consent Banner -->
+  <% if (settings.cookie_banner_enabled !== 'false') { %>
+  <div id="cookie-banner" class="hidden fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 bg-white dark:bg-[#182c27] border border-slate-200 dark:border-brand-border rounded-2xl p-5 shadow-2xl transition">
+    <div class="flex items-start gap-4">
+      <div class="p-2 bg-brand-50 dark:bg-brand-900/50 rounded-xl text-brand-500 dark:text-accent">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <div class="flex-1">
+        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Cookie &amp; Privacy Notice</h4>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">
+          <%= settings.cookie_banner_text || 'We use cookies to ensure optimal functionality, save your theme preferences, and provide interactive engineering tools.' %>
+        </p>
+        <div class="flex items-center space-x-3 mt-3">
+          <button id="cookie-accept" class="min-h-[44px] px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-bold transition flex items-center justify-center">Accept</button>
+          <button id="cookie-decline" class="min-h-[44px] px-4 py-2 bg-slate-200 dark:bg-brand-dark hover:bg-slate-300 dark:hover:bg-brand-900 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold transition flex items-center justify-center">Decline</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
+
+  <!-- Floating WhatsApp Widget -->
+  <% if (settings.enable_whatsapp_widget === 'true' && (settings.whatsapp_number || settings.contact_phone)) { %>
+    <% const waNum = (settings.whatsapp_number || settings.contact_phone || '').replace(/[^0-9]/g, ''); %>
+    <% const waMsg = encodeURIComponent(settings.whatsapp_preset_msg || 'Hello Embedded India, I have an inquiry about custom hardware and firmware engineering.'); %>
+    <aside aria-label="WhatsApp Chat Widget" class="fixed bottom-6 left-6 z-40">
+      <a href="https://wa.me/<%= waNum %>?text=<%= waMsg %>" target="_blank" rel="noopener noreferrer" class="bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 rounded-full shadow-2xl flex items-center justify-center transition-all transform hover:scale-110 active:scale-95 group" aria-label="Chat with an Engineer on WhatsApp">
+        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.06-2.124-.531-1.428-.591-2.348-2.036-2.42-2.133-.071-.097-.577-.768-.577-1.464 0-.697.362-1.039.49-1.182.129-.144.281-.179.375-.179.094 0 .188.001.27.006.087.004.204-.033.319.243.118.283.403.98.438 1.052.036.072.06.156.012.251-.048.096-.072.156-.144.239-.072.084-.152.187-.217.251-.072.072-.147.15-.063.294.084.144.372.613.799.992.549.487 1.012.638 1.156.709.144.072.228.06.312-.036.084-.096.36-.419.456-.563.096-.144.192-.12.324-.072.132.048.837.395.981.467.144.072.24.108.276.168.036.06.036.348-.108.753z"/>
+          <path d="M12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.662 1.435 5.178L2.05 21.95l4.89-1.284C8.384 21.526 10.134 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.2c-1.638 0-3.167-.478-4.46-1.3l-.32-.203-3.308.868.883-3.224-.222-.352C3.69 14.622 3.2 13.153 3.2 11.6c0-4.852 3.948-8.8 8.8-8.8s8.8 3.948 8.8 8.8c0 4.851-3.948 8.8-8.8 8.8z"/>
+        </svg>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out text-xs font-bold pl-0 group-hover:pl-2">WhatsApp Us</span>
+      </a>
+    </aside>
+  <% } %>
+
+  <!-- Back-to-Top Floating Button -->
+  <% if (settings.enable_back_to_top !== 'false') { %>
+    <button id="back-to-top-btn" type="button" aria-label="Back to top"  class="hidden pointer-events-none fixed bottom-20 right-6 z-40 p-3 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition active:scale-95">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+    </button>
+  <% } %>
+
+  <!-- Delayed Popup RFQ Modal -->
+  <% if (settings.enable_rfq_modal === 'true') { %>
+    <div id="rfq-auto-modal" aria-hidden="true" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="w-full max-w-lg bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+        <button id="rfq-modal-close" type="button" aria-label="Close dialog" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-white p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <span class="px-2.5 py-1 bg-accent/20 text-accent font-bold rounded-full text-xs uppercase tracking-wider">Fast-Track RFQ</span>
+        <h3 class="text-xl font-black text-slate-900 dark:text-white mt-2">Have a New Embedded Design Project?</h3>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">Get an engineering proposal with turnaround times and BOM estimates within 24 hours.</p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/contact" class="btn-shimmer flex-1 inline-flex items-center justify-center gap-2 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs shadow-md transition">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>Request Quote Now &rarr;</span>
+          </a>
+          <button type="button" id="rfq-modal-dismiss" class="px-4 py-3 bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold hover:bg-slate-200 transition">
+            Maybe Later
+          </button>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Admin Dynamic Body Script Injection -->
+  <% if (settings.custom_body_scripts && settings.custom_body_scripts.trim()) { %>
+    <%- settings.custom_body_scripts %>
+  <% } %>
+
+  <!-- Global Client-Side Scripts -->
+  <script src="/assets/js/header-search.js"></script>
+  <script>
+    // 3. Back-to-Top Button Scroll Handler
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    if (backToTopBtn) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          backToTopBtn.classList.remove('hidden', 'pointer-events-none');
+        } else {
+          backToTopBtn.classList.add('hidden', 'pointer-events-none');
+        }
+      });
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    // 4. Delayed RFQ Popup Modal Handler
+    const rfqModal = document.getElementById('rfq-auto-modal');
+    const rfqClose = document.getElementById('rfq-modal-close');
+    const rfqDismiss = document.getElementById('rfq-modal-dismiss');
+    if (rfqModal && !sessionStorage.getItem('rfq-dismissed')) {
+      const delaySec = Number('<%= settings.rfq_modal_delay_sec || 5 %>') || 5;
+      setTimeout(() => {
+        if (!sessionStorage.getItem('rfq-dismissed')) {
+          rfqModal.classList.remove('hidden');
+        }
+      }, delaySec * 1000);
+
+      const hideRfq = () => {
+        rfqModal.classList.add('hidden');
+        sessionStorage.setItem('rfq-dismissed', 'true');
+      };
+      if (rfqClose) rfqClose.addEventListener('click', hideRfq);
+      if (rfqDismiss) rfqDismiss.addEventListener('click', hideRfq);
+    }
+
+    // 5. Card Spotlight Cursor Tracker
+    document.querySelectorAll('.spotlight-card, .interactive-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+      });
+    });
+
+    // 6. Mobile Navigation Menu
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.toggle('hidden');
+        mobileMenu.setAttribute('aria-hidden', isHidden ? 'true' : 'false');
+        mobileMenuBtn.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+          mobileMenu.setAttribute('aria-hidden', 'true');
+          mobileMenuBtn.setAttribute('aria-expanded', 'false');
+          mobileMenuBtn.focus();
+        }
+      });
+    }
+
+    // 7. Header Quick Search Widget
+    const SEARCH_INDEX = [
+      { type: 'Service', title: 'Full-Cycle Product Realization', url: '/services/full-cycle-embedded-product-engineering', desc: 'Turnkey electronic hardware, RTOS firmware, DFM validation' },
+      { type: 'Service', title: 'Embedded UI for Industrial & Medical HMI', url: '/services/embedded-ui-hmi-development', desc: 'TouchGFX on STM32 MCUs (our core specialty) & Qt 6 / QML on Embedded Linux MPUs' },
+      { type: 'Service', title: 'Embedded Software & Firmware Development', url: '/services/embedded-software-firmware-development', desc: 'Deterministic bare-metal, FreeRTOS, Zephyr drivers' },
+      { type: 'Service', title: 'Hardware Design & High-Speed PCB Layout', url: '/services/hardware-design-engineering', desc: 'Multi-layer PCB, HDI microvias, impedance matching' },
+      { type: 'Service', title: 'Board Support Package (BSP) Development', url: '/services/bsp-development', desc: 'Custom U-Boot, Linux kernel device trees, drivers' },
+      { type: 'Service', title: 'IoT and Edge Computing Solutions', url: '/services/iot-edge-computing-solutions', desc: 'LoRaWAN, 4G, BLE, TinyML predictive vibration' },
+      { type: 'Service', title: 'Automotive Embedded Systems & HIL', url: '/services/automotive-embedded-systems', desc: 'ECUs, CAN-FD, ISO 26262, Hardware-in-the-Loop' },
+      { type: 'Tool', title: 'IPC-2221 PCB Trace Width Calculator', url: '/tools/pcb-trace', desc: 'Copper trace ampacity and thermal cross section' },
+      { type: 'Tool', title: '555 Timer Frequency & Duty Cycle', url: '/tools/555-timer', desc: 'Astable and monostable oscillation calculations' },
+      { type: 'Tool', title: 'LED Series Current Limiting Resistor', url: '/tools/led-resistor', desc: 'Forward drop and power dissipation calculator' },
+      { type: 'Tool', title: 'UART Baud Rate Error Calculator', url: '/tools/uart-baud', desc: 'Clock divider and framing error tolerances' },
+      { type: 'Tool', title: 'SMD Resistor 3/4-Digit & EIA-96 Code Decoder', url: '/tools/smd-code', desc: 'Surface-mount component marking lookup' },
+      { type: 'Tool', title: 'IoT Battery Life & Deep-Sleep Estimator', url: '/tools/battery-life', desc: 'Duty cycle and multi-year cell lifetime' },
+      { type: 'Tool', title: 'Microstrip Controlled Trace Impedance', url: '/tools/trace-impedance', desc: 'Characteristic impedance 50-ohm calculation' },
+      { type: 'Tool', title: 'Microcontroller Pinout & Peripheral Reference', url: '/tools/mcu-pinout', desc: 'STM32, ESP32, and RP2040 pin multiplexing' },
+      { type: 'Blog', title: 'Hardware & Firmware Co-Design', url: '/blogs/bridging-the-divide', desc: 'Aligning hardware and firmware engineering workflows' },
+      { type: 'Blog', title: 'Hardware-in-the-Loop (HIL) Testing', url: '/blogs/hardware-in-the-loop-hil', desc: 'Automated test rigs for mission-critical validation' },
+      { type: 'Page', title: 'Engineering Services Portfolio', url: '/services', desc: 'All hardware, firmware, and TouchGFX/Qt HMI disciplines' },
+      { type: 'Page', title: 'Client Projects & Case Studies', url: '/projects', desc: 'Bus AC controllers, water dispensers, IoT gateways' },
+      { type: 'Page', title: 'About Embedded India', url: '/about', desc: 'Company vision, precision standards, and engineering presence' },
+      { type: 'Page', title: 'Contact Us & Request Quote', url: '/contact', desc: 'Initiate custom embedded project inquiry' }
+    ];
+
+    window.HeaderSearch.init(SEARCH_INDEX);
+
+    // 8. Cookie Banner Handling
+    const cookieBanner = document.getElementById('cookie-banner');
+    const cookieAccept = document.getElementById('cookie-accept');
+    const cookieDecline = document.getElementById('cookie-decline');
+
+    if (cookieBanner && !navigator.webdriver && !localStorage.getItem('cookie-choice')) {
+      cookieBanner.classList.remove('hidden');
+      cookieAccept?.addEventListener('click', () => {
+        localStorage.setItem('cookie-choice', 'accepted');
+        cookieBanner.classList.add('hidden');
+      });
+      cookieDecline?.addEventListener('click', () => {
+        localStorage.setItem('cookie-choice', 'declined');
+        cookieBanner.classList.add('hidden');
+      });
+    }
+
+    // 9. Newsletter Form Submission AJAX
+    const newsletterForm = document.getElementById('newsletter-form');
+    const newsletterStatus = document.getElementById('newsletter-status');
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        newsletterStatus.textContent = 'Submitting...';
+        newsletterStatus.className = 'text-xs text-accent';
+        const formData = new FormData(newsletterForm);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+          const res = await fetch('/api/newsletter/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+          const result = await res.json();
+          if (result.success) {
+            newsletterStatus.textContent = result.message;
+            newsletterStatus.className = 'text-xs text-accent font-semibold';
+            newsletterForm.reset();
+          } else {
+            newsletterStatus.textContent = result.message;
+            newsletterStatus.className = 'text-xs text-red-400';
+          }
+        } catch (err) {
+          newsletterStatus.textContent = 'Error connecting to server. Please try again.';
+          newsletterStatus.className = 'text-xs text-red-400';
+        }
+      });
+    }
+  </script>
+
+  <%- include('../partials/copilot') %>
+
+  <script src="/assets/js/copilot-widget.js?v=<%= assetVersion %>"></script>
+
+  <script src="/assets/js/theme-manager.js?v=<%= assetVersion %>"></script>
+</body>
+</html>

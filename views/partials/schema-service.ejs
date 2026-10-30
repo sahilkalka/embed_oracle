@@ -1,0 +1,8 @@
+<%
+const businessId = appUrl + '/#business';
+const serviceGraph = { '@context': 'https://schema.org', '@graph': [
+ { '@type': 'ProfessionalService', '@id': businessId, name: settings.site_name || 'Embedded India', url: appUrl, email: settings.contact_email || 'info@embeddedindia.in', telephone: settings.contact_phone || '+91 83285 14090', address: { '@type': 'PostalAddress', streetAddress: settings.contact_address || 'Hyderabad, India', addressCountry: 'IN' } },
+ ...Object.values(services).map(service => ({ '@type': 'Service', name: service.title, description: service.description, url: appUrl + '/services/' + service.slug, provider: { '@id': businessId }, areaServed: { '@type': 'Country', name: 'India' } }))
+] };
+%>
+<script type="application/ld+json"><%- JSON.stringify(serviceGraph).replace(/</g, '\u003c') %></script>

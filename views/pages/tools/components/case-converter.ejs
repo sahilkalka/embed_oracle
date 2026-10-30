@@ -1,0 +1,125 @@
+<div class="space-y-6">
+  <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-brand-border pb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">String Case Converter</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Transform identifier conventions for C/C++, JavaScript, Python, SQL, and URLs.</p>
+      </div>
+      <button type="button" id="cc-copy-active" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow">Copy Selected</button>
+    </div>
+
+    <div>
+      <label for="cc-input" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Input String</label>
+      <input type="text" id="cc-input" value="embedded system architecture telemetry" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">camelCase</span>
+          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+        </div>
+        <p id="cc-val-camel" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
+      </div>
+
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">PascalCase</span>
+          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+        </div>
+        <p id="cc-val-pascal" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
+      </div>
+
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">snake_case</span>
+          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+        </div>
+        <p id="cc-val-snake" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
+      </div>
+
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">CONSTANT_CASE</span>
+          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+        </div>
+        <p id="cc-val-constant" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
+      </div>
+
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">kebab-case</span>
+          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+        </div>
+        <p id="cc-val-kebab" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
+      </div>
+
+      <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">Title Case</span>
+          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+        </div>
+        <p id="cc-val-title" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const input = document.getElementById('cc-input');
+
+  function getWords(str) {
+    return str.replace(/[-_]/g, ' ')
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+  }
+
+  function update() {
+    const raw = input.value;
+    const words = getWords(raw);
+
+    const camel = words.map((w, i) => i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
+    const pascal = words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
+    const snake = words.map(w => w.toLowerCase()).join('_');
+    const constant = words.map(w => w.toUpperCase()).join('_');
+    const kebab = words.map(w => w.toLowerCase()).join('-');
+    const title = words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+
+    document.getElementById('cc-val-camel').textContent = camel;
+    document.getElementById('cc-val-pascal').textContent = pascal;
+    document.getElementById('cc-val-snake').textContent = snake;
+    document.getElementById('cc-val-constant').textContent = constant;
+    document.getElementById('cc-val-kebab').textContent = kebab;
+    document.getElementById('cc-val-title').textContent = title;
+  }
+
+  input.addEventListener('input', update);
+
+  document.querySelectorAll('.cc-copy-row').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.closest('div').parentElement.querySelector('p');
+      if (p && p.textContent) {
+        navigator.clipboard.writeText(p.textContent);
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = orig, 1200);
+      }
+    });
+  });
+
+  document.getElementById('cc-copy-active').addEventListener('click', () => {
+    const txt = document.getElementById('cc-val-kebab').textContent;
+    if (txt) {
+      navigator.clipboard.writeText(txt);
+      const b = document.getElementById('cc-copy-active');
+      const orig = b.textContent;
+      b.textContent = 'Copied!';
+      setTimeout(() => b.textContent = orig, 1200);
+    }
+  });
+
+  update();
+})();
+</script>

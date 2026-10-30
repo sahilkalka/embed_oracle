@@ -1,0 +1,75 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-5 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Social Card Metadata</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Live Preview</span>
+    </div>
+
+    <div>
+      <label for="og-title" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Title</label>
+      <input type="text" id="og-title" value="Embedded India - Turnkey Electronic Engineering" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="og-desc" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Description</label>
+      <textarea id="og-desc" rows="3" class="w-full px-4 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">Turnkey electronic product engineering from napkin architecture and high-speed simulation to volume mass manufacturing and lifecycle sustainment.</textarea>
+    </div>
+
+    <div>
+      <label for="og-domain" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Display Domain</label>
+      <input type="text" id="og-domain" value="embeddedindia.in" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="og-img-url" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Image URL</label>
+      <input type="text" id="og-img-url" value="/images/hero-canvas.jpg" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+  </div>
+
+  <div class="lg:col-span-7 space-y-6">
+    <div class="space-y-4">
+      <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Google Search Snippet Preview</span>
+      <div class="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-brand-border shadow-sm">
+        <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
+          <span class="w-3.5 h-3.5 bg-brand-500 rounded-full inline-block"></span>
+          <span>https://<span id="og-prev-domain1">embeddedindia.in</span></span>
+        </div>
+        <p id="og-prev-title1" class="text-blue-600 dark:text-blue-400 text-base font-medium hover:underline cursor-pointer">Embedded India - Turnkey Electronic Engineering</p>
+        <p id="og-prev-desc1" class="text-xs text-slate-600 dark:text-slate-300 mt-1 line-clamp-2">Turnkey electronic product engineering from napkin architecture and high-speed simulation to volume mass manufacturing and lifecycle sustainment.</p>
+      </div>
+
+      <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block pt-2">Social Feed Card Preview</span>
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-brand-border shadow-sm overflow-hidden max-w-md">
+        <div class="h-44 bg-slate-800 flex items-center justify-center overflow-hidden">
+          <img id="og-prev-img" src="/images/hero-canvas.jpg" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/600x314?text=Social+Share+Image';">
+        </div>
+        <div class="p-4 border-t border-slate-100 dark:border-brand-border">
+          <span id="og-prev-domain2" class="text-[11px] font-mono uppercase text-slate-400 block mb-1">embeddedindia.in</span>
+          <p id="og-prev-title2" class="font-bold text-sm text-slate-900 dark:text-white line-clamp-1">Embedded India - Turnkey Electronic Engineering</p>
+          <p id="og-prev-desc2" class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Turnkey electronic product engineering from napkin architecture and high-speed simulation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const t = document.getElementById('og-title');
+  const d = document.getElementById('og-desc');
+  const dom = document.getElementById('og-domain');
+  const img = document.getElementById('og-img-url');
+
+  function update() {
+    document.getElementById('og-prev-title1').textContent = t.value;
+    document.getElementById('og-prev-title2').textContent = t.value;
+    document.getElementById('og-prev-desc1').textContent = d.value;
+    document.getElementById('og-prev-desc2').textContent = d.value;
+    document.getElementById('og-prev-domain1').textContent = dom.value;
+    document.getElementById('og-prev-domain2').textContent = dom.value;
+    document.getElementById('og-prev-img').src = img.value;
+  }
+
+  [t, d, dom, img].forEach(el => el.addEventListener('input', update));
+  update();
+})();
+</script>

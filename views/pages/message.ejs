@@ -1,0 +1,22 @@
+<%- include('../layouts/header') %>
+
+<div class="max-w-3xl mx-auto px-4 py-20 text-center">
+  <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border rounded-2xl p-10 sm:p-14 shadow-xl">
+    <div class="w-16 h-16 bg-brand-50 dark:bg-brand-900/60 text-brand-500 dark:text-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    
+    <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white mb-4"><%= heading %></h1>
+    <p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed max-w-xl mx-auto mb-8"><%= message %></p>
+    
+    <div>
+      <a href="<%= buttonLink %>" class="inline-flex items-center px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl shadow-lg transition">
+        <%= buttonText %> &rarr;
+      </a>
+    </div>
+  </div>
+</div>
+
+<%- include('../layouts/footer') %>

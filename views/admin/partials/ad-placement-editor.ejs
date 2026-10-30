@@ -1,0 +1,56 @@
+<%
+const placements = [
+  { name: 'ad_slot_blog_header', toggle: 'ad_toggle_slot1', preview: 'ad_wf_slot1', title: 'Blog header', detail: 'Leaderboard · 728 × 90', number: 1 },
+  { name: 'ad_slot_in_article', toggle: 'ad_toggle_slot2', preview: 'ad_wf_slot2', title: 'In-article', detail: 'After paragraph 3', number: 2 },
+  { name: 'ad_slot_blog_sidebar', toggle: 'ad_toggle_slot3', preview: 'ad_wf_slot3', title: 'Blog sidebar', detail: 'Medium rectangle · 300 × 250', number: 3 },
+  { name: 'ad_slot_post_footer', toggle: 'ad_toggle_slot4', preview: 'ad_wf_slot4', title: 'Post footer', detail: 'After the article conclusion', number: 4 },
+  { name: 'ad_slot_tools_header', toggle: 'ad_toggle_slot_tools_header', preview: 'ad_wf_slot_tools_h', title: 'Tools top', detail: 'Above the calculator', number: 5 },
+  { name: 'ad_slot_tools_footer', toggle: 'ad_toggle_slot_tools_footer', preview: 'ad_wf_slot_tools_f', title: 'Tools footer', detail: 'Below calculator content', number: 6 }
+];
+%>
+<div id="ad-placement-editor" class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4">
+  <% placements.forEach(slot => { %>
+    <input type="hidden" name="<%= slot.name %>" id="<%= slot.toggle %>" value="<%= settings[slot.name] === 'true' ? 'true' : 'false' %>">
+  <% }) %>
+  <div class="ad-placement-heading ad-preview-heading">
+    <div>
+      <h3 class="settings-panel-title">Placement preview</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Click any ad slot in the preview below to toggle it Active or Disabled, then save your settings to publish.</p>
+    </div>
+    <span class="ad-preview-caption">Interactive · click slot to toggle</span>
+  </div>
+  <div class="ad-preview-pages">
+    <% ['Blog article', 'Engineering tool'].forEach((pageTitle, pageIndex) => { %>
+      <section class="ad-preview-page" aria-label="<%= pageTitle %> placement preview">
+        <div class="ad-preview-browser"><span aria-hidden="true">● ● ●</span><strong><%= pageTitle %></strong></div>
+        <div class="ad-preview-body">
+          <div class="ad-preview-navigation">Embedded India <span>Navigation</span></div>
+          <% const previewSlot = slot => { const isActive = settings[slot.name] === 'true'; %>
+            <button type="button" id="<%= slot.preview %>" role="switch" aria-checked="<%= isActive ? 'true' : 'false' %>" aria-label="Slot <%= slot.number %>: <%= slot.title %>" onclick="toggleAdPlacementSlot('<%= slot.toggle %>', '<%= slot.preview %>')" class="ad-preview-slot" data-active="<%= isActive %>">
+              <span class="ad-slot-number"><%= slot.number %></span>
+              <strong><%= slot.title %></strong>
+              <span class="ad-preview-state"><%= isActive ? 'Active' : 'Disabled' %></span>
+            </button>
+          <% }; %>
+          <% previewSlot(placements[pageIndex === 0 ? 0 : 4]); %>
+          <% if (pageIndex === 0) { %>
+            <div class="ad-preview-article-layout">
+              <div class="ad-preview-content">
+                <div class="ad-preview-copy"><strong>Article title</strong><i></i><i></i><i></i><small>Paragraphs 1–3</small></div>
+                <% previewSlot(placements[1]); %>
+                <div class="ad-preview-copy"><i></i><i></i><small>Article conclusion</small></div>
+              </div>
+              <aside class="ad-preview-sidebar"><small>Sidebar</small><% previewSlot(placements[2]); %></aside>
+            </div>
+            <% previewSlot(placements[3]); %>
+          <% } else { %>
+            <div class="ad-preview-calculator"><strong>Engineering calculator</strong><div class="ad-preview-fields"><i></i><i></i></div><div class="ad-preview-result">Calculation results</div><small>Reference notes &amp; supporting content</small></div>
+            <% previewSlot(placements[5]); %>
+          <% } %>
+          <div class="ad-preview-footer">Site footer</div>
+        </div>
+      </section>
+    <% }) %>
+  </div>
+  <p class="text-xs text-slate-500 dark:text-slate-400">Active shows the placement setting. Ad delivery also requires the ad provider and a valid slot configuration.</p>
+</div>

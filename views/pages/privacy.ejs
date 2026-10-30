@@ -1,0 +1,51 @@
+<%- include('../layouts/header') %>
+
+<!-- Privacy Policy Hero (Left-Aligned with Ambient Mesh) -->
+<section class="py-16 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border spaceship-ambient-mesh circuit-grid">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
+    <div class="max-w-3xl">
+      <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
+        Legal &amp; Data Security
+      </span>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mt-3 tracking-tight">
+        Privacy Policy
+      </h1>
+      <p class="text-slate-600 dark:text-slate-300 mt-2 text-sm">Last updated: January 2026 &bull; Strict IP Non-Disclosure Standards</p>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 bg-slate-50 dark:bg-[#13221f]">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-white dark:bg-brand-surface rounded-3xl p-8 sm:p-12 border border-slate-200 dark:border-brand-border shadow-md space-y-6 text-slate-700 dark:text-slate-200 text-sm leading-relaxed">
+      
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white">1. Information We Collect</h2>
+      <p>
+        When you submit an engineering consultation request or subscribe to our technical newsletter, we collect contact information including your name, email address, phone number, and project specifications.
+      </p>
+
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white">2. Engineering IP &amp; Confidentiality</h2>
+      <p>
+        We treat all project schematics, firmware code, and system architecture details submitted through our forms or email channels with strict technical confidentiality. We are pleased to execute mutual Non-Disclosure Agreements (NDA) prior to preliminary architecture discovery meetings.
+      </p>
+
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white">3. Newsletter &amp; Opt-In Communications</h2>
+      <p>
+        We utilize a double opt-in protocol for email subscriptions. We will never sell, rent, or share your contact email with external third-party advertisers. Every email communication includes an immediate, one-click unsubscribe mechanism.
+      </p>
+
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white">4. Cookies &amp; Local Storage</h2>
+      <p>
+        Our site utilizes local storage strictly to remember your interface preferences (such as Light and Dark theme mode) and anonymous calculator usage state to deliver optimal browser performance.
+      </p>
+
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white">5. Contacting Us</h2>
+      <p>
+        If you have any questions regarding our privacy practices or data handling, please reach out to us at <a href="mailto:<%= settings.contact_email || 'info@embeddedindia.in' %>" class="text-brand-500 dark:text-accent font-semibold underline"><%= settings.contact_email || 'info@embeddedindia.in' %></a>.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/footer') %>

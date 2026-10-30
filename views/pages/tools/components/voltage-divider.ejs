@@ -1,0 +1,131 @@
+<!-- Voltage Divider Component -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Circuit Inputs</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Ohm's Law</span>
+    </div>
+
+    <div>
+      <label for="vd-vin" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+        Input Voltage Vin (Volts)
+      </label>
+      <input type="number" id="vd-vin" value="12.0" step="0.1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="vd-r1" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+          Resistor R1 (Ohms)
+        </label>
+        <input type="number" id="vd-r1" value="10000" step="100" min="1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+      <div>
+        <label for="vd-r2" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+          Resistor R2 (Ohms)
+        </label>
+        <input type="number" id="vd-r2" value="3900" step="100" min="1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+    </div>
+
+    <div>
+      <label for="vd-rl" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+        Load Resistance RL (Optional / Unloaded if empty)
+      </label>
+      <input type="number" id="vd-rl" placeholder="e.g. 100000 for 100k ADC input" step="1000" min="1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <!-- Schematic Preview -->
+    <div class="p-4 bg-slate-900 rounded-2xl flex flex-col items-center">
+      <svg class="w-48 h-32" viewBox="0 0 160 120">
+        <line x1="80" y1="10" x2="80" y2="30" stroke="#55a630" stroke-width="2"/>
+        <text x="80" y="8" fill="#55a630" font-size="8" font-family="monospace" text-anchor="middle">Vin</text>
+        <rect x="70" y="30" width="20" height="25" fill="#182c27" stroke="#dbdbdb" stroke-width="1.5"/>
+        <text x="100" y="46" fill="#94a3b8" font-size="8" font-family="monospace">R1</text>
+        <line x1="80" y1="55" x2="80" y2="70" stroke="#dbdbdb" stroke-width="2"/>
+        <line x1="80" y1="62" x2="130" y2="62" stroke="#55a630" stroke-width="2"/>
+        <circle cx="130" cy="62" r="3" fill="#55a630"/>
+        <text x="145" y="65" fill="#55a630" font-size="8" font-family="monospace">Vout</text>
+        <rect x="70" y="70" width="20" height="25" fill="#182c27" stroke="#dbdbdb" stroke-width="1.5"/>
+        <text x="100" y="86" fill="#94a3b8" font-size="8" font-family="monospace">R2</text>
+        <line x1="80" y1="95" x2="80" y2="110" stroke="#dbdbdb" stroke-width="2"/>
+        <line x1="65" y1="110" x2="95" y2="110" stroke="#94a3b8" stroke-width="2"/>
+        <text x="80" y="118" fill="#94a3b8" font-size="7" font-family="monospace" text-anchor="middle">GND</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 space-y-6">
+    <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">
+        Divider Output &amp; Dissipation
+      </h3>
+
+      <div class="mt-6 grid grid-cols-2 gap-4">
+        <div class="p-4 bg-brand-50 dark:bg-brand-900/40 rounded-2xl border border-brand-200 dark:border-brand-700 min-w-0">
+          <span class="text-xs text-brand-800 dark:text-accent font-semibold block">Unloaded Output (Vout)</span>
+          <span id="vd-resVout" class="text-2xl sm:text-3xl font-black text-brand-700 dark:text-white font-mono truncate">--</span>
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block mt-0.5">Volts (V)</span>
+        </div>
+
+        <div class="p-4 bg-accent/15 dark:bg-accent/20 rounded-2xl border border-accent/30 min-w-0">
+          <span class="text-xs text-accent-dark dark:text-accent font-semibold block">Loaded Output (Vout)</span>
+          <span id="vd-resLoaded" class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono truncate">--</span>
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block mt-0.5">Volts with RL</span>
+        </div>
+      </div>
+
+      <div class="mt-4 grid grid-cols-3 gap-3">
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60 min-w-0">
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block truncate">Ratio (R2/Total)</span>
+          <span id="vd-resRatio" class="text-sm font-bold text-slate-900 dark:text-white font-mono truncate">--</span>
+        </div>
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60 min-w-0">
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block truncate">Divider Current</span>
+          <span id="vd-resCurrent" class="text-sm font-bold text-slate-900 dark:text-white font-mono truncate">--</span>
+        </div>
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60 min-w-0">
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block truncate">Total Power</span>
+          <span id="vd-resPower" class="text-sm font-bold text-slate-900 dark:text-white font-mono truncate">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  function calcVd() {
+    const vin = parseFloat(document.getElementById('vd-vin')?.value) || 0;
+    const r1 = parseFloat(document.getElementById('vd-r1')?.value) || 1;
+    const r2 = parseFloat(document.getElementById('vd-r2')?.value) || 1;
+    const rlVal = document.getElementById('vd-rl')?.value;
+    const rl = rlVal ? parseFloat(rlVal) : null;
+
+    const voutUnloaded = vin * (r2 / (r1 + r2));
+    let voutLoaded = voutUnloaded;
+    if (rl && rl > 0) {
+      const r2Parallel = (r2 * rl) / (r2 + rl);
+      voutLoaded = vin * (r2Parallel / (r1 + r2Parallel));
+    }
+
+    const currentA = vin / (r1 + r2);
+    const powerW = vin * currentA;
+    const ratio = r2 / (r1 + r2);
+
+    document.getElementById('vd-resVout').textContent = voutUnloaded.toFixed(3) + ' V';
+    document.getElementById('vd-resLoaded').textContent = rl ? voutLoaded.toFixed(3) + ' V' : 'No Load';
+    document.getElementById('vd-resRatio').textContent = ratio.toFixed(4);
+    document.getElementById('vd-resCurrent').textContent = currentA < 0.001 ? (currentA * 1e6).toFixed(1) + ' µA' : (currentA * 1000).toFixed(2) + ' mA';
+    document.getElementById('vd-resPower').textContent = powerW < 0.001 ? (powerW * 1000).toFixed(2) + ' mW' : powerW.toFixed(3) + ' W';
+  }
+
+  ['vd-vin', 'vd-r1', 'vd-r2', 'vd-rl'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', calcVd);
+  });
+  calcVd();
+})();
+</script>
+

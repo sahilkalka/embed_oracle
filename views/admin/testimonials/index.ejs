@@ -1,0 +1,94 @@
+<%- include('../layout_top') %>
+
+<div class="w-full space-y-6 min-w-0 [overflow-wrap:anywhere] mx-auto">
+  
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="min-w-0 flex-1 basis-96">
+      <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">
+        <span>⭐ Client Testimonials &amp; Customer Reviews</span>
+      </h1>
+      <p class="text-xs text-slate-500 mt-1">Manage client social proof displayed on the homepage. Customer-submitted reviews remain pending until approved by an admin.</p>
+    </div>
+
+    <div class="flex items-center flex-wrap gap-2">
+      <a href="/admin/testimonials/new" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5 active:scale-95 whitespace-nowrap">
+        <span>+ Add Testimonial</span>
+      </a>
+      <a href="/submit-review" target="_blank" class="px-4 py-2 bg-slate-100 dark:bg-brand-surface hover:bg-slate-200 dark:hover:bg-brand-dark text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-brand-border rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5">
+        <span>View Public Review Form &nearr;</span>
+      </a>
+    </div>
+  </div>
+
+  <% if (!testimonials || testimonials.length === 0) { %>
+    <div class="bg-white dark:bg-brand-surface rounded-2xl p-12 text-center border border-slate-200 dark:border-brand-border">
+      <p class="text-slate-500 text-sm">No testimonials added yet. Click "+ Add Testimonial" above or share the public review link.</p>
+    </div>
+  <% } else { %>
+    <div class="space-y-4">
+      <% testimonials.forEach(t => { %>
+        <div class="bg-white dark:bg-brand-surface rounded-2xl p-6 border border-slate-200 dark:border-brand-border shadow-sm space-y-4">
+          
+          <div class="flex flex-wrap items-center justify-between pb-4 border-b border-slate-100 dark:border-brand-border gap-2">
+            <div class="flex items-center space-x-3">
+              <span class="w-3 h-3 rounded-full <%= t.isApproved ? 'bg-emerald-500' : 'bg-amber-400 animate-pulse' %>"></span>
+              <div>
+                <span class="text-sm font-bold text-slate-900 dark:text-white"><%= t.name %></span>
+                <span class="text-xs text-slate-500 ml-1"><%= t.role %><% if (t.company) { %> · <strong class="text-slate-700 dark:text-slate-300"><%= t.company %></strong><% } %></span>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider <%= t.isApproved ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300' %>">
+                <%= t.isApproved ? 'Published' : 'Pending Moderation' %>
+              </span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 uppercase">
+                <%= t.source || 'admin' %>
+              </span>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center space-x-1 text-yellow-400">
+              <% for (let i = 0; i < (t.rating || 5); i++) { %>
+                <span>★</span>
+              <% } %>
+              <span class="text-xs font-bold text-slate-500 ml-1">(<%= t.rating || 5 %>/5)</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 italic leading-relaxed">
+              "<%= t.quote %>"
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between pt-3 border-t border-slate-100 dark:border-brand-border text-xs text-slate-400 gap-2">
+            <span>Added on <%= t.createdAt ? new Date(t.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent' %></span>
+
+            <div class="flex items-center space-x-2">
+              <form action="/admin/testimonials/<%= t.id %>/toggle-approve" method="POST" class="inline">
+                <%- csrfField %>
+                <button type="submit" class="px-3 py-1.5 rounded-lg border text-xs font-bold transition <%= t.isApproved ? 'border-amber-300 text-amber-600 hover:bg-amber-50' : 'border-emerald-500 text-emerald-600 hover:bg-emerald-50' %>">
+                  <%= t.isApproved ? 'Unpublish' : 'Approve & Publish' %>
+                </button>
+              </form>
+
+              <a href="/admin/testimonials/<%= t.id %>/edit" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-brand-border text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-brand-dark transition">
+                Edit
+              </a>
+
+              <form action="/admin/testimonials/<%= t.id %>/delete" method="POST" onsubmit="return confirm('Permanently delete this testimonial?')" class="inline">
+                <%- csrfField %>
+                <button type="submit" class="px-3 py-1.5 rounded-lg border border-red-200 text-xs font-bold text-red-600 hover:bg-red-50 transition">
+                  Delete
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+</div>
+
+<%- include('../layout_bottom') %>

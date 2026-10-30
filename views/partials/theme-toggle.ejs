@@ -1,0 +1,93 @@
+<%
+  const toggleName = locals.name || 'toggle';
+  const toggleId = locals.id || ('toggle_' + toggleName);
+  const isChecked = (locals.checked === true || locals.checked === 'true' || locals.value === true || locals.value === 'true' || (typeof locals.checked === 'undefined' && typeof locals.value === 'undefined' && locals.defaultChecked));
+  const onChange = locals.onChange || '';
+  const label = locals.label || toggleName;
+  const onLabel = locals.onLabel || 'Enabled';
+  const offLabel = locals.offLabel || 'Disabled';
+  const showBadge = locals.showBadge !== false;
+%>
+<div class="inline-flex items-center gap-2.5 theme-toggle-wrapper select-none">
+  <input type="hidden" name="<%= toggleName %>" id="<%= toggleId %>" value="<%= isChecked ? 'true' : 'false' %>">
+  <button 
+    type="button" 
+    role="switch" 
+    id="btn_<%= toggleId %>"
+    aria-checked="<%= isChecked ? 'true' : 'false' %>"
+    aria-label="<%= label %>"
+    data-toggle-id="<%= toggleId %>"
+    data-on-label="<%= onLabel %>"
+    data-off-label="<%= offLabel %>"
+    onclick="handleThemeToggleClick('<%= toggleId %>', this, <%= onChange ? ('\'' + onChange + '\'') : 'null' %>)"
+    class="theme-toggle-switch relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:ring-offset-2 <%= isChecked ? 'is-checked' : 'is-unchecked' %>"
+    style="<%= isChecked ? 'background-color: var(--accent-primary, #059669);' : 'background-color: var(--bg-muted, #cbd5e1);' %>">
+    <span class="sr-only"><%= label %></span>
+    <span 
+      aria-hidden="true" 
+      class="theme-toggle-thumb pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 <%= isChecked ? 'translate-x-5' : 'translate-x-0' %>"
+      style="transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); transform: <%= isChecked ? 'translateX(20px)' : 'translateX(0px)' %>;">
+    </span>
+  </button>
+  <% if (showBadge) { %>
+    <span 
+      id="badge_<%= toggleId %>" 
+      onclick="handleThemeToggleClick('<%= toggleId %>', document.getElementById('btn_<%= toggleId %>'), <%= onChange ? ('\'' + onChange + '\'') : 'null' %>)"
+      class="theme-toggle-badge text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md cursor-pointer hover:opacity-85 transition select-none <%= isChecked ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : 'bg-slate-200 dark:bg-slate-800 text-slate-500' %>">
+      <%= isChecked ? onLabel : offLabel %>
+    </span>
+  <% } %>
+</div>
+
+<script>
+if (typeof window.handleThemeToggleClick !== 'function') {
+  window.handleThemeToggleClick = function(inputId, btnEl, callbackName) {
+    var hiddenInput = document.getElementById(inputId);
+    var btn = btnEl || document.getElementById('btn_' + inputId);
+    if (!hiddenInput || !btn) return;
+    var knob = btn.querySelector('.theme-toggle-thumb');
+    var badge = document.getElementById('badge_' + inputId);
+    if (!knob) return;
+
+    var isChecked = hiddenInput.value === 'true';
+    var nextState = !isChecked;
+    hiddenInput.value = nextState ? 'true' : 'false';
+
+    btn.setAttribute('aria-checked', nextState ? 'true' : 'false');
+    var isDark = document.documentElement.classList.contains('dark');
+    var mutedBg = isDark ? '#334155' : '#cbd5e1';
+    var activeColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim() || '#059669';
+
+    if (nextState) {
+      btn.classList.remove('is-unchecked');
+      btn.classList.add('is-checked');
+      btn.style.backgroundColor = activeColor;
+      knob.classList.remove('translate-x-0');
+      knob.classList.add('translate-x-5');
+      knob.style.transform = 'translateX(20px)';
+      if (badge) {
+        badge.className = 'theme-toggle-badge text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md cursor-pointer hover:opacity-85 transition select-none bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300';
+        badge.textContent = btn.dataset.onLabel || 'Enabled';
+      }
+    } else {
+      btn.classList.remove('is-checked');
+      btn.classList.add('is-unchecked');
+      btn.style.backgroundColor = mutedBg;
+      knob.classList.remove('translate-x-5');
+      knob.classList.add('translate-x-0');
+      knob.style.transform = 'translateX(0px)';
+      if (badge) {
+        badge.className = 'theme-toggle-badge text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md cursor-pointer hover:opacity-85 transition select-none bg-slate-200 dark:bg-slate-800 text-slate-500';
+        badge.textContent = btn.dataset.offLabel || 'Disabled';
+      }
+    }
+
+    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+    hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+    if (callbackName && typeof window[callbackName] === 'function') {
+      window[callbackName](nextState, inputId);
+    }
+  };
+}
+</script>

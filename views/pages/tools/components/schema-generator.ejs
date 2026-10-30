@@ -1,0 +1,112 @@
+<div class="space-y-6">
+  <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-brand-border pb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">JSON-LD Structured Data Generator</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Generate Google-compliant schema markups for SEO rich snippets.</p>
+      </div>
+      <button type="button" id="schema-copy-btn" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow">Copy JSON-LD</button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div>
+        <label for="schema-type" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Schema Type</label>
+        <select id="schema-type" class="w-full px-4 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+          <option value="Organization" selected>Organization / Tech Company</option>
+          <option value="SoftwareApplication">SoftwareApplication / Tool</option>
+          <option value="FAQPage">FAQPage</option>
+        </select>
+      </div>
+      <div>
+        <label for="schema-name" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Entity Name</label>
+        <input type="text" id="schema-name" value="Embedded India" class="w-full px-4 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+      <div>
+        <label for="schema-url" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Entity URL</label>
+        <input type="url" id="schema-url" value="https://embeddedindia.in" class="w-full px-4 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+    </div>
+
+    <div>
+      <textarea id="schema-output" readonly rows="12" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-emerald-400 font-mono text-xs outline-none"></textarea>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const typeEl = document.getElementById('schema-type');
+  const nameEl = document.getElementById('schema-name');
+  const urlEl = document.getElementById('schema-url');
+  const outEl = document.getElementById('schema-output');
+
+  function update() {
+    const type = typeEl.value;
+    const name = nameEl.value;
+    const url = urlEl.value;
+
+    let schema = {};
+
+    if (type === 'Organization') {
+      schema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": name,
+        "url": url,
+        "logo": url + "/images/logo.png",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+91-8328514090",
+          "contactType": "customer service",
+          "email": "contact@embeddedindia.in",
+          "areaServed": "IN"
+        }
+      };
+    } else if (type === 'SoftwareApplication') {
+      schema = {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": name,
+        "operatingSystem": "All",
+        "applicationCategory": "UtilitiesApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "url": url
+      };
+    } else {
+      schema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What engineering disciplines are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Embedded India covers high-speed PCB design, bare-metal C/C++ firmware, FreeRTOS architectures, and IoT connectivity."
+            }
+          }
+        ]
+      };
+    }
+
+    outEl.value = '<script type="application/ld+json">\n' + JSON.stringify(schema, null, 2) + '\n<\/script>';
+  }
+
+  [typeEl, nameEl, urlEl].forEach(el => el.addEventListener('input', update));
+
+  document.getElementById('schema-copy-btn').addEventListener('click', () => {
+    if (outEl.value) {
+      navigator.clipboard.writeText(outEl.value);
+      const b = document.getElementById('schema-copy-btn');
+      const orig = b.textContent;
+      b.textContent = 'Copied!';
+      setTimeout(() => b.textContent = orig, 1200);
+    }
+  });
+
+  update();
+})();
+</script>

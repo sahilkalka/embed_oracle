@@ -1,0 +1,99 @@
+<%- include('../layouts/header') %>
+
+<section class="py-16 lg:py-20 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border spaceship-ambient-mesh">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
+    <div class="max-w-3xl">
+      <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold uppercase tracking-wider shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-brand-500 dark:bg-accent animate-ping flex-shrink-0"></span>
+        <span class="font-extrabold">Client Feedback</span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white mt-4 tracking-tight">Share Your Experience</h1>
+      <p class="mt-4 text-base text-slate-700 dark:text-slate-200 leading-relaxed">
+        Have you partnered with Embedded India on a hardware design, RTOS firmware, or IoT prototype project? We value your technical feedback. All reviews are verified and moderated before publication.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 bg-slate-50 dark:bg-[#13221f]">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <% if (locals.successMsg) { %>
+    <div class="mb-8 p-5 bg-emerald-50 dark:bg-emerald-900/30 rounded-2xl border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-sm font-semibold flex items-center space-x-3">
+      <span class="text-xl">✅</span>
+      <span><%= successMsg %></span>
+    </div>
+    <% } %>
+
+    <% if (locals.errorMsg) { %>
+    <div class="mb-8 p-5 bg-red-50 dark:bg-red-900/30 rounded-2xl border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm font-semibold flex items-center space-x-3">
+      <span class="text-xl">⚠️</span>
+      <span><%= errorMsg %></span>
+    </div>
+    <% } %>
+
+    <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-brand-border shadow-xl">
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Write Your Review</h2>
+      <form method="POST" action="/submit-review" class="space-y-5">
+        <!-- Anti-Spam Honeypot -->
+        <div class="hidden" aria-hidden="true">
+          <label for="website_trap">Do not fill this</label>
+          <input type="text" id="website_trap" name="website_trap" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+              Your Full Name <span class="text-red-500">*</span>
+            </label>
+            <input type="text" name="name" required placeholder="e.g. Rajesh Kumar" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+              Your Professional Role <span class="text-red-500">*</span>
+            </label>
+            <input type="text" name="role" required placeholder="e.g. Lead Hardware Architect" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+            Company / Organization
+          </label>
+          <input type="text" name="company" placeholder="e.g. Acme Mobility Technologies" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+            Star Rating <span class="text-red-500">*</span>
+          </label>
+          <div class="flex items-center gap-4">
+            <% [5, 4, 3, 2, 1].forEach(function(n) { %>
+            <label class="flex items-center gap-1.5 cursor-pointer text-sm font-bold text-slate-700 dark:text-slate-300">
+              <input type="radio" name="rating" value="<%= n %>" <%= n === 5 ? 'checked' : '' %> class="accent-brand-500 w-4 h-4">
+              <span><%= n %> ★</span>
+            </label>
+            <% }); %>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+            Testimonial Review <span class="text-red-500">*</span>
+          </label>
+          <textarea name="quote" required rows="5" placeholder="Describe your project, timeline, prototype quality, and collaboration experience with Embedded India..." class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500"></textarea>
+        </div>
+
+        <button type="submit" class="btn-shimmer w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-sm transition shadow-md active:scale-95">
+          Submit Review for Verification &rarr;
+        </button>
+
+        <p class="text-[11px] text-slate-400 text-center">
+          Submitted reviews are verified by our team before appearing on the public portal. No spam or marketing emails will be sent.
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/footer') %>

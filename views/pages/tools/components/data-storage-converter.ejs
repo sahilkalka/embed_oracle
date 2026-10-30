@@ -1,0 +1,94 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-5 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Data Storage Input</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Binary &amp; Decimal</span>
+    </div>
+
+    <div>
+      <label for="ds-amount" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Value</label>
+      <input type="number" id="ds-amount" value="512" min="0" step="any" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="ds-unit" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Source Unit</label>
+      <select id="ds-unit" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+        <option value="B">Bytes (B)</option>
+        <option value="KB">Kilobytes (KB - 1000)</option>
+        <option value="KiB">Kibibytes (KiB - 1024)</option>
+        <option value="MB" selected>Megabytes (MB - 1000²)</option>
+        <option value="MiB">Mebibytes (MiB - 1024²)</option>
+        <option value="GB">Gigabytes (GB - 1000³)</option>
+        <option value="GiB">Gibibytes (GiB - 1024³)</option>
+        <option value="TB">Terabytes (TB - 1000⁴)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="lg:col-span-7 space-y-6">
+    <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-5">
+      <h3 class="text-xs font-bold text-brand-400 uppercase tracking-wider border-b border-slate-800 pb-3">Converted Storage Equivalents</h3>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs font-mono">
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Bytes</span>
+          <p id="ds-res-bytes" class="font-bold text-white text-sm break-all">0</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Kilobytes (KB)</span>
+          <p id="ds-res-kb" class="font-bold text-emerald-400 text-sm">0</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Kibibytes (KiB)</span>
+          <p id="ds-res-kib" class="font-bold text-white text-sm">0</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Megabytes (MB)</span>
+          <p id="ds-res-mb" class="font-bold text-brand-300 text-sm">0</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Gigabytes (GB)</span>
+          <p id="ds-res-gb" class="font-bold text-white text-sm">0</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Terabytes (TB)</span>
+          <p id="ds-res-tb" class="font-bold text-amber-400 text-sm">0</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const amtEl = document.getElementById('ds-amount');
+  const unitEl = document.getElementById('ds-unit');
+
+  const FACTORS = {
+    B: 1,
+    KB: 1e3,
+    KiB: 1024,
+    MB: 1e6,
+    MiB: 1024 * 1024,
+    GB: 1e9,
+    GiB: 1024 * 1024 * 1024,
+    TB: 1e12
+  };
+
+  function update() {
+    const val = parseFloat(amtEl.value) || 0;
+    const unit = unitEl.value;
+    const bytes = val * (FACTORS[unit] || 1);
+
+    document.getElementById('ds-res-bytes').textContent = bytes.toLocaleString();
+    document.getElementById('ds-res-kb').textContent = (bytes / 1e3).toLocaleString(undefined, {maximumFractionDigits: 3});
+    document.getElementById('ds-res-kib').textContent = (bytes / 1024).toLocaleString(undefined, {maximumFractionDigits: 3});
+    document.getElementById('ds-res-mb').textContent = (bytes / 1e6).toLocaleString(undefined, {maximumFractionDigits: 3});
+    document.getElementById('ds-res-gb').textContent = (bytes / 1e9).toLocaleString(undefined, {maximumFractionDigits: 4});
+    document.getElementById('ds-res-tb').textContent = (bytes / 1e12).toLocaleString(undefined, {maximumFractionDigits: 6});
+  }
+
+  amtEl.addEventListener('input', update);
+  unitEl.addEventListener('change', update);
+  update();
+})();
+</script>

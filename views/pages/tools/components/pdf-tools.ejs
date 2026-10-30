@@ -1,0 +1,108 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-5 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">PDF Metadata Inspector</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Client-Side Parser</span>
+    </div>
+
+    <div>
+      <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Select PDF Document</label>
+      <div id="pdf-dropzone" class="border-2 border-dashed border-slate-300 dark:border-brand-border rounded-2xl p-6 text-center cursor-pointer hover:border-brand-500 transition">
+        <input type="file" id="pdf-file" accept="application/pdf" class="hidden">
+        <svg class="w-10 h-10 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <p class="text-xs text-slate-600 dark:text-slate-300 font-medium">Click to select PDF or drag &amp; drop</p>
+        <p class="text-[11px] text-slate-400 mt-1">Zero server upload, inspected directly in RAM</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lg:col-span-7 space-y-6">
+    <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-5">
+      <h3 class="text-xs font-bold text-brand-400 uppercase tracking-wider border-b border-slate-800 pb-3">Document Header &amp; Metadata</h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">File Name</span>
+          <p id="pdf-val-name" class="font-bold text-white truncate">None</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">File Size</span>
+          <p id="pdf-val-size" class="font-bold text-white">0 KB</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">PDF Version</span>
+          <p id="pdf-val-version" class="font-bold text-emerald-400">PDF-1.x</p>
+        </div>
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Estimated Page Count</span>
+          <p id="pdf-val-pages" class="font-bold text-brand-300">-</p>
+        </div>
+      </div>
+
+      <div class="space-y-2 text-xs font-mono">
+        <span class="text-slate-400 uppercase block">Extracted Info Dictionary</span>
+        <div id="pdf-info-dict" class="p-4 bg-slate-800/40 rounded-xl border border-slate-700 space-y-2 text-slate-300">
+          <p class="text-slate-500">Load a PDF file to inspect its metadata dictionary...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const dropzone = document.getElementById('pdf-dropzone');
+  const fileInput = document.getElementById('pdf-file');
+  const nameEl = document.getElementById('pdf-val-name');
+  const sizeEl = document.getElementById('pdf-val-size');
+  const verEl = document.getElementById('pdf-val-version');
+  const pagesEl = document.getElementById('pdf-val-pages');
+  const dictEl = document.getElementById('pdf-info-dict');
+
+  function parsePdf(file) {
+    nameEl.textContent = file.name;
+    sizeEl.textContent = (file.size / 1024).toFixed(1) + ' KB';
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const buffer = e.target.result;
+      const text = new TextDecoder('latin1').decode(buffer.slice(0, Math.min(buffer.byteLength, 1000000)));
+
+      // Check PDF header
+      const matchHeader = text.match(/%PDF-([0-9.]+)/);
+      verEl.textContent = matchHeader ? 'PDF-' + matchHeader[1] : 'Unknown';
+
+      // Count pages via /Type /Page
+      const pageMatches = text.match(/\/Type\s*\/Page\b/g);
+      pagesEl.textContent = pageMatches ? pageMatches.length + ' Pages' : 'Unknown';
+
+      // Extract metadata dictionary
+      const fields = ['Title', 'Author', 'Creator', 'Producer', 'CreationDate', 'ModDate'];
+      let infoHtml = '';
+
+      fields.forEach(field => {
+        const rx = new RegExp('\\/' + field + '\\s*\\(([^\\)]+)\\)', 'i');
+        const m = text.match(rx);
+        if (m) {
+          infoHtml += '<div><span class="text-brand-400 font-bold">' + field + ':</span> ' + escapeHtml(m[1]) + '</div>';
+        }
+      });
+
+      if (!infoHtml) {
+        infoHtml = '<div class="text-slate-400">No standard Info dictionary fields found (may be encrypted or compressed stream).</div>';
+      }
+
+      dictEl.innerHTML = infoHtml;
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => {
+    if (e.target.files.length) parsePdf(e.target.files[0]);
+  });
+})();
+</script>

@@ -1,0 +1,120 @@
+<%- include('layout_top') %>
+
+<div class="max-w-5xl mx-auto space-y-6 text-left">
+  
+  <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+    <div>
+      <h1 class="text-2xl font-black text-slate-900 dark:text-white">Live Website Customizer</h1>
+      <p class="text-xs text-slate-500 mt-1">Directly update homepage headlines, animated typewriter terms, lab telemetry, and toggle sections</p>
+    </div>
+    
+    <a href="/" target="_blank" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs transition shadow flex items-center space-x-1.5 active:scale-95">
+      <span>👁️ Preview Live Site</span>
+    </a>
+  </div>
+
+  <% if (typeof success !== 'undefined' && success) { %>
+    <div class="p-4 bg-emerald-100 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-800 rounded-xl text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center space-x-2">
+      <span>✓</span>
+      <span>Website copy and section configuration updated successfully. All changes are live!</span>
+    </div>
+  <% } %>
+
+  <form method="POST" action="/admin/customizer" class="space-y-6">
+    <%- csrfField %>
+    
+    <!-- 1. Hero Section Content -->
+    <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <h3 class="font-black text-sm uppercase tracking-wider text-slate-400">1. Hero Section Headline &amp; Typewriter</h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="customizer-hero-title" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Hero Title Line 1</label>
+          <input type="text" id="customizer-hero-title" name="hero_title" value="<%= settings.hero_title || 'Think Big.' %>" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-bold">
+        </div>
+        <div>
+          <label for="customizer-hero-subtitle" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Hero Title Line 2 (Gradient Text)</label>
+          <input type="text" id="customizer-hero-subtitle" name="hero_subtitle" value="<%= settings.hero_subtitle || 'We Engineer:' %>" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-bold">
+        </div>
+      </div>
+
+      <div>
+        <label for="customizer-description" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Hero Paragraph Description</label>
+        <textarea id="customizer-description" name="hero_description" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white leading-relaxed"><%= settings.hero_description || 'From early napkin architecture and high-speed PCB layouts to deterministic RTOS firmware, HIL automated testing, and volume SMT manufacturing.' %></textarea>
+      </div>
+
+      <div>
+        <label for="customizer-words" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Animated Typewriter Words (comma-separated)</label>
+        <input type="text" id="customizer-words" name="typewriter_words" value="<%= settings.typewriter_words || 'High-Speed PCB Layouts,Deterministic RTOS Firmware,Automotive CAN-FD ECUs,Turnkey IoT Hardware,Edge AI & TinyML Nodes' %>" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
+        <span class="text-[10px] text-slate-400 mt-1 block">These engineering terms rotate automatically with the bouncing cursor on the homepage.</span>
+      </div>
+    </div>
+
+    <!-- 2. Live Telemetry & Copilot Assistant -->
+    <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <h3 class="font-black text-sm uppercase tracking-wider text-slate-400">2. Live Telemetry &amp; AI Copilot Assistant</h3>
+
+      <div>
+        <label for="customizer-lab-status" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Live Engineering Lab Status Bar Text</label>
+        <input type="text" id="customizer-lab-status" name="lab_status_text" value="<%= settings.lab_status_text || 'Bangalore Lab: Online • 4 Active SMT Lines • HIL Station #2 Active' %>" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+        <div>
+          <label for="customizer-copilot-enabled" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Ask EI Copilot Status</label>
+          <select id="customizer-copilot-enabled" name="enable_copilot" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-bold">
+            <option value="true" <%= settings.enable_copilot !== 'false' ? 'selected' : '' %>>Enabled (Active Floating Widget)</option>
+            <option value="false" <%= settings.enable_copilot === 'false' ? 'selected' : '' %>>Disabled</option>
+          </select>
+        </div>
+        <div>
+          <label for="customizer-greeting" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Copilot Initial Greeting</label>
+          <input type="text" id="customizer-greeting" name="copilot_greeting" value="<%= settings.copilot_greeting || 'Hello! I am your Embedded India engineering copilot. Ask me about MCU selection, PCB layouts, RTOS firmware, or scoping your next project!' %>" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Section Visibility & Feature Flags -->
+    <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <h3 class="font-black text-sm uppercase tracking-wider text-slate-400">3. Homepage Section Feature Flags</h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs font-bold">
+        <label class="flex items-center space-x-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+          <input type="checkbox" name="section_hero_enabled" value="true" <%= settings.section_hero_enabled !== 'false' ? 'checked' : '' %> class="w-4 h-4 text-brand-500 rounded">
+          <span>Hero &amp; Oscilloscope</span>
+        </label>
+        <label class="flex items-center space-x-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+          <input type="checkbox" name="section_sandbox_enabled" value="true" <%= settings.section_sandbox_enabled !== 'false' ? 'checked' : '' %> class="w-4 h-4 text-brand-500 rounded">
+          <span>Mini Trace Sandbox</span>
+        </label>
+        <label class="flex items-center space-x-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+          <input type="checkbox" name="section_estimator_enabled" value="true" <%= settings.section_estimator_enabled !== 'false' ? 'checked' : '' %> class="w-4 h-4 text-brand-500 rounded">
+          <span>Smart Scope Estimator</span>
+        </label>
+        <label class="flex items-center space-x-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+          <input type="checkbox" name="section_projects_enabled" value="true" <%= settings.section_projects_enabled !== 'false' ? 'checked' : '' %> class="w-4 h-4 text-brand-500 rounded">
+          <span>Featured Projects</span>
+        </label>
+        <label class="flex items-center space-x-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+          <input type="checkbox" name="section_newsletter_enabled" value="true" <%= settings.section_newsletter_enabled !== 'false' ? 'checked' : '' %> class="w-4 h-4 text-brand-500 rounded">
+          <span>Lead Magnet Strip</span>
+        </label>
+        <label class="flex items-center space-x-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+          <input type="checkbox" name="promo_banner_active" value="true" <%= settings.promo_banner_active === 'true' ? 'checked' : '' %> class="w-4 h-4 text-brand-500 rounded">
+          <span>Top Global Banner</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end pt-4">
+      <button type="submit" class="btn-shimmer px-8 py-3 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl text-xs shadow-md transition active:scale-95">
+        <span>Save Customizer Settings &rarr;</span>
+      </button>
+    </div>
+
+  </form>
+
+</div>
+
+<%- include('layout_bottom') %>

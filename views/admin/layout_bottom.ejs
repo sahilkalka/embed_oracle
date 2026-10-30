@@ -1,0 +1,31 @@
+  </main>
+
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-4 text-center text-xs text-slate-500 transition-colors">
+    <p>Embedded India Administration Console &bull; Node.js &amp; Prisma ORM &bull; Version 1.0.0</p>
+  </footer>
+
+  <script src="/assets/js/header-search.js"></script>
+  <script>
+    window.HeaderSearch.init([
+      { title: 'Overview', url: '/admin', type: 'Admin', desc: 'Dashboard metrics and quick actions' },
+      { title: 'Inquiries', url: '/admin/inquiries', type: 'Admin', desc: 'Lead and RFQ pipeline' },
+      { title: 'Subscribers', url: '/admin/subscribers', type: 'Admin', desc: 'Newsletter leads and subscribers' },
+      { title: 'Blog Posts', url: '/admin/posts', type: 'Admin', desc: 'Manage technical articles' },
+      { title: 'Projects', url: '/admin/projects', type: 'Admin', desc: 'Engineering portfolio and case studies' },
+      { title: 'AI Engine', url: '/admin/ai', type: 'Admin', desc: 'Article generation and scheduling' },
+      { title: 'Customizer', url: '/admin/customizer', type: 'Admin', desc: 'Homepage content and section visibility' },
+      { title: 'Embedded UI for Industrial & Medical HMI', url: '/services/embedded-ui-hmi-development', type: 'Service', desc: 'TouchGFX on STM32 MCUs & Qt 6 / QML on Embedded Linux MPUs' },
+      <% const searchSettingsSections = [
+        ['Theme and palettes', 'theme-engine'], ['Branding and customizer', 'site-customizer'],
+        ['SEO', 'seo-scripts'], ['Newsletter', 'newsletter-config'],
+        ['SMTP and routing', 'smtp-settings'], ['Staff accounts', 'team-accounts']
+      ]; %>
+      <% searchSettingsSections.forEach(([title, section]) => { %>
+        { title: <%- JSON.stringify(title) %>, url: '/admin/settings#<%= section %>', type: 'Settings', desc: 'Admin settings navigation' },
+      <% }); %>
+    ]);
+  </script>
+
+  <script src="/assets/js/theme-manager.js?v=<%= assetVersion %>"></script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<%- include('../../layouts/header') %>
+
+<div class="py-12 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border">
+  <div class="max-w-5xl mx-auto px-4">
+    <a href="/tools" class="inline-flex items-center text-xs font-bold text-brand-500 dark:text-accent hover:underline mb-4">
+      &larr; Back to All Tools
+    </a>
+    <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+      UART Baud Rate &amp; Clock Error Calculator
+    </h1>
+    <p class="text-slate-600 dark:text-slate-300 mt-2 text-sm sm:text-base">
+      Calculate microcontroller timer reload registers (STM32 BRR, AVR UBRR, 8051 TH1) and determine the exact serial framing error percentage to prevent packet loss.
+    </p>
+  </div>
+</div>
+
+<div class="py-12 bg-slate-50 dark:bg-[#13221f]">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Inputs Column -->
+      <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">
+          Clock &amp; Baud Settings
+        </h2>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            Clock Frequency Preset
+          </label>
+          <select id="clockPreset" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+            <option value="16000000" selected>16.000 MHz (AVR / Arduino / STM8)</option>
+            <option value="11059200">11.0592 MHz (UART Optimal Crystal)</option>
+            <option value="8000000">8.000 MHz (Internal HSI / Low Power)</option>
+            <option value="72000000">72.000 MHz (STM32F103 Cortex-M3)</option>
+            <option value="48000000">48.000 MHz (STM32F0 / Cortex-M0+)</option>
+            <option value="80000000">80.000 MHz (ESP32 APB Clock)</option>
+            <option value="custom">Custom Clock Frequency</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            System Clock Fosc (Hz)
+          </label>
+          <input type="number" id="clockHz" value="16000000" step="1000" min="1000" max="1000000000" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            Target Baud Rate (bps)
+          </label>
+          <select id="baudRate" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500">
+            <option value="9600">9600 baud</option>
+            <option value="19200">19200 baud</option>
+            <option value="38400">38400 baud</option>
+            <option value="57600">57600 baud</option>
+            <option value="115200" selected>115200 baud (Standard Debug)</option>
+            <option value="230400">230400 baud</option>
+            <option value="460800">460800 baud</option>
+            <option value="921600">921600 baud (High-Speed FOTA)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            MCU Architecture Profile
+          </label>
+          <select id="mcuProfile" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+            <option value="stm32" selected>STM32 (16x Oversampling BRR)</option>
+            <option value="avr">AVR / ATmega (UBRR = Fosc/(16*Baud) - 1)</option>
+            <option value="8051">8051 (Timer 1 Mode 2 Auto-reload)</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Results Column -->
+      <div class="lg:col-span-6 space-y-6">
+        <div class="bg-white dark:bg-brand-surface rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">
+            Baud Rate Analysis &amp; Error
+          </h2>
+
+          <div class="mt-6 grid grid-cols-2 gap-4">
+            <div class="p-4 bg-brand-50 dark:bg-brand-900/40 rounded-xl border border-brand-200 dark:border-brand-700">
+              <span class="text-xs text-brand-800 dark:text-accent font-semibold block">Actual Baud Rate</span>
+              <span id="resActualBaud" class="text-2xl font-black text-brand-700 dark:text-white font-mono">--</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-700 dark:text-slate-300 font-semibold block mt-0.5">Bits per second</span>
+            </div>
+
+            <div id="errorCard" class="p-4 rounded-xl border transition">
+              <span class="text-xs font-semibold block">Framing Error %</span>
+              <span id="resError" class="text-2xl font-black font-mono">-- %</span>
+              <span id="resRiskBadge" class="text-[10px] uppercase font-bold block mt-0.5">Assessing...</span>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-2 gap-3 text-xs">
+            <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+              <span class="text-slate-700 dark:text-slate-300 font-semibold block">Register Value</span>
+              <span id="resRegister" class="font-bold text-slate-800 dark:text-white font-mono text-sm">--</span>
+            </div>
+            <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+              <span class="text-slate-700 dark:text-slate-300 font-semibold block">Exact Float Divisor</span>
+              <span id="resDivisor" class="font-bold text-slate-800 dark:text-white font-mono text-sm">--</span>
+            </div>
+          </div>
+
+          <!-- Code Snippet Output -->
+          <div class="mt-6 p-4 bg-slate-900 rounded-xl">
+            <p class="text-[11px] font-mono text-slate-400 mb-2">Driver Initialization Code (C)</p>
+            <pre class="text-xs font-mono text-emerald-400 overflow-x-auto"><code id="codeSnippet">// Generated C code will appear here</code></pre>
+          </div>
+
+        </div>
+
+        <!-- CTA Banner -->
+        
+        <!-- AdSense: Tool Sub-Page Banner Ad -->
+        <%- include('../../partials/ad-slot', { slot: settings.adsense_tools_bottom_slot, format: 'auto' }) %>
+
+        <div class="bg-gradient-to-r from-brand-900 to-brand-800 rounded-2xl p-6 text-white border border-brand-700 shadow-lg">
+          <span class="text-xs font-bold text-accent uppercase tracking-wider block">Custom Engineering</span>
+          <h3 class="text-lg font-bold mt-1">Struggling with UART Buffer Overruns or Modbus Timing?</h3>
+          <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+            Our firmware team writes DMA-backed ring buffer drivers and multi-drop RS-485 stacks with deterministic latency.
+          </p>
+          <a href="/contact?service=Firmware/BSP" class="inline-block mt-4 px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition">
+            Inquire Firmware Consulting &rarr;
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function calculateUART() {
+    const fosc = parseFloat(document.getElementById('clockHz').value) || 16000000;
+    const targetBaud = parseFloat(document.getElementById('baudRate').value) || 115200;
+    const profile = document.getElementById('mcuProfile').value;
+
+    let divisor = 0;
+    let regVal = 0;
+    let actualBaud = 0;
+    let codeStr = '';
+
+    if (profile === 'stm32') {
+      divisor = fosc / (16 * targetBaud);
+      const mantissa = Math.floor(divisor);
+      const fraction = Math.round((divisor - mantissa) * 16);
+      regVal = (mantissa << 4) | (fraction & 0x0F);
+      const realDivisor = mantissa + (fraction / 16);
+      actualBaud = fosc / (16 * realDivisor);
+      codeStr = `USART1->BRR = 0x${regVal.toString(16).toUpperCase()}; // Mantissa: ${mantissa}, Fraction: ${fraction}`;
+    } else if (profile === 'avr') {
+      divisor = (fosc / (16 * targetBaud)) - 1;
+      regVal = Math.round(divisor);
+      actualBaud = fosc / (16 * (regVal + 1));
+      codeStr = `UBRR0H = (unsigned char)(${regVal} >> 8);\nUBRR0L = (unsigned char)(${regVal});`;
+    } else {
+      // 8051 (12 clocks per machine cycle)
+      const smod = 1; // SMOD=1 double baud
+      divisor = 256 - ((fosc * (smod ? 2 : 1)) / (384 * targetBaud));
+      regVal = Math.round(divisor);
+      actualBaud = (fosc * (smod ? 2 : 1)) / (384 * (256 - regVal));
+      codeStr = `TMOD |= 0x20; // Timer 1 Mode 2\nTH1 = 0x${regVal.toString(16).toUpperCase()}; // Reload value\nTR1 = 1; // Start timer`;
+    }
+
+    const errorPct = Math.abs((actualBaud - targetBaud) / targetBaud) * 100;
+
+    document.getElementById('resActualBaud').textContent = Math.round(actualBaud);
+    document.getElementById('resError').textContent = errorPct.toFixed(2) + ' %';
+    document.getElementById('resRegister').textContent = `0x${regVal.toString(16).toUpperCase()} (${regVal})`;
+    document.getElementById('resDivisor').textContent = divisor.toFixed(4);
+    document.getElementById('codeSnippet').textContent = codeStr;
+
+    // Safety classification
+    const errorCard = document.getElementById('errorCard');
+    const badge = document.getElementById('resRiskBadge');
+    if (errorPct <= 1.5) {
+      errorCard.className = 'p-4 rounded-xl border bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300';
+      badge.textContent = 'Excellent (Safe)';
+    } else if (errorPct <= 2.5) {
+      errorCard.className = 'p-4 rounded-xl border bg-yellow-50 dark:bg-yellow-950/40 border-yellow-300 dark:border-yellow-800 text-yellow-800 dark:text-yellow-300';
+      badge.textContent = 'Acceptable (Marginal)';
+    } else {
+      errorCard.className = 'p-4 rounded-xl border bg-red-50 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-800 dark:text-red-300';
+      badge.textContent = 'High Risk (Framing Error Likely)';
+    }
+  }
+
+  document.getElementById('clockPreset').addEventListener('change', (e) => {
+    if (e.target.value !== 'custom') {
+      document.getElementById('clockHz').value = e.target.value;
+      calculateUART();
+    }
+  });
+
+  ['clockHz', 'baudRate', 'mcuProfile'].forEach(id => {
+    document.getElementById(id).addEventListener('change', calculateUART);
+    document.getElementById(id).addEventListener('input', calculateUART);
+  });
+
+  calculateUART();
+</script>
+
+<%- include('../../layouts/footer') %>

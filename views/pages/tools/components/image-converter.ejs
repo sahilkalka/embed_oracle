@@ -1,0 +1,110 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-5 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Format Converter</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">PNG / JPEG / WebP</span>
+    </div>
+
+    <div>
+      <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Upload Source Image</label>
+      <div id="iconv-dropzone" class="border-2 border-dashed border-slate-300 dark:border-brand-border rounded-2xl p-6 text-center cursor-pointer hover:border-brand-500 transition">
+        <input type="file" id="iconv-file" accept="image/*" class="hidden">
+        <svg class="w-10 h-10 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <p class="text-xs text-slate-600 dark:text-slate-300 font-medium">Select image to convert</p>
+      </div>
+    </div>
+
+    <div>
+      <label for="iconv-target" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Target Destination Format</label>
+      <select id="iconv-target" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+        <option value="image/webp" selected>Convert to WebP (Next-Gen Web Image)</option>
+        <option value="image/png">Convert to PNG (Lossless Alpha Transparency)</option>
+        <option value="image/jpeg">Convert to JPEG (Standard Photo)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="lg:col-span-7 space-y-6">
+    <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-mono text-slate-400 uppercase">Conversion Status</span>
+          <p id="iconv-status" class="text-xl sm:text-2xl font-bold font-mono text-brand-300 mt-1">Ready for file</p>
+        </div>
+        <a id="iconv-download-btn" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-2 cursor-pointer pointer-events-none opacity-50">
+          Download Converted File
+        </a>
+      </div>
+
+      <div class="space-y-2">
+        <span class="text-xs font-mono text-slate-400 uppercase">Converted Image Preview</span>
+        <div class="max-h-64 overflow-hidden rounded-2xl bg-black/40 flex items-center justify-center border border-slate-800 p-2">
+          <img id="iconv-preview" class="max-h-56 max-w-full object-contain rounded-lg hidden" alt="Converted Preview">
+          <span id="iconv-placeholder" class="text-xs text-slate-500 py-12">No converted preview yet.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const dropzone = document.getElementById('iconv-dropzone');
+  const fileInput = document.getElementById('iconv-file');
+  const targetFormat = document.getElementById('iconv-target');
+  const statusEl = document.getElementById('iconv-status');
+  const preview = document.getElementById('iconv-preview');
+  const placeholder = document.getElementById('iconv-placeholder');
+  const downloadBtn = document.getElementById('iconv-download-btn');
+
+  let currentImg = null;
+  let originalFile = null;
+
+  function convert() {
+    if (!currentImg) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = currentImg.naturalWidth;
+    canvas.height = currentImg.naturalHeight;
+    const ctx = canvas.getContext('2d');
+
+    const mime = targetFormat.value;
+    if (mime === 'image/jpeg') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    ctx.drawImage(currentImg, 0, 0);
+
+    canvas.toBlob(blob => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      preview.src = url;
+      preview.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+
+      const ext = mime === 'image/webp' ? '.webp' : (mime === 'image/png' ? '.png' : '.jpg');
+      statusEl.textContent = 'Converted to ' + ext.toUpperCase().slice(1) + ' (' + (blob.size / 1024).toFixed(1) + ' KB)';
+      downloadBtn.href = url;
+      downloadBtn.download = originalFile.name.replace(/\.[^/.]+$/, '') + ext;
+      downloadBtn.classList.remove('pointer-events-none', 'opacity-50');
+    }, mime, 0.92);
+  }
+
+  function handleFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    originalFile = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        currentImg = img;
+        convert();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+  targetFormat.addEventListener('change', convert);
+})();
+</script>

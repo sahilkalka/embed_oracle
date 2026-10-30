@@ -1,0 +1,9 @@
+<% if (canShowAd(settings, slot)) { %>
+<div class="ad-slot-container my-6 p-4 bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border rounded-2xl text-center not-prose" aria-label="Advertisement">
+  <span class="block mb-2 text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Advertisement</span>
+  <ins class="adsbygoogle" style="display:block; min-height:<%= format === 'vertical' ? '600' : '250' %>px"
+       data-ad-client="<%= settings.adsense_pub_id %>" data-ad-slot="<%= slot %>"
+       data-ad-format="<%= format %>" <% if (format === 'fluid') { %>data-ad-layout="in-article"<% } %>
+       data-full-width-responsive="true"></ins>
+</div>
+<% } %>

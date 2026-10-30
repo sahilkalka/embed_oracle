@@ -1,0 +1,176 @@
+<%- include('../../layouts/header') %>
+
+<div class="py-12 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border">
+  <div class="max-w-5xl mx-auto px-4">
+    <a href="/tools" class="inline-flex items-center text-xs font-bold text-brand-500 dark:text-accent hover:underline mb-4">
+      &larr; Back to All Tools
+    </a>
+    <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+      Microstrip PCB Trace Impedance (Zo) Calculator
+    </h1>
+    <p class="text-slate-600 dark:text-slate-300 mt-2 text-sm sm:text-base">
+      Calculate characteristic impedance ($Z_0$), effective dielectric constant ($\epsilon_{\text{eff}}$), and propagation delay for surface microstrip transmission lines.
+    </p>
+  </div>
+</div>
+
+<div class="py-12 bg-slate-50 dark:bg-[#13221f]">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Inputs Column -->
+      <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">
+          Substrate &amp; Trace Geometry
+        </h2>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            Dielectric Substrate Preset
+          </label>
+          <select id="subPreset" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+            <option value="4.3" selected>Standard FR-4 (εr = 4.3)</option>
+            <option value="4.6">High-Tg FR-4 (εr = 4.6)</option>
+            <option value="3.48">Rogers RO4350B RF (εr = 3.48)</option>
+            <option value="3.0">Polyimide / Flex PCB (εr = 3.0)</option>
+            <option value="custom">Custom Dielectric</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+              Trace Width W (mils)
+            </label>
+            <input type="number" id="widthMils" value="20.0" step="0.5" min="2" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+              Dielectric Height H (mils)
+            </label>
+            <input type="number" id="heightMils" value="12.0" step="0.5" min="1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+              Copper Thickness T (mils)
+            </label>
+            <input type="number" id="copperMils" value="1.38" step="0.1" min="0.5" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500">
+            <span class="text-[10px] text-slate-500 block mt-0.5">1 oz Cu ≈ 1.38 mils</span>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+              Dielectric Constant (εr)
+            </label>
+            <input type="number" id="erVal" value="4.3" step="0.05" min="1.0" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Results Column -->
+      <div class="lg:col-span-6 space-y-6">
+        <div class="bg-white dark:bg-brand-surface rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">
+            Impedance Results
+          </h2>
+
+          <div class="mt-6 p-5 bg-brand-50 dark:bg-brand-900/40 rounded-xl border border-brand-200 dark:border-brand-700 text-center">
+            <span class="text-xs text-brand-800 dark:text-accent font-semibold block uppercase">Characteristic Impedance (Zo)</span>
+            <span id="resZo" class="text-4xl font-black text-brand-700 dark:text-white font-mono mt-1 block">50.2 Ω</span>
+            <span id="resTargetBadge" class="inline-block mt-2 px-3 py-1 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold rounded-full">
+              Ideal for 50Ω RF / Single-Ended High-Speed
+            </span>
+          </div>
+
+          <div class="mt-4 grid grid-cols-2 gap-3 text-xs">
+            <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+              <span class="text-slate-700 dark:text-slate-300 font-semibold block">Effective Dielectric (εeff)</span>
+              <span id="resEeff" class="font-bold text-slate-800 dark:text-white font-mono text-sm">3.12</span>
+            </div>
+            <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+              <span class="text-slate-700 dark:text-slate-300 font-semibold block">Propagation Delay (Tpd)</span>
+              <span id="resTpd" class="font-bold text-slate-800 dark:text-white font-mono text-sm">148 ps/inch</span>
+            </div>
+          </div>
+
+        </div>
+
+        
+        <!-- AdSense: Tool Sub-Page Banner Ad -->
+        <%- include('../../partials/ad-slot', { slot: settings.adsense_tools_bottom_slot, format: 'auto' }) %>
+
+        <div class="bg-gradient-to-r from-brand-900 to-brand-800 rounded-2xl p-6 text-white border border-brand-700 shadow-lg">
+          <span class="text-xs font-bold text-accent uppercase tracking-wider block">Signal Integrity</span>
+          <h3 class="text-lg font-bold mt-1">Need DDR4 / PCIe / USB 3.0 Differential Pair Routing?</h3>
+          <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+            Our high-speed team conducts eye diagram simulations, length-matching skew analysis, and via stub back-drilling reviews.
+          </p>
+          <a href="/contact?service=Hardware%20Design" class="inline-block mt-4 px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition">
+            Inquire High-Speed Design &rarr;
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function calculateImpedance() {
+    const w = parseFloat(document.getElementById('widthMils').value) || 20;
+    const h = parseFloat(document.getElementById('heightMils').value) || 12;
+    const t = parseFloat(document.getElementById('copperMils').value) || 1.38;
+    const er = parseFloat(document.getElementById('erVal').value) || 4.3;
+
+    // Standard IPC-2141 Surface Microstrip Formula:
+    // Zo = (87 / sqrt(er + 1.41)) * ln((5.98 * h) / (0.8 * w + t))
+    const numerator = 87 / Math.sqrt(er + 1.41);
+    const denominatorArg = (5.98 * h) / (0.8 * w + t);
+    
+    if (denominatorArg <= 1) {
+      document.getElementById('resZo').textContent = 'Geometry Error';
+      return;
+    }
+
+    const zo = numerator * Math.log(denominatorArg);
+
+    // Effective dielectric constant approx
+    const eeff = ((er + 1) / 2) + (((er - 1) / 2) * (1 / Math.sqrt(1 + (12 * (h / w)))));
+    // Delay in ps/inch: 84.72 * sqrt(eeff)
+    const tpd = 84.72 * Math.sqrt(eeff);
+
+    document.getElementById('resZo').textContent = zo.toFixed(1) + ' Ω';
+    document.getElementById('resEeff').textContent = eeff.toFixed(2);
+    document.getElementById('resTpd').textContent = tpd.toFixed(1) + ' ps/inch';
+
+    const badge = document.getElementById('resTargetBadge');
+    if (Math.abs(zo - 50) <= 3) {
+      badge.textContent = 'Matched: 50Ω Single-Ended Standard (RF / Clock)';
+      badge.className = 'inline-block mt-2 px-3 py-1 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold rounded-full';
+    } else if (Math.abs(zo - 90) <= 5) {
+      badge.textContent = 'Matched: 90Ω Differential Half-Pair (USB)';
+      badge.className = 'inline-block mt-2 px-3 py-1 bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 text-xs font-bold rounded-full';
+    } else {
+      badge.textContent = `Impedance deviation: ${zo.toFixed(1)}Ω`;
+      badge.className = 'inline-block mt-2 px-3 py-1 bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-300 text-xs font-bold rounded-full';
+    }
+  }
+
+  document.getElementById('subPreset').addEventListener('change', (e) => {
+    if (e.target.value !== 'custom') {
+      document.getElementById('erVal').value = e.target.value;
+      calculateImpedance();
+    }
+  });
+
+  ['widthMils', 'heightMils', 'copperMils', 'erVal'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calculateImpedance);
+  });
+
+  calculateImpedance();
+</script>
+
+<%- include('../../layouts/footer') %>

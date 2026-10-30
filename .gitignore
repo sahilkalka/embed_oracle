@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Environment & Secrets (NEVER commit SSH keys or production .env)
+.env
+.env.*
+!.env.example
+keys/
+*.pem
+*.key
+server_details.md
+
+# SQLite Databases & WAL files
+prisma/*.db
+prisma/*.db-*
+prisma/*.sqlite*
+*.db
+*.sqlite
+*.sqlite3
+*.corrupted_*
+
+# Build & Release Artifacts
+embeddedindia.zip
+*.zip
+*.tmp
+*.bak*
+
+# Runtime, Logs & QA Scratch Directories
+tmp/
+scratch/
+logs/
+reports/
+test-results/
+playwright-report/
+coverage/
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,114 @@
+<section id="team-accounts" aria-labelledby="team-accounts-title" class="settings-section hidden">
+      <%- include('../settings-module-header', {"sectionId":"team-accounts","title":"Team & access","icon":"group","description":"Manage staff accounts and their access to the administration console."}) %>
+
+      <!-- Accounts Table -->
+      <div class="settings-panel space-y-4"><h3 class="settings-panel-title">Staff accounts</h3>
+        <!-- Mobile Card View (Zero Horizontal Scroll) -->
+        <div class="md:hidden divide-y divide-slate-100 dark:divide-brand-border rounded-2xl border border-slate-200 dark:border-brand-border overflow-hidden">
+          <% (users || []).forEach(u => { %>
+            <div class="p-4 space-y-2.5 bg-white dark:bg-brand-surface">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="font-semibold text-slate-900 dark:text-white text-xs break-all"><%= u.email %></span>
+                    <% if (currentUser && currentUser.userId === u.id) { %>
+                      <span class="px-2 py-0.5 rounded-full text-[10px] bg-brand-500/15 text-brand-700 dark:text-accent border border-brand-500/20 font-bold">You</span>
+                    <% } %>
+                  </div>
+                  <p class="text-[11px] font-mono text-slate-500 mt-0.5"><%= u.username %> &bull; <%= new Date(u.createdAt).toLocaleDateString() %></p>
+                </div>
+                <span class="px-2 py-0.5 rounded-full uppercase font-bold text-[10px] shrink-0 <%= u.role === 'admin' ? 'bg-brand-500/15 text-brand-700 dark:text-accent border border-brand-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700' %>">
+                  <%= u.role %>
+                </span>
+              </div>
+              <div class="flex justify-end pt-1">
+                <% if (!currentUser || currentUser.userId !== u.id) { %>
+                  <button type="button" onclick="deleteAccount('<%= u.id %>')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-red-200 dark:border-red-900/40 bg-red-50/50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 text-[11px] font-bold transition">
+                    <span class="material-symbols-rounded text-sm" aria-hidden="true">delete</span>
+                    <span>Remove</span>
+                  </button>
+                <% } else { %>
+                  <span class="text-xs text-slate-400">Active</span>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <!-- Desktop Table View -->
+        <div class="hidden md:block overflow-x-auto rounded-2xl border border-slate-200 dark:border-brand-border">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 dark:bg-brand-dark border-b border-slate-200 dark:border-brand-border font-bold uppercase text-slate-500">
+              <tr>
+                <th class="py-3 px-4">Account Email</th>
+                <th class="py-3 px-4">Username</th>
+                <th class="py-3 px-4">Role</th>
+                <th class="py-3 px-4">Created</th>
+                <th class="py-3 px-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-brand-border">
+              <% (users || []).forEach(u => { %>
+                <tr class="hover:bg-slate-50 dark:hover:bg-brand-dark/50 transition">
+                  <td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">
+                    <%= u.email %>
+                    <% if (currentUser && currentUser.userId === u.id) { %>
+                      <span class="ml-1.5 px-2 py-0.5 rounded-full text-[10px] bg-brand-500/15 text-brand-700 dark:text-accent border border-brand-500/20 font-bold">You</span>
+                    <% } %>
+                  </td>
+                  <td class="py-3 px-4 font-mono text-slate-500"><%= u.username %></td>
+                  <td class="py-3 px-4">
+                    <span class="px-2 py-0.5 rounded-full uppercase font-bold text-[10px] <%= u.role === 'admin' ? 'bg-brand-500/15 text-brand-700 dark:text-accent border border-brand-500/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700' %>">
+                      <%= u.role %>
+                    </span>
+                  </td>
+                  <td class="py-3 px-4 text-slate-400"><%= new Date(u.createdAt).toLocaleDateString() %></td>
+                  <td class="py-3 px-4 text-right">
+                    <% if (!currentUser || currentUser.userId !== u.id) { %>
+                      <button type="button" onclick="deleteAccount('<%= u.id %>')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-red-200 dark:border-red-900/40 bg-red-50/50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 text-[11px] font-bold transition">
+                        <span class="material-symbols-rounded text-sm" aria-hidden="true">delete</span>
+                        <span>Remove</span>
+                      </button>
+                    <% } else { %>
+                      <span class="text-slate-400">Active</span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Add New Account Box -->
+      <div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4">
+        <h3 class="settings-panel-title">Add staff account</h3>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-600 dark:text-slate-400 mb-1" for="newAccountEmail">Email</label>
+            <input type="email" id="newAccountEmail" placeholder="engineer@embeddedindia.in" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-600 dark:text-slate-400 mb-1" for="newAccountRole">Role</label>
+            <select id="newAccountRole" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs font-semibold">
+              <option value="admin">Administrator (Full Access)</option>
+              <option value="editor">Editor (Blogs &amp; Articles)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-600 dark:text-slate-400 mb-1" for="newAccountPass">Password (Min 8 Chars)</label>
+            <input type="password" id="newAccountPass" placeholder="••••••••••••" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs font-mono">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <button type="button" id="btnAddAccount" class="nav-icon-link group flex flex-col items-center justify-center min-w-[76px] py-1.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-600 transition cursor-pointer">
+            <span class="material-symbols-rounded text-xl transition-transform duration-200 group-hover:scale-110 flex-shrink-0" aria-hidden="true">person_add</span>
+            <span class="text-[11px] font-bold tracking-tight mt-0.5 whitespace-nowrap leading-tight">Create Staff</span>
+          </button>
+          <span class="text-[11px] text-slate-400">Enforces salted bcrypt hashing</span>
+        </div>
+        <div id="addAccountResult" class="hidden p-3 rounded-xl text-xs font-mono"></div>
+      </div>
+    </section>

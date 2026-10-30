@@ -1,0 +1,1557 @@
+<%- include('../layouts/header') %>
+
+<% if (settings.section_hero_enabled !== "false") { %>
+<!-- Spaceship-Inspired Ambient Hero Section with Interactive Canvas -->
+<section class="relative overflow-hidden spaceship-ambient-mesh circuit-grid py-16 lg:py-24 border-b border-slate-200/80 dark:border-[#1e3831] transition-colors">
+  
+  
+
+  <!-- Animated Glowing Ambient Orbs -->
+  <div class="absolute -top-32 left-1/4 w-[450px] h-[450px] bg-brand-500/15 dark:bg-brand-500/25 rounded-full blur-3xl pointer-events-none animate-pulse-glow"></div>
+  <div class="absolute top-1/2 -right-20 w-[450px] h-[450px] bg-accent/15 dark:bg-accent/25 rounded-full blur-3xl pointer-events-none animate-pulse-glow" style="animation-delay: 2.5s;"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      
+      <!-- Left Column: Copy, Animated Typewriter, Category Pills & Live Spec Estimator -->
+      <div class="w-full space-y-6 text-left">
+        
+        <!-- Live Status Pill with Floating Levitation Animation (High Contrast) -->
+        <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-xs sm:text-sm font-black shadow-md backdrop-blur-md animate-float-slow">
+          <span class="w-2.5 h-2.5 rounded-full bg-accent animate-ping"></span>
+          <span>India's Turnkey Embedded System Design &amp; Firmware Lab</span>
+        </div>
+
+        <!-- Big Punchy Title with Animated Rotating Typewriter Text -->
+        <div class="space-y-2 text-left">
+          <h1 class="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
+            <%= settings.hero_title || 'Think Big.' %> <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 via-brand-600 to-accent">
+              <%= settings.hero_subtitle || 'We Engineer:' %>
+            </span>
+          </h1>
+          <!-- Animated Typewriter Display (Left Aligned & High Contrast) -->
+          <div class="h-10 sm:h-12 flex items-center justify-start text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white font-mono">
+            <span id="typewriterTarget" class="text-brand-500 dark:text-accent font-black">High-Speed PCB Layouts</span>
+            <span class="animate-cursor-blink text-brand-500 dark:text-accent ml-1 font-black">_</span>
+          </div>
+        </div>
+
+        <p class="text-base sm:text-lg text-slate-700 dark:text-slate-200 max-w-2xl font-semibold leading-relaxed text-left">
+          <%= settings.hero_description || 'From early napkin architecture and high-speed PCB layouts to deterministic RTOS firmware, HIL automated testing, and volume SMT manufacturing.' %>
+        </p>
+
+        <!-- Interactive Archetype Selector Pills (High Contrast, Left Aligned) -->
+        <div class="pt-2 text-left">
+          <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 block mb-2.5">
+            Select an engineering domain to inspect real-world architecture:
+          </span>
+          <div class="flex flex-wrap items-center justify-start gap-2 text-xs font-bold" id="archetypePills">
+            <button type="button" data-type="iot" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform hover:scale-105 archetype-btn">
+              ⚡ IoT &amp; Wireless
+            </button>
+            <button type="button" data-type="automotive" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 hover:border-brand-500 transition archetype-btn font-bold">
+              🚗 Automotive CAN-FD
+            </button>
+            <button type="button" data-type="edgeai" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 hover:border-brand-500 transition archetype-btn font-bold">
+              🧠 TinyML Edge AI
+            </button>
+            <button type="button" data-type="hmi" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 hover:border-brand-500 transition archetype-btn font-bold">
+              🖥️ TouchGFX / Qt HMI
+            </button>
+            <button type="button" data-type="highspeed" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 hover:border-brand-500 transition archetype-btn font-bold">
+              🔌 High-Speed PCB
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Dynamic Architecture Preview Card (Human-Readable Contrast) -->
+        <div class="bg-slate-100 dark:bg-slate-900 rounded-2xl p-5 border border-slate-300 dark:border-slate-700 shadow-md transition-all text-xs" id="archCard">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left pr-14 sm:pr-0">
+            <div>
+              <span class="text-slate-600 dark:text-slate-300 inline-block text-[11px] uppercase font-bold tracking-wider">Target Silicon</span>
+              <span id="specMcu" class="font-black text-slate-900 dark:text-white text-sm block w-fit">ESP32-S3 Dual 240MHz</span>
+            </div>
+            <div>
+              <span class="text-slate-600 dark:text-slate-300 inline-block text-[11px] uppercase font-bold tracking-wider">PCB Stackup</span>
+              <span id="specPcb" class="font-black text-slate-900 dark:text-white text-sm block w-fit">4-Layer FR-4 (1.6mm)</span>
+            </div>
+            <div>
+              <span class="text-slate-600 dark:text-slate-300 inline-block text-[11px] uppercase font-bold tracking-wider">Power Budget</span>
+              <span id="specPower" class="font-black text-brand-600 dark:text-accent text-sm block w-fit">&lt; 15µA Deep Sleep</span>
+            </div>
+            <div>
+              <span class="text-slate-600 dark:text-slate-300 inline-block text-[11px] uppercase font-bold tracking-wider">Prototype Turn</span>
+              <span id="specTurn" class="font-black text-brand-600 dark:text-accent text-sm block w-fit">3 - 4 Weeks Turnkey</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Buttons (Left Aligned) -->
+        <div class="flex flex-col sm:flex-row items-center justify-start gap-4 pt-2">
+          <a href="/contact" class="btn-shimmer w-full sm:w-auto px-8 py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl shadow-lg shadow-brand-500/25 border border-white/20 transition transform hover:-translate-y-0.5 text-center text-sm active:scale-95">
+            Start your new design experience with us &rarr;
+          </a>
+          <a href="/tools" class="w-full sm:w-auto px-7 py-3.5 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-extrabold rounded-xl border border-slate-300 dark:border-slate-600 transition shadow-sm text-center flex items-center justify-center space-x-2 text-sm active:scale-95">
+            <span>Explore Tools</span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-black px-2 py-0.5 rounded uppercase">38+ Tools</span>
+          </a>
+        </div>
+
+        <!-- Animated Numerical Counter Metrics (Left Aligned) -->
+        <div class="pt-6 border-t border-slate-200 dark:border-slate-800 grid grid-cols-3 gap-4 text-left">
+          <div>
+            <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono">
+              <span class="count-up" data-target="100">0</span>+
+            </p>
+            <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-semibold">Delivered Systems</p>
+          </div>
+          <div>
+            <p class="text-2xl sm:text-3xl font-black text-brand-500 dark:text-accent font-mono">
+              <span class="count-up" data-target="99.8" data-decimal="1">0</span>%
+            </p>
+            <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-semibold">First-Pass HIL Rate</p>
+          </div>
+          <div>
+            <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono">
+              &lt; <span class="count-up" data-target="24">0</span>h
+            </p>
+            <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-semibold">Architect Response</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Circuit Canvas & Interactive Bring-Up Console -->
+      <div class="relative w-full">
+
+
+        <div id="hero-console" class="relative w-full h-[320px] md:h-[420px] lg:h-[500px] bg-slate-950 rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-800 text-white overflow-hidden flex flex-col justify-between">
+          <canvas id="circuitNodesCanvas" class="absolute inset-0 w-full h-full pointer-events-auto z-0 opacity-40"></canvas>
+          <div class="relative z-10 flex flex-col h-full justify-between">
+        
+        <!-- Floating Glassmorphic Status Pill (Top) -->
+        <div class="hidden sm:flex absolute -top-5 -left-4 z-20 items-center space-x-2 px-3.5 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl shadow-xl text-[11px] font-black text-slate-900 dark:text-white backdrop-blur-md animate-float-slow">
+          <span class="w-2.5 h-2.5 rounded-full bg-accent animate-ping"></span>
+          <span>IPC-A-610 Class 3 SMT Standards</span>
+        </div>
+
+        <!-- Floating Glassmorphic Status Pill (Bottom) -->
+        <div class="hidden sm:flex absolute -bottom-4 left-6 z-20 items-center space-x-2 px-3.5 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl shadow-xl text-[11px] font-black text-slate-900 dark:text-white backdrop-blur-md animate-float-reverse">
+          <span class="w-2.5 h-2.5 rounded-full bg-accent animate-pulse"></span>
+          <span>Live HIL Telemetry Active</span>
+        </div>
+
+        <div class="hero-console-panel relative mx-auto max-w-md lg:max-w-none bg-slate-950 rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-800 text-white overflow-hidden">
+          
+          <!-- Console Header & Tab Bar -->
+          <div class="hero-console-header flex items-center justify-between pb-4 border-b border-slate-800">
+            <div class="flex items-center space-x-2">
+              <div class="w-3 h-3 rounded-full bg-red-500"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            
+            <!-- Interactive Tabs -->
+            <div class="flex items-center space-x-1.5 text-[11px] font-mono" id="consoleTabs">
+              <button type="button" data-tab="code" class="min-h-[44px] px-3 py-2 rounded-md bg-brand-500 text-white font-black border border-white/20 console-tab-btn inline-flex items-center justify-center">firmware.c</button>
+              <button type="button" data-tab="scope" class="min-h-[44px] px-3 py-2 rounded-md text-slate-300 hover:text-white font-bold console-tab-btn inline-flex items-center justify-center">Oscilloscope</button>
+              <button type="button" data-tab="terminal" class="min-h-[44px] px-3 py-2 rounded-md text-slate-300 hover:text-white font-bold console-tab-btn inline-flex items-center justify-center">Serial Monitor</button>
+            </div>
+          </div>
+
+          <!-- Tab Content 1: Code View -->
+          <div id="tabContentCode" class="mt-4 font-mono text-xs text-slate-300 leading-relaxed min-h-[220px]">
+            <pre class="whitespace-pre-wrap break-words overflow-x-hidden"><code id="liveCodeSnippet" class="text-emerald-400 dark:text-accent font-semibold">// Embedded India Turnkey Hardware Core
+void init_embedded_system(void) {
+    power_rail_config(RAIL_3V3, ULTRA_LOW_NOISE);
+    uart_baud_init(115200, OVERSAMPLE_16);
+    lora_mesh_join(CHANNEL_915MHZ);
+    hil_fault_injection_guard();
+    start_freertos_scheduler();
+}
+// Status: Ready for Bring-up</code></pre>
+          </div>
+
+          <!-- Tab Content 2: Live HTML5 Canvas Oscilloscope with Multi-Signal Switcher -->
+          <div id="tabContentScope" class="mt-4 hidden min-h-[220px] flex flex-col justify-between">
+            <div class="flex items-center justify-between text-[11px] font-mono text-slate-300 mb-2 font-bold">
+              <span id="scopeSignalLabel">Signal: Clock PWM (10.0 MHz)</span>
+              <!-- Signal Selectors -->
+              <div class="flex space-x-1.5">
+                <button type="button" onclick="setWaveform('square')" class="min-h-[44px] min-w-[44px] px-2.5 py-2 inline-flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded-lg text-xs text-white font-bold transition">Square</button>
+                <button type="button" onclick="setWaveform('sine')" class="min-h-[44px] min-w-[44px] px-2.5 py-2 inline-flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded-lg text-xs text-white font-bold transition">Sine</button>
+                <button type="button" onclick="setWaveform('burst')" class="min-h-[44px] min-w-[44px] px-2.5 py-2 inline-flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded-lg text-xs text-white font-bold transition">Burst</button>
+              </div>
+            </div>
+            <canvas id="scopeCanvas" width="400" height="150" class="w-full h-36 bg-slate-900 rounded-xl border border-slate-800"></canvas>
+            <span class="text-[10px] text-slate-400 font-mono mt-2 text-center block font-semibold">Synthesizing live hardware frequency domain</span>
+          </div>
+
+          <!-- Tab Content 3: Serial Monitor Boot Logs -->
+          <div id="tabContentTerminal" class="mt-4 hidden font-mono text-xs min-h-[220px] bg-slate-900 p-3 rounded-xl overflow-y-auto space-y-1 text-slate-300">
+            <div class="text-slate-400 font-bold">// Connected to /dev/ttyUSB0 (115200 8N1)</div>
+            <div id="terminalLogs">
+              <div class="text-emerald-400 font-medium">[0.001s] [POWER] VDD_3V3 rail nominal: 3.302V &plusmn;0.01V... OK</div>
+              <div class="text-emerald-400 font-medium">[0.015s] [CLOCK] 72MHz PLL locked, jitter &lt; 5ps... OK</div>
+              <div class="text-emerald-400 font-medium">[0.045s] [FLASH] SPI NOR Winbond 16MB verified... OK</div>
+              <div class="text-emerald-400 font-medium">[0.092s] [HIL] Automated CAN bus fault loopback test... PASS</div>
+              <div class="text-accent font-bold">[0.120s] [RTOS] FreeRTOS kernel started. 4 tasks active.</div>
+            </div>
+          </div>
+
+          <!-- Interactive Action Bar: Run Virtual Bring-up -->
+          <div class="mt-4 pt-4 border-t border-slate-800 flex items-center justify-between">
+            <button type="button" id="btnRunBringUp" class="min-h-[44px] px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-mono text-xs font-black rounded-xl transition flex items-center space-x-2 shadow-lg shadow-brand-500/20 border border-white/20 active:scale-95">
+              <span>▶ Run Virtual Bring-Up</span>
+            </button>
+            <span id="bringUpStatus" class="text-[11px] font-mono text-accent font-black tracking-wide">Board Status: ONLINE</span>
+          </div>
+
+        </div>
+
+      </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<% } %>
+<%- include('../partials/trust-bar') %>
+
+<% if (settings.section_sandbox_enabled !== "false") { %>
+
+<!-- Live Engineering Lab Real-Time Telemetry & Metric Ticker -->
+<% if (settings.lab_event_enabled !== 'false') { %>
+<aside aria-label="Lab Telemetry" class="py-3.5 bg-slate-900 text-white border-y border-slate-800 overflow-hidden relative shadow-inner">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-mono">
+    <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
+      <span class="flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 live-radar"></span>
+        <span><%= settings.lab_event_label || 'LAB ACTIVE' %></span>
+      </span>
+      <span class="text-slate-300 font-semibold truncate text-[11px] sm:text-xs">
+        <%= settings.lab_status_text || 'Hyderabad Hardware Prototyping Lab: Online • SMT Lines 1-4 Active' %>
+      </span>
+    </div>
+    <div class="flex items-center space-x-5 text-slate-400 font-semibold text-[11px] w-full md:w-auto justify-between md:justify-end">
+      <div class="flex items-center space-x-1.5">
+        <span class="text-slate-300">HIL Station #2:</span>
+        <span class="text-emerald-400 font-bold">100% Loopback PASS</span>
+      </div>
+      <div class="flex items-center space-x-1.5">
+        <span class="text-slate-300">First-Pass Rate:</span>
+        <span class="text-emerald-400 font-bold">99.8%</span>
+      </div>
+      <div class="hidden lg:flex items-center space-x-1.5">
+        <span class="text-slate-300">Avg Turnaround:</span>
+        <span class="text-white font-bold">3.2 Weeks</span>
+      </div>
+    </div>
+  </div>
+</aside>
+<% } %>
+
+<!-- Interactive Mini-Engineering Sandbox (Instant Trace Calculator on Homepage) -->
+<section class="py-12 bg-white dark:bg-brand-dark border-b border-slate-200/80 dark:border-brand-border">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-gradient-to-r from-brand-50 via-slate-50 to-emerald-50 dark:from-brand-surface dark:via-brand-dark dark:to-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-sm">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <div class="lg:col-span-5 space-y-2">
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold text-xs uppercase tracking-wider">Instant Sandbox</span>
+          <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+            Live PCB Trace Width Estimator
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-slate-300 font-medium">
+            Slide the current slider to instantly calculate IPC-2221 trace width geometry without leaving the homepage.
+          </p>
+        </div>
+
+        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
+          <div class="sm:col-span-7 space-y-3">
+            <div class="flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-700 dark:text-slate-300">Target Current:</span>
+              <span id="miniCurrentLabel" class="font-mono text-brand-600 dark:text-accent text-sm">2.5 Amps</span>
+            </div>
+            <input type="range" id="miniCurrentSlider" min="0.5" max="10.0" step="0.5" value="2.5" aria-label="Target Trace Current in Amperes" class="w-full h-11 py-3 accent-brand-500 cursor-pointer">
+            <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+              <span>0.5A (Signals)</span>
+              <span>5.0A (Motors)</span>
+              <span>10.0A (Power Bus)</span>
+            </div>
+          </div>
+
+          <div class="sm:col-span-5 p-4 bg-white dark:bg-brand-surface rounded-2xl border border-slate-200 dark:border-brand-border text-center shadow-sm">
+            <span class="text-[10px] font-bold uppercase text-slate-700 dark:text-slate-300 font-semibold block">Required Trace Width</span>
+            <span id="miniWidthResult" class="text-2xl font-black text-slate-900 dark:text-white font-mono mt-0.5 block">21.4 mils</span>
+            <span id="miniWidthMmResult" class="text-xs font-semibold text-emerald-700 dark:text-accent block">(0.54 mm)</span>
+            <a href="/tools/pcb-trace" class="inline-flex items-center min-h-[44px] py-2 mt-2 text-xs font-bold text-brand-600 dark:text-accent hover:underline">
+              Advanced IPC-2221 Tool &rarr;
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- More Than Just Service Section (Value Proposition) -->
+<section class="py-16 bg-white dark:bg-[#0f1c18] border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
+        Our Value Proposition
+      </span>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+        More than just service
+      </h2>
+      <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300">
+        We engineer enduring electronic product value through proactive design-for-manufacturing, silicon lifecycle sustainment, and dedicated hardware architecture.
+      </p>
+    </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Value Prop 1: Performance and Cost Optimization -->
+      <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent font-black text-xl">
+            ⚡
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Performance and Cost Optimization</h3>
+          <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+            Strategic component selection, alternative second-sourcing, and architectural power profiling, protecting your profit margins over the product's entire lifecycle.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60">
+          <a href="/services" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Explore hardware design &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- Value Prop 2: Accelerated Time-to-Market -->
+      <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent font-black text-xl">
+            🚀
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Accelerated Time-to-Market</h3>
+          <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+            Turnkey prototyping, in-house SMT bring-up lab, and automated HIL verification compress development schedules from quarters to weeks. Start your new design experience with us.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60">
+          <a href="/contact" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Start your new design experience with us &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- Value Prop 3: Lifecycle Engineering -->
+      <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent font-black text-xl">
+            🛡️
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Lifecycle Engineering</h3>
+          <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+            Post-launch firmware FOTA bootloaders, compliance test support (CE/FCC/BIS), and component obsolescence mitigation across 7+ year product lifespans.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60">
+          <a href="/services" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Engineering services &rarr;
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<% if (settings.section_projects_enabled !== "false" && locals.featuredProjects && featuredProjects.length > 0) { %>
+<!-- Featured Case Studies Showcase -->
+<section class="py-20 bg-slate-100/70 dark:bg-[#0b1411] border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+      <div>
+        <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
+          Portfolio Spotlight
+        </span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          Featured Projects &amp; Live Case Studies
+        </h2>
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          Explore real-world turnkey electronic hardware, RTOS firmware, and IoT devices engineered in our Hyderabad lab.
+        </p>
+      </div>
+      <div class="mt-4 md:mt-0">
+        <a href="/projects" class="spring-btn inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-black text-slate-900 dark:text-white hover:border-brand-500 shadow-sm transition">
+          <span>Explore All Projects &rarr;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <% featuredProjects.forEach(function(proj) { %>
+        <div class="spring-card bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-7 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between group text-left">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-brand-500/10 dark:bg-accent/20 text-brand-700 dark:text-accent">
+                <%= proj.category %>
+              </span>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold truncate max-w-[150px]">
+                <%= proj.industry %>
+              </span>
+            </div>
+            <h3 class="text-xl font-black text-slate-900 dark:text-white group-hover:text-brand-500 dark:group-hover:text-accent transition">
+              <a href="/projects/<%= proj.slug %>">
+                <%= proj.title %>
+              </a>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
+              <%= proj.summary %>
+            </p>
+            <% if (proj.techStack) { %>
+              <div class="flex flex-wrap gap-1.5 pt-1 text-[10px] font-mono font-bold">
+                <% proj.techStack.split(',').slice(0, 3).forEach(function(t) { %>
+                  <span class="px-2 py-0.5 rounded bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-xs">
+                    <%= t.trim() %>
+                  </span>
+                <% }); %>
+              </div>
+            <% } %>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60 flex items-center justify-between">
+            <a href="/projects/<%= proj.slug %>" class="text-xs font-black text-brand-500 dark:text-accent inline-flex items-center space-x-1 group-hover:underline">
+              <span>View Architecture</span>
+              <span class="transform group-hover:translate-x-1 transition">&rarr;</span>
+            </a>
+            <span class="text-[10px] font-bold text-slate-400 uppercase">Case Study</span>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if (settings.section_services_enabled !== "false") { %>
+<!-- Services We Offer Section (Spaceship Style Spotlight Hover Cards) -->
+<section class="py-20 bg-slate-50 dark:bg-brand-dark transition-colors">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
+        Core Capabilities
+      </span>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+        Services we offer
+      </h2>
+      <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300">
+        From early architectural feasibility and rapid proof-of-concept prototypes to turnkey manufacturing support and high-speed firmware.
+      </p>
+    </div>
+
+    <!-- 6 Core Service Cards with Cursor Spotlight Follow -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      
+      <!-- 1. Full-Cycle Product Realization -->
+      <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
+            <img src="/assets/images/download-2.svg" alt="Full-Cycle Embedded Product Engineering Architecture" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Full-Cycle Product Realization</h3>
+          <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+            Complete electronic product engineering: schematic capture, BOM optimization, thermal simulation, DFM reviews, and production handover.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border/60">
+          <a href="/services/full-cycle-embedded-product-engineering" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Learn more &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. Embedded Software & Firmware -->
+      <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
+            <img src="/assets/images/download-3.svg" alt="Embedded C/C++ Firmware and RTOS Development" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Embedded Software &amp; Firmware</h3>
+          <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+            Deterministic bare-metal and RTOS (FreeRTOS, Zephyr) drivers, HAL layers, low-power sleep management, and secure cryptographic bootloaders.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border/60">
+          <a href="/services/embedded-software-firmware-development" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Learn more &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- 3. Hardware Design & Layout -->
+      <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
+            <img src="/assets/images/download-4.svg" alt="Multi-layer PCB Layout and FPGA Hardware Engineering" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Hardware Design &amp; High-Speed PCB</h3>
+          <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+            Multi-layer layouts (up to 16+ layers), HDI microvias, controlled impedance traces, differential skew matching, and EMC/EMI pre-compliance.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border/60">
+          <a href="/services/hardware-design-engineering" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Learn more &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- 4. Board Support Package (BSP) Development -->
+      <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
+            <img src="/assets/images/download-5.svg" alt="Board Support Package (BSP) and Linux Kernel Porting" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Board Support Package (BSP) Development</h3>
+          <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+            Custom U-Boot bootloader porting, Embedded Linux device trees, custom peripheral drivers (I2C, SPI, CAN, PCIe), and fail-safe FOTA updates.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border/60">
+          <a href="/services/bsp-development" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Learn more &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- 5. IoT & Edge Computing Solutions -->
+      <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
+            <img src="/assets/images/download-6.svg" alt="IoT and Edge Computing Solutions Architecture" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">IoT and Edge Computing Solutions</h3>
+          <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+            Connected sensors with LoRaWAN, Cellular (4G/LTE-M), BLE 5.3, Wi-Fi 6, and on-device TinyML machine learning for predictive vibration monitoring.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border/60">
+          <a href="/services/iot-edge-computing-solutions" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Learn more &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- 6. Automotive Embedded Systems -->
+      <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
+            <img src="/assets/images/download-7.svg" alt="Automotive Embedded Systems and HIL Verification" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Automotive Embedded Systems</h3>
+          <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+            Automotive ECUs, CAN-FD / LIN buses, ISO 26262 functional safety compliance, and Hardware-in-the-Loop (HIL) automated test benches.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border/60">
+          <a href="/services/automotive-embedded-systems" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Learn more &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- 7. Embedded UI for Industrial & Medical HMI (TouchGFX MCU & Qt MPU) -->
+      <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border-2 border-brand-500/40 dark:border-accent/40 shadow-md flex flex-col justify-between hover:border-brand-500 transition duration-300 md:col-span-2 lg:col-span-3">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="space-y-2.5 max-w-3xl">
+            <div class="inline-flex flex-wrap items-center gap-2">
+              <div class="w-11 h-11 rounded-2xl bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-brand-500 text-white text-[11px] font-black uppercase tracking-wider">Flagship Specialty: TouchGFX on STM32 MCU</span>
+              <span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-[11px] font-bold uppercase tracking-wider border border-slate-300 dark:border-slate-700">Rich MPU UI: Qt 6 / QML</span>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">Embedded UI for Industrial &amp; Medical HMI</h3>
+            <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+              Smartphone-grade 60 FPS graphical interfaces for mission-critical Industrial &amp; Medical (IEC 62304) equipment. <strong>TouchGFX by STMicroelectronics on STM32 MCUs</strong> (Chrom-ART™ DMA2D &amp; NeoChrom™ GPU, sub-300ms instant boot, low BOM cost) is our core specialty, while rich multi-screen 2D/3D HMIs are engineered with <strong>Qt / QML on Microprocessors (MPUs)</strong> (i.MX8/93, STM32MP1/2, Embedded Linux).
+            </p>
+          </div>
+          <div class="flex flex-wrap sm:flex-nowrap gap-3 shrink-0">
+            <a href="/services/embedded-ui-hmi-development" class="inline-flex items-center justify-center gap-2 min-h-[44px] px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold border border-slate-300 dark:border-slate-700 hover:border-brand-500 transition">
+              <svg class="w-4 h-4 text-brand-500 dark:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <span>Explore HMI Architecture &rarr;</span>
+            </a>
+            <a href="/contact?service=Embedded%20UI%20%2F%20HMI" class="btn-shimmer inline-flex items-center justify-center gap-2 min-h-[44px] px-5 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-black shadow-md transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span>Request HMI Quote</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<% } %>
+
+
+
+<!-- How We Work: 4-Step Process Section -->
+<% if (settings.section_process_enabled !== 'false') { %>
+<section data-mobile-process class="py-20 bg-white dark:bg-[#0d1715] border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
+        Our Engagement Model
+      </span>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+        How we work with you
+      </h2>
+      <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300">
+        A transparent, milestone-driven process — from your first call to full IP handover. No lock-in, no surprises.
+      </p>
+    </div>
+
+    <div class="relative">
+      <div class="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-transparent via-brand-500/40 to-transparent"></div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="relative flex flex-col items-center text-center px-4">
+          <div class="w-20 h-20 rounded-2xl bg-brand-500 flex items-center justify-center shadow-lg shadow-brand-500/30 mb-6 flex-shrink-0">
+            <span class="text-white text-3xl font-black font-mono">01</span>
+          </div>
+          <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">Discovery Call</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            Free 30-minute architecture review with our principal engineer. We discuss your product concept, operating environment, and feasibility — no commitment required.
+          </p>
+          <span class="mt-4 text-[10px] font-bold text-brand-500 dark:text-accent uppercase tracking-wider">Free · No Commitment</span>
+        </div>
+
+        <div class="relative flex flex-col items-center text-center px-4">
+          <div class="w-20 h-20 rounded-2xl bg-slate-100 dark:bg-brand-surface border-2 border-brand-500/30 flex items-center justify-center shadow-md mb-6 flex-shrink-0">
+            <span class="text-brand-500 dark:text-accent text-3xl font-black font-mono">02</span>
+          </div>
+          <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">NDA + Proposal</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            We execute a mutual NDA before reviewing your schematics or IP. A detailed technical proposal with BOM estimates and milestone timeline follows within 24 business hours.
+          </p>
+          <span class="mt-4 text-[10px] font-bold text-brand-500 dark:text-accent uppercase tracking-wider">Within 24h · NDA-Protected</span>
+        </div>
+
+        <div class="relative flex flex-col items-center text-center px-4">
+          <div class="w-20 h-20 rounded-2xl bg-slate-100 dark:bg-brand-surface border-2 border-brand-500/30 flex items-center justify-center shadow-md mb-6 flex-shrink-0">
+            <span class="text-brand-500 dark:text-accent text-3xl font-black font-mono">03</span>
+          </div>
+          <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">Design + Validation</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            Iterative hardware design sprints with regular review checkpoints. Automated HIL testing and DFM reviews are built into every milestone before board spin.
+          </p>
+          <span class="mt-4 text-[10px] font-bold text-brand-500 dark:text-accent uppercase tracking-wider">Transparent · Iterative</span>
+        </div>
+
+        <div class="relative flex flex-col items-center text-center px-4">
+          <div class="w-20 h-20 rounded-2xl bg-slate-100 dark:bg-brand-surface border-2 border-brand-500/30 flex items-center justify-center shadow-md mb-6 flex-shrink-0">
+            <span class="text-brand-500 dark:text-accent text-3xl font-black font-mono">04</span>
+          </div>
+          <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">IP Handover</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            You receive 100% ownership of all Gerber files, native CAD sources (Altium/KiCad), firmware repositories, BOM, and test reports. Zero vendor lock-in.
+          </p>
+          <span class="mt-4 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">100% IP Ownership · Zero Lock-in</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-14 text-center">
+      <a href="/contact" class="btn-shimmer inline-flex items-center space-x-2 px-8 py-4 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl shadow-lg shadow-brand-500/25 transition transform hover:-translate-y-0.5 active:scale-95 text-sm">
+        <span>Start with a Free Discovery Call →</span>
+      </a>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Smart Cost & Turnaround Engineering Estimator -->
+<% if (settings.section_estimator_enabled !== 'false') { %>
+<section id="estimator" class="py-20 bg-white dark:bg-[#0b1412] border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="text-center max-w-3xl mx-auto mb-14 space-y-3">
+      <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 dark:bg-accent/20 border border-brand-500/20 text-brand-700 dark:text-accent text-xs font-black uppercase tracking-wider">
+        <span>Instant Architecture Calculator</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+        Interactive Project Scope &amp; Timeline Estimator
+      </h2>
+      <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300">
+        Select your project phase, silicon complexity, and regulatory targets for an instant turnaround forecast and milestone breakdown.
+      </p>
+    </div>
+
+    <div class="bg-slate-50 dark:bg-slate-900/90 rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-slate-800 shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start text-left">
+      
+      <!-- Left Inputs: Step Selectors -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Step 1: Project Phase -->
+        <div class="space-y-2">
+          <label class="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">1. Target Engineering Phase</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold" id="estimatorPhasePills">
+            <button type="button" data-val="prototype" class="est-phase-btn px-4 py-3 rounded-2xl bg-brand-500 text-white font-black border border-brand-500 shadow-md text-left transition transform active:scale-95">
+              <span class="block text-sm">Prototype MVP</span>
+              <span class="text-[10px] text-white font-medium block">Schematic, Layout &amp; 5 SMT boards</span>
+            </button>
+            <button type="button" data-val="turnkey" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
+              <span class="block text-sm">Full Turnkey</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-normal">Hardware + RTOS + Pilot Run</span>
+            </button>
+            <button type="button" data-val="firmware" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
+              <span class="block text-sm">Firmware Only</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-normal">BSP, RTOS drivers &amp; FOTA</span>
+            </button>
+            <button type="button" data-val="hmi" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
+              <span class="block text-sm">TouchGFX / Qt HMI</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-normal">STM32 MCU &amp; Linux MPU UI</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Silicon Architecture Complexity -->
+        <div class="space-y-2">
+          <label class="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">2. Processing Core &amp; Architecture</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-bold" id="estimatorComplexityPills">
+            <button type="button" data-val="low" class="est-comp-btn px-4 py-3 rounded-2xl bg-brand-500 text-white font-black border border-brand-500 shadow-md text-left transition transform active:scale-95">
+              <span class="block text-sm">Ultra-Low Power</span>
+              <span class="text-[10px] text-white block font-semibold">Cortex-M0+/M4, BLE/LoRa</span>
+            </button>
+            <button type="button" data-val="medium" class="est-comp-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
+              <span class="block text-sm">Dual-Core RTOS</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-normal">ESP32-S3 / STM32F4 + Wi-Fi</span>
+            </button>
+            <button type="button" data-val="high" class="est-comp-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
+              <span class="block text-sm">High-Speed Linux MPU</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-normal">i.MX 8M / STM32MP1, DDR4</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Regulatory Compliance -->
+        <div class="space-y-2">
+          <label class="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">3. Regulatory &amp; Environmental Target</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold" id="estimatorCompliancePills">
+            <button type="button" data-val="none" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-brand-500 text-center transition active:scale-95">Commercial MVP</button>
+            <button type="button" data-val="ce_fcc" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">CE / FCC EMC</button>
+            <button type="button" data-val="automotive" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">Automotive ISO</button>
+            <button type="button" data-val="medical" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">Medical IEC</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Result: Live Dynamic Calculation Card -->
+      <div class="lg:col-span-5 bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-lg space-y-6">
+        
+        <div class="space-y-1 pb-4 border-b border-slate-100 dark:border-slate-700">
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block">Forecasted Turnaround</span>
+          <div class="flex items-baseline space-x-2">
+            <span id="estTimelineOutput" class="text-3xl sm:text-4xl font-black text-brand-600 dark:text-accent font-mono">3 - 4 Weeks</span>
+          </div>
+          <p id="estComplexityOutput" class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Standard MCU Architecture</p>
+        </div>
+
+        <!-- Deliverables Checklist -->
+        <div class="space-y-2">
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block">Milestone Deliverables</span>
+          <ul id="estDeliverablesList" class="space-y-1.5 text-xs text-slate-700 dark:text-slate-200 font-medium">
+            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>Schematic Capture &amp; Component Sourcing</span></li>
+            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>Multi-Layer Controlled Impedance Layout</span></li>
+            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>First-Pass SMT Prototypes (5 Assemblies)</span></li>
+          </ul>
+        </div>
+
+        <!-- Team Composition -->
+        <div class="p-3.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl text-xs space-y-1 border border-slate-200/60 dark:border-slate-700/60">
+          <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block">Dedicated Engineering Pod</span>
+          <p id="estTeamOutput" class="font-bold text-slate-800 dark:text-slate-200 text-xs">
+            1 Principal Hardware Architect &bull; 1 Firmware Engineer &bull; 1 DFM Specialist
+          </p>
+        </div>
+
+        <!-- Lock-In & Request Quote CTA -->
+        <div class="pt-2">
+          <a id="estQuoteCta" href="/contact?service=Hardware%20Design" class="btn-shimmer w-full inline-flex items-center justify-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-brand-600 to-accent text-white font-black rounded-xl text-sm shadow-lg shadow-brand-500/25 active:scale-95 transition">
+            <span>Lock In Scope &amp; Request RFQ</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<% } %>
+
+<!-- Featured Engineering Projects Spotlight Section -->
+<% if (settings.section_projects_enabled !== 'false') { %>
+<section class="py-20 bg-white dark:bg-[#0b1412] border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+      <div>
+        <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
+          Proven Hardware
+        </span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          Featured Engineering Case Studies
+        </h2>
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          Production electronics deployed across Indian automotive, utilities, and consumer industries.
+        </p>
+      </div>
+      <a href="/projects" class="mt-4 md:mt-0 inline-flex items-center min-h-[44px] py-2.5 text-xs font-bold text-brand-600 dark:text-accent hover:underline">
+        View All Projects Portfolio &rarr;
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-6 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <span class="text-[10px] font-bold uppercase text-brand-500 dark:text-accent">Automotive / HVAC</span>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mt-1 mb-2">Automotive Bus AC Controller</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            Dual CAN-bus architecture, 12V/24V transient protection, and multi-zone PID temperature regulation for transit coaches.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60">
+          <a href="/projects" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Inspect Architecture &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-6 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <span class="text-[10px] font-bold uppercase text-brand-500 dark:text-accent">Commercial IoT</span>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mt-1 mb-2">Smart Water Dispenser Controller</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            Capacitive touch interface, optical water level monitoring, RS-485 telemetry, and automated sanitary UV cycles.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60">
+          <a href="/projects" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Inspect Architecture &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-6 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
+        <div>
+          <span class="text-[10px] font-bold uppercase text-brand-500 dark:text-accent">Industrial Automation</span>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mt-1 mb-2">Substation RTU Edge Gateway</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            Linux BSP with dual Ethernet, galvanic isolation, IEC 60870-5-104 protocol support, and fail-safe dual bank eMMC FOTA.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60">
+          <a href="/projects" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
+            Inspect Architecture &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Recent Technical Articles Section -->
+<% if (settings.section_blogs_enabled !== 'false') { %>
+<section class="py-20 bg-slate-50 dark:bg-brand-dark border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+      <div>
+        <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
+          Engineering Insights
+        </span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          Latest Technical Articles
+        </h2>
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          Peer-reviewed hardware guides, functional safety breakdowns, and firmware architectural patterns.
+        </p>
+      </div>
+      <a href="/blogs" class="mt-4 md:mt-0 inline-flex items-center min-h-[44px] py-2.5 text-xs font-bold text-brand-600 dark:text-accent hover:underline">
+        Read All Technical Blogs &rarr;
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <% if (locals.recentPosts && recentPosts.length > 0) { %>
+        <% recentPosts.forEach(post => { %>
+          <a href="/blogs/<%= post.slug %>" class="bg-white dark:bg-brand-surface rounded-3xl p-6 border border-slate-200 dark:border-brand-border hover:border-brand-500 transition shadow-sm block group">
+            <span class="text-[10px] font-bold uppercase text-brand-500 dark:text-accent"><%= post.category || 'Embedded Electronics' %></span>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-brand-500 transition mt-2 mb-2 line-clamp-2">
+              <%= post.title %>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
+              <%= post.summary %>
+            </p>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <div class="col-span-3 text-center py-8 text-xs text-slate-400">
+          Articles loading from engineering database...
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Client Testimonials & Social Proof -->
+<% if (settings.section_testimonials_enabled !== 'false') { %>
+<section id="testimonials" class="py-20 bg-white dark:bg-[#0b1412] border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
+        Client Testimonials
+      </span>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+        Engineering partnerships, in their words
+      </h2>
+      <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">
+        What technology leaders and engineering directors say about partnering with Embedded India.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <% 
+      const displayTestimonials = locals.testimonials || [];
+      displayTestimonials.forEach(function(t) { %>
+      <div class="bg-slate-50 dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition">
+        <div>
+          <div class="flex items-center space-x-0.5 mb-4">
+            <% for(let i = 0; i < (t.rating || 5); i++) { %>
+            <svg class="w-4 h-4 text-yellow-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <% } %>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 ml-2 font-bold"><%= t.rating || 5 %>.0 / 5</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 italic leading-relaxed">"<%= t.quote %>"</p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60 flex items-center justify-between">
+          <div>
+            <span aria-hidden="true" class="inline-flex w-8 h-8 rounded-full bg-brand-50 dark:bg-brand-900 text-brand-700 dark:text-accent items-center justify-center font-bold mb-2"><%= (t.name || 'Client').split(/\s+/).slice(0,2).map(part => part[0]).join('').toUpperCase() %></span>
+            <p class="text-xs font-bold text-slate-900 dark:text-white"><%= t.name %></p>
+            <span class="text-[11px] text-slate-600 dark:text-slate-400 font-medium"><%= t.role %><% if (t.company) { %> · <%= t.company %><% } %></span>
+          </div>
+          <span class="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold rounded-full flex-shrink-0">Published review</span>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+    <% if (!displayTestimonials.length) { %><p class="text-center text-sm text-slate-600 dark:text-slate-300">Worked with our team? Share your engineering experience below.</p><% } %>
+    <div class="mt-10 text-center">
+      <a href="/submit-review" class="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-xs font-bold text-brand-600 dark:text-accent hover:border-brand-500 transition">
+        <span>⭐ Worked with Embedded India? Share your experience</span>
+        <span>&rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Frequently Asked Questions (FAQ) -->
+<% if (settings.section_faq_enabled !== 'false') { %>
+<section id="faq" class="py-20 bg-slate-50 dark:bg-brand-dark transition-colors">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
+        Answers &amp; Clarity
+      </span>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+        Frequently Asked Questions
+      </h2>
+      <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">
+        Everything you need to know about our turnkey hardware, firmware, and manufacturing contracts.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
+        <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer list-none flex items-center justify-between">
+          <span>What is the typical prototype turnaround timeline?</span>
+          <span class="text-brand-500 dark:text-accent font-mono text-base group-open:rotate-45 transition transform">+</span>
+        </summary>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
+          Standard turnkey prototype turn is 3 to 4 weeks, which includes schematic design, layout routing, bare PCB fabrication, component sourcing, SMT assembly, and bench verification bring-up.
+        </p>
+      </details>
+
+      <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
+        <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer list-none flex items-center justify-between">
+          <span>Who retains the Intellectual Property (IP) and design files?</span>
+          <span class="text-brand-500 dark:text-accent font-mono text-base group-open:rotate-45 transition transform">+</span>
+        </summary>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
+          You retain 100% ownership of all IP, Gerber manufacturing packages, BOMs, native CAD schematics (Altium/KiCad), and firmware source code repositories upon completion.
+        </p>
+      </details>
+
+      <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
+        <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer list-none flex items-center justify-between">
+          <span>Can you assist with volume production and SMT manufacturing?</span>
+          <span class="text-brand-500 dark:text-accent font-mono text-base group-open:rotate-45 transition transform">+</span>
+        </summary>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
+          Yes. We partner with ISO 9001 and IATF 16949 certified EMS facilities across Bangalore, Pune, and Noida for pilot runs and high-volume production with custom automated factory test jigs.
+        </p>
+      </details>
+      <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
+        <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer list-none flex items-center justify-between">
+          <span>Do you sign NDAs before reviewing our schematics or design files?</span>
+          <span class="text-brand-500 dark:text-accent font-mono text-base group-open:rotate-45 transition transform">+</span>
+        </summary>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
+          Yes, absolutely. We execute a mutual Non-Disclosure Agreement (NDA) before any confidential design data, schematics, or IP is shared. This is standard practice on all engagements from the first technical review onward.
+        </p>
+      </details>
+
+      <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
+        <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer list-none flex items-center justify-between">
+          <span>What happens if the first PCB board spin has an error?</span>
+          <span class="text-brand-500 dark:text-accent font-mono text-base group-open:rotate-45 transition transform">+</span>
+        </summary>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
+          Our rigorous DFM review and automated HIL verification process is designed to catch errors before any board is fabricated. In the rare event that a design issue requires a board re-spin, we include one revision cycle at no additional layout charge within the original project scope.
+        </p>
+      </details>
+
+      <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
+        <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer list-none flex items-center justify-between">
+          <span>Can you work with our existing Altium Designer or KiCad project files?</span>
+          <span class="text-brand-500 dark:text-accent font-mono text-base group-open:rotate-45 transition transform">+</span>
+        </summary>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
+          Yes. We work natively in both Altium Designer and KiCad. We can continue an existing partially-completed schematic or layout, or perform a full re-architecture review starting from your existing project files. All deliverables are returned in your preferred CAD format.
+        </p>
+      </details>
+
+      <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
+        <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer list-none flex items-center justify-between">
+          <span>Is there a minimum order quantity for prototype manufacturing?</span>
+          <span class="text-brand-500 dark:text-accent font-mono text-base group-open:rotate-45 transition transform">+</span>
+        </summary>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
+          No minimum order quantity for prototypes. Our standard turnkey prototype package includes 5 SMT-assembled boards, which is sufficient for bring-up, functional testing, and regulatory pre-compliance measurements. Single-unit handbuilt prototypes are also possible for urgent feasibility validation.
+        </p>
+      </details>
+
+      <% (locals.customFaqs || []).forEach(faq => { %>
+      <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
+        <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer flex items-center justify-between gap-4"><span><%= faq.question %></span><span aria-hidden="true" class="text-brand-500 dark:text-accent shrink-0">+</span></summary>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-3 whitespace-pre-line"><%= faq.answer %></p>
+      </details>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<%- include('../partials/cta-banner') %>
+
+<!-- Interactive Scripts: Particle Canvas, Typewriter, Spotlight Cursor, Oscilloscope & Bring-Up -->
+<script>
+  // 1. Typewriter Animation
+  const typewriterTarget = document.getElementById('typewriterTarget');
+  const typewriterPhrases = [
+    'TouchGFX & Qt Embedded HMIs',
+    'High-Speed PCB Layouts',
+    'Automotive CAN-FD ECUs',
+    'Ultra-Low Power Firmware',
+    'TinyML Edge AI Nodes',
+    'Turnkey IoT Hardware'
+  ];
+  let phraseIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  if (typewriterTarget) {
+  function typeStep() {
+    const currentPhrase = typewriterPhrases[phraseIndex];
+    if (isDeleting) {
+      typewriterTarget.textContent = currentPhrase.substring(0, charIndex - 1);
+      charIndex--;
+    } else {
+      typewriterTarget.textContent = currentPhrase.substring(0, charIndex + 1);
+      charIndex++;
+    }
+
+    let speed = isDeleting ? 40 : 80;
+
+    if (!isDeleting && charIndex === currentPhrase.length) {
+      speed = 2000; // Pause at end
+      isDeleting = true;
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      phraseIndex = (phraseIndex + 1) % typewriterPhrases.length;
+      speed = 400; // Pause before typing next
+    }
+
+    setTimeout(typeStep, speed);
+  }
+  typeStep();
+  }
+
+  // 2. Interactive Interactive Background Circuit Particle Canvas
+  const nodeCanvas = document.getElementById('circuitNodesCanvas');
+  if (nodeCanvas) {
+    const ctx = nodeCanvas.getContext('2d');
+    let width = nodeCanvas.width = nodeCanvas.offsetWidth;
+    let height = nodeCanvas.height = nodeCanvas.offsetHeight;
+    
+    window.addEventListener('resize', () => {
+      width = nodeCanvas.width = nodeCanvas.offsetWidth;
+      height = nodeCanvas.height = nodeCanvas.offsetHeight;
+    });
+
+    const particles = [];
+    const count = Math.min(Math.floor(width / 35), 45);
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        radius: Math.random() * 2 + 1.5
+      });
+    }
+
+    let mouseX = -1000, mouseY = -1000;
+    window.addEventListener('mousemove', (e) => {
+      const rect = nodeCanvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    });
+
+    function animateNodes() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Connect close nodes with faint circuit lines
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 110) {
+            ctx.strokeStyle = `rgba(0, 127, 95, ${0.2 * (1 - dist / 110)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw and move particles
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+
+        // Subtle mouse repulsion
+        const dx = p.x - mouseX;
+        const dy = p.y - mouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 80) {
+          p.x += dx * 0.02;
+          p.y += dy * 0.02;
+        }
+
+        ctx.fillStyle = '#55a630';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animateNodes);
+    }
+    animateNodes();
+  }
+
+  // 3. Spotlight Cursor Tracker on Service Cards
+  document.querySelectorAll('.spotlight-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+
+  // 4. Metric Counter Animation
+  function startCounters() {
+    document.querySelectorAll('.count-up').forEach(el => {
+      const target = parseFloat(el.getAttribute('data-target'));
+      const isDecimal = el.getAttribute('data-decimal') === '1';
+      let current = 0;
+      const step = target / 40;
+      const interval = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          el.textContent = isDecimal ? target.toFixed(1) : Math.round(target);
+          clearInterval(interval);
+        } else {
+          el.textContent = isDecimal ? current.toFixed(1) : Math.round(current);
+        }
+      }, 30);
+    });
+  }
+  startCounters();
+
+  // 5. Archetypes Configurator Data
+  const ARCHETYPES = {
+    hmi: {
+      mcu: 'STM32U5/H7 (TouchGFX) • i.MX8 (Qt)',
+      pcb: '6-Layer MIPI-DSI / LVDS + PCAP',
+      power: '60 FPS Chrom-ART / NeoChrom GPU',
+      turn: '3 - 4 Weeks Turnkey',
+      code: `// TouchGFX C++ MVP (STM32U5 NeoChrom GPU)
+void MedicalHmiView::handleTickEvent() {
+    presenter->pollVitalsQueue(&patientData);
+    ecgWaveformGraph.addValue(patientData.ecgMv);
+    spo2Gauge.updateValue(patientData.spo2Pct, 12);
+    invalidate(); // 60 FPS DMA2D VSYNC transfer
+}`
+    },
+    iot: {
+      mcu: 'ESP32-S3 Dual 240MHz',
+      pcb: '4-Layer FR-4 (1.6mm)',
+      power: '< 15µA Deep Sleep',
+      turn: '3 - 4 Weeks Turnkey',
+      code: `// IoT Node Firmware (ESP32-S3)
+void init_iot_node(void) {
+    power_rail_config(RAIL_3V3, ULTRA_LOW_NOISE);
+    lora_mesh_join(CHANNEL_915MHZ);
+    bme680_sensor_read(&telemetry);
+    esp_sleep_enable_timer_wakeup(60 * 1000000);
+    esp_deep_sleep_start();
+}`
+    },
+    automotive: {
+      mcu: 'STM32H743 Cortex-M7 @ 480MHz',
+      pcb: '6-Layer ENIG (ISO 7637-2 Surge)',
+      power: '9V - 36V Automotive DC',
+      turn: '4 - 5 Weeks with HIL',
+      code: `// Automotive ECU (CAN-FD 5Mbps)
+void can_fd_init(void) {
+    FDCAN1->CCCR |= FDCAN_CCCR_FDOE | FDCAN_CCCR_BRSE;
+    fdcan_set_bitrate(1000000, 5000000); // 1M Arb / 5M Data
+    hil_watchdog_refresh();
+    iso26262_safety_monitor_start();
+}`
+    },
+    edgeai: {
+      mcu: 'NXP i.MX RT1060 + Arm Ethos NPU',
+      pcb: '6-Layer Controlled 50Ω/90Ω',
+      power: 'Dynamic DVFS 1.2V / 3.3V',
+      turn: '4 Weeks Prototype',
+      code: `// TinyML Vibration Anomaly Detection
+void run_edge_inference(const float* accel_fft) {
+    tflite::MicroInterpreter interpreter(model, tensor_arena);
+    interpreter.Invoke();
+    float anomaly_score = interpreter.output(0)->data.f[0];
+    if (anomaly_score > 0.85f) trigger_alarm();
+}`
+    },
+    highspeed: {
+      mcu: 'Xilinx Zynq-7000 / DDR3 Memory',
+      pcb: '8-Layer Megtron-6 (Low Loss)',
+      power: 'Point-of-Load PMIC Multi-Rail',
+      turn: '5 Weeks Turnkey',
+      code: `// High-Speed DDR3 Calibration
+int ddr3_phy_training(void) {
+    calibrate_write_leveling();
+    deskew_data_lanes(LANE_0_TO_3);
+    assert(eye_margin_ps > 180);
+    return PHY_TRAINED_OK;
+}`
+    }
+  };
+
+  const archetypeBtns = document.querySelectorAll('.archetype-btn');
+  archetypeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.getAttribute('data-type');
+      const data = ARCHETYPES[type];
+      if (!data) return;
+
+      archetypeBtns.forEach(b => {
+        b.className = 'px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-bold border border-slate-300 dark:border-slate-600 hover:border-brand-500 transition archetype-btn';
+      });
+      btn.className = 'px-3.5 py-2 rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform scale-105 archetype-btn';
+
+      document.getElementById('specMcu').textContent = data.mcu;
+      document.getElementById('specPcb').textContent = data.pcb;
+      document.getElementById('specPower').textContent = data.power;
+      document.getElementById('specTurn').textContent = data.turn;
+      document.getElementById('liveCodeSnippet').textContent = data.code;
+    });
+  });
+
+  // 6. Console Tabs
+  const tabBtns = document.querySelectorAll('.console-tab-btn');
+  const tabCode = document.getElementById('tabContentCode');
+  const tabScope = document.getElementById('tabContentScope');
+  const tabTerm = document.getElementById('tabContentTerminal');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-tab');
+      tabBtns.forEach(b => {
+        b.className = 'px-3 py-1 rounded-md text-slate-300 hover:text-white font-bold console-tab-btn';
+      });
+      btn.className = 'px-3 py-1 rounded-md bg-brand-500 text-white font-black border border-white/20 console-tab-btn';
+
+      tabCode.classList.add('hidden');
+      tabScope.classList.add('hidden');
+      tabTerm.classList.add('hidden');
+
+      if (target === 'code') tabCode.classList.remove('hidden');
+      if (target === 'scope') {
+        tabScope.classList.remove('hidden');
+        startOscilloscope();
+      }
+      if (target === 'terminal') tabTerm.classList.remove('hidden');
+    });
+  });
+
+  // 7. Multi-Waveform Live Canvas Oscilloscope
+  let currentWaveform = 'square';
+  let scopeAnimId = null;
+
+  function setWaveform(type) {
+    currentWaveform = type;
+    const label = document.getElementById('scopeSignalLabel');
+    if (type === 'square') label.textContent = 'Signal: Clock PWM (10.0 MHz)';
+    if (type === 'sine') label.textContent = 'Signal: Analog Front-End Sine (1.0 kHz)';
+    if (type === 'burst') label.textContent = 'Signal: UART TX Burst (115200 Baud)';
+  }
+
+  function startOscilloscope() {
+    if (scopeAnimId) cancelAnimationFrame(scopeAnimId);
+    const canvas = document.getElementById('scopeCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let offset = 0;
+
+    function draw() {
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Grid Lines
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 30) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 30) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      // Signal Trace
+      ctx.strokeStyle = '#55a630';
+      ctx.lineWidth = 2.5;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#55a630';
+      ctx.beginPath();
+
+      if (currentWaveform === 'square') {
+        const period = 50;
+        for (let x = 0; x < canvas.width; x++) {
+          const cycleX = (x + offset) % period;
+          const y = cycleX < period / 2 ? 35 : 115;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+      } else if (currentWaveform === 'sine') {
+        for (let x = 0; x < canvas.width; x++) {
+          const y = 75 + Math.sin((x + offset) * 0.08) * 45;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+      } else if (currentWaveform === 'burst') {
+        // Serial packet bursts
+        for (let x = 0; x < canvas.width; x++) {
+          const noise = ((Math.sin((x + offset) * 0.2) > 0.1) ? 35 : 115);
+          if (x === 0) ctx.moveTo(x, noise);
+          else ctx.lineTo(x, noise);
+        }
+      }
+
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      offset += 2.5;
+      scopeAnimId = requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  // 8. Virtual Bring-Up Button
+  const btnBringUp = document.getElementById('btnRunBringUp');
+  const bringUpStatus = document.getElementById('bringUpStatus');
+  const termLogs = document.getElementById('terminalLogs');
+
+  if (btnBringUp) btnBringUp.addEventListener('click', () => {
+    // Switch to terminal tab
+    tabBtns.forEach(b => {
+      b.className = b.getAttribute('data-tab') === 'terminal' ? 'px-3 py-1 rounded-md bg-brand-500 text-white font-black border border-white/20 console-tab-btn' : 'px-3 py-1 rounded-md text-slate-300 hover:text-white font-bold console-tab-btn';
+    });
+    tabCode.classList.add('hidden');
+    tabScope.classList.add('hidden');
+    tabTerm.classList.remove('hidden');
+
+    btnBringUp.disabled = true;
+    bringUpStatus.textContent = 'Executing bring-up...';
+    bringUpStatus.className = 'text-[11px] font-mono text-yellow-400 animate-pulse';
+    termLogs.innerHTML = '<div class="text-slate-500">// Initiating automated hardware bench cycle...</div>';
+
+    const steps = [
+      { t: 300, msg: '<div class="text-emerald-400">[0.001s] [POWER] LDO rails 3.3V stable (3.302V, ripple &lt; 8mV)... OK</div>' },
+      { t: 800, msg: '<div class="text-emerald-400">[0.015s] [CLOCK] 72MHz PLL locked, jitter &lt; 5ps... OK</div>' },
+      { t: 1300, msg: '<div class="text-emerald-400">[0.045s] [PERIPH] SPI Flash JEDEC ID verified (Winbond 16MB)... OK</div>' },
+      { t: 1800, msg: '<div class="text-emerald-400">[0.092s] [HIL] CAN-FD bus arbitration 5Mbps loopback test... PASS</div>' },
+      { t: 2300, msg: '<div class="text-accent font-bold">[0.120s] [RTOS] FreeRTOS kernel started. 4 tasks active. SYSTEM READY.</div>' }
+    ];
+
+    steps.forEach(step => {
+      setTimeout(() => {
+        termLogs.innerHTML += step.msg;
+      }, step.t);
+    });
+
+    setTimeout(() => {
+      btnBringUp.disabled = false;
+      bringUpStatus.textContent = 'Board Status: 100% ONLINE';
+      bringUpStatus.className = 'text-[11px] font-mono text-emerald-400 font-bold';
+    }, 2400);
+  });
+
+  // 9. Instant Homepage Sandbox Slider
+  const miniSlider = document.getElementById('miniCurrentSlider');
+  const miniCurrentLabel = document.getElementById('miniCurrentLabel');
+  const miniWidthResult = document.getElementById('miniWidthResult');
+  const miniWidthMmResult = document.getElementById('miniWidthMmResult');
+
+  function updateMiniTrace() {
+    const current = parseFloat(miniSlider.value);
+    miniCurrentLabel.textContent = current.toFixed(1) + ' Amps';
+    
+    // IPC-2221 External: A = (I / (0.048 * (10^0.44)))^(1/0.725)
+    const areaMils2 = Math.pow(current / (0.048 * Math.pow(10, 0.44)), 1 / 0.725);
+    const widthMils = areaMils2 / 1.378; // 1 oz
+    const widthMm = widthMils * 0.0254;
+
+    miniWidthResult.textContent = widthMils.toFixed(1) + ' mils';
+    miniWidthMmResult.textContent = '(' + widthMm.toFixed(2) + ' mm)';
+  }
+
+  if (miniSlider) { miniSlider.addEventListener('input', updateMiniTrace); updateMiniTrace(); }
+  
+  // Estimator State & Handler
+  let currentEstPhase = 'prototype';
+  let currentEstComplexity = 'low';
+  let currentEstCompliance = 'none';
+
+  function updateEstimator() {
+    fetch('/api/estimator/calculate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phase: currentEstPhase,
+        complexity: currentEstComplexity,
+        compliance: currentEstCompliance
+      })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        const timeEl = document.getElementById('estTimelineOutput');
+        const compEl = document.getElementById('estComplexityOutput');
+        const listEl = document.getElementById('estDeliverablesList');
+        const teamEl = document.getElementById('estTeamOutput');
+        const ctaEl = document.getElementById('estQuoteCta');
+
+        if (timeEl) timeEl.textContent = data.timeline;
+        if (compEl) compEl.textContent = data.complexityLabel + ' • ' + data.complianceLabel;
+        if (teamEl) teamEl.textContent = data.recommendedTeam;
+        if (listEl) {
+          listEl.innerHTML = data.deliverables.map(d => 
+            `<li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>${d}</span></li>`
+          ).join('');
+        }
+        if (ctaEl) {
+          ctaEl.href = `/contact?service=${encodeURIComponent(currentEstPhase === 'firmware' ? 'Firmware/BSP' : (currentEstPhase === 'hmi' ? 'Embedded UI / HMI' : 'Hardware Design'))}&subject=${encodeURIComponent('RFQ: ' + data.timeline + ' ' + data.complexityLabel)}`;
+        }
+      }
+    })
+    .catch(err => console.warn('Estimator err:', err));
+  }
+
+  document.querySelectorAll('.est-phase-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.est-phase-btn').forEach(b => {
+        b.className = 'est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95';
+      });
+      btn.className = 'est-phase-btn px-4 py-3 rounded-2xl bg-brand-500 text-white font-black border border-brand-500 shadow-md text-left transition transform active:scale-95';
+      currentEstPhase = btn.dataset.val;
+      updateEstimator();
+    });
+  });
+
+  document.querySelectorAll('.est-comp-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.est-comp-btn').forEach(b => {
+        b.className = 'est-comp-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95';
+      });
+      btn.className = 'est-comp-btn px-4 py-3 rounded-2xl bg-brand-500 text-white font-black border border-brand-500 shadow-md text-left transition transform active:scale-95';
+      currentEstComplexity = btn.dataset.val;
+      updateEstimator();
+    });
+  });
+
+  document.querySelectorAll('.est-comp-rule').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.est-comp-rule').forEach(b => {
+        b.className = 'est-comp-rule px-3 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95';
+      });
+      btn.className = 'est-comp-rule px-3 py-2.5 rounded-xl bg-brand-500 text-white font-black border border-brand-500 text-center transition active:scale-95';
+      currentEstCompliance = btn.dataset.val;
+      updateEstimator();
+    });
+  });
+
+</script>
+
+<%- include('../layouts/footer') %>

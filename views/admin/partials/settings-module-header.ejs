@@ -1,0 +1,14 @@
+<div class="settings-module-header module-heading">
+  <div class="settings-module-intro">
+    <span class="material-symbols-rounded settings-module-icon" aria-hidden="true"><%= icon %></span>
+    <div><h2 id="<%= sectionId %>-title"><%= title %></h2><p><%= description %></p></div>
+  </div>
+  <% if (locals.saveLabel || (locals.actions && actions.length)) { %>
+  <div class="settings-module-actions">
+    <% (locals.actions || []).forEach(action => { %>
+      <button type="button" id="<%= action.id %>" onclick="<%= action.handler %>" class="settings-button"><span class="material-symbols-rounded" aria-hidden="true"><%= action.icon %></span><span><%= action.label %></span></button>
+    <% }) %>
+    <% if (locals.saveLabel) { %><%- include('module-save-button', { label: saveLabel, formId: locals.formId }) %><% } %>
+  </div>
+  <% } %>
+</div>

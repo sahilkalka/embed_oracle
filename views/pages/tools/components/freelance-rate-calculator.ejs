@@ -1,0 +1,129 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Annual Target &amp; Costs</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Consulting Economics</span>
+    </div>
+
+    <div>
+      <label for="fr-income" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Target Net Annual Take-Home (₹ / $)</label>
+      <input type="number" id="fr-income" value="1800000" step="50000" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="fr-overhead" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Annual Overhead (SaaS, lab, HW)</label>
+        <input type="number" id="fr-overhead" value="300000" step="10000" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+      <div>
+        <label for="fr-tax-rate" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Effective Tax Rate (%)</label>
+        <input type="number" id="fr-tax-rate" value="20" min="0" max="50" step="1" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="fr-weeks" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Working Weeks / Year (excl vacation)</label>
+        <input type="number" id="fr-weeks" value="46" min="10" max="52" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+      <div>
+        <label for="fr-billable-hours" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Billable Hours / Week</label>
+        <input type="number" id="fr-billable-hours" value="25" min="5" max="60" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+    </div>
+
+    <div>
+      <label for="fr-profit-margin" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Profit &amp; Buffer Margin (%)</label>
+      <input type="number" id="fr-profit-margin" value="15" min="0" max="50" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 space-y-6">
+    <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-mono text-slate-400 uppercase">Recommended Minimum Hourly Rate</span>
+          <p id="fr-res-hourly" class="text-3xl sm:text-4xl font-extrabold font-mono text-emerald-400 mt-1">₹2,554 / hr</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-4 bg-slate-800/60 rounded-2xl border border-slate-700">
+          <p class="text-[11px] text-slate-400 uppercase font-mono">Day Rate (8 hrs)</p>
+          <p id="fr-res-daily" class="text-lg sm:text-xl font-bold font-mono text-brand-300 mt-1">₹20,432 / day</p>
+        </div>
+        <div class="p-4 bg-slate-800/60 rounded-2xl border border-slate-700">
+          <p class="text-[11px] text-slate-400 uppercase font-mono">Gross Revenue Required</p>
+          <p id="fr-res-gross" class="text-lg sm:text-xl font-bold font-mono text-white mt-1">₹29,37,500</p>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-800/40 rounded-2xl border border-slate-700 text-xs font-mono space-y-2">
+        <div class="flex justify-between">
+          <span class="text-slate-400">Total Billable Hours / Year:</span>
+          <span id="fr-res-hours" class="font-bold text-white">1,150 hrs</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Estimated Annual Tax:</span>
+          <span id="fr-res-tax" class="font-bold text-amber-400">₹4,50,000</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Profit &amp; Reserves Buffer:</span>
+          <span id="fr-res-buffer" class="font-bold text-emerald-400">₹3,87,500</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const incEl = document.getElementById('fr-income');
+  const ovhEl = document.getElementById('fr-overhead');
+  const taxEl = document.getElementById('fr-tax-rate');
+  const wksEl = document.getElementById('fr-weeks');
+  const hrsEl = document.getElementById('fr-billable-hours');
+  const mgnEl = document.getElementById('fr-profit-margin');
+
+  const hourlyEl = document.getElementById('fr-res-hourly');
+  const dailyEl = document.getElementById('fr-res-daily');
+  const grossEl = document.getElementById('fr-res-gross');
+  const totalHrsEl = document.getElementById('fr-res-hours');
+  const taxOutEl = document.getElementById('fr-res-tax');
+  const bufferEl = document.getElementById('fr-res-buffer');
+
+  function fmt(n) {
+    return '₹' + Math.round(n).toLocaleString('en-IN');
+  }
+
+  function calculate() {
+    const netIncome = parseFloat(incEl.value) || 0;
+    const overhead = parseFloat(ovhEl.value) || 0;
+    const taxRate = (parseFloat(taxEl.value) || 0) / 100;
+    const weeks = parseFloat(wksEl.value) || 1;
+    const hoursPerWeek = parseFloat(hrsEl.value) || 1;
+    const margin = (parseFloat(mgnEl.value) || 0) / 100;
+
+    // Gross before tax = netIncome / (1 - taxRate)
+    const taxableIncome = taxRate < 1 ? netIncome / (1 - taxRate) : netIncome * 1.5;
+    const totalTax = taxableIncome - netIncome;
+
+    const baseRequired = taxableIncome + overhead;
+    const grossRequired = baseRequired * (1 + margin);
+    const profitBuffer = grossRequired - baseRequired;
+
+    const totalHours = weeks * hoursPerWeek;
+    const hourly = totalHours > 0 ? grossRequired / totalHours : 0;
+    const daily = hourly * 8;
+
+    hourlyEl.textContent = fmt(hourly) + ' / hr';
+    dailyEl.textContent = fmt(daily) + ' / day';
+    grossEl.textContent = fmt(grossRequired);
+    totalHrsEl.textContent = Math.round(totalHours) + ' hrs';
+    taxOutEl.textContent = fmt(totalTax);
+    bufferEl.textContent = fmt(profitBuffer);
+  }
+
+  [incEl, ovhEl, taxEl, wksEl, hrsEl, mgnEl].forEach(el => el.addEventListener('input', calculate));
+  calculate();
+})();
+</script>

@@ -1,0 +1,200 @@
+<section id="site-customizer" aria-labelledby="site-customizer-title" class="settings-section hidden">
+
+      <form class="settings-module-form space-y-6" action="/admin/settings" method="POST" data-module="Customizer &amp; Events">
+        <%- csrfField %>
+        <input type="hidden" name="_active_tab" value="site-customizer">
+
+        <%- include('../settings-module-header', {"sectionId":"site-customizer","title":"Site customizer","icon":"tune","description":"Manage branding, navigation, lab status, and public contact details.","saveLabel":"Save Customizer & Events"}) %>
+
+        <!-- 2A. Bangalore Lab Live Event & Telemetry Pill Controls -->
+        <div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="settings-panel-title">Lab status &amp; telemetry</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">Controls the header status pill and the public homepage telemetry ticker.</p>
+            </div>
+
+            <!-- Event Enabled Toggle -->
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-slate-600 dark:text-slate-400">Status Pill:</span>
+              <%- include('../../../partials/theme-toggle', {
+                name: 'lab_event_enabled',
+                id: 'lab_event_enabled',
+                checked: settings.lab_event_enabled !== 'false',
+                onChange: 'updateEventPreview',
+                onLabel: 'Enabled',
+                offLabel: 'Disabled',
+                label: 'Bangalore Lab Status Pill',
+                showBadge: true
+              }) %>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="lab_event_label">Short Pill Label (Navbar)</label>
+              <input type="text" id="lab_event_label" name="lab_event_label" value="<%= settings.lab_event_label || 'Bangalore Lab: Online' %>" oninput="updateEventPreview()" placeholder="Bangalore Lab: Online" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-medium">
+              <span class="text-[10px] text-slate-400">Keep under 25 chars to prevent navbar stretching</span>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="lab_status_text">Full Status Text (Homepage Telemetry Ticker &amp; Tooltip)</label>
+              <input type="text" id="lab_status_text" name="lab_status_text" value="<%= settings.lab_status_text || 'Bangalore Lab: Online • 4 Active SMT Lines • HIL Station #2 Active' %>" oninput="updateEventPreview()" placeholder="Bangalore Lab: Online • 4 Active SMT Lines • HIL Station #2 Active" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono">
+            </div>
+
+            <div class="sm:col-span-3">
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="lab_event_url">Event Target Click URL</label>
+              <input type="text" id="lab_event_url" name="lab_event_url" value="<%= settings.lab_event_url || '/about#lab' %>" placeholder="/about#lab or /services" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono">
+            </div>
+          </div>
+
+          <!-- Live Event Pill Mockup -->
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] font-bold text-slate-500">Live Header Preview:</span>
+            <div id="eventPillMockup" class="inline-flex items-center space-x-2 px-3 py-1 bg-brand-500/10 dark:bg-accent/15 border border-brand-500/20 rounded-full text-[11px] font-bold text-brand-700 dark:text-accent shadow-xs">
+              <span class="w-2 h-2 rounded-full bg-brand-500 dark:bg-accent live-radar"></span>
+              <span id="eventPillText" class="truncate max-w-xs"><%= settings.lab_event_label || 'Bangalore Lab: Online' %></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2B. Core Site Branding & Copy -->
+<div class="settings-panel space-y-4"><div class="settings-panel-intro"><h3>Brand & navigation</h3><p>Set site identity, header behavior, page width, and footer text.</p></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="site-customizer-site_name">Site Brand Name</label>
+            <input id="site-customizer-site_name" type="text" name="site_name" value="<%= settings.site_name || 'Embedded India' %>" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-bold">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="site-customizer-site_tagline">Site Tagline</label>
+            <input id="site-customizer-site_tagline" type="text" name="site_tagline" value="<%= settings.site_tagline || 'Turnkey Hardware & Firmware Engineering Lab' %>" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-medium">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-2 cursor-pointer" for="btn_nav_sticky">Header Navigation Style</label>
+            <div class="mt-1">
+              <%- include('../../../partials/theme-toggle', {
+                name: 'nav_sticky',
+                id: 'nav_sticky',
+                checked: settings.nav_sticky !== 'false',
+                onLabel: 'Sticky Header',
+                offLabel: 'Static Header',
+                label: 'Header Navigation Style',
+                showBadge: true
+              }) %>
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="header_opacity_slider">Sticky Header Transparency</label>
+            <div class="flex items-center space-x-2">
+              <input type="range" id="header_opacity_slider" min="10" max="100" step="5" value="<%= settings.header_opacity || '95' %>" oninput="document.getElementById('header_opacity_input').value = this.value; document.getElementById('header_opacity_val').textContent = this.value + '%';" class="w-full accent-brand-500 cursor-pointer">
+              <input type="hidden" id="header_opacity_input" name="header_opacity" value="<%= settings.header_opacity || '95' %>">
+              <span id="header_opacity_val" class="text-xs font-mono font-bold text-brand-600 dark:text-accent min-w-[42px] text-right"><%= settings.header_opacity || '95' %>%</span>
+            </div>
+            <span class="text-[10px] text-slate-400">100% = solid opaque, 95% = frosted glass (default), 50% = semi-transparent</span>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="site-customizer-container_max_width">Site Container Max Width</label>
+            <select id="site-customizer-container_max_width" name="container_max_width" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 text-xs font-medium cursor-pointer">
+              <option value="80rem" <%= (!settings.container_max_width || settings.container_max_width === '80rem' || settings.container_max_width === '1280px') ? 'selected' : '' %>>80rem / 1280px (Standard Default)</option>
+              <option value="85rem" <%= settings.container_max_width === '85rem' ? 'selected' : '' %>>85rem / 1360px (Comfortable Wide)</option>
+              <option value="90rem" <%= settings.container_max_width === '90rem' ? 'selected' : '' %>>90rem / 1440px (Spacious Desktop)</option>
+              <option value="96rem" <%= settings.container_max_width === '96rem' ? 'selected' : '' %>>96rem / 1536px (Ultra-Wide Screen)</option>
+              <option value="72rem" <%= settings.container_max_width === '72rem' ? 'selected' : '' %>>72rem / 1152px (Compact Focused)</option>
+              <option value="100%" <%= settings.container_max_width === '100%' ? 'selected' : '' %>>100% (Full Fluid Width)</option>
+            </select>
+            <span class="text-[10px] text-slate-400">Adjusts max width across navbar, hero cards, and sections</span>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-2 cursor-pointer" for="btn_enable_smooth_scroll">Smooth Scrolling</label>
+            <div class="mt-1">
+              <%- include('../../../partials/theme-toggle', {
+                name: 'enable_smooth_scroll',
+                id: 'enable_smooth_scroll',
+                checked: settings.enable_smooth_scroll !== 'false',
+                onLabel: 'Enabled',
+                offLabel: 'Disabled',
+                label: 'Smooth Scrolling',
+                showBadge: true
+              }) %>
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-2 cursor-pointer" for="btn_promo_banner_active">Global Promo Announcement Bar</label>
+            <div class="mt-1">
+              <%- include('../../../partials/theme-toggle', {
+                name: 'promo_banner_active',
+                id: 'promo_banner_active',
+                checked: settings.promo_banner_active === 'true',
+                onLabel: 'Active (Show)',
+                offLabel: 'Hidden',
+                label: 'Global Promo Announcement Bar',
+                showBadge: true
+              }) %>
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="site-customizer-footer_copyright">Footer Copyright Text</label>
+            <input id="site-customizer-footer_copyright" type="text" name="footer_copyright" value="<%= settings.footer_copyright || 'Embedded India. Precision Electronics & Systems Engineering.' %>" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700">
+          </div>
+        </div>
+
+
+</div>
+<!-- 2C. Public Contact Desk, Engineering Centers & SLA -->
+        <div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="settings-panel-title">Contact &amp; engineering centers</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">Configures public contact channels, physical engineering centers, WhatsApp line, and SLA across the site.</p>
+            </div>
+            <span class="text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-brand-500/10 text-brand-600 dark:text-accent border border-brand-500/20">
+              Live Synchronized
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <!-- 1. Email Inquiries & RFQs -->
+            <div>
+              <label class="block font-bold text-slate-800 dark:text-slate-200 mb-1 flex items-center space-x-1.5" for="contact_email">
+                <span>✉️ Email Inquiries &amp; RFQs</span>
+              </label>
+              <input type="email" id="contact_email" name="contact_email" value="<%= settings.contact_email || 'info@embeddedindia.in' %>" placeholder="info@embeddedindia.in" class="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white focus:ring-1 focus:ring-brand-500">
+              <span class="text-[10px] text-slate-400">Primary public email displayed across contact page, footer, and inquiry forms</span>
+            </div>
+
+            <div class="sm:col-span-2"><label class="block font-bold text-slate-800 dark:text-slate-200 mb-1" for="calendly_url">Meeting booking URL</label><input type="url" id="calendly_url" name="calendly_url" value="<%= settings.calendly_url || '' %>" placeholder="https://calendly.com/your-team/architecture-review" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs"><span class="text-[10px] text-slate-500">Leave blank to hide the booking card. Use your own HTTPS booking page.</span></div>
+<!-- 2. Engineering Centers -->
+            <div>
+              <label class="block font-bold text-slate-800 dark:text-slate-200 mb-1 flex items-center space-x-1.5" for="contact_address">
+                <span>🏢 Engineering Centers</span>
+              </label>
+              <input type="text" id="contact_address" name="contact_address" value="<%= settings.contact_address || 'Hyderabad, India' %>" placeholder="Hyderabad, India" class="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:ring-1 focus:ring-brand-500">
+              <span class="text-[10px] text-slate-400">Physical lab locations shown in Contact, Footer, and Schema.org SEO data</span>
+            </div>
+
+            <!-- 3. Direct Line / WhatsApp -->
+            <div>
+              <label class="block font-bold text-slate-800 dark:text-slate-200 mb-1 flex items-center space-x-1.5" for="contact_phone">
+                <span>📞 Direct Line / WhatsApp</span>
+              </label>
+              <input type="text" id="contact_phone" name="contact_phone" value="<%= settings.contact_phone || '+91 98765 43210' %>" placeholder="+91 98765 43210" class="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white focus:ring-1 focus:ring-brand-500">
+              <span class="text-[10px] text-slate-400">Telephone and WhatsApp routing number for rapid client dispatch</span>
+            </div>
+
+            <!-- 4. Turnaround SLA -->
+            <div>
+              <label class="block font-bold text-slate-800 dark:text-slate-200 mb-1 flex items-center space-x-1.5" for="contact_turnaround_sla">
+                <span>⏱️ Turnaround SLA</span>
+              </label>
+              <input type="text" id="contact_turnaround_sla" name="contact_turnaround_sla" value="<%= settings.contact_turnaround_sla || 'Technical reply and feasibility review within 24 business hours' %>" placeholder="Technical reply and feasibility review within 24 business hours" class="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:ring-1 focus:ring-brand-500">
+              <span class="text-[10px] text-slate-400">Guaranteed review SLA displayed directly on the Contact Us desk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-module-footer">
+          <%- include('../module-save-button', { label: "Save Customizer & Events" }) %>
+        </div>
+      </form>
+    </section>

@@ -1,0 +1,137 @@
+<%- include('layout_top') %>
+
+<div class="w-full space-y-6 mx-auto">
+  
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">Newsletter Leads &amp; Subscribers</h1>
+      <p class="text-xs text-slate-500 mt-1">Manage email list, approve subscribers, and export for campaign broadcasts</p>
+    </div>
+
+    <!-- Export CSV Button -->
+    <a href="/admin/subscribers/export" class="px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow flex items-center justify-center sm:justify-start space-x-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+      <span>Export CSV List</span>
+    </a>
+  </div>
+
+  <% if (message || deliveryError) { %>
+  <div role="status" class="p-4 rounded-xl border text-sm"><%= deliveryError || message %></div>
+  <% } %>
+
+  <div class="rounded-2xl border overflow-hidden shadow-sm admin-table-container">
+    <% if (subscribers.length === 0) { %>
+      <div class="p-8 text-center text-slate-400 text-xs">No subscribers yet.</div>
+    <% } else { %>
+      <!-- Mobile Card View (Zero Horizontal Scroll) -->
+      <div class="md:hidden admin-table-body divide-y">
+        <% subscribers.forEach(sub => { %>
+          <div class="p-4 space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <p class="font-bold text-slate-900 dark:text-white text-xs break-all"><%= sub.email %></p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  <%= new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %> &bull; <span class="font-mono"><%= sub.source %></span>
+                </p>
+              </div>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase shrink-0 <%= sub.status === 'active' ? 'admin-badge-published' : sub.status === 'pending' ? 'admin-badge-scheduled' : 'admin-badge-draft' %>">
+                <%= sub.status %>
+              </span>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+              <span class="font-medium text-slate-700 dark:text-slate-300 text-[11px]">
+                <%= sub.leadMagnetSent ? '✅ Delivered' : '⏳ Pending Delivery' %>
+              </span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <% if (sub.status !== 'active') { %>
+                  <form action="/admin/subscribers/<%= sub.id %>/approve" method="POST" class="inline">
+                    <%- csrfField %>
+                    <button type="submit" aria-label="Approve subscriber and send Lead Magnet PDF" title="Approve &amp; Send PDF" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition inline-flex items-center justify-center">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    </button>
+                  </form>
+                <% } else { %>
+                  <form action="/admin/subscribers/<%= sub.id %>/approve" method="POST" class="inline">
+                    <%- csrfField %>
+                    <button type="submit" aria-label="Resend Lead Magnet PDF" title="Resend Lead Magnet PDF" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-accent hover:bg-brand-100 dark:hover:bg-brand-900/70 transition inline-flex items-center justify-center">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </button>
+                  </form>
+                <% } %>
+                <form action="/admin/subscribers/<%= sub.id %>/delete" method="POST" onsubmit="return confirm('Remove subscriber <%= sub.email %>?')" class="inline">
+                  <%- csrfField %>
+                  <button type="submit" aria-label="Delete subscriber" title="Delete Subscriber" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 transition inline-flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Desktop Table View -->
+      <div class="hidden md:block overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="admin-table-head uppercase font-bold text-[11px] tracking-wider">
+            <tr>
+              <th class="p-4">Email</th>
+              <th class="p-4">Status</th>
+              <th class="p-4">Lead Magnet Sent</th>
+              <th class="p-4">Source Page</th>
+              <th class="p-4">Signup Date</th>
+              <th class="p-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="admin-table-body divide-y">
+            <% subscribers.forEach(sub => { %>
+              <tr class="transition">
+                <td class="p-4 font-bold text-slate-900 dark:text-white"><%= sub.email %></td>
+                <td class="p-4">
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase <%= sub.status === 'active' ? 'admin-badge-published' : sub.status === 'pending' ? 'admin-badge-scheduled' : 'admin-badge-draft' %>">
+                    <%= sub.status %>
+                  </span>
+                </td>
+                <td class="p-4 font-medium text-slate-700 dark:text-slate-300">
+                  <%= sub.leadMagnetSent ? '✅ Delivered' : '⏳ Pending Delivery' %>
+                </td>
+                <td class="p-4 text-slate-500 dark:text-slate-400 font-mono"><%= sub.source %></td>
+                <td class="p-4 text-slate-500 dark:text-slate-300 font-medium">
+                  <%= new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
+                </td>
+                <td class="p-4 text-right whitespace-nowrap">
+                  <div class="inline-flex items-center justify-end gap-1.5">
+                    <% if (sub.status !== 'active') { %>
+                      <form action="/admin/subscribers/<%= sub.id %>/approve" method="POST" class="inline">
+                        <%- csrfField %>
+                        <button type="submit" aria-label="Approve subscriber and send Lead Magnet PDF" title="Approve &amp; Send PDF" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition inline-flex items-center justify-center">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        </button>
+                      </form>
+                    <% } else { %>
+                      <form action="/admin/subscribers/<%= sub.id %>/approve" method="POST" class="inline">
+                        <%- csrfField %>
+                        <button type="submit" aria-label="Resend Lead Magnet PDF" title="Resend Lead Magnet PDF" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-accent hover:bg-brand-100 dark:hover:bg-brand-900/70 transition inline-flex items-center justify-center">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </button>
+                      </form>
+                    <% } %>
+                    <form action="/admin/subscribers/<%= sub.id %>/delete" method="POST" onsubmit="return confirm('Remove subscriber <%= sub.email %>?')" class="inline">
+                      <%- csrfField %>
+                      <button type="submit" aria-label="Delete subscriber" title="Delete Subscriber" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 transition inline-flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+
+</div>
+
+<%- include('layout_bottom') %>

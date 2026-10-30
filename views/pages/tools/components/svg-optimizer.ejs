@@ -1,0 +1,102 @@
+<div class="space-y-6">
+  <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-brand-border pb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">SVG Markup Optimizer</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Strips metadata, editor comments, empty tags, and cleans vector code.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" id="svg-opt-btn" class="px-3.5 py-1.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-xl shadow">Optimize SVG</button>
+        <button type="button" id="svg-sample-btn" class="px-3.5 py-1.5 bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl">Sample Vector</button>
+        <button type="button" id="svg-copy-btn" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl">Copy Code</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
+        <label for="svg-input" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Raw SVG Code</label>
+        <textarea id="svg-input" rows="12" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-xs focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Paste &lt;svg ...&gt;&lt;/svg&gt; markup here..."></textarea>
+      </div>
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <label for="svg-output" class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Cleaned SVG</label>
+          <span id="svg-savings" class="text-xs font-mono font-bold text-emerald-500">0% reduced</span>
+        </div>
+        <textarea id="svg-output" readonly rows="12" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-emerald-400 font-mono text-xs outline-none" placeholder="Cleaned SVG markup..."></textarea>
+      </div>
+    </div>
+
+    <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+      <span class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block mb-2">Rendered Preview</span>
+      <div id="svg-preview" class="p-6 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center min-h-[120px] overflow-auto"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const input = document.getElementById('svg-input');
+  const output = document.getElementById('svg-output');
+  const savings = document.getElementById('svg-savings');
+  const preview = document.getElementById('svg-preview');
+
+  function optimizeSvg(raw) {
+    if (!raw.trim()) return '';
+    let svg = raw;
+
+    // Remove comments
+    svg = svg.replace(/<!--[\s\S]*?-->/g, '');
+    // Remove DOCTYPE & XML declaration
+    svg = svg.replace(/<\?xml[\s\S]*?\?>/gi, '');
+    svg = svg.replace(/<!DOCTYPE[\s\S]*?>/gi, '');
+    // Remove metadata & title & desc
+    svg = svg.replace(/<metadata[\s\S]*?<\/metadata>/gi, '');
+    svg = svg.replace(/<title[\s\S]*?<\/title>/gi, '');
+    svg = svg.replace(/<desc[\s\S]*?<\/desc>/gi, '');
+    // Remove illustrator/inkscape/sketch namespaces and attributes
+    svg = svg.replace(/\s*(xmlns:[a-z0-9_-]+|inkscape:[a-z0-9_-]+|sodipodi:[a-z0-9_-]+)="[^"]*"/gi, '');
+    // Collapse excess whitespace
+    svg = svg.replace(/\s+/g, ' ');
+    // Remove trailing spaces before tag closes
+    svg = svg.replace(/\s+>/g, '>');
+    svg = svg.replace(/\s+\/>/g, '/>');
+
+    return svg.trim();
+  }
+
+  function run() {
+    const orig = input.value;
+    const clean = optimizeSvg(orig);
+    output.value = clean;
+    preview.innerHTML = clean;
+
+    const origBytes = new Blob([orig]).size;
+    const cleanBytes = new Blob([clean]).size;
+    if (origBytes > 0) {
+      const saved = Math.max(0, ((origBytes - cleanBytes) / origBytes) * 100);
+      savings.textContent = origBytes + 'B -> ' + cleanBytes + 'B (-' + saved.toFixed(1) + '%)';
+    } else {
+      savings.textContent = '0% reduced';
+    }
+  }
+
+  document.getElementById('svg-opt-btn').addEventListener('click', run);
+  input.addEventListener('input', run);
+
+  document.getElementById('svg-sample-btn').addEventListener('click', () => {
+    input.value = '<?xml version="1.0" encoding="utf-8"?>\n<!-- Generator: Adobe Illustrator 27.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) -->\n<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">\n<metadata><rdf:RDF><cc:Work rdf:about=""><dc:format>image/svg+xml</dc:format></cc:Work></rdf:RDF></metadata>\n<circle fill="#047857" cx="50" cy="50" r="40"/>\n<polygon fill="#ffffff" points="40,30 70,50 40,70"/>\n</svg>';
+    run();
+  });
+
+  document.getElementById('svg-copy-btn').addEventListener('click', () => {
+    if (output.value) {
+      navigator.clipboard.writeText(output.value);
+      const btn = document.getElementById('svg-copy-btn');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = orig, 1500);
+    }
+  });
+
+  document.getElementById('svg-sample-btn').click();
+})();
+</script>

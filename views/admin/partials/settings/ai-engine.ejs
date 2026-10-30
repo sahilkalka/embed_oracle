@@ -1,0 +1,350 @@
+<%
+// Tolerate old Passenger workers while an extracted release awaits restart.
+const storedAi = locals.settings || {};
+const schedulerView = locals.schedulerSettings || {
+  enabled: ['true', '1'].includes(storedAi.ai_auto_gen_enabled),
+  frequency: storedAi.ai_auto_gen_frequency || 'daily',
+  maxPosts: parseInt(storedAi.ai_auto_gen_max_posts, 10) || 100,
+  lastRun: storedAi.ai_auto_gen_last_run ? new Date(storedAi.ai_auto_gen_last_run) : null,
+  rawTopics: storedAi.ai_auto_gen_topics || '',
+  statusMode: storedAi.ai_auto_gen_status || 'published'
+};
+const totalPostCount = Number.isFinite(Number(locals.totalPosts)) ? Number(locals.totalPosts) : 0;
+%>
+<section id="ai-engine" aria-labelledby="ai-engine-title" class="settings-section">
+
+  <%- include('../settings-module-header', {"sectionId":"ai-engine","title":"AI engine","icon":"lightbulb","description":"Configure model credentials, draft technical articles, and manage scheduled publishing.","saveLabel":"Save AI Configuration","formId":"aiConfigForm"}) %>
+
+  <% if (locals.saved) { %>
+    <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center space-x-2 shadow-sm">
+      <span>✅ AI configuration settings saved and activated successfully!</span>
+    </div>
+  <% } %>
+
+  <!-- AI Model Settings Form -->
+  <form id="aiConfigForm" action="/admin/ai" method="POST" class="space-y-6">
+    <%- csrfField %>
+
+    <div class="bg-slate-50 dark:bg-brand-dark rounded-2xl p-5 border border-slate-200 dark:border-brand-border space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+        <h3 class="settings-panel-title">
+          Provider &amp; model credentials
+        </h3>
+        <span class="text-[11px] font-semibold text-slate-500">Supports Cloud &amp; Local LLMs</span>
+      </div>
+
+      <!-- Provider Selection -->
+      <div>
+        <p id="ai-provider-label" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Select AI Model Provider</p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="providerCards" role="radiogroup" aria-labelledby="ai-provider-label">
+          <label class="cursor-pointer border p-3.5 rounded-xl flex flex-col items-center justify-center text-center transition hover:border-brand-500 <%= (settings.ai_provider || 'nvidia') === 'nvidia' ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/30 ring-1 ring-brand-500' : 'border-slate-200 dark:border-brand-border' %>">
+            <input type="radio" name="ai_provider" value="nvidia" <%= (settings.ai_provider || 'nvidia') === 'nvidia' ? 'checked' : '' %> class="sr-only">
+            <span class="text-xs font-bold text-slate-900 dark:text-white">NVIDIA NIM</span>
+            <span class="text-[10px] text-slate-500 mt-0.5">Llama 3.1 70B</span>
+          </label>
+          <label class="cursor-pointer border p-3.5 rounded-xl flex flex-col items-center justify-center text-center transition hover:border-brand-500 <%= settings.ai_provider === 'openai' ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/30 ring-1 ring-brand-500' : 'border-slate-200 dark:border-brand-border' %>">
+            <input type="radio" name="ai_provider" value="openai" <%= settings.ai_provider === 'openai' ? 'checked' : '' %> class="sr-only">
+            <span class="text-xs font-bold text-slate-900 dark:text-white">OpenAI</span>
+            <span class="text-[10px] text-slate-500 mt-0.5">GPT-4o / Mini</span>
+          </label>
+          <label class="cursor-pointer border p-3.5 rounded-xl flex flex-col items-center justify-center text-center transition hover:border-brand-500 <%= settings.ai_provider === 'gemini' ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/30 ring-1 ring-brand-500' : 'border-slate-200 dark:border-brand-border' %>">
+            <input type="radio" name="ai_provider" value="gemini" <%= settings.ai_provider === 'gemini' ? 'checked' : '' %> class="sr-only">
+            <span class="text-xs font-bold text-slate-900 dark:text-white">Google Gemini</span>
+            <span class="text-[10px] text-slate-500 mt-0.5">Gemini 1.5 / 2.0</span>
+          </label>
+          <label class="cursor-pointer border p-3.5 rounded-xl flex flex-col items-center justify-center text-center transition hover:border-brand-500 <%= settings.ai_provider === 'custom' ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/30 ring-1 ring-brand-500' : 'border-slate-200 dark:border-brand-border' %>">
+            <input type="radio" name="ai_provider" value="custom" <%= settings.ai_provider === 'custom' ? 'checked' : '' %> class="sr-only">
+            <span class="text-xs font-bold text-slate-900 dark:text-white">Custom / Ollama</span>
+            <span class="text-[10px] text-slate-500 mt-0.5">Local / vLLM</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Quick API key links banner -->
+      <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-200 flex flex-wrap items-center justify-between gap-2">
+        <span class="font-medium">Get API credentials:</span>
+        <div class="flex flex-wrap gap-3 font-semibold text-brand-700 dark:text-emerald-400">
+          <a href="https://build.nvidia.com" target="_blank" rel="noopener" class="hover:underline">NVIDIA NIM (Free Credits) &nearr;</a>
+          <a href="https://aistudio.google.com" target="_blank" rel="noopener" class="hover:underline">Google AI Studio &nearr;</a>
+          <a href="https://platform.openai.com" target="_blank" rel="noopener" class="hover:underline">OpenAI Platform &nearr;</a>
+        </div>
+      </div>
+
+      <!-- API Key & Model Name -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="ai_api_key">API Key / Secret Token</label>
+          <input type="password" id="ai_api_key" name="ai_api_key" value="<%= settings.ai_api_key || '' %>" placeholder="Enter API key or 'demo-key' for simulation mode" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono text-slate-900 dark:text-white">
+          <span class="text-[10px] text-slate-500 mt-1 block">Leave empty or use 'demo-key' to run in built-in simulation mode</span>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="ai_model">Model Identifier</label>
+          <input type="text" id="ai_model" name="ai_model" value="<%= settings.ai_model || 'meta/llama-3.1-70b-instruct' %>" placeholder="meta/llama-3.1-70b-instruct, gpt-4o-mini, gemini-1.5-flash" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono font-semibold text-slate-900 dark:text-white">
+        </div>
+      </div>
+
+      <!-- Base URL & Temperature -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="ai_base_url">Custom API Base URL (Optional)</label>
+          <input type="text" id="ai_base_url" name="ai_base_url" value="<%= settings.ai_base_url || '' %>" placeholder="https://api.nvidia.com/v1 or http://localhost:11434/v1" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono text-slate-900 dark:text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="ai-temperature">Temperature (Creativity)</label>
+          <input id="ai-temperature" type="number" step="0.1" min="0" max="1" name="ai_temperature" value="<%= settings.ai_temperature || '0.7' %>" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono text-slate-900 dark:text-white">
+        </div>
+      </div>
+
+      <!-- Test Connection & Save Action -->
+      <div class="pt-4 border-t border-slate-100 dark:border-brand-border flex flex-col sm:flex-row items-center justify-between gap-3">
+        <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow-md">
+          Save AI Configuration
+        </button>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button type="button" id="btnTestAi" class="flex-1 sm:flex-none px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center space-x-2 active:scale-95 shadow">
+            <span>⚡ Test AI Model Connection</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Test Result Box -->
+      <div id="aiTestResult" class="hidden p-4 rounded-xl text-xs font-mono"></div>
+
+    </div>
+  </form>
+
+  <!-- Technical Article Generator Studio -->
+  <div class="bg-slate-50 dark:bg-brand-dark rounded-2xl p-5 border border-slate-200 dark:border-brand-border space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <div>
+        <h3 class="settings-panel-title">
+          Technical article drafting
+        </h3>
+        <p class="text-xs text-slate-500 mt-0.5">Produces in-depth embedded engineering guides with code snippets, schematics, and DFM rules</p>
+      </div>
+      <span class="drafting-status shrink-0 whitespace-nowrap text-[10px] bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 font-extrabold px-2 py-0.5 rounded uppercase">
+        Live Drafting
+      </span>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="aiTopic">Technical Article Topic / Prompt</label>
+        <div class="flex gap-2">
+          <input type="text" id="aiTopic" placeholder="e.g. Design Considerations for Multi-Layer High-Speed DDR4 Routing on STM32MP157" class="flex-1 px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs text-slate-900 dark:text-white font-medium">
+          <button type="button" id="btnRandomTopic" class="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 transition whitespace-nowrap flex items-center space-x-1" title="Suggest trending topics via AI Agent">
+            <span>🎲 Suggest Topics</span>
+          </button>
+        </div>
+        <!-- Topic suggestions container -->
+        <div id="aiTopicChips" class="mt-2.5 flex flex-wrap gap-1.5 hidden"></div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="aiCategory">Target Category</label>
+          <select id="aiCategory" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs font-semibold">
+            <option value="Embedded Electronics">Embedded Electronics</option>
+            <option value="Guides">Guides</option>
+            <option value="Troubleshooting">Troubleshooting</option>
+            <option value="Industry Info">Industry Info</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="aiAudience">Target Audience Profile</label>
+          <input type="text" id="aiAudience" value="Hardware Layout Specialists &amp; Firmware Engineers" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-xs font-medium">
+        </div>
+      </div>
+
+      <div class="pt-2 flex flex-wrap items-center gap-3">
+        <button type="button" id="btnGenerateArticle" class="px-6 py-3 bg-gradient-to-r from-brand-600 via-brand-500 to-accent hover:from-brand-500 hover:to-brand-600 text-white font-bold rounded-xl text-xs transition shadow-lg flex items-center space-x-2 active:scale-95">
+          <span>🚀 Generate Technical Article Now &rarr;</span>
+        </button>
+        <button type="button" id="btnGenerateOutline" class="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs transition shadow flex items-center space-x-2 active:scale-95">
+          <span>📑 Generate Technical Outline &rarr;</span>
+        </button>
+      </div>
+
+      <div id="aiGenStatus" class="hidden p-4 rounded-xl text-xs font-mono"></div>
+
+      <!-- Outline Output Container -->
+      <div id="aiOutlineBox" class="hidden p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-brand-border/60 pb-2">
+          <div class="font-bold text-xs text-slate-900 dark:text-white flex items-center space-x-2">
+            <span>📑 Generated Technical Outline</span>
+            <span id="aiOutlineSourceBadge" class="text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60"></span>
+          </div>
+          <button type="button" id="btnCopyOutline" class="text-[11px] font-bold text-brand-700 dark:text-emerald-400 hover:underline">
+            📋 Copy Markdown
+          </button>
+        </div>
+        <div class="text-xs font-semibold text-slate-800 dark:text-slate-200" id="aiOutlineTitle"></div>
+        <div class="text-[11px] text-slate-500 italic" id="aiOutlineSummary"></div>
+        <pre id="aiOutlineContent" class="text-xs font-mono text-slate-800 dark:text-slate-200 bg-white dark:bg-brand-surface p-3 rounded-lg border border-slate-200 dark:border-brand-border overflow-x-auto max-h-64 whitespace-pre-wrap"></pre>
+        <div class="pt-2 flex items-center gap-3">
+          <a id="btnOutlineCreatePost" href="/admin/posts/new" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold rounded-lg transition shadow">
+            ✍️ Open in CMS Editor &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scheduled publishing & Topic Queue -->
+  <form action="/admin/ai" method="POST" class="space-y-6">
+    <%- csrfField %>
+    <div class="bg-slate-50 dark:bg-brand-dark rounded-2xl p-5 border border-slate-200 dark:border-brand-border space-y-6">
+
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 dark:border-brand-border pb-4 gap-3">
+        <div>
+          <div class="flex items-center space-x-2">
+            <h3 class="settings-panel-title">
+              Scheduled publishing
+            </h3>
+            <span class="scheduler-status shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full text-[10px] font-black uppercase <%= schedulerView.enabled ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400' %>">
+              <%= schedulerView.enabled ? '● Active' : '○ Paused' %>
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Auto-synthesizes and schedules engineering articles at defined intervals from your curated topic queue
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button" id="btnRunSchedulerNow" class="px-4 py-2 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5 active:scale-95">
+            <span>⚡ Run Auto-Generation Now</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <div class="text-[10px] uppercase font-bold text-slate-400">Total Blog Pages in CMS</div>
+          <div class="text-lg font-black text-slate-900 dark:text-white mt-0.5">
+            <%= totalPostCount %> <span class="text-xs font-normal text-slate-500">/ max <%= schedulerView.maxPosts %> allowed</span>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
+            <div class="bg-brand-500 h-full rounded-full" style="width: <%= Math.min(100, Math.round((totalPostCount / schedulerView.maxPosts) * 100)) %>%"></div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <div class="text-[10px] uppercase font-bold text-slate-400">Current Frequency</div>
+          <div class="text-sm font-bold text-slate-900 dark:text-white mt-1 capitalize flex items-center space-x-1.5">
+            <span>⏰</span>
+            <span><%= schedulerView.frequency.replace(/_/g, ' ') %></span>
+          </div>
+          <div class="text-[10px] text-slate-500 mt-1">Background cron checks every 15 min</div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <div class="text-[10px] uppercase font-bold text-slate-400">Last Auto-Generated Article</div>
+          <div class="text-xs font-bold text-slate-900 dark:text-white mt-1 truncate">
+            <%= schedulerView.lastRun ? new Date(schedulerView.lastRun).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Never run yet' %>
+          </div>
+          <div class="text-[10px] text-slate-500 mt-1">Next: Calculated dynamically</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-5">
+
+        <!-- Enable Switch -->
+        <div class="sm:col-span-12 flex items-center justify-between p-3.5 rounded-xl bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800">
+          <div>
+            <div class="text-xs font-bold text-slate-900 dark:text-white">Enable Automated Scheduled Blog Generation</div>
+            <div class="text-[11px] text-slate-600 dark:text-slate-400">When turned on, the system synthesizes articles and adds them to the CMS at your specified frequency until max limit is reached.</div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer ml-4">
+            <input type="checkbox" aria-label="Enable automatic article generation" name="ai_auto_gen_enabled" value="true" <%= schedulerView.enabled ? 'checked' : '' %> class="sr-only peer">
+            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500"></div>
+          </label>
+        </div>
+
+        <!-- Frequency Selector -->
+        <div class="sm:col-span-4">
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="ai-engine-ai_auto_gen_frequency">
+            Generation Frequency <span class="text-red-500">*</span>
+          </label>
+          <select id="ai-engine-ai_auto_gen_frequency" aria-label="Generation frequency" name="ai_auto_gen_frequency" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500">
+            <option value="hourly" <%= schedulerView.frequency === 'hourly' ? 'selected' : '' %>>Every 1 Hour</option>
+            <option value="every_6_hours" <%= schedulerView.frequency === 'every_6_hours' ? 'selected' : '' %>>Every 6 Hours (4 articles / day)</option>
+            <option value="every_12_hours" <%= schedulerView.frequency === 'every_12_hours' ? 'selected' : '' %>>Every 12 Hours (2 articles / day)</option>
+            <option value="daily" <%= schedulerView.frequency === 'daily' ? 'selected' : '' %>>Daily (1 article / day - Recommended)</option>
+            <option value="every_2_days" <%= schedulerView.frequency === 'every_2_days' ? 'selected' : '' %>>Every 2 Days</option>
+            <option value="weekly" <%= schedulerView.frequency === 'weekly' ? 'selected' : '' %>>Weekly (1 article / week)</option>
+          </select>
+          <span class="text-[10px] text-slate-500 mt-1 block">Articles are added at the scheduled time intervals.</span>
+        </div>
+
+        <!-- Max Blog Pages Allowed -->
+        <div class="sm:col-span-4">
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="ai-engine-ai_auto_gen_max_posts">
+            Max Blog Pages Allowed <span class="text-red-500">*</span>
+          </label>
+          <input id="ai-engine-ai_auto_gen_max_posts"
+            type="number"
+            name="ai_auto_gen_max_posts"
+            aria-label="Maximum blog pages allowed"
+            min="1"
+            max="10000"
+            value="<%= schedulerView.maxPosts %>"
+            class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500"
+          >
+          <span class="text-[10px] text-slate-500 mt-1 block">Total ceiling. Scheduler stops when total articles reach this number.</span>
+        </div>
+
+        <!-- Status for auto-generated articles -->
+        <div class="sm:col-span-4">
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="ai-engine-ai_auto_gen_status">
+            Auto-Generated Status
+          </label>
+          <select id="ai-engine-ai_auto_gen_status" aria-label="Auto-generated article status" name="ai_auto_gen_status" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500">
+            <option value="published" <%= schedulerView.statusMode === 'published' ? 'selected' : '' %>>Published (Live Immediately)</option>
+            <option value="scheduled" <%= schedulerView.statusMode === 'scheduled' ? 'selected' : '' %>>Scheduled (Queued for Release)</option>
+            <option value="draft" <%= schedulerView.statusMode === 'draft' ? 'selected' : '' %>>Draft (Requires Manual Approval)</option>
+          </select>
+          <span class="text-[10px] text-slate-500 mt-1 block">Choose whether new articles publish live immediately or go to Drafts.</span>
+        </div>
+
+        <!-- Topics Queue / Pool -->
+        <div class="sm:col-span-12">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300" for="aiSchedulerTopics">
+              Topic &amp; Keyword Queue (One Topic Per Line) <span class="text-red-500">*</span>
+            </label>
+            <div class="flex items-center space-x-2">
+              <button type="button" id="btnPopulateDefaultTopics" class="text-[11px] font-bold text-brand-700 dark:text-emerald-400 hover:underline">
+                ↺ Reset Curated Engineering Topics
+              </button>
+            </div>
+          </div>
+          <textarea
+            id="aiSchedulerTopics"
+            name="ai_auto_gen_topics"
+            rows="7"
+            class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono text-slate-900 dark:text-white leading-relaxed focus:ring-2 focus:ring-brand-500"
+            placeholder="One topic per line..."
+          ><%= schedulerView.rawTopics %></textarea>
+          <span class="text-[10px] text-slate-500 mt-1 block">The automated engine cycles through these topics in order. Once completed, it synthesizes fresh variants or uses AI real-time suggestions.</span>
+        </div>
+
+      </div>
+
+      <!-- Save & Trigger Button Bar -->
+      <div class="pt-4 border-t border-slate-100 dark:border-brand-border flex flex-col sm:flex-row items-center justify-between gap-3">
+        <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow-md">
+          Save Scheduler Settings
+        </button>
+
+        <span class="text-xs text-slate-400">Settings are persisted in database and active across server reboots.</span>
+      </div>
+
+      <!-- Scheduler Run-Now Status Box -->
+      <div id="schedulerRunStatus" class="hidden p-4 rounded-xl text-xs font-mono"></div>
+
+    </div>
+  </form>
+
+</section>

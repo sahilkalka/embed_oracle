@@ -1,0 +1,199 @@
+<%- include('../layout_top') %>
+
+<div class="max-w-5xl mx-auto space-y-6 text-left">
+  
+  <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+    <div>
+      <h1 class="text-2xl font-black text-slate-900 dark:text-white">
+        <%= project ? 'Edit Project: ' + project.title : 'Create New Engineering Project' %>
+      </h1>
+      <p class="text-xs text-slate-500 mt-1">Specify architecture, hardware specifications, video walkthrough, and case study narrative</p>
+    </div>
+    
+    <!-- AI Case Study Generator Button -->
+    <button 
+      type="button" 
+      id="btnAiDraftCaseStudy"
+      class="px-4 py-2.5 bg-gradient-to-r from-brand-600 to-accent hover:opacity-95 text-white font-bold rounded-xl text-xs shadow-md transition flex items-center space-x-2 active:scale-95"
+    >
+      <span>✨ Generate with AI Assistant</span>
+    </button>
+  </div>
+
+  <div id="ai-status-banner" class="hidden p-3.5 rounded-xl text-xs font-bold bg-brand-500/10 text-brand-700 dark:text-accent border border-brand-500/20"></div>
+
+  <form method="POST" action="<%= project ? '/admin/projects/' + project.id + '/edit' : '/admin/projects/new' %>" class="space-y-6">
+    <%- csrfField %>
+    
+    <!-- 1. General Identification -->
+    <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <h3 class="font-black text-sm uppercase tracking-wider text-slate-400">1. Basic Information</h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Project Title *</label>
+          <input type="text" name="title" id="projTitle" required value="<%= project ? project.title : '' %>" placeholder="e.g. Bus AC Controller" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">URL Slug</label>
+          <input type="text" name="slug" id="projSlug" value="<%= project ? project.slug : '' %>" placeholder="auto-generated-from-title" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Category</label>
+          <select aria-label="Project category" name="category" id="projCategory" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-bold">
+            <% (categories || ['Automotive', 'IoT', 'Industrial', 'Edge AI', 'Healthcare', 'Firmware']).forEach(function(c) { %>
+              <option value="<%= c %>" <%= project && project.category === c ? 'selected' : '' %>><%= c %></option>
+            <% }); %>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Industry / Domain</label>
+          <input type="text" name="industry" id="projIndustry" value="<%= project ? project.industry : '' %>" placeholder="e.g. Commercial Bus & Transit HVAC" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Client Domain</label>
+          <input type="text" name="client" id="projClient" value="<%= project ? project.client : 'Tier-1 OEM' %>" placeholder="e.g. Tier-1 Automotive OEM" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Executive Summary *</label>
+        <textarea name="summary" id="projSummary" rows="2" required placeholder="Concise 2-3 sentence overview for portfolio cards and search engines" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white"><%= project ? project.summary : '' %></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tech Stack (comma-separated)</label>
+        <input type="text" name="techStack" id="projTechStack" value="<%= project ? project.techStack : 'STM32F4, FreeRTOS, CAN-FD, Altium Designer' %>" placeholder="e.g. STM32, FreeRTOS, CAN-FD, Altium" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
+      </div>
+    </div>
+
+    <!-- 2. Technical Narrative & Case Study Markdown -->
+    <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-black text-sm uppercase tracking-wider text-slate-400">2. Technical Case Study Narrative (Markdown)</h3>
+        <span class="text-[11px] text-slate-400">Supports code blocks, tables, block diagrams &amp; KaTeX</span>
+      </div>
+      <textarea aria-label="Project architecture and technical details" name="contentMarkdown" id="projMarkdown" rows="12" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono leading-relaxed"><%= project ? project.descriptionMarkdown : '## System Architecture & Technical Challenges\n\nDescribe the engineering problem and architectural partition here.\n\n### Key Deliverables\n- Multi-layer PCB layout\n- Deterministic RTOS control loops' %></textarea>
+    </div>
+
+    <!-- 3. Hardware Specifications & Metrics (JSON) -->
+    <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <h3 class="font-black text-sm uppercase tracking-wider text-slate-400">3. Specifications &amp; Quantifiable Metrics</h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">System Specifications (JSON Object)</label>
+          <textarea name="specsJson" id="projSpecsJson" rows="6" placeholder='{"Supply Voltage": "9V - 36V DC", "Protocols": "CAN 2.0B / LIN 2.2"}' class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono"><%= project ? project.specs : '{\n  "Supply Range": "9V - 36V DC Automotive",\n  "Protocols": "CAN 2.0B / LIN 2.2",\n  "Compliance": "ISO 7637-2 Surge, CISPR 25"\n}' %></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Key Metrics Badges (JSON Array)</label>
+          <textarea name="metricsJson" id="projMetricsJson" rows="6" placeholder='[{"label": "Turnaround", "value": "3.5 Weeks"}]' class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono"><%= project ? project.metrics : '[\n  { "label": "Operating Range", "value": "9V - 36V DC" },\n  { "label": "CAN Latency", "value": "< 2ms" },\n  { "label": "Reliability", "value": "99.9%" }\n]' %></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Media & Display Settings -->
+    <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <h3 class="font-black text-sm uppercase tracking-wider text-slate-400">4. Media, Video &amp; Visibility</h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="project-video-url" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">YouTube Walkthrough Link or Embed Code</label>
+          <input type="text" id="project-video-url" name="videoUrl" aria-describedby="project-video-help" value="<%= project ? project.videoUrl : '' %>" placeholder="Paste a YouTube link or iframe embed code" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
+          <p id="project-video-help" class="mt-1 text-xs text-slate-600 dark:text-slate-300">Accepts youtu.be sharing links, YouTube watch/embed links, or the full iframe code. Sharing parameters are removed when saved.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Cover Image Path / URL</label>
+          <input type="text" name="coverImage" value="<%= project ? project.coverImage : '/assets/images/mission1.svg' %>" placeholder="/assets/images/mission1.svg" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Lifecycle Status</label>
+          <select aria-label="Lifecycle status" name="status" class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-bold">
+            <option value="completed" <%= project && project.status === 'completed' ? 'selected' : '' %>>Completed (Production)</option>
+            <option value="in-progress" <%= project && project.status === 'in-progress' ? 'selected' : '' %>>In Progress</option>
+            <option value="prototype" <%= project && project.status === 'prototype' ? 'selected' : '' %>>Prototype / Evaluation</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Order Priority</label>
+          <input aria-label="Order priority" type="number" name="order" value="<%= project ? project.order : 0 %>" class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-bold">
+        </div>
+        <div class="flex items-center pt-5">
+          <label class="inline-flex items-center space-x-2 text-xs font-bold text-slate-800 dark:text-slate-200 cursor-pointer">
+            <input type="checkbox" name="featured" value="true" <%= project && project.featured ? 'checked' : '' %> class="w-4 h-4 text-brand-500 rounded border-slate-300 focus:ring-brand-500">
+            <span>Showcase as Featured on Homepage</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-3 pt-4">
+      <a href="/admin/projects" class="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        &larr; Cancel &amp; Return
+      </a>
+      <button type="submit" class="btn-shimmer px-8 py-3 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl text-xs shadow-md transition active:scale-95">
+        <span>Save Project Case Study &rarr;</span>
+      </button>
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+  // AI Case Study Drafting Assistant
+  const btnAi = document.getElementById('btnAiDraftCaseStudy');
+  const banner = document.getElementById('ai-status-banner');
+
+  if (btnAi) {
+    btnAi.addEventListener('click', async () => {
+      const title = document.getElementById('projTitle').value.trim();
+      if (!title) {
+        alert('Please enter at least a Project Title before requesting AI assistance.');
+        document.getElementById('projTitle').focus();
+        return;
+      }
+
+      banner.classList.remove('hidden');
+      banner.textContent = 'Analyzing hardware architecture and drafting technical case study with AI...';
+
+      try {
+        const res = await fetch('/admin/ai/project-draft', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title,
+            category: document.getElementById('projCategory').value,
+            industry: document.getElementById('projIndustry').value,
+            techStack: document.getElementById('projTechStack').value,
+            notes: document.getElementById('projSummary').value
+          })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          if (data.summary) document.getElementById('projSummary').value = data.summary;
+          if (data.descriptionMarkdown) document.getElementById('projMarkdown').value = data.descriptionMarkdown;
+          if (data.specs) document.getElementById('projSpecsJson').value = JSON.stringify(data.specs, null, 2);
+          if (data.metrics) document.getElementById('projMetricsJson').value = JSON.stringify(data.metrics, null, 2);
+
+          banner.textContent = '✓ AI Draft successfully populated! Review and customize the fields below before saving.';
+          banner.className = 'p-3.5 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-500/30';
+        } else {
+          banner.textContent = 'AI generation note: ' + (data.error || 'Please fill fields manually.');
+        }
+      } catch (err) {
+        banner.textContent = 'Error connecting to AI service: ' + err.message;
+      }
+    });
+  }
+</script>
+
+<%- include('../layout_bottom') %>

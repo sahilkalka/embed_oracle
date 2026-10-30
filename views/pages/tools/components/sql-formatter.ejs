@@ -1,0 +1,118 @@
+<div class="space-y-6">
+  <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-brand-border pb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">SQL Query Formatter &amp; Beautifier</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Formats keywords, indents clauses, and tidies messy relational queries.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" id="sql-format-btn" class="px-3.5 py-1.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-xl shadow">Format Query</button>
+        <button type="button" id="sql-uppercase-btn" class="px-3 py-1.5 bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl">UPPERCASE Keywords</button>
+        <button type="button" id="sql-sample-btn" class="px-3 py-1.5 bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl">Sample Query</button>
+        <button type="button" id="sql-copy-btn" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl">Copy Formatted</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
+        <label for="sql-input" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Messy SQL Input</label>
+        <textarea id="sql-input" rows="14" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-xs focus:ring-2 focus:ring-brand-500 outline-none" placeholder="select p.id, p.name, sum(o.amount) as total from projects p join telemetry_logs o on p.id = o.project_id where o.status = 'ACTIVE' and o.created_at >= '2026-01-01' group by p.id, p.name order by total desc limit 50;"></textarea>
+      </div>
+      <div>
+        <label for="sql-output" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Beautified SQL Result</label>
+        <textarea id="sql-output" readonly rows="14" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-emerald-400 font-mono text-xs outline-none" placeholder="Beautified SQL will appear here..."></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const input = document.getElementById('sql-input');
+  const output = document.getElementById('sql-output');
+
+  const KEYWORDS = [
+    'SELECT', 'FROM', 'WHERE', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'FULL JOIN', 'CROSS JOIN',
+    'JOIN', 'ON', 'GROUP BY', 'ORDER BY', 'HAVING', 'LIMIT', 'OFFSET', 'UNION ALL', 'UNION',
+    'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM', 'CREATE TABLE', 'ALTER TABLE',
+    'DROP TABLE', 'AND', 'OR', 'NOT', 'IN', 'IS NULL', 'IS NOT NULL', 'LIKE', 'AS', 'ASC', 'DESC',
+    'BETWEEN', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'DISTINCT'
+  ];
+
+  function formatSql(text) {
+    if (!text.trim()) return '';
+    let sql = text.trim();
+
+    // Replace newlines and collapses spaces
+    sql = sql.replace(/\s+/g, ' ');
+
+    // Normalize keywords
+    KEYWORDS.forEach(kw => {
+      const rx = new RegExp('\\b' + kw.replace(/ /g, '\\s+') + '\\b', 'gi');
+      sql = sql.replace(rx, kw);
+    });
+
+    // Line breaks before major clauses
+    const majorClauses = [
+      'SELECT', 'FROM', 'WHERE', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'FULL JOIN', 'JOIN',
+      'GROUP BY', 'ORDER BY', 'HAVING', 'LIMIT', 'OFFSET', 'SET', 'VALUES', 'UNION'
+    ];
+
+    majorClauses.forEach(clause => {
+      const rx = new RegExp('(\\s*)(\\b' + clause + '\\b)', 'g');
+      sql = sql.replace(rx, '\n$2');
+    });
+
+    // Subclauses indent
+    sql = sql.replace(/\bAND\b/g, '\n  AND');
+    sql = sql.replace(/\bOR\b/g, '\n  OR');
+
+    // Split and indent
+    const lines = sql.split('\n');
+    const formatted = lines.map(line => {
+      line = line.trim();
+      if (!line) return '';
+      const isMajor = majorClauses.some(mc => line.startsWith(mc));
+      if (isMajor || line.startsWith('AND') || line.startsWith('OR')) {
+        return line;
+      }
+      return '  ' + line;
+    }).filter(Boolean).join('\n');
+
+    return formatted;
+  }
+
+  function doFormat() {
+    output.value = formatSql(input.value);
+  }
+
+  document.getElementById('sql-format-btn').addEventListener('click', doFormat);
+  input.addEventListener('input', doFormat);
+
+  document.getElementById('sql-sample-btn').addEventListener('click', () => {
+    input.value = "select p.project_id, p.name, count(t.event_id) as telemetry_count, max(t.timestamp) as last_seen from iot_devices p inner join device_telemetry t on p.device_uid = t.device_uid where t.signal_rssi > -85 and p.firmware_version >= 'v2.1' group by p.project_id, p.name having count(t.event_id) > 100 order by last_seen desc limit 25;";
+    doFormat();
+  });
+
+  document.getElementById('sql-uppercase-btn').addEventListener('click', () => {
+    let val = input.value;
+    KEYWORDS.forEach(kw => {
+      const rx = new RegExp('\\b' + kw.replace(/ /g, '\\s+') + '\\b', 'gi');
+      val = val.replace(rx, kw);
+    });
+    input.value = val;
+    doFormat();
+  });
+
+  document.getElementById('sql-copy-btn').addEventListener('click', () => {
+    if (output.value) {
+      navigator.clipboard.writeText(output.value);
+      const btn = document.getElementById('sql-copy-btn');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = orig, 1500);
+    }
+  });
+
+  document.getElementById('sql-sample-btn').click();
+})();
+</script>

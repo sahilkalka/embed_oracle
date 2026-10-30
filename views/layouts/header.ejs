@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" class="<%= settings.enable_smooth_scroll === 'false' ? '' : 'scroll-smooth' %> overflow-x-clip max-w-full" data-palette="emerald">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= seo.title %></title>
+  <meta name="description" content="<%= seo.description %>">
+  <meta name="robots" content="<%= seo.robots || 'index, follow' %>">
+  <meta name="keywords" content="<%= seo.keywords %>">
+  <link rel="canonical" href="<%= seo.canonical %>">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- OpenGraph & Twitter Cards -->
+  <meta property="og:type" content="<%= seo.ogType || 'website' %>">
+  <meta property="og:site_name" content="<%= seo.siteName %>">
+  <meta property="og:title" content="<%= seo.title %>">
+  <meta property="og:description" content="<%= seo.description %>">
+  <meta property="og:url" content="<%= seo.canonical %>">
+  <meta property="og:image" content="<%= seo.ogImage %>">
+  <meta name="twitter:card" content="<%= seo.twitterCard || 'summary_large_image' %>">
+  <meta name="twitter:title" content="<%= seo.title %>">
+  <meta name="twitter:description" content="<%= seo.description %>">
+  <meta name="twitter:image" content="<%= seo.ogImage %>">
+
+  <!-- JSON-LD Structured Data -->
+  <% if (seo.structuredData) { %>
+    <script type="application/ld+json">
+      <%- JSON.stringify(seo.structuredData).replace(/</g, '\u003c') %>
+    </script>
+  <% } %>
+
+  <!-- Google Fonts Preconnect & Dynamic Font Families -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=swap" rel="stylesheet">
+  <% 
+    const hFont = (theme && theme.headingFont) ? theme.headingFont.replace(/\s+/g, '+') : 'Inter';
+    const bFont = (theme && theme.bodyFont) ? theme.bodyFont.replace(/\s+/g, '+') : 'Inter';
+    const fontFamilies = Array.from(new Set([hFont, bFont]));
+    const fontQuery = fontFamilies.map(f => `family=${f}:wght@300;400;500;600;700;800;900`).join('&');
+  %>
+  <link href="https://fonts.googleapis.com/css2?<%= fontQuery %>&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <link rel="preload" href="/css/style.css?v=<%= assetVersion %>" as="style">
+  <link rel="stylesheet" href="/css/style.css?v=<%= assetVersion %>">
+
+  <!-- Highlight.js syntax highlighting theme for code blocks -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css" media="print" onload="this.media='all'">
+
+  <!-- Dynamic Theme & Color Palette Engine Styles -->
+  <% if (theme && theme.cssString) { %>
+    <style id="dynamic-theme-vars">
+      <%- theme.cssString %>
+      body {
+        font-family: var(--font-body), system-ui, sans-serif;
+        font-size: var(--base-font-size, 16px);
+      }
+      h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-heading), system-ui, sans-serif;
+      }
+      <% 
+        const rawOp = settings.header_opacity || settings.header_transparency || '95';
+        const numOp = Number(rawOp);
+        const headerAlpha = !isNaN(numOp) ? (numOp > 1 ? (numOp / 100).toFixed(2) : numOp.toFixed(2)) : '0.95';
+        const cMaxWidth = '1280px';
+      %>
+      :root {
+        --header-opacity: <%= headerAlpha %>;
+        --container-max-width: <%= cMaxWidth %>;
+      }
+      header.sticky,
+      .public-shell header {
+        background-color: rgba(255, 255, 255, var(--header-opacity, <%= headerAlpha %>)) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+      }
+      html.dark header.sticky,
+      .dark .public-shell header {
+        background-color: rgba(15, 23, 42, var(--header-opacity, <%= headerAlpha %>)) !important;
+      }
+      .custom-container,
+      .public-header-inner {
+        max-width: var(--container-max-width, <%= cMaxWidth %>) !important;
+        box-sizing: border-box !important;
+      }
+      #palette-dropdown-wrapper {
+        display: inline-flex !important;
+      }
+      #mobile-palette-dropdown-wrapper {
+        display: none !important;
+      }
+      .custom-card-shadow {
+        box-shadow: var(--card-shadow);
+      }
+      .theme-dropdown-menu.hidden,
+      #palette-dropdown-menu.hidden,
+      #mobile-palette-dropdown-menu.hidden {
+        display: none !important;
+      }
+      .theme-dropdown-menu:not(.hidden),
+      #palette-dropdown-menu:not(.hidden),
+      #mobile-palette-dropdown-menu:not(.hidden) {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 6px !important;
+        top: calc(100% + 8px) !important;
+        right: 0 !important;
+        width: auto !important;
+        max-width: none !important;
+        z-index: 999999 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+      }
+      .theme-dropdown-menu .palette-btn,
+      #palette-dropdown-menu .palette-btn,
+      #mobile-palette-dropdown-menu .palette-btn {
+        width: 15px !important;
+        height: 15px !important;
+        min-width: 15px !important;
+        min-height: 15px !important;
+        max-width: 15px !important;
+        max-height: 15px !important;
+        padding: 0 !important;
+        border-radius: 9999px !important;
+        flex-shrink: 0 !important;
+      }
+      <% if (theme.glassmorphism) { %>
+      .glassmorphism-surface {
+        backdrop-filter: var(--glass-backdrop);
+        -webkit-backdrop-filter: var(--glass-backdrop);
+        background-color: var(--glass-bg) !important;
+      }
+      <% } %>
+    </style>
+  <% } %>
+
+  <!-- Monetization: Google AdSense Lazy/Async Script Tag -->
+  <% if (settings.enable_adsense === 'true' && /^ca-pub-\d{16}$/.test(settings.adsense_pub_id || '') && /^\/(tools|blogs)(\/|$)/.test(currentPath)) { %>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= settings.adsense_pub_id %>" crossorigin="anonymous"></script>
+    <script defer src="/js/ads.js"></script>
+  <% } %>
+
+  <!-- Monetization: Meta Pixel Tracking -->
+  <% const safeMetaPixelId = /^\d{5,20}$/.test(String(settings.meta_pixel_id || '')) ? String(settings.meta_pixel_id) : ''; %>
+  <% if (settings.enable_meta_pixel === 'true' && safeMetaPixelId) { %>
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '<%= safeMetaPixelId %>');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<%= safeMetaPixelId %>&amp;ev=PageView&amp;noscript=1"/></noscript>
+  <% } %>
+
+  <!-- Admin Dynamic Head Script Injection -->
+  <% if (settings.custom_head_scripts && settings.custom_head_scripts.trim()) { %>
+    <%- settings.custom_head_scripts %>
+  <% } %>
+
+  <!-- Inline Script to apply dark/light mode & color scheme instantly and prevent flickering -->
+  <script>
+    const defaultMode = '<%= settings.default_theme_mode || "dark" %>';
+    const savedTheme = localStorage.getItem('color-theme');
+    if (savedTheme === 'dark' || (!savedTheme && defaultMode === 'dark')) {
+      document.documentElement.classList.add('dark');
+    } else if (savedTheme === 'light' || (!savedTheme && defaultMode === 'light')) {
+      document.documentElement.classList.remove('dark');
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+
+    // Palette data attribute
+    const savedPalette = localStorage.getItem('color-palette') || '<%= settings.active_theme_palette || "emerald" %>';
+    document.documentElement.setAttribute('data-palette', savedPalette);
+  </script>
+</head>
+<body class="ui-shell public-shell bg-white dark:bg-brand-dark text-slate-900 dark:text-slate-100 font-sans transition-colors duration-300 antialiased min-h-screen flex flex-col overflow-x-clip max-w-full pb-16 md:pb-0">
+
+  <!-- Skip to main content link for accessibility -->
+  <a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-500 focus:text-white focus:rounded-lg focus:font-bold focus:text-sm">Skip to main content</a>
+
+  <!-- Top Announcement Bar / Global Promo Bar (Slot 5) -->
+  <% if (settings.promo_banner_active === 'true' || settings.ad_slot_promo_bar === 'true') { %>
+    <aside aria-label="Announcement" class="bg-gradient-to-r from-brand-600 via-brand-500 to-accent text-white text-xs py-1.5 px-3 sm:px-4 text-center font-bold flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 shadow-sm border-b border-black/10 dark:border-white/10">
+      <div class="flex items-center space-x-1.5">
+        <span class="bg-white/20 text-white px-1.5 py-0.5 rounded-full text-[9px] tracking-wider uppercase font-black animate-pulse flex-shrink-0">New</span>
+        <span class="text-white drop-shadow-sm font-bold text-[11px] sm:text-xs"><%= settings.promo_banner_title || 'Engineering Feasibility Consultation Available' %></span>
+      </div>
+      <a href="<%= settings.promo_banner_url || '/contact' %>" class="underline hover:text-white/80 text-white font-black whitespace-nowrap text-[11px] sm:text-xs inline-flex items-center group drop-shadow-sm">
+        <span><%= settings.promo_banner_cta || 'Book Consultation' %></span>
+        <span class="inline-block transform group-hover:translate-x-1 transition ml-0.5">&rarr;</span>
+      </a>
+    </aside>
+  <% } %>
+
+  <% if (settings.lab_event_enabled !== 'false') { %>
+  <!-- Bangalore Lab Dismissible Top Notice Bar (Above Sticky Header) -->
+  <aside id="lab-event-notice" aria-label="Hyderabad Lab Status" class="w-full bg-slate-900 text-white text-xs border-b border-slate-800 py-1.5 px-3 sm:px-6 transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3" style="max-width: 80rem; margin: 0 auto; width: 100%;">
+      <div class="flex items-center space-x-2.5 min-w-0">
+        <a href="<%= settings.lab_event_url || '/about#lab' %>" title="<%= settings.lab_status_text || 'Hyderabad Lab: Online • 4 Active SMT Lines • HIL Station #2 Active' %>" class="inline-flex items-center space-x-2 px-2.5 py-0.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-full text-[11px] font-bold text-emerald-400 transition group flex-shrink-0">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 live-radar flex-shrink-0"></span>
+          <span><%= settings.lab_event_label || 'Hyderabad Lab Active' %></span>
+        </a>
+        <span class="hidden md:inline text-[11px] text-slate-300 font-medium truncate">
+          <%= settings.lab_status_text || '4 Active SMT Lines • HIL Station #2 Active' %>
+        </span>
+      </div>
+      <div class="flex items-center space-x-3 text-[11px] text-slate-300 flex-shrink-0">
+        <span class="hidden sm:inline text-slate-400">ISO 9001:2015 Verified Lab</span>
+        <a href="/contact" class="font-bold text-emerald-400 hover:text-emerald-300 hover:underline">Schedule Lab Visit &rarr;</a>
+        <!-- Dismiss Button (Minimum 32x32px Tap Target) -->
+        <button type="button" id="dismiss-lab-notice-btn" aria-label="Dismiss Lab Notice" title="Dismiss notice" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition cursor-pointer flex-shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+  <script>
+    (function() {
+      try {
+        if (sessionStorage.getItem('lab-notice-dismissed') === 'true') {
+          const el = document.getElementById('lab-event-notice');
+          if (el) el.style.display = 'none';
+        }
+        document.getElementById('dismiss-lab-notice-btn')?.addEventListener('click', function() {
+          const el = document.getElementById('lab-event-notice');
+          if (el) el.style.display = 'none';
+          sessionStorage.setItem('lab-notice-dismissed', 'true');
+        });
+      } catch (e) {}
+    })();
+  </script>
+  <% } %>
+
+  <!-- Navigation Header (Sticky top-0) -->
+  <header class="sticky top-0 z-50 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors shadow-sm max-w-full overflow-x-clip">
+    <div class="public-header-inner max-w-[1280px] mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between flex-nowrap gap-1 min-[360px]:gap-2 sm:gap-4 box-border w-full">
+      
+      <!-- Brand Logo (Vector Icon + Semantic HTML Typography) -->
+      <a href="/" aria-label="<%= settings.site_name || 'Embedded India' %>" class="flex items-center min-h-[44px] py-1.5 space-x-2 sm:space-x-3 group min-w-0 shrink">
+        <% if (settings.site_logo) { %>
+          <img src="<%= settings.site_logo %>" alt="<%= settings.site_name || 'Embedded India' %>" class="h-8 sm:h-10 w-auto object-contain flex-shrink-0">
+        <% } else { %>
+          <!-- Iconic Spaceship Delta Arrowhead Brandmark -->
+          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-accent p-0.5 shadow-md shadow-brand-500/20 group-hover:shadow-brand-500/40 transition duration-300 transform group-hover:scale-105 icon-bounce-container flex-shrink-0">
+            <div class="w-full h-full bg-white dark:bg-slate-900 rounded-[7px] sm:rounded-[10px] flex items-center justify-center p-1 sm:p-2">
+              <svg id="siteBrandmarkSvg" class="w-full h-full text-brand-500 dark:text-accent transition-colors duration-300" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M16 3C16.8 3 17.5 3.4 18 4.2L28.5 21.8C29.2 23 28.7 24.5 27.5 25.2C27.1 25.4 26.6 25.5 26.1 25.5H19.8C18.7 25.5 17.7 24.8 17.3 23.8L16 20.3L14.7 23.8C14.3 24.8 13.3 25.5 12.2 25.5H5.9C4.5 25.5 3.4 24.4 3.4 23C3.4 22.5 3.5 22.1 3.8 21.8L14 4.2C14.5 3.4 15.2 3 16 3Z"/>
+              </svg>
+            </div>
+          </div>
+        <% } %>
+
+        <!-- Semantic Brand Typography (High Contrast in Light and Dark) -->
+        <div class="flex flex-col min-w-0">
+          <div class="text-xs min-[360px]:text-sm sm:text-xl lg:text-2xl font-black tracking-tight leading-none text-slate-900 dark:text-white flex items-center truncate">
+            <% const headerParts = (settings.site_name || 'Embedded India').split(' '); %>
+            <span class="truncate"><%= headerParts[0] %></span>
+            <% if (headerParts.length > 1) { %>
+              <span class="text-brand-500 dark:text-accent ml-1 sm:ml-1.5 font-black truncate"><%= headerParts.slice(1).join(' ') %></span>
+            <% } %>
+          </div>
+          <span class="public-brand-tagline text-[8px] sm:text-[9px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-300 mt-0.5 sm:mt-1 truncate hidden min-[400px]:inline-block"><%= settings.site_tagline || 'Engineering Hub' %></span>
+        </div>
+      </a>
+
+      <!-- Desktop & Tablet Icon Navigation Menu Bar -->
+      <nav aria-label="Primary Navigation" class="public-desktop-nav hidden md:flex items-center justify-center gap-0.5 md:gap-1 lg:gap-2 text-slate-700 dark:text-slate-200 min-w-0 flex-1 whitespace-nowrap [&>a]:shrink-0">
+        
+        <!-- Home -->
+        <a href="/" aria-label="Home" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Home</span>
+        </a>
+
+        <!-- Services -->
+        <a href="/services" aria-label="Services" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/services') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+          </svg>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Services</span>
+        </a>
+
+        <!-- Projects -->
+        <a href="/projects" aria-label="Projects" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/projects') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Projects</span>
+        </a>
+
+        <!-- Tools -->
+        <a href="/tools" aria-label="Tools" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 relative <%= currentPath.startsWith('/tools') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+          </svg>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Tools</span>
+        </a>
+
+        <!-- Blogs -->
+        <a href="/blogs" aria-label="Blogs" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/blogs') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+          </svg>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Blogs</span>
+        </a>
+
+        <!-- About -->
+        <a href="/about" aria-label="About" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/about' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">About</span>
+        </a>
+
+        <!-- Connect -->
+        <a href="/contact" aria-label="Connect" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/contact' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+          </svg>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Connect</span>
+        </a>
+
+      </nav>
+
+      <!-- Desktop Actions & CTA / Mobile Header Controls -->
+      <div id="public-header-actions" class="flex items-center flex-nowrap gap-1 min-[360px]:gap-1.5 sm:gap-2.5 flex-shrink-0 ml-auto lg:ml-2">
+        
+        <%- include('../partials/theme-button', { showSearch: true }) %>
+
+        <!-- Desktop CTA -->
+        <a href="/contact" class="btn-shimmer hidden lg:inline-flex items-center gap-1.5 min-h-[42px] px-4 py-2 bg-gradient-to-r from-brand-600 via-brand-500 to-accent text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition shadow-brand-500/20 hover:shadow-brand-500/35 active:scale-95 transform hover:-translate-y-0.5 whitespace-nowrap ml-1">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span>Request Quote &rarr;</span>
+        </a>
+
+        <!-- Mobile Menu Toggle Button (Visible only on mobile phones < 768px) -->
+        <button id="mobile-menu-btn" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" class="public-mobile-btn md:hidden min-w-[38px] min-h-[38px] min-[360px]:min-w-[42px] min-[360px]:min-h-[42px] p-1.5 min-[360px]:p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-brand-surface rounded-lg border border-slate-200 dark:border-[#1e3831] active:scale-95 flex items-center justify-center">
+          <svg class="w-5 h-5 min-[360px]:w-6 min-[360px]:h-6" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <%- include('../partials/search-dialog') %>
+
+    <!-- Mobile Dropdown Menu (Collapsed only for mobile phones < 768px) -->
+    <nav aria-label="Mobile Navigation" id="mobile-menu" aria-hidden="true" class="hidden md:hidden border-t border-slate-200 dark:border-brand-border bg-white dark:bg-[#13221f] px-4 pt-4 pb-6 space-y-3">
+      <div class="grid grid-cols-4 gap-2 text-center">
+        <!-- Home -->
+        <a href="/" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath === '/' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          <span class="text-[11px] sm:text-xs font-bold">Home</span>
+        </a>
+        <!-- Services -->
+        <a href="/services" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/services') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+          </svg>
+          <span class="text-[11px] sm:text-xs font-bold">Services</span>
+        </a>
+        <!-- Projects -->
+        <a href="/projects" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/projects') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          <span class="text-[11px] sm:text-xs font-bold">Projects</span>
+        </a>
+        <!-- Tools -->
+        <a href="/tools" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/tools') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+          </svg>
+          <span class="text-[11px] sm:text-xs font-bold">Tools</span>
+        </a>
+        <!-- Blogs -->
+        <a href="/blogs" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/blogs') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+          </svg>
+          <span class="text-[11px] sm:text-xs font-bold">Blogs</span>
+        </a>
+        <!-- About -->
+        <a href="/about" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath === '/about' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span class="text-[11px] sm:text-xs font-bold">About</span>
+        </a>
+        <!-- Connect -->
+        <a href="/contact" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath === '/contact' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+          </svg>
+          <span class="text-[11px] sm:text-xs font-bold">Connect</span>
+        </a>
+        <!-- HMI UI Shortcut -->
+        <a href="/services/embedded-ui-hmi-development" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.includes('embedded-ui-hmi') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <span class="text-[11px] sm:text-xs font-bold">HMI UI</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content" class="flex-grow">

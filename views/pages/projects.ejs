@@ -1,0 +1,190 @@
+<%- include('../layouts/header') %>
+
+<!-- Projects Hero (Ambient Mesh with Interactive Floating Pills) -->
+<section class="py-16 lg:py-24 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border spaceship-ambient-mesh circuit-grid relative overflow-hidden">
+  
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left relative z-10">
+    <div class="max-w-3xl space-y-4">
+      
+      <!-- Live Status Badge -->
+      <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold uppercase tracking-wider shadow-sm backdrop-blur-md animate-float-slow">
+        <span class="w-2.5 h-2.5 rounded-full bg-brand-500 dark:bg-accent live-radar"></span>
+        <span>Proven Engineering Portfolio &bull; Real Hardware</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
+        Projects &amp; Case Studies
+      </h1>
+
+      <p class="text-base sm:text-lg text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+        Proven electronic control modules, multi-protocol IoT nodes, and mission-critical embedded systems engineered, verified with automated HIL rigs, and manufactured for harsh real-world environments.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+<!-- Filterable Projects Showcase Section -->
+<section class="py-16 bg-slate-50 dark:bg-[#13221f] min-h-[600px]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    
+    <!-- Controls Bar: Category Filter Pills + Search Filter -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+      
+      <!-- Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar" id="categoryPillList">
+        <% const catList = (typeof categories !== 'undefined' && categories) ? categories : ['All']; const curCat = (typeof selectedCategory !== 'undefined') ? selectedCategory : 'All'; const curSearch = (typeof searchQuery !== 'undefined') ? searchQuery : ''; catList.forEach(function(cat) { %>
+          <a 
+            href="/projects?category=<%= encodeURIComponent(cat) %><%= curSearch ? '&search=' + encodeURIComponent(curSearch) : '' %>"
+            class="spring-pill whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black transition <%= curCat === cat ? 'bg-gradient-to-r from-brand-600 to-accent text-white shadow-md shadow-brand-500/20 scale-105' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-brand-500' %>"
+          >
+            <%= cat %>
+          </a>
+        <% }); %>
+      </div>
+
+      <!-- Live Search Box -->
+      <div class="relative w-full md:w-72">
+        <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <form method="GET" action="/projects">
+          <% if (selectedCategory && selectedCategory !== 'All') { %>
+            <input type="hidden" name="category" value="<%= selectedCategory %>">
+          <% } %>
+          <input 
+            type="text" 
+            name="search"
+            id="projectSearchInput"
+            value="<%= searchQuery %>"
+            placeholder="Search projects, MCUs, bus..." 
+            aria-label="Search projects, MCUs, bus protocols"
+            class="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-xs"
+          >
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Projects Grid -->
+    <% if (projects && projects.length > 0) { %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left" id="projectsContainer">
+      <% projects.forEach(function(p) { %>
+      <div class="spring-card bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-7 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between group">
+        
+        <div class="space-y-4 min-w-0">
+          
+          <!-- Card Media / Icon Visual -->
+          <div class="relative aspect-video rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center p-4">
+            <% if (p.videoUrl) { %>
+              <div class="absolute inset-0 bg-slate-950/40 backdrop-blur-[2px] z-10 flex items-center justify-center">
+                <div class="w-12 h-12 rounded-full bg-brand-500/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition spring-bounce">
+                  <svg class="w-5 h-5 ml-0.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+              <iframe 
+                class="w-full h-full pointer-events-none opacity-80"
+                src="<%= p.videoUrl %>" 
+                title="<%= p.title %>"
+                tabindex="-1">
+              </iframe>
+            <% } else if (p.coverImage) { %>
+              <img src="<%= p.coverImage %>" alt="<%= p.title %>" class="max-h-36 w-auto object-contain transform group-hover:scale-105 transition duration-300">
+            <% } else { %>
+              <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-accent text-white flex items-center justify-center p-3 shadow-md">
+                <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              </div>
+            <% } %>
+
+            <!-- Featured Badge -->
+            <% if (p.featured) { %>
+            <div class="absolute top-3 left-3 z-20">
+              <span class="px-2.5 py-0.5 rounded-full bg-brand-500 text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
+                Featured
+              </span>
+            </div>
+            <% } %>
+          </div>
+
+          <!-- Badges -->
+          <div class="flex items-center gap-2 pt-1 min-w-0">
+            <span class="shrink-0 whitespace-nowrap px-2.5 py-0.5 rounded-full bg-brand-500/10 dark:bg-accent/20 text-brand-700 dark:text-accent font-black text-[10px] uppercase tracking-wider">
+              <%= p.category %>
+            </span>
+            <span class="min-w-0 flex-1 text-[11px] text-slate-500 dark:text-slate-400 font-semibold truncate">
+              <%= p.industry %>
+            </span>
+          </div>
+
+          <!-- Title -->
+          <h2 class="text-xl font-black text-slate-900 dark:text-white group-hover:text-brand-500 dark:group-hover:text-accent transition">
+            <a href="/projects/<%= p.slug %>" class="hover:underline">
+              <%= p.title %>
+            </a>
+          </h2>
+
+          <!-- Summary -->
+          <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
+            <%= p.summary %>
+          </p>
+
+          <!-- Tech Stack Tags -->
+          <% if (p.techStack) { %>
+          <div class="flex flex-wrap gap-1.5 pt-1 text-[10px] font-mono font-bold">
+            <% p.techStack.split(',').slice(0, 3).forEach(function(tech) { %>
+              <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
+                <%= tech.trim() %>
+              </span>
+            <% }); %>
+          </div>
+          <% } %>
+
+        </div>
+
+        <!-- Card Footer -->
+        <div class="pt-5 mt-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <a href="/projects/<%= p.slug %>" class="inline-flex items-center space-x-1.5 text-xs font-black text-brand-500 dark:text-accent group-hover:underline">
+            <span>Explore Case Study</span>
+            <span class="transform group-hover:translate-x-1 transition duration-200">&rarr;</span>
+          </a>
+          <a href="/contact?service=<%= encodeURIComponent(p.category) %>" class="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            Request Quote
+          </a>
+        </div>
+
+      </div>
+      <% }); %>
+    </div>
+    <% } else { %>
+    <div class="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+      <p class="text-base font-bold text-slate-800 dark:text-white">No projects found matching your filter criteria.</p>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Try resetting the category filter or searching for a different keyword.</p>
+      <a href="/projects" class="inline-block mt-4 px-5 py-2 rounded-xl bg-brand-500 text-white font-bold text-xs">
+        View All Projects
+      </a>
+    </div>
+    <% } %>
+
+  </div>
+</section>
+
+<!-- Project Idea Consultation Strip -->
+<section class="py-14 bg-white dark:bg-[#0d1715] border-t border-slate-200 dark:border-brand-border">
+  <div class="max-w-4xl mx-auto px-4 text-center space-y-4">
+    <span class="px-3 py-1 bg-brand-500/10 dark:bg-emerald-950/60 text-brand-700 dark:text-emerald-400 border border-brand-500/20 dark:border-emerald-800/60 rounded-full text-xs font-black uppercase tracking-wider">
+      Custom System Architecture
+    </span>
+    <h2 class="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white">
+      Have a Custom Hardware Specification in Mind?
+    </h2>
+    <p class="text-sm text-slate-600 dark:text-slate-300 max-w-xl mx-auto leading-relaxed">
+      Whether you require an isolated multi-bus industrial edge controller, an ultra-low power BLE node, or an automotive CAN-FD ECU, we engineer reliable hardware on time.
+    </p>
+    <div class="pt-2">
+      <a href="/contact" class="btn-shimmer inline-flex items-center space-x-2 px-8 py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl text-sm shadow-lg shadow-brand-500/25 active:scale-95 transition">
+        <span>Discuss Your Project Architecture</span>
+        <span>&rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/footer') %>

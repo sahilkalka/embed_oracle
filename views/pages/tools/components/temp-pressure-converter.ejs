@@ -1,0 +1,90 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Temperature Conversion</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Thermal Scales</span>
+    </div>
+
+    <div>
+      <label for="tp-celsius" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Celsius (°C)</label>
+      <input type="number" id="tp-celsius" value="25" step="0.5" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="tp-fahrenheit" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Fahrenheit (°F)</label>
+      <input type="number" id="tp-fahrenheit" value="77" step="0.5" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="tp-kelvin" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Kelvin (K)</label>
+      <input type="number" id="tp-kelvin" value="298.15" step="0.5" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Pressure Conversion</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">Atmospheric &amp; Sensor</span>
+    </div>
+
+    <div>
+      <label for="tp-psi" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Pounds per Square Inch (PSI)</label>
+      <input type="number" id="tp-psi" value="14.696" step="any" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="tp-bar" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Bar</label>
+      <input type="number" id="tp-bar" value="1.01325" step="any" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="tp-kpa" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Kilopascal (kPa)</label>
+      <input type="number" id="tp-kpa" value="101.325" step="any" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const cEl = document.getElementById('tp-celsius');
+  const fEl = document.getElementById('tp-fahrenheit');
+  const kEl = document.getElementById('tp-kelvin');
+
+  cEl.addEventListener('input', () => {
+    const c = parseFloat(cEl.value) || 0;
+    fEl.value = (c * 9/5 + 32).toFixed(2);
+    kEl.value = (c + 273.15).toFixed(2);
+  });
+  fEl.addEventListener('input', () => {
+    const f = parseFloat(fEl.value) || 0;
+    const c = (f - 32) * 5/9;
+    cEl.value = c.toFixed(2);
+    kEl.value = (c + 273.15).toFixed(2);
+  });
+  kEl.addEventListener('input', () => {
+    const k = parseFloat(kEl.value) || 0;
+    const c = k - 273.15;
+    cEl.value = c.toFixed(2);
+    fEl.value = (c * 9/5 + 32).toFixed(2);
+  });
+
+  const psiEl = document.getElementById('tp-psi');
+  const barEl = document.getElementById('tp-bar');
+  const kpaEl = document.getElementById('tp-kpa');
+
+  psiEl.addEventListener('input', () => {
+    const psi = parseFloat(psiEl.value) || 0;
+    barEl.value = (psi * 0.0689476).toFixed(4);
+    kpaEl.value = (psi * 6.89476).toFixed(3);
+  });
+  barEl.addEventListener('input', () => {
+    const bar = parseFloat(barEl.value) || 0;
+    psiEl.value = (bar * 14.5038).toFixed(3);
+    kpaEl.value = (bar * 100).toFixed(2);
+  });
+  kpaEl.addEventListener('input', () => {
+    const kpa = parseFloat(kpaEl.value) || 0;
+    barEl.value = (kpa / 100).toFixed(4);
+    psiEl.value = (kpa * 0.145038).toFixed(3);
+  });
+})();
+</script>

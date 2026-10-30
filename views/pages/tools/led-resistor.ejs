@@ -1,0 +1,212 @@
+<%- include('../../layouts/header') %>
+
+<div class="py-12 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border">
+  <div class="max-w-5xl mx-auto px-4">
+    <a href="/tools" class="inline-flex items-center text-xs font-bold text-brand-500 dark:text-accent hover:underline mb-4">
+      &larr; Back to All Tools
+    </a>
+    <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+      LED Series Resistor &amp; Ohm's Law Calculator
+    </h1>
+    <p class="text-slate-600 dark:text-slate-300 mt-2 text-sm sm:text-base">
+      Calculate the exact dropping resistance, select standard commercial E12/E24 resistor values, and evaluate thermal power dissipation with 2x safety derating.
+    </p>
+  </div>
+</div>
+
+<div class="py-12 bg-slate-50 dark:bg-[#13221f]">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Inputs Column -->
+      <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">
+          LED Circuit Specifications
+        </h2>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            Source Supply Voltage (Vs Volts)
+          </label>
+          <input type="number" id="vs" value="5.0" step="0.1" min="0.5" max="100" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            LED Color Preset
+          </label>
+          <select id="ledPreset" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+            <option value="2.0">Standard Red (2.0V)</option>
+            <option value="2.1">Amber / Orange (2.1V)</option>
+            <option value="2.2">Standard Yellow (2.2V)</option>
+            <option value="3.2" selected>Pure Green / Emerald (3.2V)</option>
+            <option value="3.3">Deep Blue (3.3V)</option>
+            <option value="3.2">Cool / Warm White (3.2V)</option>
+            <option value="custom">Custom Forward Voltage</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            LED Forward Voltage (Vf Volts)
+          </label>
+          <input type="number" id="vf" value="3.2" step="0.05" min="0.1" max="50" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            Desired Forward Current (If mA)
+          </label>
+          <input type="number" id="currentMa" value="20.0" step="1" min="0.1" max="5000" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500">
+          <span class="text-[11px] text-slate-500 mt-1 block">Typical standard indicators: 5-20 mA; Power LEDs: 350-700 mA</span>
+        </div>
+
+      </div>
+
+      <!-- Results Column -->
+      <div class="lg:col-span-6 space-y-6">
+        <div class="bg-white dark:bg-brand-surface rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">
+            Recommended Resistor Values
+          </h2>
+
+          <div class="mt-6 grid grid-cols-2 gap-4">
+            <div class="p-4 bg-brand-50 dark:bg-brand-900/40 rounded-xl border border-brand-200 dark:border-brand-700">
+              <span class="text-xs text-brand-800 dark:text-accent font-semibold block">Exact Resistance</span>
+              <span id="resExact" class="text-2xl font-black text-brand-700 dark:text-white font-mono">-- Ω</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-700 dark:text-slate-300 font-semibold block mt-0.5">R = (Vs - Vf) / If</span>
+            </div>
+
+            <div class="p-4 bg-accent/15 dark:bg-accent/20 rounded-xl border border-accent/30">
+              <span class="text-xs text-accent-dark dark:text-accent font-semibold block">Nearest Standard E24</span>
+              <span id="resE24" class="text-2xl font-black text-accent-dark dark:text-white font-mono">-- Ω</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-700 dark:text-slate-300 font-semibold block mt-0.5">Commercial 5% Resistor</span>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-3 gap-3 text-xs">
+            <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+              <span class="text-slate-700 dark:text-slate-300 font-semibold block">Actual Current</span>
+              <span id="resActualCurrent" class="font-bold text-slate-800 dark:text-white font-mono text-sm">-- mA</span>
+            </div>
+            <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+              <span class="text-slate-700 dark:text-slate-300 font-semibold block">Power Dissipated</span>
+              <span id="resPower" class="font-bold text-slate-800 dark:text-white font-mono text-sm">-- mW</span>
+            </div>
+            <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+              <span class="text-slate-700 dark:text-slate-300 font-semibold block">Min Power Rating</span>
+              <span id="resRating" class="font-extrabold text-emerald-700 dark:text-emerald-400 font-mono text-sm">1/4 W</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Schematic View -->
+          <div class="mt-6 p-4 bg-slate-900 rounded-xl text-center">
+            <p class="text-[11px] font-mono text-slate-400 mb-2">Schematic Loop</p>
+            <svg class="w-full max-w-full h-20" viewBox="0 0 300 60">
+              <line x1="20" y1="30" x2="60" y2="30" stroke="#94a3b8" stroke-width="2"/>
+              <text x="25" y="20" fill="#38bdf8" font-size="10" font-family="monospace">+Vs</text>
+              <!-- Resistor -->
+              <rect x="60" y="22" width="50" height="16" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" rx="2"/>
+              <text id="svgResText" x="85" y="34" fill="#fbbf24" font-size="9" font-family="monospace" text-anchor="middle">91 Ω</text>
+              <line x1="110" y1="30" x2="160" y2="30" stroke="#94a3b8" stroke-width="2"/>
+              <!-- LED Triangle -->
+              <polygon points="160,20 180,30 160,40" fill="#55a630"/>
+              <line x1="180" y1="18" x2="180" y2="42" stroke="#55a630" stroke-width="2"/>
+              <line x1="180" y1="30" x2="230" y2="30" stroke="#94a3b8" stroke-width="2"/>
+              <text x="235" y="34" fill="#94a3b8" font-size="10" font-family="monospace">GND</text>
+            </svg>
+          </div>
+
+        </div>
+
+        <!-- CTA Banner -->
+        
+        <!-- AdSense: Tool Sub-Page Banner Ad -->
+        <%- include('../../partials/ad-slot', { slot: settings.adsense_tools_bottom_slot, format: 'auto' }) %>
+
+        <div class="bg-gradient-to-r from-brand-900 to-brand-800 rounded-2xl p-6 text-white border border-brand-700 shadow-lg">
+          <span class="text-xs font-bold text-accent uppercase tracking-wider block">Custom Engineering</span>
+          <h3 class="text-lg font-bold mt-1">Need Constant-Current LED Drivers or Power Supplies?</h3>
+          <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+            We design high-efficiency buck/boost constant-current drivers for automotive lighting and high-power arrays.
+          </p>
+          <a href="/contact?service=Hardware%20Design" class="inline-block mt-4 px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition">
+            Consult With Our Engineers &rarr;
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const E24 = [
+    10, 11, 12, 13, 15, 16, 18, 20, 22, 24, 27, 30,
+    33, 36, 39, 43, 47, 51, 56, 62, 68, 75, 82, 91
+  ];
+
+  function findNearestE24(val) {
+    if (val <= 0) return 0;
+    const exponent = Math.floor(Math.log10(val));
+    const base = val / Math.pow(10, exponent);
+    let closest = E24[0];
+    let minDiff = Math.abs(base - E24[0]);
+    for (let i = 1; i < E24.length; i++) {
+      const diff = Math.abs(base - E24[i]);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closest = E24[i];
+      }
+    }
+    return closest * Math.pow(10, exponent);
+  }
+
+  function calculateLED() {
+    const vs = parseFloat(document.getElementById('vs').value) || 5;
+    const vf = parseFloat(document.getElementById('vf').value) || 2;
+    const ifMa = parseFloat(document.getElementById('currentMa').value) || 20;
+
+    if (vs <= vf) {
+      document.getElementById('resExact').textContent = 'Error (Vs ≤ Vf)';
+      return;
+    }
+
+    const ifA = ifMa / 1000;
+    const rExact = (vs - vf) / ifA; // Ohms
+    const rE24 = findNearestE24(rExact);
+    const actualCurrentMa = ((vs - vf) / rE24) * 1000;
+    const powerMw = (vs - vf) * (actualCurrentMa / 1000) * 1000;
+
+    document.getElementById('resExact').textContent = rExact < 1000 ? rExact.toFixed(1) + ' Ω' : (rExact / 1000).toFixed(2) + ' kΩ';
+    document.getElementById('resE24').textContent = rE24 < 1000 ? rE24 + ' Ω' : (rE24 / 1000).toFixed(2) + ' kΩ';
+    document.getElementById('resActualCurrent').textContent = actualCurrentMa.toFixed(1) + ' mA';
+    document.getElementById('resPower').textContent = powerMw.toFixed(1) + ' mW';
+
+    // Recommend power rating with 2x derating
+    const reqWattage = (powerMw * 2) / 1000;
+    let ratingStr = '1/8 W (0.125W)';
+    if (reqWattage > 1) ratingStr = '2 W or greater';
+    else if (reqWattage > 0.5) ratingStr = '1 Watt';
+    else if (reqWattage > 0.25) ratingStr = '1/2 Watt';
+    else if (reqWattage > 0.125) ratingStr = '1/4 Watt';
+
+    document.getElementById('resRating').textContent = ratingStr;
+    document.getElementById('svgResText').textContent = rE24 < 1000 ? rE24 + ' Ω' : (rE24 / 1000).toFixed(1) + 'k';
+  }
+
+  document.getElementById('ledPreset').addEventListener('change', (e) => {
+    if (e.target.value !== 'custom') {
+      document.getElementById('vf').value = e.target.value;
+      calculateLED();
+    }
+  });
+
+  ['vs', 'vf', 'currentMa'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calculateLED);
+  });
+
+  calculateLED();
+</script>
+
+<%- include('../../layouts/footer') %>

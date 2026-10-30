@@ -1,0 +1,77 @@
+<div class="space-y-6">
+  <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-brand-border pb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Markdown Live Previewer</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Real-time Markdown editor with instant HTML rendering.</p>
+      </div>
+      <div class="flex gap-2">
+        <button type="button" id="md-sample-btn" class="px-3.5 py-1.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-xl shadow">Sample MD</button>
+        <button type="button" id="md-copy-html" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl">Copy HTML</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
+        <label for="md-input" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Markdown Editor</label>
+        <textarea id="md-input" rows="16" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-xs focus:ring-2 focus:ring-brand-500 outline-none leading-relaxed"></textarea>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Rendered HTML</label>
+        <div id="md-preview" class="w-full h-80 overflow-y-auto px-6 py-4 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border prose prose-sm dark:prose-invert max-w-none"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const input = document.getElementById('md-input');
+  const preview = document.getElementById('md-preview');
+
+  // Lightweight native markdown to HTML parser
+  function parseMD(md) {
+    let html = md;
+    // Headers
+    html = html.replace(/^### (.*$)/gim, '<h3 class="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2">$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2 class="text-lg font-bold text-slate-900 dark:text-white mt-5 mb-2">$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1 class="text-xl font-extrabold text-slate-900 dark:text-white mt-6 mb-3">$1</h1>');
+    // Bold & italic
+    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+    // Inline code
+    html = html.replace(/`([^`]+)`/gim, '<code class="bg-slate-200 dark:bg-brand-border px-1.5 py-0.5 rounded text-brand-600 dark:text-accent font-mono text-xs">$1</code>');
+    // Blockquotes
+    html = html.replace(/^\> (.*$)/gim, '<blockquote class="border-l-4 border-brand-500 pl-4 py-1 italic text-slate-600 dark:text-slate-300 my-2">$1</blockquote>');
+    // Unordered lists
+    html = html.replace(/^\- (.*$)/gim, '<li class="list-disc list-inside text-xs text-slate-700 dark:text-slate-300">$1</li>');
+    // Links
+    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gim, '<a href="$2" target="_blank" class="text-brand-500 underline font-semibold">$1</a>');
+    // Paragraphs
+    html = html.replace(/\n\n/gim, '<br><br>');
+    return html;
+  }
+
+  function update() {
+    preview.innerHTML = parseMD(input.value);
+  }
+
+  input.addEventListener('input', update);
+
+  document.getElementById('md-sample-btn').addEventListener('click', () => {
+    input.value = "# Embedded India Engineering\n\nTurnkey **electronic product development** and high-speed PCB simulation.\n\n## Laboratory Capabilities\n- 12-layer impedance-controlled layout\n- FreeRTOS & Bare-metal C/C++ architectures\n- IPC-2221 conductor verification\n\n> \"Precision hardware designed for zero-field failure mission-critical deployments.\"\n\nVisit our [Hardware Services](/services) for more details.";
+    update();
+  });
+
+  document.getElementById('md-copy-html').addEventListener('click', () => {
+    if (preview.innerHTML) {
+      navigator.clipboard.writeText(preview.innerHTML);
+      const b = document.getElementById('md-copy-html');
+      const orig = b.textContent;
+      b.textContent = 'Copied!';
+      setTimeout(() => b.textContent = orig, 1200);
+    }
+  });
+
+  document.getElementById('md-sample-btn').click();
+})();
+</script>

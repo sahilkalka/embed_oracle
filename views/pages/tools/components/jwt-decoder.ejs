@@ -1,0 +1,143 @@
+<div class="space-y-6">
+  <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-brand-border pb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">JWT Token Input</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Client-side zero-leak decoder with expiration checks. Sensitive keys never touch our servers.</p>
+      </div>
+      <div class="flex gap-2">
+        <button type="button" id="jwt-sample-btn" class="px-3 py-1.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-xl shadow">Load Sample Token</button>
+        <button type="button" id="jwt-clear-btn" class="px-3 py-1.5 bg-slate-100 dark:bg-brand-dark text-slate-600 dark:text-slate-300 font-bold text-xs rounded-xl">Clear</button>
+      </div>
+    </div>
+
+    <div>
+      <label for="jwt-input" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Encoded JWT Token (Header.Payload.Signature)</label>
+      <textarea id="jwt-input" rows="4" class="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-xs focus:ring-2 focus:ring-brand-500 outline-none" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+    </div>
+
+    <div id="jwt-status-banner" class="hidden p-4 rounded-2xl border text-xs font-mono font-bold flex items-center justify-between">
+      <span id="jwt-status-msg"></span>
+      <span id="jwt-expiry-time" class="text-slate-400"></span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-red-500 uppercase tracking-wider">Header: Algorithm &amp; Type</span>
+          <button type="button" id="jwt-copy-header" class="text-[11px] text-slate-400 hover:text-white font-mono">Copy</button>
+        </div>
+        <textarea id="jwt-header-json" readonly rows="7" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-red-400 font-mono text-xs outline-none"></textarea>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Payload: Data Claims</span>
+          <button type="button" id="jwt-copy-payload" class="text-[11px] text-slate-400 hover:text-white font-mono">Copy</button>
+        </div>
+        <textarea id="jwt-payload-json" readonly rows="7" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-purple-300 font-mono text-xs outline-none"></textarea>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Signature (Raw)</span>
+      <div id="jwt-signature-display" class="p-3 bg-slate-900 rounded-2xl border border-slate-800 text-cyan-300 font-mono text-xs break-all"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const jwtInput = document.getElementById('jwt-input');
+  const headerJson = document.getElementById('jwt-header-json');
+  const payloadJson = document.getElementById('jwt-payload-json');
+  const sigDisplay = document.getElementById('jwt-signature-display');
+  const banner = document.getElementById('jwt-status-banner');
+  const msg = document.getElementById('jwt-status-msg');
+  const expiry = document.getElementById('jwt-expiry-time');
+
+  function b64DecodeUnicode(str) {
+    let output = str.replace(/-/g, '+').replace(/_/g, '/');
+    switch (output.length % 4) {
+      case 0: break;
+      case 2: output += '=='; break;
+      case 3: output += '='; break;
+      default: throw new Error('Illegal base64url string!');
+    }
+    return decodeURIComponent(atob(output).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+  }
+
+  function decodeJWT() {
+    const token = jwtInput.value.trim();
+    if (!token) {
+      headerJson.value = '';
+      payloadJson.value = '';
+      sigDisplay.textContent = '';
+      banner.classList.add('hidden');
+      return;
+    }
+
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      banner.className = 'p-4 rounded-2xl border border-red-500/20 bg-red-500/10 text-red-500 text-xs font-mono font-bold flex items-center justify-between';
+      msg.textContent = 'Malformed JWT: Must contain exactly 3 dot-separated segments.';
+      expiry.textContent = '';
+      banner.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const header = JSON.parse(b64DecodeUnicode(parts[0]));
+      const payload = JSON.parse(b64DecodeUnicode(parts[1]));
+      headerJson.value = JSON.stringify(header, null, 2);
+      payloadJson.value = JSON.stringify(payload, null, 2);
+      sigDisplay.textContent = parts[2];
+
+      // Expiration check
+      if (payload.exp) {
+        const expMs = payload.exp * 1000;
+        const now = Date.now();
+        const expDate = new Date(expMs).toLocaleString();
+        if (expMs < now) {
+          banner.className = 'p-4 rounded-2xl border border-red-500/20 bg-red-500/10 text-red-500 text-xs font-mono font-bold flex items-center justify-between';
+          msg.textContent = 'Token Expired';
+          expiry.textContent = 'Expired on: ' + expDate;
+        } else {
+          banner.className = 'p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-500 text-xs font-mono font-bold flex items-center justify-between';
+          msg.textContent = 'Token Active (Valid Expiry)';
+          expiry.textContent = 'Expires: ' + expDate;
+        }
+      } else {
+        banner.className = 'p-4 rounded-2xl border border-slate-700 bg-slate-800 text-slate-300 text-xs font-mono font-bold flex items-center justify-between';
+        msg.textContent = 'Token has no expiration ("exp") claim.';
+        expiry.textContent = '';
+      }
+      banner.classList.remove('hidden');
+    } catch (e) {
+      banner.className = 'p-4 rounded-2xl border border-red-500/20 bg-red-500/10 text-red-500 text-xs font-mono font-bold flex items-center justify-between';
+      msg.textContent = 'Decode Error: ' + e.message;
+      expiry.textContent = '';
+      banner.classList.remove('hidden');
+    }
+  }
+
+  jwtInput.addEventListener('input', decodeJWT);
+  document.getElementById('jwt-clear-btn').addEventListener('click', () => {
+    jwtInput.value = '';
+    decodeJWT();
+  });
+
+  document.getElementById('jwt-sample-btn').addEventListener('click', () => {
+    jwtInput.value = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkVtYmVkZGVkIEluZGlhIEVuZ2luZWVyIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE5ODcyMTkyMDAsInJvbGVzIjpbImhhcmR3YXJlX2FyY2hpdGVjdCIsInJ0b3NfZGV2Il19.qZ32v9Gj94vE4o4c3M_91k56s9Qv167P3k884L8r3bY';
+    decodeJWT();
+  });
+
+  document.getElementById('jwt-copy-header').addEventListener('click', () => {
+    if (headerJson.value) navigator.clipboard.writeText(headerJson.value);
+  });
+  document.getElementById('jwt-copy-payload').addEventListener('click', () => {
+    if (payloadJson.value) navigator.clipboard.writeText(payloadJson.value);
+  });
+
+  document.getElementById('jwt-sample-btn').click();
+})();
+</script>

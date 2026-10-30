@@ -1,0 +1,311 @@
+<%- include('../../layouts/header') %>
+
+<!-- Sticky Breadcrumbs Bar with Return to Tools Suite Action -->
+<div class="tool-breadcrumbs bg-slate-50 dark:bg-[#0c1614] border-b border-slate-200 dark:border-brand-border sticky top-16 z-30 backdrop-blur-md bg-opacity-90 dark:bg-opacity-90">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+    <div class="flex items-center justify-between gap-4">
+      <nav class="flex items-center text-xs font-medium text-slate-500 dark:text-slate-400 space-x-2 overflow-x-auto no-scrollbar whitespace-nowrap" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-brand-500 dark:hover:text-accent transition flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Home</span>
+        </a>
+        <span class="text-slate-300 dark:text-slate-600">/</span>
+        <a href="/tools" class="hover:text-brand-500 dark:hover:text-accent transition">Tools Suite</a>
+        <span class="text-slate-300 dark:text-slate-600">/</span>
+        <a href="/tools/<%= category.slug %>" class="hover:text-brand-500 dark:hover:text-accent transition font-semibold text-slate-700 dark:text-slate-200">
+          <%= category.shortTitle || category.title %>
+        </a>
+        <% if (activeTool) { %>
+          <span class="text-slate-300 dark:text-slate-600">/</span>
+          <span class="text-brand-600 dark:text-accent font-bold truncate max-w-[200px] sm:max-w-none"><%= activeTool.shortTitle || activeTool.title %></span>
+        <% } %>
+      </nav>
+
+      <!-- Return to Tools Page Button (Sticky Top Bar) -->
+      <a href="/tools" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-accent hover:border-brand-500 font-bold text-xs transition shadow-xs flex-shrink-0 group" title="Return to Tools Suite Landing Page">
+        <span class="transition-transform duration-200 group-hover:-translate-x-1">&larr;</span>
+        <span class="hidden sm:inline">Return to Tools Page</span>
+        <span class="sm:hidden">All Tools</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Category Banner Header -->
+<header class="py-10 lg:py-14 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border spaceship-ambient-mesh circuit-grid">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-accent border border-brand-500/20 text-xs font-extrabold uppercase tracking-wider mb-3">
+          <span class="w-2 h-2 rounded-full bg-brand-500 dark:bg-accent animate-pulse"></span>
+          <span><%= category.badge || 'Tool Hub' %></span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+          <%= category.title %>
+        </h1>
+        <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+          <%= category.description %>
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="p-4 bg-slate-50 dark:bg-brand-surface rounded-2xl border border-slate-200 dark:border-brand-border flex items-center gap-3 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-accent">
+            <%- category.icon %>
+          </div>
+          <div>
+            <span class="text-[11px] font-mono uppercase text-slate-500 dark:text-slate-400 block font-bold">Suite Size</span>
+            <span class="text-lg font-black text-slate-900 dark:text-white"><%= category.tools.length %> Specialized Tools</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Horizontal Category Tool Switcher Tabs -->
+    <div class="mt-8 pt-4 border-t border-slate-100 dark:border-brand-border/60">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 pt-1 scroll-smooth" role="tablist" aria-label="<%= category.title %> Tools">
+        <% category.tools.forEach(function(tool) { 
+             const isActive = activeTool && activeTool.slug === tool.slug;
+        %>
+          <a href="/tools/<%= category.slug %>/<%= tool.slug %>" 
+             role="tab"
+             aria-selected="<%= isActive ? 'true' : 'false' %>"
+             class="shrink-0 flex-shrink-0 min-w-max px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 inline-flex items-center gap-2 shadow-sm <%= isActive ? 'bg-brand-500 text-white shadow-md scale-[1.02] ring-2 ring-brand-500/40' : 'bg-white dark:bg-brand-surface text-slate-700 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent border border-slate-200 dark:border-brand-border hover:border-brand-500' %>">
+            <span class="whitespace-nowrap shrink-0 flex-shrink-0"><%= tool.shortTitle || tool.title %></span>
+            <% if (isActive) { %>
+              <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse shrink-0 flex-shrink-0"></span>
+            <% } %>
+          </a>
+        <% }); %>
+      </div>
+      <script>
+        (function() {
+          try {
+            const activeTab = document.querySelector('[role="tablist"] [aria-selected="true"]');
+            if (activeTab && typeof activeTab.scrollIntoView === 'function') {
+              activeTab.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
+            }
+          } catch (e) {}
+        })();
+      </script>
+    </div>
+  </div>
+</header>
+
+<!-- Main Interactive Tool Canvas -->
+<main class="py-12 bg-slate-50 dark:bg-[#13221f] min-h-[500px]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+    
+    <% if (activeTool) { %>
+      <!-- Active Tool Heading & Subtitle Row -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+        <div>
+          <span class="text-xs font-mono font-bold text-brand-600 dark:text-accent uppercase tracking-wider">
+            <%= category.shortTitle %> &bull; Tool 
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+            <%= activeTool.title %>
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl">
+            <%= activeTool.subtitle || activeTool.description %>
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <!-- Return to Tools Page Button (Tool Header) -->
+          <a href="/tools" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-accent hover:border-brand-500 font-bold text-xs transition shadow-xs group" title="Return to Tools Suite Landing Page">
+            <span class="transition-transform duration-200 group-hover:-translate-x-1">&larr;</span>
+            <span>Return to Tools Page</span>
+          </a>
+
+          <button type="button" onclick="navigator.clipboard.writeText(window.location.href); alert('Direct link copied to clipboard!');" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-xs font-bold text-slate-700 dark:text-slate-200 hover:border-brand-500 transition shadow-xs">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            <span>Share Link</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- AD PLACEHOLDER SLOT: TOOLS HEADER (Controlled by Admin Page) -->
+      <!-- ============================================================ -->
+      <% if (settings.ad_slot_tools_header === 'true') { %>
+        <div class="w-full my-4 flex justify-center">
+          <% if (settings.custom_ad_html_tools_header && settings.custom_ad_html_tools_header.trim()) { %>
+            <div class="ad-slot-tools-header w-full overflow-hidden flex justify-center">
+              <%- settings.custom_ad_html_tools_header %>
+            </div>
+          <% } else if (canShowAd(settings, settings.adsense_tools_top_slot)) { %>
+<%- include('../../partials/ad-slot', { slot: settings.adsense_tools_top_slot, format: 'auto' }) %>
+<% } else { %>
+            <!-- Default Sponsored / Partner Ad Placeholder -->
+            <div class="w-full max-w-4xl p-4 rounded-2xl bg-white dark:bg-brand-surface border border-dashed border-slate-300 dark:border-brand-border text-center shadow-xs">
+              <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-2.5 bg-slate-50 dark:bg-brand-dark/70 rounded-xl border border-slate-200/60 dark:border-brand-border/40">
+                <div class="flex items-center gap-3 text-left">
+                  <div class="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-accent font-bold text-base flex-shrink-0">
+                    📢
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-mono font-bold uppercase text-slate-400">Sponsored Hardware Partner</span>
+                    <p class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">High-Speed PCB Fabrication &amp; Turnkey Prototype Assembly</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Turnkey component procurement, stencil fabrication, and quick-turn SMT line.</p>
+                  </div>
+                </div>
+                <a href="/contact" class="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold transition shadow-xs whitespace-nowrap">
+                  Inquire Sponsorship &rarr;
+                </a>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+
+      <div class="tool-ad-layout <%= canShowAd(settings, settings.adsense_tools_sidebar_slot) ? 'tool-ad-layout-enabled' : '' %>">
+<div class="min-w-0">
+<!-- Active Tool Component Dynamic Injection -->
+      <section id="interactive-tool" class="relative">
+        <%- include('components/' + activeTool.slug) %>
+      </section>
+
+      </div>
+<% if (canShowAd(settings, settings.adsense_tools_sidebar_slot)) { %>
+<aside class="tool-ad-sidebar" aria-label="Sponsored content"><div class="sticky top-24"><%- include('../../partials/ad-slot', { slot: settings.adsense_tools_sidebar_slot, format: 'vertical' }) %></div></aside>
+<% } %>
+</div>
+<!-- AD PLACEHOLDER SLOT: TOOLS MID/FOOTER (Controlled by Admin) -->
+      <!-- ============================================================ -->
+      <% if (settings.ad_slot_tools_footer === 'true') { %>
+        <div class="w-full my-6 flex justify-center">
+          <% if (settings.custom_ad_html_tools_footer && settings.custom_ad_html_tools_footer.trim()) { %>
+            <div class="ad-slot-tools-footer w-full overflow-hidden flex justify-center">
+              <%- settings.custom_ad_html_tools_footer %>
+            </div>
+          <% } else if (canShowAd(settings, settings.adsense_tools_bottom_slot)) { %>
+<%- include('../../partials/ad-slot', { slot: settings.adsense_tools_bottom_slot, format: 'auto' }) %>
+<% } else { %>
+            <!-- Default Mid-Page Content Sponsor Placeholder -->
+            <div class="w-full max-w-4xl p-4 rounded-2xl bg-white dark:bg-brand-surface border border-dashed border-slate-300 dark:border-brand-border text-center shadow-xs">
+              <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 bg-slate-50 dark:bg-brand-dark/70 rounded-xl border border-slate-200/60 dark:border-brand-border/40">
+                <div class="flex items-center gap-3 text-left">
+                  <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold text-base flex-shrink-0">
+                    ⚡
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-mono font-bold uppercase text-slate-400">Featured Engineering Tools</span>
+                    <p class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Precision Mixed-Signal Oscilloscopes &amp; Protocol Analyzers</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Calibrated for IPC-2152 temperature profiling and CAN/SPI bus diagnostics.</p>
+                  </div>
+                </div>
+                <a href="/tools" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-brand-500 hover:text-white text-slate-700 dark:text-slate-200 text-xs font-bold transition shadow-xs whitespace-nowrap">
+                  Explore All Tools &rarr;
+                </a>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+
+      <!-- Server-Side Rendered SEO Sections (Formula, Worked Example, FAQs) -->
+      <section class="pt-8 space-y-8 border-t border-slate-200 dark:border-brand-border/60">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          
+          <!-- Mathematical Formula Breakdown -->
+          <% if (activeTool.formulaBreakdown) { %>
+            <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-4">
+              <div class="flex items-center gap-2 border-b border-slate-100 dark:border-brand-border pb-3">
+                <span class="w-7 h-7 rounded-lg bg-brand-500/10 text-brand-600 dark:text-accent flex items-center justify-center font-mono font-bold text-xs">&fnof;</span>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">Mathematical Formula &amp; Engineering Rules</h3>
+              </div>
+              <div class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-sans prose-sm dark:prose-invert">
+                <%- activeTool.formulaBreakdown %>
+              </div>
+            </div>
+          <% } %>
+
+          <!-- Worked Example -->
+          <% if (activeTool.workedExample) { %>
+            <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-4">
+              <div class="flex items-center gap-2 border-b border-slate-100 dark:border-brand-border pb-3">
+                <span class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-mono font-bold text-xs">&check;</span>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">Worked Engineering Example</h3>
+              </div>
+              <div class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-sans prose-sm dark:prose-invert">
+                <%- activeTool.workedExample %>
+              </div>
+            </div>
+          <% } %>
+
+        </div>
+
+        <!-- Technical FAQs Section -->
+        <% if (activeTool.faqs && activeTool.faqs.length > 0) { %>
+          <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-6">
+            <div class="border-b border-slate-100 dark:border-brand-border pb-3">
+              <span class="text-xs font-mono font-bold text-brand-600 dark:text-accent uppercase tracking-wider">Engineering FAQ</span>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white mt-1">Frequently Asked Questions</h3>
+            </div>
+
+            <div class="space-y-4">
+              <% activeTool.faqs.forEach(function(faq, idx) { %>
+                <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="text-brand-600 dark:text-accent font-mono font-bold">Q<%= idx + 1 %>:</span>
+                    <span><%= faq.question %></span>
+                  </h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+                    <%= faq.answer %>
+                  </p>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        <% } %>
+
+      </section>
+
+      <!-- Sibling Tools in this Hub -->
+      <section class="pt-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <span class="text-xs font-mono font-bold text-brand-600 dark:text-accent uppercase tracking-wider">More in this Hub</span>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-0.5">Explore Sibling Calculators</h3>
+          </div>
+          <!-- Return to Tools Page Button (Bottom Section) -->
+          <div class="flex items-center gap-3">
+            <a href="/tools" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-accent hover:border-brand-500 transition shadow-xs group">
+              <span class="transition-transform duration-200 group-hover:-translate-x-1">&larr;</span>
+              <span>Return to Tools Page (All 8 Hubs)</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <% category.tools.filter(function(t) { return t.slug !== activeTool.slug; }).slice(0, 4).forEach(function(sTool) { %>
+            <a href="/tools/<%= category.slug %>/<%= sTool.slug %>" class="group p-5 bg-white dark:bg-brand-surface rounded-2xl border border-slate-200 dark:border-brand-border hover:border-brand-500 dark:hover:border-accent transition duration-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] font-mono font-bold uppercase text-brand-600 dark:text-accent"><%= category.shortTitle %></span>
+                <h4 class="text-sm font-bold text-slate-900 dark:text-white mt-1 group-hover:text-brand-500 dark:group-hover:text-accent transition">
+                  <%= sTool.shortTitle || sTool.title %>
+                </h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                  <%= sTool.subtitle || sTool.description %>
+                </p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-100 dark:border-brand-border text-xs font-bold text-brand-600 dark:text-accent flex items-center justify-between">
+                <span>Launch Tool</span>
+                <span>&rarr;</span>
+              </div>
+            </a>
+          <% }); %>
+        </div>
+      </section>
+
+    <% } %>
+
+  </div>
+</main>
+
+<!-- Reusable Turnkey Engineering CTA Banner -->
+<%- include('../../partials/cta-banner') %>
+
+<%- include('../../layouts/footer') %>

@@ -1,0 +1,39 @@
+<div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-6">
+  <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-brand-border pb-4">
+    <div>
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Microcontroller Pinout Inspector</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Select a target architecture to view pin mapping, strapping pins, and bus assignments.</p>
+    </div>
+    <div class="flex bg-slate-100 dark:bg-brand-dark p-1 rounded-xl text-xs font-bold">
+      <button id="pin-mcu-esp32" class="px-3 py-1.5 rounded-lg bg-brand-500 text-white shadow">ESP32</button>
+      <button id="pin-mcu-stm32" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300">STM32 Blue Pill</button>
+      <button id="pin-mcu-pico" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300">RP2040 Pico</button>
+    </div>
+  </div>
+
+  <div id="pinout-display" class="overflow-x-auto">
+    <!-- ESP32 Table -->
+    <div id="pin-table-esp32" class="space-y-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+          <h4 class="font-bold text-xs uppercase text-brand-600 dark:text-accent mb-2">Strapping &amp; Special Pins</h4>
+          <ul class="text-xs space-y-1.5 text-slate-700 dark:text-slate-300">
+            <li><span class="font-mono font-bold text-red-500">GPIO 0:</span> Boot mode (pull low for flashing)</li>
+            <li><span class="font-mono font-bold text-amber-500">GPIO 2:</span> Internal pull-down, must be floating/low at boot</li>
+            <li><span class="font-mono font-bold text-amber-500">GPIO 12:</span> MTDI, controls flash voltage (do not pull high)</li>
+            <li><span class="font-mono font-bold text-blue-500">GPIO 34-39:</span> Input only! No software pull-ups available</li>
+          </ul>
+        </div>
+        <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
+          <h4 class="font-bold text-xs uppercase text-brand-600 dark:text-accent mb-2">Default Hardware Busses</h4>
+          <ul class="text-xs space-y-1.5 text-slate-700 dark:text-slate-300">
+            <li><span class="font-mono font-bold text-emerald-500">I2C:</span> SDA = GPIO 21, SCL = GPIO 22</li>
+            <li><span class="font-mono font-bold text-emerald-500">SPI (VSPI):</span> MOSI=23, MISO=19, SCK=18, CS=5</li>
+            <li><span class="font-mono font-bold text-emerald-500">UART0:</span> TX = GPIO 1, RX = GPIO 3 (Flashing &amp; Log)</li>
+            <li><span class="font-mono font-bold text-emerald-500">UART2:</span> TX = GPIO 17, RX = GPIO 16</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

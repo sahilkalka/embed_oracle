@@ -1,0 +1,192 @@
+<!-- PCB Trace Width Component -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  
+  <!-- Inputs Column -->
+  <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Trace Parameters</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">IPC-2221</span>
+    </div>
+
+    <div>
+      <label for="trace-current" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+        Target Current (Amperes)
+      </label>
+      <input type="number" id="trace-current" value="2.0" step="0.1" min="0.01" max="100" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="trace-thickness" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+        Copper Weight (Thickness)
+      </label>
+      <select id="trace-thickness" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+        <option value="0.5">0.5 oz/ft² (17.5 µm / 0.69 mil)</option>
+        <option value="1.0" selected>1.0 oz/ft² (35 µm / 1.37 mil) - Standard</option>
+        <option value="2.0">2.0 oz/ft² (70 µm / 2.74 mil) - High Power</option>
+        <option value="3.0">3.0 oz/ft² (105 µm / 4.11 mil)</option>
+      </select>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="trace-tempRise" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+          Allowable Temp Rise (ΔT °C)
+        </label>
+        <input type="number" id="trace-tempRise" value="10.0" step="1" min="1" max="100" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+      <div>
+        <label for="trace-ambientTemp" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+          Ambient Temp (°C)
+        </label>
+        <input type="number" id="trace-ambientTemp" value="25.0" step="1" min="-40" max="125" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+      </div>
+    </div>
+
+    <div>
+      <label for="trace-length" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+        Trace Length (mm)
+      </label>
+      <input type="number" id="trace-length" value="50.0" step="5" min="1" max="5000" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <span class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+        Layer Placement
+      </span>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="flex items-center p-3 rounded-xl border border-slate-200 dark:border-brand-border cursor-pointer bg-slate-50 dark:bg-brand-dark hover:border-brand-500 transition">
+          <input type="radio" name="trace-layer" value="external" checked class="text-brand-500 focus:ring-brand-500">
+          <span class="ml-2 text-xs font-bold text-slate-900 dark:text-white">External Layer</span>
+        </label>
+        <label class="flex items-center p-3 rounded-xl border border-slate-200 dark:border-brand-border cursor-pointer bg-slate-50 dark:bg-brand-dark hover:border-brand-500 transition">
+          <input type="radio" name="trace-layer" value="internal" class="text-brand-500 focus:ring-brand-500">
+          <span class="ml-2 text-xs font-bold text-slate-900 dark:text-white">Internal Layer</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Column -->
+  <div class="lg:col-span-6 space-y-6">
+    <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-brand-border pb-3">
+        Computed Width &amp; Characteristics
+      </h3>
+
+      <div class="mt-6 grid grid-cols-2 gap-4">
+        <div class="p-4 bg-brand-50 dark:bg-brand-900/40 rounded-2xl border border-brand-200 dark:border-brand-700">
+          <span class="text-xs text-brand-800 dark:text-accent font-semibold block">Required Width</span>
+          <span id="trace-resWidthMils" class="text-2xl sm:text-3xl font-black text-brand-700 dark:text-white font-mono">--</span>
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block mt-0.5">mils (0.001")</span>
+        </div>
+
+        <div class="p-4 bg-accent/15 dark:bg-accent/20 rounded-2xl border border-accent/30">
+          <span class="text-xs text-accent-dark dark:text-accent font-semibold block">Metric Width</span>
+          <span id="trace-resWidthMm" class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono">--</span>
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block mt-0.5">millimeters (mm)</span>
+        </div>
+      </div>
+
+      <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block">Area</span>
+          <span id="trace-resArea" class="text-sm font-bold text-slate-900 dark:text-white font-mono">--</span>
+          <span class="text-[9px] text-slate-400 block">mils²</span>
+        </div>
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block">Resistance</span>
+          <span id="trace-resResistance" class="text-sm font-bold text-slate-900 dark:text-white font-mono">--</span>
+          <span class="text-[9px] text-slate-400 block">Ohms (Ω)</span>
+        </div>
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block">Voltage Drop</span>
+          <span id="trace-resDrop" class="text-sm font-bold text-slate-900 dark:text-white font-mono">--</span>
+          <span class="text-[9px] text-slate-400 block">Volts (V)</span>
+        </div>
+        <div class="p-3 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200/60 dark:border-brand-border/60">
+          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold block">Power Loss</span>
+          <span id="trace-resPower" class="text-sm font-bold text-slate-900 dark:text-white font-mono">--</span>
+          <span class="text-[9px] text-slate-400 block">Watts (W)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Cross-Section Visualizer -->
+    <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md">
+      <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3">Live Trace Cross-Section</h3>
+      <div class="p-4 bg-slate-900 rounded-2xl flex flex-col items-center justify-center">
+        <svg id="traceCrossSectionSvg" class="w-full max-w-full h-28" viewBox="0 0 300 80">
+          <!-- PCB Substrate -->
+          <rect x="20" y="45" width="260" height="25" fill="#182c27" stroke="#27443d" stroke-width="1.5" rx="3"/>
+          <text x="150" y="62" fill="#72b0a3" font-size="9" font-family="monospace" text-anchor="middle">FR-4 Dielectric Substrate</text>
+          <!-- Copper Trace -->
+          <rect id="traceSvgRect" x="110" y="32" width="80" height="13" fill="#d97706" stroke="#b45309" stroke-width="1.5" rx="2"/>
+          <text id="traceSvgText" x="150" y="24" fill="#fbbf24" font-size="9" font-family="monospace" font-weight="bold" text-anchor="middle">Trace Width</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  function calcTrace() {
+    const current = parseFloat(document.getElementById('trace-current')?.value) || 2.0;
+    const thicknessOz = parseFloat(document.getElementById('trace-thickness')?.value) || 1.0;
+    const tempRise = parseFloat(document.getElementById('trace-tempRise')?.value) || 10.0;
+    const ambientTemp = parseFloat(document.getElementById('trace-ambientTemp')?.value) || 25.0;
+    const lengthMm = parseFloat(document.getElementById('trace-length')?.value) || 50.0;
+    const layer = document.querySelector('input[name="trace-layer"]:checked')?.value || 'external';
+
+    const k = layer === 'internal' ? 0.024 : 0.048;
+    const b = 0.44;
+    const c = 0.725;
+    const areaMils2 = Math.pow(current / (k * Math.pow(tempRise, b)), 1 / c);
+    const thicknessMils = thicknessOz * 1.378;
+    const widthMils = areaMils2 / thicknessMils;
+    const widthMm = widthMils * 0.0254;
+
+    const rho20 = 1.72e-8;
+    const alpha = 0.00393;
+    const traceTemp = ambientTemp + tempRise;
+    const rho = rho20 * (1 + alpha * (traceTemp - 20));
+    const lengthM = lengthMm / 1000.0;
+    const areaM2 = (areaMils2 * 6.4516e-10);
+    const resistance = (rho * lengthM) / areaM2;
+    const vDrop = current * resistance;
+    const pLoss = current * current * resistance;
+
+    const elMils = document.getElementById('trace-resWidthMils');
+    const elMm = document.getElementById('trace-resWidthMm');
+    const elArea = document.getElementById('trace-resArea');
+    const elRes = document.getElementById('trace-resResistance');
+    const elDrop = document.getElementById('trace-resDrop');
+    const elPower = document.getElementById('trace-resPower');
+
+    if (elMils) elMils.textContent = widthMils.toFixed(1);
+    if (elMm) elMm.textContent = widthMm.toFixed(3);
+    if (elArea) elArea.textContent = areaMils2.toFixed(1);
+    if (elRes) elRes.textContent = resistance < 0.001 ? (resistance * 1000).toFixed(2) + ' m' : resistance.toFixed(3);
+    if (elDrop) elDrop.textContent = vDrop < 0.01 ? (vDrop * 1000).toFixed(1) + ' mV' : vDrop.toFixed(3);
+    if (elPower) elPower.textContent = pLoss < 0.01 ? (pLoss * 1000).toFixed(1) + ' mW' : pLoss.toFixed(3);
+
+    // Update cross section svg
+    const rect = document.getElementById('traceSvgRect');
+    const label = document.getElementById('traceSvgText');
+    if (rect && label) {
+      const clampedWidth = Math.min(Math.max(widthMm * 50, 20), 200);
+      rect.setAttribute('width', clampedWidth);
+      rect.setAttribute('x', (300 - clampedWidth) / 2);
+      label.textContent = widthMm.toFixed(2) + ' mm (' + widthMils.toFixed(0) + ' mil)';
+    }
+  }
+
+  ['trace-current', 'trace-thickness', 'trace-tempRise', 'trace-ambientTemp', 'trace-length'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', calcTrace);
+  });
+  document.querySelectorAll('input[name="trace-layer"]').forEach(r => r.addEventListener('change', calcTrace));
+  calcTrace();
+})();
+</script>
+

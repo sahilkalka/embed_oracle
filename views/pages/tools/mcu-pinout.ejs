@@ -1,0 +1,192 @@
+<%- include('../../layouts/header') %>
+
+<div class="py-12 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border">
+  <div class="max-w-6xl mx-auto px-4">
+    <a href="/tools" class="inline-flex items-center text-xs font-bold text-brand-500 dark:text-accent hover:underline mb-4">
+      &larr; Back to All Tools
+    </a>
+    <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
+      Microcontroller Pinout &amp; Peripheral Guide
+    </h1>
+    <p class="text-slate-600 dark:text-slate-300 mt-2 text-sm sm:text-base">
+      Interactive reference cheat sheets for the most popular microcontrollers in the Indian embedded ecosystem: ESP32, STM32 Blue Pill, and Raspberry Pi Pico RP2040.
+    </p>
+  </div>
+</div>
+
+<div class="py-12 bg-slate-50 dark:bg-[#13221f]">
+  <div class="max-w-6xl mx-auto px-4 space-y-8">
+    
+    <!-- MCU Selector Buttons -->
+    <div class="flex flex-wrap gap-3">
+      <button id="btnEsp32" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-brand-500 text-white shadow-md mcu-tab">
+        ESP32-WROOM-32 (38-Pin)
+      </button>
+      <button id="btnStm32" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-brand-surface text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border mcu-tab">
+        STM32F103C8T6 "Blue Pill"
+      </button>
+      <button id="btnPico" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-brand-surface text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border mcu-tab">
+        Raspberry Pi Pico (RP2040)
+      </button>
+    </div>
+
+    <!-- Pinout Display Container -->
+    <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-brand-border shadow-md">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-100 dark:border-brand-border gap-4">
+        <div>
+          <h2 id="mcuTitle" class="text-2xl font-extrabold text-slate-900 dark:text-white">ESP32-WROOM-32 Pinout</h2>
+          <p id="mcuDesc" class="text-xs text-slate-700 dark:text-slate-300 mt-1">Dual-core Xtensa LX6 @ 240MHz, 2.4 GHz Wi-Fi + BLE 5</p>
+        </div>
+        <!-- Peripheral Legend -->
+        <div class="flex flex-wrap gap-2 text-[11px] font-bold">
+          <span class="px-2 py-1 rounded bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300">Power / GND</span>
+          <span class="px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">ADC Analog</span>
+          <span class="px-2 py-1 rounded bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">I2C / SPI</span>
+          <span class="px-2 py-1 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">UART / Boot</span>
+        </div>
+      </div>
+
+      <!-- Interactive Pin Table -->
+      <div class="mt-6 overflow-x-auto">
+        <table class="w-full text-left text-xs font-mono">
+          <thead class="bg-slate-50 dark:bg-brand-dark text-slate-600 dark:text-slate-300 uppercase">
+            <tr>
+              <th class="p-3">Pin #</th>
+              <th class="p-3">Primary Name</th>
+              <th class="p-3">Multiplexed Functions</th>
+              <th class="p-3">Hardware Notes / Boot Strapping</th>
+            </tr>
+          </thead>
+          <tbody id="mcuPinTableBody" class="divide-y divide-slate-100 dark:divide-brand-border">
+            <!-- Dynamically populated via JS -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Bottom CTA -->
+    
+        <!-- AdSense: Tool Sub-Page Banner Ad -->
+        <%- include('../../partials/ad-slot', { slot: settings.adsense_tools_bottom_slot, format: 'auto' }) %>
+
+        <div class="bg-gradient-to-r from-brand-900 to-brand-800 rounded-3xl p-8 text-white border border-brand-700 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+      <div>
+        <h3 class="text-xl font-bold">Need Custom Embedded Firmware or Driver Architecture?</h3>
+        <p class="text-xs text-slate-300 mt-1 max-w-xl">
+          We build robust bare-metal and RTOS board support packages, low-power sleep state machines, and fail-safe dual-bank bootloaders.
+        </p>
+      </div>
+      <a href="/contact?service=Firmware%20Development" class="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-sm transition whitespace-nowrap shadow-md">
+        Inquire Firmware Development &rarr;
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const mcuData = {
+    esp32: {
+      title: 'ESP32-WROOM-32 (38-Pin DevKit)',
+      desc: 'Dual-core Xtensa LX6 @ 240MHz, 2.4 GHz Wi-Fi + BLE 5, 520KB SRAM',
+      pins: [
+        { num: '1', name: '3V3', func: '3.3V Power Supply Rail', notes: 'Max output dependent on LDO (typical 600mA)', badge: 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300' },
+        { num: '2', name: 'EN (CHIP_PU)', func: 'Reset / Enable (Active High)', notes: 'Pull-up to 3.3V with 10k + 1uF to GND for stable boot', badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200' },
+        { num: '3', name: 'GPIO36 (VP)', func: 'ADC1_CH0, RTC_GPIO0', notes: 'Input Only! No internal pull-up / pull-down', badge: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' },
+        { num: '4', name: 'GPIO39 (VN)', func: 'ADC1_CH3, RTC_GPIO3', notes: 'Input Only! No internal pull-up / pull-down', badge: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' },
+        { num: '5', name: 'GPIO34', func: 'ADC1_CH6, RTC_GPIO4', notes: 'Input Only! Safe for analog voltage sensing', badge: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' },
+        { num: '6', name: 'GPIO35', func: 'ADC1_CH7, RTC_GPIO5', notes: 'Input Only! Safe for battery voltage divider', badge: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' },
+        { num: '7', name: 'GPIO32', func: 'ADC1_CH4, TOUCH9, 32K_XN', notes: 'Touch sensor / 32.768kHz RTC Crystal input', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: '8', name: 'GPIO33', func: 'ADC1_CH5, TOUCH8, 32K_XP', notes: 'Touch sensor / 32.768kHz RTC Crystal input', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: '9', name: 'GPIO25', func: 'DAC1, ADC2_CH8', notes: '8-bit Digital-to-Analog output (DAC)', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: '10', name: 'GPIO26', func: 'DAC2, ADC2_CH9', notes: '8-bit Digital-to-Analog output (DAC)', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: '11', name: 'GPIO27', func: 'ADC2_CH7, TOUCH7', notes: 'PWM / General I/O (disabled when Wi-Fi transmits)', badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200' },
+        { num: '12', name: 'GPIO14', func: 'HSPI_CLK, ADC2_CH6', notes: 'High Speed SPI Clock', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: '13', name: 'GPIO12', func: 'HSPI_Q, MTDI', notes: 'Boot strapping pin! Must be LOW during flashing (Vdd_SDIO)', badge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' },
+        { num: '14', name: 'GND', func: 'Ground', notes: 'Reference ground', badge: 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300' },
+        { num: '15', name: 'GPIO13', func: 'HSPI_ID, ADC2_CH4', notes: 'Touch / SPI MOSI', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: '16', name: 'GPIO0', func: 'Boot Strapping / Touch1', notes: 'Boot Mode: Pull to GND to enter UART Download mode', badge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' },
+        { num: '17', name: 'GPIO2', func: 'Internal LED / Boot Strapping', notes: 'Must be floating or LOW during flashing', badge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' },
+        { num: '18', name: 'GPIO15', func: 'HSPI_CS, MTDO', notes: 'Boot strapping pin (debug log output control)', badge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' },
+        { num: '19', name: 'GPIO21', func: 'I2C_SDA', notes: 'Default hardware I2C Data line (needs 4.7k pull-up)', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: '20', name: 'GPIO22', func: 'I2C_SCL', notes: 'Default hardware I2C Clock line (needs 4.7k pull-up)', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: '21', name: 'GPIO1 (TX0)', func: 'UART0_TXD', notes: 'Main Serial console print output', badge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' },
+        { num: '22', name: 'GPIO3 (RX0)', func: 'UART0_RXD', notes: 'Main Serial console flash / input', badge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' }
+      ]
+    },
+    stm32: {
+      title: 'STM32F103C8T6 "Blue Pill"',
+      desc: '32-bit ARM Cortex-M3 @ 72MHz, 64KB Flash, 20KB SRAM, USB 2.0 Full Speed',
+      pins: [
+        { num: 'PA0', name: 'PA0 (WKUP)', func: 'ADC1_IN0, USART2_CTS, TIM2_CH1', notes: 'Wakeup from standby pin', badge: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' },
+        { num: 'PA1', name: 'PA1', func: 'ADC1_IN1, USART2_RTS, TIM2_CH2', notes: 'PWM / Analog', badge: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' },
+        { num: 'PA2', name: 'PA2', func: 'ADC1_IN2, USART2_TX, TIM2_CH3', notes: 'Hardware UART 2 Transmit', badge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' },
+        { num: 'PA3', name: 'PA3', func: 'ADC1_IN3, USART2_RX, TIM2_CH4', notes: 'Hardware UART 2 Receive', badge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' },
+        { num: 'PA4', name: 'PA4', func: 'SPI1_NSS, ADC1_IN4, USART2_CK', notes: 'Hardware SPI 1 Chip Select', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: 'PA5', name: 'PA5', func: 'SPI1_SCK, ADC1_IN5', notes: 'Hardware SPI 1 Clock (up to 18MHz)', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: 'PA6', name: 'PA6', func: 'SPI1_MISO, TIM3_CH1', notes: 'Hardware SPI 1 Data In', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: 'PA7', name: 'PA7', func: 'SPI1_MOSI, TIM3_CH2', notes: 'Hardware SPI 1 Data Out', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: 'PB6', name: 'PB6', func: 'I2C1_SCL, TIM4_CH1', notes: 'Hardware I2C 1 Clock (5V Tolerant)', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: 'PB7', name: 'PB7', func: 'I2C1_SDA, TIM4_CH2', notes: 'Hardware I2C 1 Data (5V Tolerant)', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: 'PC13', name: 'PC13', func: 'TAMPER-RTC / On-board LED', notes: 'Active LOW on-board user LED', badge: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200' }
+      ]
+    },
+    pico: {
+      title: 'Raspberry Pi Pico (RP2040)',
+      desc: 'Dual ARM Cortex-M0+ @ 133MHz, 264KB SRAM, Programmable I/O (PIO)',
+      pins: [
+        { num: '1', name: 'GP0', func: 'UART0_TX, I2C0_SDA, SPI0_RX', notes: 'PIO Flexible Mapping', badge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' },
+        { num: '2', name: 'GP1', func: 'UART0_RX, I2C0_SCL, SPI0_CS', notes: 'PIO Flexible Mapping', badge: 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' },
+        { num: '3', name: 'GND', func: 'Ground', notes: 'Common ground plane', badge: 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300' },
+        { num: '4', name: 'GP2', func: 'SPI0_SCK, I2C1_SDA', notes: 'Hardware SPI Clock', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: '5', name: 'GP3', func: 'SPI0_TX, I2C1_SCL', notes: 'Hardware SPI MOSI', badge: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300' },
+        { num: '31', name: 'GP26', func: 'ADC0, I2C1_SDA', notes: '12-bit Analog-to-Digital Converter', badge: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' },
+        { num: '32', name: 'GP27', func: 'ADC1, I2C1_SCL', notes: '12-bit Analog-to-Digital Converter', badge: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' },
+        { num: '36', name: '3V3(OUT)', func: '3.3V Power Out', notes: 'Internal buck-boost regulator output', badge: 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300' },
+        { num: '39', name: 'VSYS', func: 'System Input Voltage', notes: '1.8V to 5.5V supply input (LiPo or USB)', badge: 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300' }
+      ]
+    }
+  };
+
+  function renderTable(mcuKey) {
+    const data = mcuData[mcuKey];
+    document.getElementById('mcuTitle').textContent = data.title;
+    document.getElementById('mcuDesc').textContent = data.desc;
+
+    const tbody = document.getElementById('mcuPinTableBody');
+    tbody.innerHTML = '';
+
+    data.pins.forEach(pin => {
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-slate-50 dark:hover:bg-brand-dark/50 transition';
+      tr.innerHTML = `
+        <td class="p-3 font-bold text-slate-900 dark:text-white">${pin.num}</td>
+        <td class="p-3"><span class="px-2 py-0.5 rounded ${pin.badge} font-bold">${pin.name}</span></td>
+        <td class="p-3 text-slate-700 dark:text-slate-300">${pin.func}</td>
+        <td class="p-3 text-slate-700 dark:text-slate-300 font-sans">${pin.notes}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  const btnEsp32 = document.getElementById('btnEsp32');
+  const btnStm32 = document.getElementById('btnStm32');
+  const btnPico = document.getElementById('btnPico');
+
+  function updateTabs(activeBtn) {
+    [btnEsp32, btnStm32, btnPico].forEach(btn => {
+      btn.className = 'px-5 py-2.5 rounded-xl text-sm font-bold bg-white dark:bg-brand-surface text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border mcu-tab';
+    });
+    activeBtn.className = 'px-5 py-2.5 rounded-xl text-sm font-bold bg-brand-500 text-white shadow-md mcu-tab';
+  }
+
+  btnEsp32.addEventListener('click', () => { updateTabs(btnEsp32); renderTable('esp32'); });
+  btnStm32.addEventListener('click', () => { updateTabs(btnStm32); renderTable('stm32'); });
+  btnPico.addEventListener('click', () => { updateTabs(btnPico); renderTable('pico'); });
+
+  renderTable('esp32');
+</script>
+
+<%- include('../../layouts/footer') %>

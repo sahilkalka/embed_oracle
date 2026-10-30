@@ -1,0 +1,399 @@
+<%- include('../layouts/header') %>
+
+<!-- Contact Header (Left-Aligned with Ambient Mesh) -->
+<section class="py-12 sm:py-16 lg:py-20 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border spaceship-ambient-mesh circuit-grid">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
+    <div class="max-w-3xl">
+      <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold uppercase tracking-wider shadow-sm backdrop-blur-md animate-float-slow">
+        <span class="w-2 h-2 rounded-full bg-brand-500 dark:bg-accent animate-ping flex-shrink-0"></span>
+        <span class="font-extrabold text-slate-800 dark:text-slate-100">Get in Touch</span>
+      </div>
+      <h1 class="text-[clamp(1.75rem,4vw,2.625rem)] font-black text-slate-900 dark:text-white mt-4 tracking-tight leading-tight">
+        Contact &amp; Request for Quote (RFQ)
+      </h1>
+      <p class="mt-4 text-[15px] md:text-base leading-relaxed text-slate-700 dark:text-slate-200 font-normal">
+        Discuss your hardware architecture, TouchGFX / Qt HMI UI requirements, review RFPs, or inquire about our turnkey engineering cycles. Email our engineering desk directly at <a href="mailto:info@embeddedindia.in" class="text-brand-500 dark:text-accent font-bold hover:underline">info@embeddedindia.in</a> or submit your technical requirements below.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Form & Info Section -->
+<section class="py-12 sm:py-20 bg-slate-50 dark:bg-[#13221f]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
+      
+      <!-- Left Column: Contact Info & Guaranteed SLA -->
+      <div class="flex flex-col h-full space-y-6">
+        
+        <!-- Direct Communication Card -->
+        <div class="spotlight-card reveal-on-scroll bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-brand-border shadow-md flex-1 flex flex-col justify-between">
+          <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6 icon-bounce-container">
+            <img src="/assets/images/contact-us.svg" alt="Contact Icon" class="w-10 h-10 object-cover" loading="lazy" onerror="this.src='/favicon.svg'">
+          </div>
+          <h2 class="text-[clamp(1.375rem,3vw,2rem)] font-bold text-slate-900 dark:text-white mb-2">Direct Communication</h2>
+          <p class="text-[15px] md:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-6">
+            Our principal systems architects review incoming RFPs daily. We execute mutual Non-Disclosure Agreements (NDAs) prior to architectural schematic analysis.
+          </p>
+
+          <div class="space-y-4 text-sm">
+            <div class="flex items-start space-x-3">
+              <div class="text-brand-500 dark:text-accent mt-0.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+              <div>
+                <strong class="text-slate-900 dark:text-white block">Email Inquiries &amp; RFQs</strong>
+                <a href="mailto:info@embeddedindia.in" class="text-brand-500 dark:text-accent font-semibold hover:underline">info@embeddedindia.in</a>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-3">
+              <div class="text-brand-500 dark:text-accent mt-0.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+              <div>
+                <strong class="text-slate-900 dark:text-white block">Engineering Centers</strong>
+                <span class="text-slate-600 dark:text-slate-300"><%= settings.contact_address || 'Hyderabad, India' %></span>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-3">
+              <div class="text-brand-500 dark:text-accent mt-0.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              </div>
+              <div>
+                <strong class="text-slate-900 dark:text-white block">Direct Line / WhatsApp</strong>
+                <a href="tel:<%= settings.contact_phone ? settings.contact_phone.replace(/[^0-9+]/g, '') : '+918328514090' %>" class="text-slate-600 dark:text-slate-300 hover:text-brand-500"><%= settings.contact_phone || '+91 83285 14090' %></a>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-3">
+              <div class="text-brand-500 dark:text-accent mt-0.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <strong class="text-slate-900 dark:text-white block">Turnaround SLA</strong>
+                <span class="text-slate-600 dark:text-slate-300">Technical reply and feasibility review within 24 business hours</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-slate-100 dark:border-brand-border/60">
+            <div class="p-4 rounded-2xl bg-slate-50 dark:bg-brand-dark/60 border border-slate-200/80 dark:border-brand-border/60 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-accent shrink-0">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                </div>
+                <div>
+                  <span class="text-xs font-bold text-slate-900 dark:text-white block">General or Consulting Query?</span>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Fill the direct form without entering hardware specs.</span>
+                </div>
+              </div>
+              <button type="button" onclick="document.getElementById('rfq-discipline-general')?.click(); document.getElementById('rfq-next-1')?.click();" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold transition shadow-xs whitespace-nowrap active:scale-95">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <span>Fill Form &rarr;</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <% if (/^https:\/\//i.test(settings.calendly_url || '')) { %>
+        <div class="p-6 bg-emerald-50 dark:bg-brand-surface rounded-2xl border border-emerald-200 dark:border-brand-border">
+          <h3 class="font-bold text-slate-900 dark:text-white">Prefer a direct call?</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">Book a 30-minute architecture review with our engineering team.</p>
+          <a href="<%= settings.calendly_url %>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 px-5 py-3 bg-brand-500 text-white rounded-xl text-sm font-bold">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <span>Book a Call &rarr;</span>
+          </a>
+        </div>
+        <% } %>
+      </div>
+
+      <!-- Right Column: 3-Step Interactive RFQ Form -->
+      <div class="flex flex-col h-full">
+        <div class="spotlight-card reveal-on-scroll delay-100 bg-white dark:bg-brand-surface rounded-3xl p-5 sm:p-10 border border-slate-200 dark:border-brand-border shadow-xl flex-1 flex flex-col justify-between">
+          
+          <!-- Header & Progress Step Indicator -->
+          <div class="pb-4 mb-5 border-b border-slate-100 dark:border-brand-border/60">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">Interactive RFQ &amp; Consultation</h2>
+                <p id="rfq-step-indicator" class="text-xs text-brand-600 dark:text-accent font-bold mt-1">Step 1 of 3</p>
+              </div>
+              <span id="rfq-progress-label" class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-700 dark:text-accent text-xs font-bold font-mono rounded-full">1/3</span>
+            </div>
+            
+            <!-- Progress Bar Track -->
+            <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full mt-3 overflow-hidden">
+              <div id="rfq-progress-bar" class="bg-gradient-to-r from-brand-500 to-accent h-full rounded-full transition-all duration-300 w-1/3"></div>
+            </div>
+          </div>
+
+          <form id="contact-form" class="space-y-5">
+            
+            <!-- Anti-Spam Honeypot Trap (Hidden) -->
+            <div class="hidden" aria-hidden="true">
+              <label for="website_url_trap">Do not fill this field</label>
+              <input type="text" id="website_url_trap" name="website_url_trap" tabindex="-1" autocomplete="off">
+            </div>
+
+            <!-- STEP 1: Project Type Selection -->
+            <div id="rfq-step-1" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                  Select Engineering Discipline <span class="text-red-500">*</span>
+                </label>
+                <input type="hidden" name="serviceCategory" id="serviceCategorySelect" value="Hardware Design">
+                
+                <div class="grid grid-cols-2 gap-2.5 sm:gap-3 items-stretch" id="rfq-service-grid">
+                  <button type="button" data-value="Hardware Design" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-brand-500 text-white border-brand-500 shadow-md h-full min-h-[68px] flex items-start gap-2.5">
+                    <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                    <div class="min-w-0">
+                      <span class="block font-bold text-xs sm:text-sm leading-tight">Hardware &amp; PCB</span>
+                      <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">Schematics, HDI, DFM</span>
+                    </div>
+                  </button>
+                  <button type="button" data-value="Firmware/BSP" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-slate-50 dark:bg-brand-dark text-slate-800 dark:text-slate-200 border-slate-200 dark:border-brand-border hover:border-brand-500 h-full min-h-[68px] flex items-start gap-2.5">
+                    <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    <div class="min-w-0">
+                      <span class="block font-bold text-xs sm:text-sm leading-tight">Firmware &amp; BSP</span>
+                      <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">FreeRTOS, Zephyr, C/C++</span>
+                    </div>
+                  </button>
+                  <button type="button" id="rfq-discipline-hmi" data-value="Embedded UI / HMI" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-slate-50 dark:bg-brand-dark text-slate-800 dark:text-slate-200 border-slate-200 dark:border-brand-border hover:border-brand-500 h-full min-h-[68px] flex items-start gap-2.5">
+                    <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <div class="min-w-0">
+                      <span class="block font-bold text-xs sm:text-sm leading-tight">Embedded UI / HMI</span>
+                      <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">TouchGFX (STM32) &amp; Qt (MPU)</span>
+                    </div>
+                  </button>
+                  <button type="button" data-value="IoT Solutions" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-slate-50 dark:bg-brand-dark text-slate-800 dark:text-slate-200 border-slate-200 dark:border-brand-border hover:border-brand-500 h-full min-h-[68px] flex items-start gap-2.5">
+                    <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+                    <div class="min-w-0">
+                      <span class="block font-bold text-xs sm:text-sm leading-tight">IoT &amp; Edge Gateways</span>
+                      <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">BLE, LoRaWAN, 4G, MQTT</span>
+                    </div>
+                  </button>
+                  <button type="button" data-value="Automotive" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-slate-50 dark:bg-brand-dark text-slate-800 dark:text-slate-200 border-slate-200 dark:border-brand-border hover:border-brand-500 h-full min-h-[68px] flex items-start gap-2.5">
+                    <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    <div class="min-w-0">
+                      <span class="block font-bold text-xs sm:text-sm leading-tight">Automotive &amp; HIL</span>
+                      <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">CAN-FD, ISO 26262, HIL</span>
+                    </div>
+                  </button>
+                  <button type="button" data-value="Full Turnkey" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-slate-50 dark:bg-brand-dark text-slate-800 dark:text-slate-200 border-slate-200 dark:border-brand-border hover:border-brand-500 h-full min-h-[68px] flex items-start gap-2.5">
+                    <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    <div class="min-w-0">
+                      <span class="block font-bold text-xs sm:text-sm leading-tight">Full Turnkey</span>
+                      <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">Concept to manufacturing</span>
+                    </div>
+                  </button>
+                  <button type="button" data-value="Obsolescence" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-slate-50 dark:bg-brand-dark text-slate-800 dark:text-slate-200 border-slate-200 dark:border-brand-border hover:border-brand-500 h-full min-h-[68px] flex items-start gap-2.5">
+                    <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <div class="min-w-0">
+                      <span class="block font-bold text-xs sm:text-sm leading-tight">Obsolescence</span>
+                      <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">Pin-compatible MCU swap</span>
+                    </div>
+                  </button>
+                  <button type="button" id="rfq-discipline-general" data-value="General Query" data-skip-specs="true" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-slate-50 dark:bg-brand-dark text-slate-800 dark:text-slate-200 border-slate-200 dark:border-brand-border hover:border-brand-500 h-full min-h-[68px] flex items-start gap-2.5">
+                    <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    <div class="min-w-0">
+                      <span class="block font-bold text-xs sm:text-sm leading-tight">General Query</span>
+                      <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">Consulting &amp; inquiries</span>
+                    </div>
+                  </button>
+                  <button type="button" id="rfq-next-1" class="col-span-2 btn-shimmer p-3.5 sm:p-4 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-sm transition shadow-md flex items-center justify-center gap-2 active:scale-95 min-h-[52px] w-full">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    <span id="rfq-next-1-text">Continue to Specifications &rarr;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2: Technical Specifications -->
+            <div id="rfq-step-2" class="space-y-5 hidden">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="spec-mcu" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Target MCU / SoC Architecture
+                  </label>
+                  <input 
+                    type="text" 
+                    id="spec-mcu"
+                    name="spec_mcu" 
+                    placeholder="e.g. STM32U5/H7 (TouchGFX), NXP i.MX8 (Qt), ESP32-S3"
+                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
+                  >
+                </div>
+                <div>
+                  <label for="spec-layers" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Estimated Layer Count / Display Interface
+                  </label>
+                  <select 
+                    id="spec-layers"
+                    name="spec_layers"
+                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
+                  >
+                    <option value="">Not decided yet / Need advice</option>
+                    <option value="2-Layer">2-Layer standard FR-4</option>
+                    <option value="4-Layer">4-Layer controlled impedance</option>
+                    <option value="6-Layer">6-Layer high-density</option>
+                    <option value="8+ Layer">8+ Layer HDI microvia</option>
+                    <option value="HMI Display (SPI / RGB / MIPI-DSI / LVDS)">HMI Display (SPI / RGB / MIPI-DSI / LVDS)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="spec-qty" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Estimated Production Quantity
+                  </label>
+                  <select 
+                    id="spec-qty"
+                    name="spec_qty"
+                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
+                  >
+                    <option value="Prototype (1-10 units)">Prototype (1-10 units)</option>
+                    <option value="Pilot Batch (50-250 units)">Pilot Batch (50-250 units)</option>
+                    <option value="Volume Mass Production (1k+ units)">Volume Mass Production (1k+ units)</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="contact-subject" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Project Subject <span class="text-red-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="contact-subject"
+                    name="subject"
+                    required
+                    placeholder="e.g. STM32U5 TouchGFX Medical Monitor HMI"
+                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
+                  >
+                </div>
+              </div>
+
+              <div class="pt-4 flex items-center justify-between gap-3">
+                <button type="button" id="rfq-back-2" class="inline-flex items-center gap-1.5 px-5 py-3 bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-300 rounded-xl text-sm font-bold hover:bg-slate-200 transition">
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
+                  <span>Back</span>
+                </button>
+                <button type="button" id="rfq-next-2" class="btn-shimmer px-6 sm:px-8 py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-sm transition shadow-md inline-flex items-center gap-2 active:scale-95">
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                  <span>Continue to Contact &rarr;</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 3: Contact Details & Submit -->
+            <div id="rfq-step-3" class="space-y-5 hidden">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="contact-name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Full Name <span class="text-red-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="contact-name"
+                    name="name"
+                    required
+                    placeholder="e.g. Rahul Sharma"
+                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
+                  >
+                </div>
+                <div>
+                  <label for="contact-company" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Company / Organization
+                  </label>
+                  <input 
+                    type="text" 
+                    id="contact-company"
+                    name="company"
+                    placeholder="e.g. Acme Robotics Ltd."
+                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
+                  >
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="contact-email" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Work Email <span class="text-red-500">*</span>
+                  </label>
+                  <input 
+                    type="email" 
+                    id="contact-email"
+                    name="email"
+                    required
+                    placeholder="rahul@company.com"
+                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
+                  >
+                </div>
+                <div>
+                  <label for="contact-phone" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Phone / WhatsApp
+                  </label>
+                  <input 
+                    type="tel" 
+                    id="contact-phone"
+                    name="phone"
+                    placeholder="<%= settings.contact_phone || '+91 83285 14090' %>"
+                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
+                  >
+                </div>
+              </div>
+
+              <div>
+                <label for="contact-message" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                  Technical Requirements &amp; Notes <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="contact-message"
+                  name="message" 
+                  rows="4" 
+                  required 
+                  placeholder="Outline operating environment, display resolution (if TouchGFX/Qt HMI), certifications required, power budget, and timeline..."
+                  class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
+                ></textarea>
+              </div>
+
+              <div id="contact-status-box" class="hidden p-4 rounded-xl text-sm font-medium"></div>
+
+              <div class="pt-2 flex items-center justify-between gap-3">
+                <button type="button" id="rfq-back-3" class="inline-flex items-center gap-1.5 px-5 py-3 bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-300 rounded-xl text-sm font-bold hover:bg-slate-200 transition">
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
+                  <span>Back</span>
+                </button>
+                <button 
+                  type="submit" 
+                  id="contact-submit-btn" 
+                  class="btn-shimmer px-6 sm:px-8 py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl shadow-lg transition text-sm inline-flex items-center gap-2 active:scale-95"
+                >
+                  <span id="contact-btn-text">Submit RFQ to info@embeddedindia.in</span>
+                  <svg id="contact-spinner" class="hidden animate-spin w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                  </svg>
+                  <svg id="contact-btn-arrow" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+              </div>
+
+              <p class="text-[11px] text-slate-400 text-center pt-2">
+                Direct notification dispatched to <span class="font-bold text-slate-600 dark:text-slate-300">info@embeddedindia.in</span>. Strict NDA confidentiality maintained.
+              </p>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- RFQ 3-Step UI Controller -->
+<script src="/js/rfq.js"></script>
+
+<%- include('../layouts/footer') %>

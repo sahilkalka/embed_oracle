@@ -1,0 +1,115 @@
+<section id="seo-scripts" aria-labelledby="seo-scripts-title" class="settings-section hidden">
+
+      <form class="settings-module-form space-y-6" action="/admin/settings" method="POST" data-module="SEO &amp; Scripts">
+        <%- csrfField %>
+        <input type="hidden" name="_active_tab" value="seo-scripts">
+
+        <%- include('../settings-module-header', {"sectionId":"seo-scripts","title":"SEO & scripts","icon":"query_stats","description":"Review search metadata, SEO quality, and tracking scripts.","saveLabel":"Save SEO Settings","actions":[{"id":"btnAnalyzeSeoAi","handler":"analyzeSeoWithAi()","icon":"auto_fix_high","label":"AI optimize"}]}) %>
+
+        <!-- 4A. Real-Time Dynamic SEO Score Meter -->
+        <div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="settings-score-heading">
+                <h3 class="settings-panel-title">SEO quality</h3>
+                <span id="seoScoreVal" class="text-lg font-black text-emerald-600 dark:text-accent font-mono">100</span>
+                <span class="text-slate-400">/ 100</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-0.5">Scored across title length, meta description density, keyword coverage, and OpenGraph compliance.</p>
+            </div>
+            <span id="seoScoreBadge" class="px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+              EXCELLENT
+            </span>
+          </div>
+
+          <!-- Animated Progress Bar -->
+          <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
+            <div id="seoScoreBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full transition-all duration-500" style="width: 100%;"></div>
+          </div>
+
+          <!-- Diagnostic Checkpoints Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div id="chk_title" class="p-2.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 flex items-center space-x-2">
+              <span class="status-icon text-emerald-500 font-bold">✓</span>
+              <div>
+                <span class="font-bold block text-slate-800 dark:text-slate-200">Title Length</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono" id="titleCount">Optimal</span>
+              </div>
+            </div>
+
+            <div id="chk_desc" class="p-2.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 flex items-center space-x-2">
+              <span class="status-icon text-emerald-500 font-bold">✓</span>
+              <div>
+                <span class="font-bold block text-slate-800 dark:text-slate-200">Description</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono" id="descCount">Optimal</span>
+              </div>
+            </div>
+
+            <div id="chk_keywords" class="p-2.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 flex items-center space-x-2">
+              <span class="status-icon text-emerald-500 font-bold">✓</span>
+              <div>
+                <span class="font-bold block text-slate-800 dark:text-slate-200">Focus Keywords</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono" id="keywordsCount">Configured</span>
+              </div>
+            </div>
+
+            <div id="chk_og" class="p-2.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 flex items-center space-x-2">
+              <span class="status-icon text-emerald-500 font-bold">✓</span>
+              <div>
+                <span class="font-bold block text-slate-800 dark:text-slate-200">OG Social Card</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">Image specified</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEO Input Fields -->
+        <div class="settings-panel space-y-4"><h3 class="settings-panel-title">Search metadata</h3>
+<div class="space-y-4 text-xs">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-semibold text-slate-700 dark:text-slate-300" for="seo_title">Meta Title</label>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono" id="titleCounter">0 / 60 chars</span>
+            </div>
+            <input type="text" id="seo_title" name="seo_title" value="<%= settings.seo_title || 'Embedded India - Turnkey Embedded Systems & Hardware Engineering Lab' %>" oninput="calculateSeoScore()" class="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-medium transition duration-200">
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-semibold text-slate-700 dark:text-slate-300" for="seo_description">Meta Description</label>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono" id="descCounter">0 / 160 chars</span>
+            </div>
+            <textarea id="seo_description" name="seo_description" rows="3" oninput="calculateSeoScore()" class="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-medium transition duration-200"><%= settings.seo_description || 'India’s premier embedded hardware and firmware engineering lab. Turnkey PCB layout, high-speed routing, deterministic RTOS, and turnkey volume manufacturing.' %></textarea>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="seo_keywords">Target Keywords (Comma Separated)</label>
+            <input type="text" id="seo_keywords" name="seo_keywords" value="<%= settings.seo_keywords || 'embedded systems, hardware design, PCB layout, RTOS firmware, turnkey electronics, India engineering' %>" oninput="calculateSeoScore()" class="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-mono text-xs transition duration-200">
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="seo_og_image">OpenGraph Share Image URL</label>
+            <input type="text" id="seo_og_image" name="seo_og_image" value="<%= settings.seo_og_image || '/images/og-share-card.png' %>" oninput="calculateSeoScore()" class="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-mono text-xs">
+          </div>
+        </div>
+</div>
+
+        <!-- 4B. Custom Injected Header / Footer Scripts -->
+        <div class="settings-panel space-y-4"><h3 class="settings-panel-title">Custom scripts</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="seo-scripts-custom_head_scripts">Custom &lt;head&gt; Code (Analytics, Google Tag, Verification)</label>
+            <textarea id="seo-scripts-custom_head_scripts" name="custom_head_scripts" rows="4" placeholder="&lt;script async src=&quot;https://www.googletagmanager.com/...&quot;&gt;&lt;/script&gt;" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-mono text-[11px]"><%= settings.custom_head_scripts || '' %></textarea>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="seo-scripts-custom_body_scripts">Custom &lt;body&gt; Closing Code (Chatbots, Trackers)</label>
+            <textarea id="seo-scripts-custom_body_scripts" name="custom_body_scripts" rows="4" placeholder="&lt;script&gt;/* Live chat widget */&lt;/script&gt;" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-mono text-[11px]"><%= settings.custom_body_scripts || '' %></textarea>
+          </div>
+        </div>
+</div>
+
+        <div class="settings-module-footer">
+          <%- include('../module-save-button', { label: "Save SEO Settings" }) %>
+        </div>
+      </form>
+    </section>

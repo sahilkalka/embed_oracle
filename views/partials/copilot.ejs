@@ -1,0 +1,75 @@
+<!-- Floating "Ask EI Copilot" AI Hardware Engineering Assistant -->
+<% if (settings.enable_copilot !== 'false') { %>
+<div id="copilot-widget-container" class="fixed bottom-20 md:bottom-6 right-5 md:right-6 z-50 flex flex-col items-end pointer-events-auto">
+  
+  <!-- Copilot Chat Drawer Panel (Compact Window) -->
+  <div id="copilot-drawer" class="hidden translate-y-8 opacity-0 pointer-events-none transition-all duration-300 max-h-[82vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden mb-3.5" style="width: 360px !important; max-width: calc(100vw - 2rem) !important;">
+    
+    <!-- Drawer Header -->
+    <div class="p-4 bg-gradient-to-r from-brand-600 via-brand-500 to-accent text-white flex items-center justify-between shadow-sm flex-shrink-0">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center p-1.5 shadow-xs">
+          <svg class="w-full h-full text-white" viewBox="0 0 32 32" fill="currentColor">
+            <path d="M16 3C16.8 3 17.5 3.4 18 4.2L28.5 21.8C29.2 23 28.7 24.5 27.5 25.2C27.1 25.4 26.6 25.5 26.1 25.5H19.8C18.7 25.5 17.7 24.8 17.3 23.8L16 20.3L14.7 23.8C14.3 24.8 13.3 25.5 12.2 25.5H5.9C4.5 25.5 3.4 24.4 3.4 23C3.4 22.5 3.5 22.1 3.8 21.8L14 4.2C14.5 3.4 15.2 3 16 3Z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="font-black text-sm tracking-tight leading-none text-white">Ask EI Copilot</h3>
+          <p class="text-[10px] text-white/80 font-semibold mt-0.5 flex items-center space-x-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-ping inline-block"></span>
+            <span>Hardware &amp; RTOS Assistant</span>
+          </p>
+        </div>
+      </div>
+      <button id="copilot-close-btn" type="button" aria-label="Minimize Copilot" class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition active:scale-90">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+    </div>
+
+    <!-- Quick Suggestion Chips (Horizontal Scrollable, Never Overflowing) -->
+    <div class="copilot-prompt-strip">
+      <button type="button" id="copilot-prompts-prev" aria-label="Scroll suggestions left" class="copilot-prompt-arrow">‹</button>
+    <div id="copilot-prompts" tabindex="0" role="region" aria-label="Suggested questions" class="px-3 py-2 bg-slate-50 dark:bg-slate-950/50 border-b border-slate-200/70 dark:border-slate-800 flex items-center gap-2 overflow-x-auto text-[11px] shrink-0 w-full">
+      <button type="button" class="copilot-chip shrink-0 flex-shrink-0 min-w-max whitespace-nowrap px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold hover:border-brand-500 hover:text-brand-600 dark:hover:text-accent transition active:scale-95 shadow-xs leading-none inline-flex items-center gap-1.5" data-prompt="Choose the best MCU for a BLE sensor with 3-year coin cell life">🔋 Choose MCU for BLE sensor</button>
+      <button type="button" class="copilot-chip shrink-0 flex-shrink-0 min-w-max whitespace-nowrap px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold hover:border-brand-500 hover:text-brand-600 dark:hover:text-accent transition active:scale-95 shadow-xs" data-prompt="Calculate IPC-2221 trace width for 5A on external layer with 1oz copper">📐 IPC-2221 Trace Width</button>
+      <button type="button" class="copilot-chip shrink-0 flex-shrink-0 min-w-max whitespace-nowrap px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold hover:border-brand-500 hover:text-brand-600 dark:hover:text-accent transition active:scale-95 shadow-xs" data-prompt="Compare FreeRTOS vs Zephyr RTOS for an industrial IoT gateway project">⚡ FreeRTOS vs Zephyr</button>
+      <button type="button" class="copilot-chip shrink-0 flex-shrink-0 min-w-max whitespace-nowrap px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold hover:border-brand-500 hover:text-brand-600 dark:hover:text-accent transition active:scale-95 shadow-xs" data-prompt="I need a turnkey quote for an automotive CAN-FD device.">🚗 Turnkey Quote</button>
+    </div>
+
+      <button type="button" id="copilot-prompts-next" aria-label="Scroll suggestions right" class="copilot-prompt-arrow">›</button>
+    </div>
+
+    <!-- Messages Scroll Area -->
+    <div id="copilot-messages" class="flex-1 p-4 overflow-y-auto space-y-3 min-h-[220px] max-h-[350px]">
+      <div class="flex items-start space-x-2">
+        <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-brand-600 to-accent flex-shrink-0 flex items-center justify-center text-white text-[10px] font-black shadow-xs mt-0.5">EI</div>
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3.5 rounded-2xl rounded-tl-xs shadow-xs text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+          <%= settings.copilot_greeting || 'Hello! I am your Embedded India engineering copilot. Ask me about MCU selection, PCB layouts, RTOS firmware, or scoping your next project!' %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Form -->
+    <form id="copilot-form" class="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center space-x-2 flex-shrink-0">
+      <input type="text" id="copilot-input" placeholder="Ask technical question or describe project..." autocomplete="off" class="flex-1 px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500">
+      <button type="submit" aria-label="Send message" class="px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition shadow-md active:scale-95 flex items-center justify-center">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </button>
+    </form>
+  </div>
+
+  <!-- Floating Trigger Bubble Button -->
+  <button id="copilot-trigger-btn" type="button" aria-label="Open EI Copilot" class="spring-btn group flex items-center justify-center min-w-[48px] min-h-[48px] p-3 sm:px-4 sm:py-3 rounded-full sm:rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-accent text-white shadow-xl shadow-brand-500/30 hover:shadow-brand-500/45 border border-white/20 transform hover:-translate-y-1 active:scale-95 transition">
+    <div class="relative w-6 h-6 flex items-center justify-center">
+      <span class="absolute w-full h-full rounded-full bg-white/30 animate-ping pointer-events-none"></span>
+      <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+    </div>
+    <span class="text-xs font-black tracking-tight hidden sm:inline-block ml-2">Ask EI Copilot</span>
+    <span class="w-2 h-2 rounded-full bg-emerald-300 shadow-xs hidden sm:inline-block ml-1.5"></span>
+  </button>
+
+</div>
+<% } %>
+

@@ -1,0 +1,123 @@
+<section id="smtp-settings" aria-labelledby="smtp-settings-title" class="settings-section hidden">
+
+      <form class="settings-module-form space-y-6" action="/admin/settings" method="POST" data-module="SMTP &amp; Email Routing">
+        <%- csrfField %>
+        <input type="hidden" name="_active_tab" value="smtp-settings">
+
+        <%- include('../settings-module-header', {"sectionId":"smtp-settings","title":"Email & routing","icon":"outgoing_mail","description":"Configure outgoing mail and the staff who receive inquiry and subscriber alerts.","saveLabel":"Save SMTP & Routing"}) %>
+
+        <!-- 7A. RECIPIENT ROUTING (CUSTOMER INQUIRIES & NEWSLETTER LEADS) -->
+        <div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="settings-panel-title">Notification recipients
+            </h3>
+            <span class="text-[11px] text-slate-400">Comma-separated email addresses supported</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+
+            <!-- Customer Queries Recipient -->
+            <div class="space-y-1.5">
+              <label class="block font-bold text-slate-800 dark:text-slate-200" for="inquiry_recipient_emails">
+                Customer Inquiries &amp; RFQ Quotes Recipient(s):
+              </label>
+              <input type="text" id="inquiry_recipient_emails" name="inquiry_recipient_emails" value="<%= settings.inquiry_recipient_emails || 'info@embeddedindia.in' %>" placeholder="info@embeddedindia.in, engineering@embeddedindia.in" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 font-mono text-xs">
+
+              <!-- Quick Select from Registered Staff Accounts -->
+              <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                <span class="text-[10px] text-slate-400 font-bold uppercase">Staff Quick-Add:</span>
+                <% (users || []).forEach(u => { %>
+                  <button type="button" onclick="appendEmailTo('inquiry_recipient_emails', '<%= u.email %>')" class="text-[10px] px-2 py-0.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-brand-500 hover:text-white transition font-mono">
+                    + <%= u.email %>
+                  </button>
+                <% }) %>
+              </div>
+            </div>
+
+            <!-- Newsletter Alerts Recipient -->
+            <div class="space-y-1.5">
+              <label class="block font-bold text-slate-800 dark:text-slate-200" for="newsletter_recipient_emails">
+                Newsletter Subscriber Leads Alert Recipient(s):
+              </label>
+              <input type="text" id="newsletter_recipient_emails" name="newsletter_recipient_emails" value="<%= settings.newsletter_recipient_emails || 'info@embeddedindia.in' %>" placeholder="newsletter@embeddedindia.in, info@embeddedindia.in" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 font-mono text-xs">
+
+              <!-- Quick Select from Registered Staff Accounts -->
+              <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                <span class="text-[10px] text-slate-400 font-bold uppercase">Staff Quick-Add:</span>
+                <% (users || []).forEach(u => { %>
+                  <button type="button" onclick="appendEmailTo('newsletter_recipient_emails', '<%= u.email %>')" class="text-[10px] px-2 py-0.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-brand-500 hover:text-white transition font-mono">
+                    + <%= u.email %>
+                  </button>
+                <% }) %>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 7B. Outgoing SMTP Socket Settings -->
+<div class="settings-panel space-y-4"><div class="settings-panel-intro"><h3>Outgoing mail server</h3><p>Choose a preset or enter the credentials supplied by your mail provider.</p></div>
+
+        <div class="space-y-4">
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Quick Presets:</span>
+            <button type="button" onclick="setSmtpPreset('gmail')" class="px-2.5 py-1 bg-slate-100 dark:bg-brand-dark rounded-lg font-semibold hover:bg-slate-200 transition">Gmail (587)</button>
+            <button type="button" onclick="setSmtpPreset('sendgrid')" class="px-2.5 py-1 bg-slate-100 dark:bg-brand-dark rounded-lg font-semibold hover:bg-slate-200 transition">SendGrid (587)</button>
+            <button type="button" onclick="setSmtpPreset('mock')" class="px-2.5 py-1 bg-slate-100 dark:bg-brand-dark rounded-lg font-semibold hover:bg-slate-200 transition">Local Dev Mock</button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div class="sm:col-span-2">
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="smtp_host">SMTP Host</label>
+              <input type="text" id="smtp_host" name="smtp_host" value="<%= settings.smtp_host || '' %>" placeholder="smtp.gmail.com" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-mono text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="smtp_port">SMTP Port</label>
+              <input type="number" id="smtp_port" name="smtp_port" value="<%= settings.smtp_port || '587' %>" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-mono text-xs">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="smtp_secure">TLS / SSL Mode</label>
+              <select id="smtp_secure" name="smtp_secure" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-semibold">
+                <option value="false" <%= settings.smtp_secure !== 'true' ? 'selected' : '' %>>STARTTLS (Port 587 - Default)</option>
+                <option value="true" <%= settings.smtp_secure === 'true' ? 'selected' : '' %>>SSL / TLS (Port 465)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="smtp_user">SMTP Username / Email</label>
+              <input type="text" id="smtp_user" name="smtp_user" value="<%= settings.smtp_user || '' %>" placeholder="info@embeddedindia.in" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-mono text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" for="smtp_pass">SMTP Password / App Secret</label>
+              <input type="password" id="smtp_pass" name="smtp_pass" value="<%= settings.smtp_pass || '' %>" placeholder="••••••••••••" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 font-mono text-xs">
+            </div>
+          </div>
+        </div>
+
+
+</div>
+<!-- Test SMTP Dispatch Box -->
+        <div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="settings-panel-title">Test email delivery</h3>
+              <span class="text-[11px] text-slate-500">Test socket TLS handshake and verify direct delivery</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input type="email" id="smtpTestRecipient" aria-label="Test email recipient" placeholder="info@embeddedindia.in" value="info@embeddedindia.in" class="px-3 py-1.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono">
+              <button type="button" id="btnTestSmtp" class="nav-icon-link group flex flex-col items-center justify-center min-w-[64px] py-1.5 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-600 transition duration-200 active:scale-95 cursor-pointer flex-shrink-0">
+                <span class="material-symbols-rounded text-xl transition-transform duration-200 group-hover:scale-110 flex-shrink-0" aria-hidden="true">mark_email_read</span>
+                <span class="text-[11px] font-bold tracking-tight mt-0.5 whitespace-nowrap leading-tight">Test SMTP</span>
+              </button>
+            </div>
+          </div>
+          <div id="smtpTestResult" class="hidden p-3 rounded-xl text-xs font-mono"></div>
+        </div>
+
+        <div class="settings-module-footer">
+          <%- include('../module-save-button', { label: "Save SMTP & Routing" }) %>
+        </div>
+      </form>
+    </section>

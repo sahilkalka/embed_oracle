@@ -1,0 +1,132 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-5 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Investment Parameters</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">SIP &amp; Lump Sum</span>
+    </div>
+
+    <div>
+      <label for="sip-type" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Investment Type</label>
+      <select id="sip-type" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+        <option value="sip" selected>Monthly SIP (Systematic Investment)</option>
+        <option value="lumpsum">One-Time Lump Sum</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="sip-amount" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Investment Amount (₹ / $)</label>
+      <input type="number" id="sip-amount" value="10000" min="500" step="500" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <div class="flex justify-between items-center mb-1.5">
+        <label for="sip-rate" class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Expected Annual Return (%)</label>
+        <span id="sip-rate-val" class="text-xs font-mono font-bold text-brand-600 dark:text-accent">12.0%</span>
+      </div>
+      <input type="range" id="sip-rate" min="1" max="30" step="0.5" value="12" class="w-full accent-brand-500 cursor-pointer">
+    </div>
+
+    <div>
+      <div class="flex justify-between items-center mb-1.5">
+        <label for="sip-years" class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Time Horizon (Years)</label>
+        <span id="sip-years-val" class="text-xs font-mono font-bold text-brand-600 dark:text-accent">10 Years</span>
+      </div>
+      <input type="range" id="sip-years" min="1" max="40" step="1" value="10" class="w-full accent-brand-500 cursor-pointer">
+    </div>
+  </div>
+
+  <div class="lg:col-span-7 space-y-6">
+    <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
+      <h3 class="text-xs font-bold text-brand-400 uppercase tracking-wider">Maturity Projection</h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="p-4 bg-slate-800/60 rounded-2xl border border-slate-700">
+          <p class="text-[11px] text-slate-400 uppercase font-mono">Invested Capital</p>
+          <p id="sip-res-invested" class="text-lg sm:text-xl font-bold font-mono text-white mt-1">₹12,00,000</p>
+        </div>
+        <div class="p-4 bg-slate-800/60 rounded-2xl border border-slate-700">
+          <p class="text-[11px] text-slate-400 uppercase font-mono">Estimated Gains</p>
+          <p id="sip-res-returns" class="text-lg sm:text-xl font-bold font-mono text-emerald-400 mt-1">₹11,23,391</p>
+        </div>
+        <div class="p-4 bg-slate-800/60 rounded-2xl border border-slate-700">
+          <p class="text-[11px] text-slate-400 uppercase font-mono">Total Maturity Value</p>
+          <p id="sip-res-total" class="text-lg sm:text-xl font-bold font-mono text-brand-300 mt-1">₹23,23,391</p>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs font-mono">
+          <span class="text-slate-400">Wealth Ratio</span>
+          <span id="sip-ratio-text" class="text-emerald-400 font-bold">51.6% Capital / 48.4% Wealth</span>
+        </div>
+        <div class="w-full h-3 bg-slate-700 rounded-full overflow-hidden flex">
+          <div id="sip-bar-invested" class="bg-slate-400 h-full transition-all" style="width: 50%"></div>
+          <div id="sip-bar-gain" class="bg-brand-500 h-full transition-all" style="width: 50%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const typeEl = document.getElementById('sip-type');
+  const amountEl = document.getElementById('sip-amount');
+  const rateEl = document.getElementById('sip-rate');
+  const rateVal = document.getElementById('sip-rate-val');
+  const yearsEl = document.getElementById('sip-years');
+  const yearsVal = document.getElementById('sip-years-val');
+
+  const investedEl = document.getElementById('sip-res-invested');
+  const returnsEl = document.getElementById('sip-res-returns');
+  const totalEl = document.getElementById('sip-res-total');
+  const barInvested = document.getElementById('sip-bar-invested');
+  const barGain = document.getElementById('sip-bar-gain');
+  const ratioText = document.getElementById('sip-ratio-text');
+
+  function fmt(num) {
+    return '₹' + Math.round(num).toLocaleString('en-IN');
+  }
+
+  function calculate() {
+    const type = typeEl.value;
+    const P = parseFloat(amountEl.value) || 0;
+    const r = parseFloat(rateEl.value) || 0;
+    const t = parseFloat(yearsEl.value) || 0;
+
+    rateVal.textContent = r.toFixed(1) + '%';
+    yearsVal.textContent = t + (t === 1 ? ' Year' : ' Years');
+
+    let total = 0;
+    let invested = 0;
+
+    if (type === 'sip') {
+      const i = (r / 100) / 12;
+      const n = t * 12;
+      invested = P * n;
+      if (i > 0) {
+        total = P * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
+      } else {
+        total = invested;
+      }
+    } else {
+      invested = P;
+      total = P * Math.pow(1 + (r / 100), t);
+    }
+
+    const gains = total - invested;
+    investedEl.textContent = fmt(invested);
+    returnsEl.textContent = fmt(gains);
+    totalEl.textContent = fmt(total);
+
+    const invPct = total > 0 ? (invested / total * 100).toFixed(1) : 50;
+    const gainPct = total > 0 ? (gains / total * 100).toFixed(1) : 50;
+
+    barInvested.style.width = invPct + '%';
+    barGain.style.width = gainPct + '%';
+    ratioText.textContent = invPct + '% Capital / ' + gainPct + '% Wealth Gain';
+  }
+
+  [typeEl, amountEl, rateEl, yearsEl].forEach(el => el.addEventListener('input', calculate));
+  calculate();
+})();
+</script>

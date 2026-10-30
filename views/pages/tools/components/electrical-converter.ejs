@@ -1,0 +1,76 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <div class="lg:col-span-5 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white">Ohm's Law Solver</h3>
+      <span class="text-xs font-bold text-brand-600 dark:text-accent bg-brand-500/10 px-2.5 py-1 rounded-full">V = I &times; R, P = V &times; I</span>
+    </div>
+
+    <div>
+      <label for="el-voltage" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Voltage (V - Volts)</label>
+      <input type="number" id="el-voltage" value="5.0" step="any" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="el-current" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Current (I - Amperes)</label>
+      <input type="number" id="el-current" value="0.5" step="any" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="el-resistance" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Resistance (R - Ohms Ω)</label>
+      <input type="number" id="el-resistance" value="10.0" step="any" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+
+    <div>
+      <label for="el-power" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Power (P - Watts)</label>
+      <input type="number" id="el-power" value="2.5" step="any" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+    </div>
+  </div>
+
+  <div class="lg:col-span-7 space-y-6">
+    <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-5">
+      <h3 class="text-xs font-bold text-brand-400 uppercase tracking-wider border-b border-slate-800 pb-3">Calculated Metrics</h3>
+
+      <div class="grid grid-cols-2 gap-4 text-xs font-mono">
+        <div class="p-4 bg-slate-800/60 rounded-2xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Dissipated Power</span>
+          <p id="el-res-power" class="text-xl font-bold text-emerald-400">2.500 W</p>
+          <span id="el-res-mw" class="text-[11px] text-slate-500">2500 mW</span>
+        </div>
+        <div class="p-4 bg-slate-800/60 rounded-2xl border border-slate-700">
+          <span class="text-slate-400 block mb-1">Effective Conductance</span>
+          <p id="el-res-cond" class="text-xl font-bold text-brand-300">0.100 S</p>
+          <span class="text-[11px] text-slate-500">Siemens (1/Ω)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const vEl = document.getElementById('el-voltage');
+  const iEl = document.getElementById('el-current');
+  const rEl = document.getElementById('el-resistance');
+  const pEl = document.getElementById('el-power');
+
+  const resP = document.getElementById('el-res-power');
+  const resMw = document.getElementById('el-res-mw');
+  const resCond = document.getElementById('el-res-cond');
+
+  function updateFromVI() {
+    const v = parseFloat(vEl.value) || 0;
+    const i = parseFloat(iEl.value) || 0;
+    if (i > 0) {
+      rEl.value = (v / i).toFixed(2);
+      pEl.value = (v * i).toFixed(2);
+      const p = v * i;
+      resP.textContent = p.toFixed(3) + ' W';
+      resMw.textContent = (p * 1000).toFixed(1) + ' mW';
+      resCond.textContent = (1 / (v / i)).toFixed(3) + ' S';
+    }
+  }
+
+  vEl.addEventListener('input', updateFromVI);
+  iEl.addEventListener('input', updateFromVI);
+  updateFromVI();
+})();
+</script>

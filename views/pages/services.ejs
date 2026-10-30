@@ -1,0 +1,364 @@
+<%- include('../layouts/header') %>
+
+<!-- Services Hero (Left-Aligned with Ambient Mesh) -->
+<section class="pt-16 pb-10 sm:pt-16 sm:pb-14 lg:py-20 bg-white dark:bg-[#0d1715] border-b border-slate-200 dark:border-brand-border spaceship-ambient-mesh circuit-grid">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
+    <div class="max-w-3xl">
+      <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold uppercase tracking-wider shadow-sm backdrop-blur-md animate-float-slow">
+        <span class="w-2 h-2 rounded-full bg-brand-500 dark:bg-accent animate-ping flex-shrink-0"></span>
+        <span class="font-extrabold text-slate-800 dark:text-slate-100">Comprehensive Solutions</span>
+      </div>
+      <h1 class="text-[clamp(1.75rem,4vw,2.625rem)] font-black text-slate-900 dark:text-white mt-4 tracking-tight leading-tight">
+        Services we offer
+      </h1>
+      <p class="mt-3 text-[15px] md:text-base leading-relaxed text-slate-700 dark:text-slate-200 font-normal">
+        Turnkey electronic product engineering from napkin architecture, high-speed PCB layout, and deterministic RTOS firmware to **TouchGFX (STM32 MCU)** &amp; **Qt (MPU)** Industrial/Medical HMIs and volume mass manufacturing.
+      </p>
+
+      <!-- Mobile & Tablet Non-Scrolling Discipline Quick-Jump Icon Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-6 lg:hidden" role="navigation" aria-label="Quick Discipline Jump">
+        <a href="#hardware" class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-xs font-bold text-slate-800 dark:text-slate-100 hover:border-brand-500 transition min-h-[44px]">
+          <svg class="w-4 h-4 text-brand-500 dark:text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+          <span class="truncate">01. Hardware</span>
+        </a>
+        <a href="#firmware" class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-xs font-bold text-slate-800 dark:text-slate-100 hover:border-brand-500 transition min-h-[44px]">
+          <svg class="w-4 h-4 text-brand-500 dark:text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+          <span class="truncate">02. Firmware</span>
+        </a>
+        <a href="#hmi-ui" class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-brand-50 dark:bg-brand-900/40 border border-brand-300 dark:border-brand-700 text-xs font-bold text-brand-700 dark:text-accent hover:border-brand-500 transition min-h-[44px]">
+          <svg class="w-4 h-4 text-brand-500 dark:text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <span class="truncate">03. HMI (TouchGFX/Qt)</span>
+        </a>
+        <a href="#connectivity" class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-xs font-bold text-slate-800 dark:text-slate-100 hover:border-brand-500 transition min-h-[44px]">
+          <svg class="w-4 h-4 text-brand-500 dark:text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+          <span class="truncate">04. IoT &amp; Auto</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/trust-bar') %>
+<%- include('../partials/schema-service') %>
+
+<!-- Detailed Services Grid with Sticky Sidebar -->
+<section class="py-12 sm:py-20 bg-slate-50 dark:bg-[#13221f]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="flex flex-col lg:flex-row gap-8 items-start w-full">
+      
+      <!-- Sticky Navigation Sidebar on LG -->
+      <aside class="hidden lg:block w-72 shrink-0 sticky top-28 space-y-4">
+        <nav aria-label="Services Navigation" class="p-5 bg-white dark:bg-brand-surface rounded-3xl border border-slate-200 dark:border-brand-border shadow-sm space-y-2">
+          <p class="text-xs font-black uppercase text-slate-400 tracking-wider mb-3">Disciplines</p>
+          <a href="#hardware" class="flex items-center space-x-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-brand-500 dark:hover:text-accent p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+            <span class="w-7 h-7 rounded-lg bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+            </span>
+            <span>01. Hardware Design</span>
+          </a>
+          <a href="#firmware" class="flex items-center space-x-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-brand-500 dark:hover:text-accent p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+            <span class="w-7 h-7 rounded-lg bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            </span>
+            <span>02. Firmware &amp; BSP</span>
+          </a>
+          <a href="#hmi-ui" class="flex items-center space-x-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-brand-500 dark:hover:text-accent p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+            <span class="w-7 h-7 rounded-lg bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </span>
+            <span>03. Embedded UI / HMI</span>
+          </a>
+          <a href="#connectivity" class="flex items-center space-x-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-brand-500 dark:hover:text-accent p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+            <span class="w-7 h-7 rounded-lg bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+            </span>
+            <span>04. Connectivity &amp; IoT</span>
+          </a>
+        </nav>
+        
+        <div class="p-5 bg-gradient-to-br from-brand-900 to-slate-900 text-white rounded-3xl border border-brand-700 shadow-sm text-center">
+          <h4 class="font-bold text-xs">Need Custom Scoping?</h4>
+          <p class="text-[11px] text-slate-300 mt-1">Talk to an engineering architect within 24 hours.</p>
+          <a href="/contact" class="btn-shimmer mt-3 inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition min-h-[44px]">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>Get an RFQ &rarr;</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Services Column -->
+      <div class="flex-1 min-w-0 w-full space-y-12 sm:space-y-16">
+        
+        <!-- Service Category 1: Hardware Development & Design -->
+        <div id="hardware" class="spotlight-card w-full bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-10 lg:p-12 border border-slate-200 dark:border-brand-border shadow-md scroll-mt-28">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-slate-100 dark:border-brand-border">
+            <div>
+              <span class="text-xs font-bold text-brand-500 dark:text-accent uppercase tracking-wider">Discipline 01</span>
+              <h2 class="text-[clamp(1.375rem,3vw,2rem)] font-extrabold text-slate-900 dark:text-white mt-1">Hardware Development &amp; Design</h2>
+              <p class="text-slate-600 dark:text-slate-300 mt-2 max-w-2xl text-[15px] md:text-base leading-relaxed">
+                From mixed-signal analog circuitry to high-density multi-layer digital layouts with impedance control.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <a href="/services/hardware-design-engineering" class="inline-flex items-center gap-1.5 min-h-[44px] px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition">
+                <svg class="w-4 h-4 text-brand-500 dark:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                <span>Specs</span>
+              </a>
+              <a href="/contact?service=Hardware%20Design" class="btn-shimmer inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs sm:text-sm transition shadow-md active:scale-95 whitespace-nowrap">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                <span>Inquire Hardware &rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">System Architecture &amp; Feasibility</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Component trade-off analysis, power tree calculation, bus bandwidth budgeting, and thermal feasibility modeling.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Electronic Circuit Design</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Precision analog front-ends, low-noise power supplies, sensor signal conditioning, and robust ESD/EMC surge protection.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">PCB Design &amp; Layout</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Multi-layer routing (up to 16+ layers), HDI microvias, controlled impedance traces, and differential skew matching.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Prototype &amp; NPI</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Rapid quick-turn PCB fabrication, automated stencil printing, component procurement, and bring-up bench testing.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Obsolescence Management</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Drop-in second-sourcing, pin-compatible redesigns, and continuous component lifecycle health monitoring.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Technical Documentation</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Essential documentation includes production-ready fabrication drawings, assembly BOMs, pick-and-place centroids, and test station specifications.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category 2: Embedded Software & Firmware Development -->
+        <div id="firmware" class="spotlight-card w-full bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-10 lg:p-12 border border-slate-200 dark:border-brand-border shadow-md scroll-mt-28">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-slate-100 dark:border-brand-border">
+            <div>
+              <span class="text-xs font-bold text-brand-500 dark:text-accent uppercase tracking-wider">Discipline 02</span>
+              <h2 class="text-[clamp(1.375rem,3vw,2rem)] font-extrabold text-slate-900 dark:text-white mt-1">Embedded Software &amp; Firmware</h2>
+              <p class="text-slate-600 dark:text-slate-300 mt-2 max-w-2xl text-[15px] md:text-base leading-relaxed">
+                Reliable, secure code engineered for ARM Cortex, RISC-V, ESP32, STM32, and PIC architectures.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <a href="/services/embedded-software-firmware-development" class="inline-flex items-center gap-1.5 min-h-[44px] px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition">
+                <svg class="w-4 h-4 text-brand-500 dark:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                <span>Specs</span>
+              </a>
+              <a href="/contact?service=Firmware%20Development" class="btn-shimmer inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs sm:text-sm transition shadow-md active:scale-95 whitespace-nowrap">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                <span>Inquire Firmware &rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Low-Level Firmware Coding</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Bare-metal C/C++ driver development, memory management, DMA transfers, and ultra-low power sleep states.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">BSP &amp; Device Drivers</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Board support packages for custom boards, Embedded Linux kernel configuration, and driver implementation.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">RTOS Multithreading</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Deterministic real-time scheduling on FreeRTOS and Zephyr with mutexes, semaphores, and message queues.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Wireless Protocols</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                <a href="#connectivity" class="text-brand-500 dark:text-accent font-bold hover:underline">See Wireless Protocols under Connectivity &rarr;</a>
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Secure Boot &amp; FOTA</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Dual-bank fail-safe firmware updates with cryptographic ECDSA signature verification and rollback protection.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Algorithm Porting &amp; DSP</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Digital signal filtering (FIR/IIR), sensor fusion, Kalman filters, and TinyML neural network inference.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category 3: Embedded UI for Industrial & Medical HMI -->
+        <div id="hmi-ui" class="spotlight-card w-full bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-10 lg:p-12 border-2 border-brand-500/40 dark:border-accent/40 shadow-lg scroll-mt-28 relative overflow-hidden">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-slate-100 dark:border-brand-border">
+            <div>
+              <div class="inline-flex flex-wrap items-center gap-2">
+                <span class="text-xs font-bold text-brand-500 dark:text-accent uppercase tracking-wider">Discipline 03</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-brand-500/15 text-brand-600 dark:text-accent text-[11px] font-black uppercase tracking-wider border border-brand-500/30">Core Specialty: TouchGFX on STM32 MCU</span>
+              </div>
+              <h2 class="text-[clamp(1.375rem,3vw,2rem)] font-extrabold text-slate-900 dark:text-white mt-1.5">Embedded UI for Industrial &amp; Medical HMI</h2>
+              <p class="text-slate-600 dark:text-slate-300 mt-2 max-w-2xl text-[15px] md:text-base leading-relaxed">
+                Smartphone-grade, deterministic graphical user interfaces engineered for mission-critical Industrial &amp; Medical devices — where <strong>TouchGFX by STMicroelectronics on STM32 MCUs</strong> is our flagship specialty, while rich multi-screen HMIs are architected with <strong>Qt / QML on Microprocessors (MPUs)</strong>.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <a href="/services/embedded-ui-hmi-development" class="inline-flex items-center gap-1.5 min-h-[44px] px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition">
+                <svg class="w-4 h-4 text-brand-500 dark:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                <span>HMI Architecture</span>
+              </a>
+              <a href="/contact?service=Embedded%20UI%20%2F%20HMI" class="btn-shimmer inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs sm:text-sm transition shadow-md active:scale-95 whitespace-nowrap">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span>Inquire HMI / UI &rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Architecture Comparison Matrix: TouchGFX on MCU vs Qt on MPU -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
+            <div class="p-6 rounded-2xl bg-gradient-to-br from-brand-500/10 via-slate-50 to-white dark:from-brand-900/50 dark:via-brand-dark dark:to-brand-dark border-2 border-brand-500/40 dark:border-accent/40">
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="px-2.5 py-1 rounded-lg bg-brand-500 text-white text-[11px] font-black uppercase tracking-wider">Our Core Specialty &bull; MCU</span>
+                <span class="text-xs font-mono font-bold text-brand-600 dark:text-accent">STM32U5 / H7 / F7 / G0</span>
+              </div>
+              <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">TouchGFX by STMicroelectronics on MCU</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 mt-2 leading-relaxed">
+                Delivers 60 FPS smartphone-fluid animations on resource-constrained Cortex-M microcontrollers using hardware <strong>Chrom-ART™ (DMA2D)</strong> &amp; <strong>NeoChrom™ GPU</strong> acceleration — eliminating the cost, power, and boot time of an external Linux MPU.
+              </p>
+              <ul class="mt-4 space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
+                <li class="flex items-center gap-2"><span class="text-brand-500 dark:text-accent font-bold">&check;</span><span><strong>Instant Boot (&lt; 300 ms)</strong> on FreeRTOS / Azure RTOS ThreadX / Bare-Metal</span></li>
+                <li class="flex items-center gap-2"><span class="text-brand-500 dark:text-accent font-bold">&check;</span><span><strong>Low BOM Cost</strong>: Internal SRAM partial framebuffers + Octo-SPI XIP flash</span></li>
+                <li class="flex items-center gap-2"><span class="text-brand-500 dark:text-accent font-bold">&check;</span><span><strong>Strict C++ MVP Pattern</strong>: Deterministic real-time control + zero GC stalls</span></li>
+              </ul>
+            </div>
+
+            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border">
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-[11px] font-black uppercase tracking-wider">Rich Multi-Display UI &bull; MPU</span>
+                <span class="text-xs font-mono font-bold text-slate-600 dark:text-slate-400">i.MX8 / i.MX93 / STM32MP1/2</span>
+              </div>
+              <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Qt / QML (Qt 6) on Microprocessor</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 mt-2 leading-relaxed">
+                When your system demands 1080p/4K multi-display dashboards, 3D shaders, video playback, or complex patient-chart databases, we architect rich <strong>Qt 6 / QML</strong> interfaces on custom Yocto / Buildroot Embedded Linux.
+              </p>
+              <ul class="mt-4 space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
+                <li class="flex items-center gap-2"><span class="text-brand-500 dark:text-accent font-bold">&check;</span><span><strong>OpenGL ES / Vulkan GPU</strong> hardware rendering with Wayland / EGLFS</span></li>
+                <li class="flex items-center gap-2"><span class="text-brand-500 dark:text-accent font-bold">&check;</span><span><strong>FastBoot Linux Optimization</strong>: Custom kernel + U-Boot splash in &lt; 2.5s</span></li>
+                <li class="flex items-center gap-2"><span class="text-brand-500 dark:text-accent font-bold">&check;</span><span><strong>Heterogeneous Multicore</strong>: Cortex-A runs Qt UI while Cortex-M runs real-time I/O</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 flex flex-col justify-between">
+              <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-sm">Medical HMI (IEC 62304)</h4>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Patient monitors, ventilators, and diagnostic displays with IEC 60601-1-8 alarm color/audio compliance and clinical glove usability.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 flex flex-col justify-between">
+              <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-sm">Industrial Panel &amp; Touch Tuning</h4>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                MIPI-DSI, LVDS &amp; RGB TFT/OLED bring-up, high-nit sunlight readability, and PCAP I2C tuning for water droplets &amp; heavy work gloves.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 flex flex-col justify-between">
+              <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-sm">Figma-to-Target Asset Pipeline</h4>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Pixel-accurate conversion of industrial UX/UI wireframes into TouchGFX Designer or Qt Design Studio with compressed L8/RGB565 bitmaps.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 flex flex-col justify-between">
+              <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-sm">Hardware-Accelerated Graphics</h4>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Zero-tearing VSYNC double/triple buffering, LTDC layer blending, Chrom-GRC circular display optimization, and <code class="font-mono text-[11px]">&lt;16.6ms</code> frame budgets.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Category 4: Connectivity & IoT Solutions, Automotive & Edge -->
+        <div id="connectivity" class="spotlight-card w-full bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-10 lg:p-12 border border-slate-200 dark:border-brand-border shadow-md scroll-mt-28">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 border-b border-slate-100 dark:border-brand-border">
+            <div>
+              <span class="text-xs font-bold text-brand-500 dark:text-accent uppercase tracking-wider">Discipline 04</span>
+              <h2 class="text-[clamp(1.375rem,3vw,2rem)] font-extrabold text-slate-900 dark:text-white mt-1">Connectivity &amp; IoT Solutions</h2>
+              <p class="text-slate-600 dark:text-slate-300 mt-2 max-w-2xl text-[15px] md:text-base leading-relaxed">
+                Connected intelligent nodes with cloud telemetry, ISO 26262 compliance, and automated HIL test rigs.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <a href="/services/iot-edge-computing-solutions" class="inline-flex items-center gap-1.5 min-h-[44px] px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition">
+                <svg class="w-4 h-4 text-brand-500 dark:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                <span>Specs</span>
+              </a>
+              <a href="/contact?service=IoT%20Solutions" class="btn-shimmer inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs sm:text-sm transition shadow-md active:scale-95 whitespace-nowrap">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+                <span>Inquire IoT &rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Wireless Protocol Implementation</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Designing and deploying low-power wireless stacks (BLE, Wi-Fi, Zigbee, LoRaWAN, Cellular IoT, and MQTT/CoAP) for reliable device-to-cloud communication.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Industrial IoT Gateways</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Ruggedized gateways supporting 4G/LTE-Cat1, RS-485 isolation, and local edge processing for telemetry.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Automotive CAN-FD &amp; ECUs</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Automotive body control, climate management, and powertrain controllers built to ISO 26262 safety guidelines.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200/60 dark:border-brand-border/60 min-h-[140px] flex flex-col justify-between">
+              <h3 class="font-bold text-slate-900 dark:text-white mb-2">Hardware-in-the-Loop (HIL)</h3>
+              <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                Automated regression test benches simulating physical loads, environmental temperatures, and sensor faults.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<%- include('../partials/cta-banner') %>
+
+<%- include('../layouts/footer') %>

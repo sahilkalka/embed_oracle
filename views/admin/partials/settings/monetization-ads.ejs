@@ -1,0 +1,155 @@
+<section id="monetization-ads" aria-labelledby="monetization-ads-title" class="settings-section hidden">
+
+      <form class="settings-module-form space-y-6" action="/admin/settings" method="POST" data-module="Monetization &amp; Ads">
+        <%- csrfField %>
+        <input type="hidden" name="_active_tab" value="monetization-ads">
+
+        <%- include('../settings-module-header', {"sectionId":"monetization-ads","title":"Monetization & ads","icon":"payments","description":"Configure ad providers, placement settings, and sponsored content.","saveLabel":"Save Monetization Settings"}) %>
+
+        <!-- 5A. Multi-Provider Credentials Cards -->
+        <div class="settings-provider-grid">
+<div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="text-base">📢</span>
+                <div>
+                  <h3 class="settings-panel-title">Google AdSense</h3>
+                  <span class="text-[10px] text-slate-400">Automated programmatic banners &amp; responsive ad units</span>
+                </div>
+              </div>
+              <%- include('../../../partials/theme-toggle', {
+                name: 'enable_adsense',
+                id: 'enable_adsense',
+                checked: settings.enable_adsense === 'true',
+                onLabel: 'Enabled',
+                offLabel: 'Disabled',
+                label: 'Google AdSense',
+                showBadge: true
+              }) %>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1" for="adsense_pub_id">AdSense Publisher ID</label>
+              <input type="text" id="adsense_pub_id" name="adsense_pub_id" value="<%= settings.adsense_pub_id || '' %>" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono">
+            </div>
+
+            <p class="text-xs text-slate-500 dark:text-slate-400">Ads run only on tools and blogs. Blank slots stay hidden. Copy real slot IDs from your AdSense account. Existing placement switches control optional header and footer ads.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="adsense_tools_top_slot">Tools top banner slot ID</label><input id="adsense_tools_top_slot" name="adsense_tools_top_slot" inputmode="numeric" pattern="[0-9]{10}" value="<%= settings.adsense_tools_top_slot || '' %>" placeholder="10-digit slot ID" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono"></div>
+<div><label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="adsense_tools_bottom_slot">Tools bottom banner slot ID</label><input id="adsense_tools_bottom_slot" name="adsense_tools_bottom_slot" inputmode="numeric" pattern="[0-9]{10}" value="<%= settings.adsense_tools_bottom_slot || '' %>" placeholder="10-digit slot ID" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono"></div>
+<div><label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="adsense_tools_sidebar_slot">Tool sidebar slot ID</label><input id="adsense_tools_sidebar_slot" name="adsense_tools_sidebar_slot" inputmode="numeric" pattern="[0-9]{10}" value="<%= settings.adsense_tools_sidebar_slot || '' %>" placeholder="10-digit slot ID" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono"></div>
+<div><label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="adsense_blog_inline_slot">Blog in-article slot ID</label><input id="adsense_blog_inline_slot" name="adsense_blog_inline_slot" inputmode="numeric" pattern="[0-9]{10}" value="<%= settings.adsense_blog_inline_slot || '' %>" placeholder="10-digit slot ID" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono"></div>
+<div><label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="adsense_sidebar_slot">Blog sidebar slot ID</label><input id="adsense_sidebar_slot" name="adsense_sidebar_slot" inputmode="numeric" pattern="[0-9]{10}" value="<%= settings.adsense_sidebar_slot || '' %>" placeholder="10-digit slot ID" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono"></div>
+<div><label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="adsense_header_slot">Blog header (optional) slot ID</label><input id="adsense_header_slot" name="adsense_header_slot" inputmode="numeric" pattern="[0-9]{10}" value="<%= settings.adsense_header_slot || '' %>" placeholder="10-digit slot ID" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono"></div>
+<div><label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="adsense_footer_slot">Blog footer (optional) slot ID</label><input id="adsense_footer_slot" name="adsense_footer_slot" inputmode="numeric" pattern="[0-9]{10}" value="<%= settings.adsense_footer_slot || '' %>" placeholder="10-digit slot ID" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono"></div></div>
+<button type="button" id="btnValidateAd" class="nav-icon-link group flex flex-col items-center justify-center w-full py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-600 transition active:scale-95 cursor-pointer">
+              <span class="material-symbols-rounded text-xl transition-transform duration-200 group-hover:scale-110 flex-shrink-0" aria-hidden="true">verified</span>
+              <span class="text-[11px] font-bold tracking-tight mt-0.5 whitespace-nowrap leading-tight">Validate ID &amp; Sync ads.txt</span>
+            </button>
+            <div id="adValidationResult" class="hidden p-2.5 rounded-xl text-[11px] font-mono"></div>
+          </div>
+<div class="settings-provider-secondary">
+<div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="text-base">🤝</span>
+                <div>
+                  <h3 class="settings-panel-title">B2B sponsor</h3>
+                  <span class="text-[10px] text-slate-400">Direct partner promotions and engineering tool sponsors</span>
+                </div>
+              </div>
+              <%- include('../../../partials/theme-toggle', {
+                name: 'enable_sponsor_banner',
+                id: 'enable_sponsor_banner',
+                checked: settings.enable_sponsor_banner === 'true',
+                onLabel: 'Enabled',
+                offLabel: 'Disabled',
+                label: 'B2B sponsor',
+                showBadge: true
+              }) %>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1" for="monetization-ads-sponsor_banner_url">Target Click URL</label>
+                <input id="monetization-ads-sponsor_banner_url" type="text" name="sponsor_banner_url" value="<%= settings.sponsor_banner_url || '' %>" placeholder="https://partner.com/?ref=embeddedindia" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 font-mono text-xs">
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1" for="monetization-ads-sponsor_banner_img">Banner Graphic URL</label>
+                <input id="monetization-ads-sponsor_banner_img" type="text" name="sponsor_banner_img" value="<%= settings.sponsor_banner_img || '' %>" placeholder="https://.../sponsor.png" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 font-mono text-xs">
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
+              <span>Status: Direct B2B Sponsor units bypass ad-blockers</span>
+              <span class="font-bold text-emerald-600 dark:text-accent">100% Fill Rate</span>
+            </div>
+          </div>
+<div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-rounded text-xl text-brand-600 dark:text-accent" aria-hidden="true">monitoring</span>
+                <div>
+                  <h3 class="settings-panel-title">Meta Pixel</h3>
+                  <span class="text-[10px] text-slate-400">Measure visits and conversion events from Meta ads</span>
+                </div>
+              </div>
+              <%- include('../../../partials/theme-toggle', {
+                name: 'enable_meta_pixel',
+                id: 'enable_meta_pixel',
+                checked: settings.enable_meta_pixel === 'true',
+                onLabel: 'Enabled',
+                offLabel: 'Disabled',
+                label: 'Meta Pixel',
+                showBadge: true
+              }) %>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1" for="meta_pixel_id">Meta Pixel ID</label>
+              <input type="text" inputmode="numeric" maxlength="20" id="meta_pixel_id" name="meta_pixel_id" value="<%= settings.meta_pixel_id || '' %>" placeholder="Enter your numeric Pixel ID" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono">
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1.5">The tracking script is injected on public pages only after this ID is saved and enabled.</p>
+            </div>
+          </div>
+</div>
+</div>
+
+        <%- include('../ad-placement-editor', { settings }) %>
+
+        <!-- 5C. Tools Suite Custom Ad Snippets -->
+        <div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4 text-xs">
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div>
+              <h3 class="settings-panel-title">Tool ad scripts &amp; banners</h3>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">Inject custom HTML, Google AdSense responsive tags, or direct partner banners into /tools sub pages. Leave empty to use default sponsored partner units.</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1" for="monetization-ads-custom_ad_html_tools_header">
+                Tools Top Leaderboard Custom HTML (Slot 5)
+              </label>
+              <textarea id="monetization-ads-custom_ad_html_tools_header" name="custom_ad_html_tools_header" rows="3" placeholder="&lt;!-- Paste custom ad banner / script for tools top slot --&gt;" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 font-mono text-[11px] text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-brand-500"><%= settings.custom_ad_html_tools_header || '' %></textarea>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1" for="monetization-ads-custom_ad_html_tools_footer">
+                Tools Mid/Footer Content Custom HTML (Slot 6)
+              </label>
+              <textarea id="monetization-ads-custom_ad_html_tools_footer" name="custom_ad_html_tools_footer" rows="3" placeholder="&lt;!-- Paste custom ad banner / script for tools content slot --&gt;" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 font-mono text-[11px] text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-brand-500"><%= settings.custom_ad_html_tools_footer || '' %></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5D. Root ads.txt Editor -->
+        <div class="settings-panel p-4 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-2 text-xs">
+          <div class="flex items-center justify-between">
+            <label for="ads_txt_content" class="font-bold text-slate-800 dark:text-slate-200">ads.txt content</label>
+            <a href="/ads.txt" target="_blank" class="text-[11px] text-brand-500 hover:underline">View /ads.txt &nearr;</a>
+          </div>
+          <textarea id="ads_txt_content" name="ads_txt_content" rows="3" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 font-mono text-[11px]"><%= settings.ads_txt_content || 'google.com, pub-2644536267352236, DIRECT, f08c47fec0942fa0' %></textarea>
+        </div>
+
+        <div class="settings-module-footer">
+          <%- include('../module-save-button', { label: "Save Monetization Settings" }) %>
+        </div>
+      </form>
+    </section>

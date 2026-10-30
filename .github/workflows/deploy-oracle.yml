@@ -1,0 +1,76 @@
+name: Deploy to Oracle Cloud (ARM64)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: 'Target domain behind Cloudflare'
+        required: true
+        default: 'embeddedindia.in'
+        type: string
+
+concurrency:
+  group: oracle-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build, Verify & Deploy to Oracle Cloud
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies & build production assets
+        run: |
+          npm ci
+          npm run pre-deploy
+          npm run db:init
+          node src/deployment-check.js
+          npm run pack
+
+      - name: Upload & deploy release to Oracle Cloud VM.Standard.A1.Flex
+        env:
+          ORACLE_SSH_KEY: ${{ secrets.ORACLE_SSH_KEY }}
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST || '129.225.79.183' }}
+          ORACLE_USER: ${{ secrets.ORACLE_USER || 'ubuntu' }}
+          DOMAIN: ${{ inputs.domain || 'embeddedindia.in' }}
+          APP_DIR: '/var/www/embeddedindia'
+        run: |
+          if [ -z "$ORACLE_SSH_KEY" ]; then
+            echo "::error::Missing ORACLE_SSH_KEY repository secret. Add the contents of keys/ssh-key-2026-10-30.key as ORACLE_SSH_KEY in GitHub Repo > Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$ORACLE_SSH_KEY" > ~/.ssh/oracle_deploy_key
+          chmod 600 ~/.ssh/oracle_deploy_key
+          ssh-keyscan -H "$ORACLE_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+          ssh -i ~/.ssh/oracle_deploy_key "${ORACLE_USER}@${ORACLE_HOST}" "sudo mkdir -p '${APP_DIR}/scripts' && sudo chown -R ${ORACLE_USER}:${ORACLE_USER} '${APP_DIR}'"
+          scp -i ~/.ssh/oracle_deploy_key embeddedindia.zip "${ORACLE_USER}@${ORACLE_HOST}:${APP_DIR}/embeddedindia.zip"
+          scp -i ~/.ssh/oracle_deploy_key scripts/oracle-setup.sh scripts/oracle-deploy.sh "${ORACLE_USER}@${ORACLE_HOST}:${APP_DIR}/scripts/"
+
+          ssh -i ~/.ssh/oracle_deploy_key "${ORACLE_USER}@${ORACLE_HOST}" "cd '${APP_DIR}' && python3 -c \"
+          import zipfile
+          with zipfile.ZipFile('embeddedindia.zip', 'r') as z:
+              for member in z.namelist():
+                  if member in ('.env',) or member.startswith(('prisma/dev.db', 'public/uploads/')):
+                      continue
+                  z.extract(member, '.')
+          \" && rm -f embeddedindia.zip && DOMAIN='${DOMAIN}' APP_DIR='${APP_DIR}' bash scripts/oracle-deploy.sh --remote-apply"
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/oracle_deploy_key
+
