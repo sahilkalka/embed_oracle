@@ -1,55 +1,74 @@
 <%- include('../layout_top') %>
 
-<div class="w-full space-y-6 text-left mx-auto">
+<%
+  const totalProj = Array.isArray(projects) ? projects.length : 0;
+  const featuredProj = Array.isArray(projects) ? projects.filter(p => p.featured).length : 0;
+%>
+
+<div class="w-full space-y-5 text-left mx-auto">
   
-  <!-- Header & Actions -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-black text-slate-900 dark:text-white">Engineering Projects &amp; Case Studies</h1>
-      <p class="text-xs text-slate-500 mt-1">Manage portfolio hardware designs, technical specs, videos, and featured case studies</p>
+  <!-- Theme-Integrated Header, Stats & Filter Card -->
+  <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border rounded-2xl p-5 shadow-xs space-y-4">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div class="flex items-start sm:items-center gap-3">
+        <span class="w-10 h-10 rounded-xl bg-brand-500/10 dark:bg-accent/15 border border-brand-500/30 text-brand-600 dark:text-accent flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        </span>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Engineering Projects &amp; Case Studies</h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Manage portfolio hardware designs, technical specs, videos, and featured case studies</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2.5">
+        <div class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-semibold text-slate-600 dark:text-slate-300">
+          Projects: <span class="font-extrabold font-mono text-slate-900 dark:text-white ml-1"><%= totalProj %></span>
+        </div>
+        <div class="px-3 py-1.5 rounded-xl bg-brand-500/10 dark:bg-accent/15 border border-brand-500/30 text-xs font-semibold text-brand-700 dark:text-accent">
+          Featured: <span class="font-extrabold font-mono ml-1"><%= featuredProj %></span>
+        </div>
+        <a href="/admin/projects/new" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow-xs inline-flex items-center gap-1.5 active:scale-95">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          <span>Add New Project</span>
+        </a>
+      </div>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2.5">
-      <a href="/admin/projects/new" class="px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow flex items-center space-x-2 active:scale-95">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        <span>Add New Project</span>
-      </a>
+    <!-- Category Filter Pills (Wraps cleanly on mobile with zero horizontal scroll) -->
+    <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-100 dark:border-brand-border">
+      <% (categories || ['All']).forEach(function(cat) { %>
+        <a 
+          href="/admin/projects?category=<%= encodeURIComponent(cat) %>" 
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition <%= selectedCategory === cat ? 'bg-brand-500 text-white shadow-2xs' : 'bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-brand-border hover:border-brand-500/40 hover:text-brand-600 dark:hover:text-accent' %>"
+        >
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          <span><%= cat %></span>
+        </a>
+      <% }); %>
     </div>
   </div>
 
   <% if (typeof success !== 'undefined' && success) { %>
-    <div class="p-4 bg-emerald-100 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-800 rounded-xl text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center space-x-2">
+    <div class="p-4 bg-brand-500/10 dark:bg-accent/15 border border-brand-500/30 rounded-xl text-xs font-bold text-brand-700 dark:text-accent flex items-center space-x-2">
       <span>✓</span>
       <span>Project successfully saved and synchronized with public portfolio.</span>
     </div>
   <% } %>
 
-  <!-- Category Filter Pills (Wraps cleanly on mobile with zero horizontal scroll) -->
-  <div class="flex flex-wrap items-center gap-2">
-    <% (categories || ['All']).forEach(function(cat) { %>
-      <a 
-        href="/admin/projects?category=<%= encodeURIComponent(cat) %>" 
-        class="px-3 py-1.5 rounded-lg text-xs font-bold transition <%= selectedCategory === cat ? 'bg-brand-500 text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-brand-500' %>"
-      >
-        <%= cat %>
-      </a>
-    <% }); %>
-  </div>
-
   <!-- Table Container -->
-  <div class="rounded-2xl border overflow-hidden shadow-sm admin-table-container">
+  <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border rounded-2xl overflow-hidden shadow-xs admin-table-container">
     <% if (!projects || projects.length === 0) { %>
       <div class="p-8 text-center text-slate-500 text-xs">
         No projects found. <a href="/admin/projects/new" class="text-brand-500 font-bold underline">Create your first engineering case study</a>.
       </div>
     <% } else { %>
       <!-- Mobile Card View (Zero Horizontal Scroll) -->
-      <div class="md:hidden admin-table-body divide-y">
+      <div class="md:hidden admin-table-body divide-y divide-slate-200 dark:divide-brand-border">
         <% projects.forEach(function(p) { %>
           <div class="p-4 space-y-3">
             <div class="flex items-start justify-between gap-2">
               <div class="min-w-0 flex-1">
-                <a href="/admin/projects/<%= p.id %>/edit" class="hover:text-brand-500 transition block font-black text-slate-900 dark:text-white text-xs break-words">
+                <a href="/admin/projects/<%= p.id %>/edit" class="hover:text-brand-600 dark:hover:text-accent transition block font-black text-slate-900 dark:text-white text-xs break-words">
                   <%= p.title %>
                 </a>
                 <span class="text-[10px] text-slate-400 font-mono font-normal break-all">/projects/<%= p.slug %></span>
@@ -57,10 +76,11 @@
               <button 
                 type="button" 
                 onclick="toggleFeatured('<%= p.id %>', this)" 
-                class="px-2.5 py-1 rounded-full text-[10px] font-black transition shrink-0 <%= p.featured ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400 border border-emerald-500/30' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-300 dark:border-slate-700' %>"
+                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black transition shrink-0 cursor-pointer <%= p.featured ? 'admin-badge-featured' : 'admin-badge-standard' %>"
                 title="Click to toggle featured status on homepage"
               >
-                <%= p.featured ? '★ Featured' : '☆ Standard' %>
+                <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="<%= p.featured ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span><%= p.featured ? 'Featured' : 'Standard' %></span>
               </button>
             </div>
             <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
@@ -76,15 +96,15 @@
               <p class="font-mono text-[10px] text-slate-600 dark:text-slate-400 break-words"><%= p.techStack %></p>
             <% } %>
             <div class="flex items-center justify-end gap-1.5 pt-1 text-xs">
-              <a href="/projects/<%= p.slug %>" target="_blank" aria-label="View project" title="View Project" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition inline-flex items-center justify-center">
+              <a href="/projects/<%= p.slug %>" target="_blank" aria-label="View project" title="View Project" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-600 dark:text-slate-300 hover:border-brand-500/40 hover:text-brand-600 dark:hover:text-accent transition inline-flex items-center justify-center">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
               </a>
-              <a href="/admin/projects/<%= p.id %>/edit" aria-label="Edit project" title="Edit Project" class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition inline-flex items-center justify-center">
+              <a href="/admin/projects/<%= p.id %>/edit" aria-label="Edit project" title="Edit Project" class="w-9 h-9 rounded-xl bg-brand-500/10 dark:bg-accent/15 border border-brand-500/30 text-brand-700 dark:text-accent hover:bg-brand-500 hover:text-white transition inline-flex items-center justify-center">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
               </a>
               <form action="/admin/projects/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Delete this project permanently?')" class="inline">
                 <%- csrfField %>
-                <button type="submit" aria-label="Delete project" title="Delete Project" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 transition inline-flex items-center justify-center">
+                <button type="submit" aria-label="Delete project" title="Delete Project" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500 hover:text-white transition inline-flex items-center justify-center cursor-pointer">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 </button>
               </form>
@@ -106,11 +126,11 @@
               <th class="p-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody class="admin-table-body divide-y">
+          <tbody class="admin-table-body divide-y divide-slate-200 dark:divide-brand-border">
             <% projects.forEach(function(p) { %>
               <tr class="transition">
                 <td class="p-4 font-bold text-slate-900 dark:text-white max-w-xs">
-                  <a href="/admin/projects/<%= p.id %>/edit" class="hover:text-brand-500 transition block font-black">
+                  <a href="/admin/projects/<%= p.id %>/edit" class="hover:text-brand-600 dark:hover:text-accent transition block font-black">
                     <%= p.title %>
                   </a>
                   <span class="text-[10px] text-slate-400 font-mono font-normal">/projects/<%= p.slug %></span>
@@ -128,10 +148,11 @@
                   <button 
                     type="button" 
                     onclick="toggleFeatured('<%= p.id %>', this)" 
-                    class="px-2.5 py-1 rounded-full text-[10px] font-black transition <%= p.featured ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400 border border-emerald-500/30' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-300 dark:border-slate-700' %>"
+                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black transition cursor-pointer <%= p.featured ? 'admin-badge-featured' : 'admin-badge-standard' %>"
                     title="Click to toggle featured status on homepage"
                   >
-                    <%= p.featured ? '★ Featured' : '☆ Standard' %>
+                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="<%= p.featured ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <span><%= p.featured ? 'Featured' : 'Standard' %></span>
                   </button>
                 </td>
                 <td class="p-4">
@@ -141,15 +162,15 @@
                 </td>
                 <td class="p-4 text-right whitespace-nowrap">
                   <div class="inline-flex items-center justify-end gap-1.5">
-                    <a href="/projects/<%= p.slug %>" target="_blank" aria-label="View project" title="View Project" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition inline-flex items-center justify-center">
+                    <a href="/projects/<%= p.slug %>" target="_blank" aria-label="View project" title="View Project" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-600 dark:text-slate-300 hover:border-brand-500/40 hover:text-brand-600 dark:hover:text-accent transition inline-flex items-center justify-center">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                     </a>
-                    <a href="/admin/projects/<%= p.id %>/edit" aria-label="Edit project" title="Edit Project" class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition inline-flex items-center justify-center">
+                    <a href="/admin/projects/<%= p.id %>/edit" aria-label="Edit project" title="Edit Project" class="w-9 h-9 rounded-xl bg-brand-500/10 dark:bg-accent/15 border border-brand-500/30 text-brand-700 dark:text-accent hover:bg-brand-500 hover:text-white transition inline-flex items-center justify-center">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     </a>
                     <form action="/admin/projects/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Delete this project permanently?')" class="inline">
                       <%- csrfField %>
-                      <button type="submit" aria-label="Delete project" title="Delete Project" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 transition inline-flex items-center justify-center">
+                      <button type="submit" aria-label="Delete project" title="Delete Project" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500 hover:text-white transition inline-flex items-center justify-center cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                       </button>
                     </form>
@@ -175,11 +196,11 @@
       const data = await res.json();
       if (data.success) {
         if (data.featured) {
-          btn.textContent = '★ Featured';
-          btn.className = 'px-2.5 py-1 rounded-full text-[10px] font-black transition bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400 border border-emerald-500/30';
+          btn.innerHTML = '<svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Featured</span>';
+          btn.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black transition cursor-pointer admin-badge-featured';
         } else {
-          btn.textContent = '☆ Standard';
-          btn.className = 'px-2.5 py-1 rounded-full text-[10px] font-black transition bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-300 dark:border-slate-700';
+          btn.innerHTML = '<svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Standard</span>';
+          btn.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black transition cursor-pointer admin-badge-standard';
         }
       }
     } catch (e) {

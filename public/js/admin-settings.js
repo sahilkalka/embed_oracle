@@ -1,7 +1,10 @@
   window.switchSettingsSection = function(sectionId, updateUrl = true) {
     const HASH_ALIASES = {
+      'faqs': 'faq-manager',
       'theme-engine': 'site-customizer',
+      'customizer': 'site-customizer',
       'seo': 'seo-scripts',
+      'monetization': 'monetization-ads',
       'newsletter': 'newsletter-config',
       'smtp': 'smtp-settings',
       'staff': 'team-accounts'
@@ -23,12 +26,26 @@
 
     // 3. Update taskbar navigation state
     document.querySelectorAll('.settings-nav-btn').forEach(btn => {
-      const tab = btn.getAttribute('data-settings-tab');
-      const isTarget = (tab === sectionId);
+      const rawTab = btn.getAttribute('data-settings-tab');
+      const resolvedTab = HASH_ALIASES[rawTab] || rawTab;
+      const isTarget = (resolvedTab === sectionId || rawTab === sectionId);
       btn.classList.toggle('is-active', isTarget);
       if (isTarget) btn.setAttribute('aria-current', 'page');
       else btn.removeAttribute('aria-current');
     });
+
+    // 3b. Sync Top Header dynamic section title & description
+    const metaEl = targetSection.querySelector('.settings-module-header');
+    const headerTitleEl = document.getElementById('adminHeaderActiveSection');
+    const headerDescEl = document.getElementById('adminHeaderActiveDesc');
+    if (metaEl) {
+      if (headerTitleEl && metaEl.dataset.sectionTitle) {
+        headerTitleEl.textContent = metaEl.dataset.sectionTitle;
+      }
+      if (headerDescEl && metaEl.dataset.sectionDesc) {
+        headerDescEl.textContent = metaEl.dataset.sectionDesc;
+      }
+    }
 
     // 4. Update URL Hash seamlessly
     if (history.replaceState && updateUrl) {
@@ -300,7 +317,7 @@
       resultBox.innerText = '❌ Network error: ' + e.message;
     } finally {
       btn.disabled = false;
-      btn.innerHTML = '<span class="material-symbols-rounded text-xl transition-transform duration-200 group-hover:scale-110 flex-shrink-0" aria-hidden="true">forward_to_inbox</span><span class="text-[11px] font-bold tracking-tight mt-0.5 whitespace-nowrap leading-tight">Test Send</span>';
+      btn.innerHTML = '<svg class="w-4 h-4 text-emerald-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span class="text-xs font-bold tracking-tight whitespace-nowrap leading-tight">Test Send</span>';
     }
   }
 
@@ -430,6 +447,35 @@
     const initialHash = window.location.hash ? window.location.hash.substring(1) : 'ai-engine';
     switchSettingsSection(initialHash || 'ai-engine', false);
 
+    // 4b. Top Header Discard & Save Changes buttons
+    const headerDiscardBtn = document.getElementById('adminHeaderDiscardBtn');
+    const headerSaveBtn = document.getElementById('adminHeaderSaveBtn');
+    function getActiveSettingsForm() {
+      const activeSec = document.querySelector('.settings-section:not(.hidden)');
+      if (!activeSec) return null;
+      const meta = activeSec.querySelector('.settings-module-header');
+      if (meta && meta.dataset.formId) {
+        const byId = document.getElementById(meta.dataset.formId);
+        if (byId) return byId;
+      }
+      return activeSec.querySelector('form');
+    }
+    if (headerDiscardBtn) {
+      headerDiscardBtn.addEventListener('click', () => {
+        const form = getActiveSettingsForm();
+        if (form) form.reset();
+      });
+    }
+    if (headerSaveBtn) {
+      headerSaveBtn.addEventListener('click', () => {
+        const form = getActiveSettingsForm();
+        if (form) {
+          if (typeof form.requestSubmit === 'function') form.requestSubmit();
+          else form.submit();
+        }
+      });
+    }
+
     // 5. AdSense pub validator
     const btnValidateAd = document.getElementById('btnValidateAd');
     if (btnValidateAd) {
@@ -537,7 +583,7 @@
           resDiv.innerText = `❌ Network Failure: ${e.message}`;
         } finally {
           btnTestSmtp.disabled = false;
-          btnTestSmtp.innerHTML = '<span class="material-symbols-rounded text-xl transition-transform duration-200 group-hover:scale-110 flex-shrink-0" aria-hidden="true">mark_email_read</span><span class="text-[11px] font-bold tracking-tight mt-0.5 whitespace-nowrap leading-tight">Test SMTP</span>';
+          btnTestSmtp.innerHTML = '<svg class="w-4 h-4 text-emerald-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="text-xs font-bold tracking-tight whitespace-nowrap leading-tight">Test SMTP</span>';
         }
       });
     }

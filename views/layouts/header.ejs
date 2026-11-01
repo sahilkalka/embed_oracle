@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="<%= settings.enable_smooth_scroll === 'false' ? '' : 'scroll-smooth' %> overflow-x-clip max-w-full" data-palette="emerald">
+<html lang="en" class="<%= settings.enable_smooth_scroll === 'false' ? '' : 'scroll-smooth' %> overflow-x-clip max-w-full" data-palette="<%= theme.paletteKey %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,8 +42,8 @@
   <link href="https://fonts.googleapis.com/css2?<%= fontQuery %>&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
-  <link rel="preload" href="/css/style.css?v=<%= assetVersion %>" as="style">
-  <link rel="stylesheet" href="/css/style.css?v=<%= assetVersion %>">
+  <link rel="preload" href="/css/style.css?v=<%= assetVersion %>-20261101" as="style">
+  <link rel="stylesheet" href="/css/style.css?v=<%= assetVersion %>-20261101">
 
   <!-- Highlight.js syntax highlighting theme for code blocks -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css" media="print" onload="this.media='all'">
@@ -53,11 +53,7 @@
     <style id="dynamic-theme-vars">
       <%- theme.cssString %>
       body {
-        font-family: var(--font-body), system-ui, sans-serif;
         font-size: var(--base-font-size, 16px);
-      }
-      h1, h2, h3, h4, h5, h6 {
-        font-family: var(--font-heading), system-ui, sans-serif;
       }
       <% 
         const rawOp = settings.header_opacity || settings.header_transparency || '95';
@@ -71,13 +67,15 @@
       }
       header.sticky,
       .public-shell header {
-        background-color: rgba(255, 255, 255, var(--header-opacity, <%= headerAlpha %>)) !important;
+        background-color: color-mix(in srgb, var(--bg-primary, #ffffff) calc(var(--header-opacity, <%= headerAlpha %>) * 100%), transparent) !important;
+        border-color: var(--border-color, #e2e8f0) !important;
         backdrop-filter: blur(12px) !important;
         -webkit-backdrop-filter: blur(12px) !important;
       }
       html.dark header.sticky,
       .dark .public-shell header {
-        background-color: rgba(15, 23, 42, var(--header-opacity, <%= headerAlpha %>)) !important;
+        background-color: color-mix(in srgb, var(--bg-surface, #13221e) calc(var(--header-opacity, <%= headerAlpha %>) * 100%), transparent) !important;
+        border-color: var(--border-color, #1e3831) !important;
       }
       .custom-container,
       .public-header-inner {
@@ -180,11 +178,8 @@
     } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.documentElement.classList.add('dark');
     }
-
-    // Palette data attribute
-    const savedPalette = localStorage.getItem('color-palette') || '<%= settings.active_theme_palette || "emerald" %>';
-    document.documentElement.setAttribute('data-palette', savedPalette);
   </script>
+  <%- include('../partials/palette-boot') %>
 </head>
 <body class="ui-shell public-shell bg-white dark:bg-brand-dark text-slate-900 dark:text-slate-100 font-sans transition-colors duration-300 antialiased min-h-screen flex flex-col overflow-x-clip max-w-full pb-16 md:pb-0">
 
@@ -207,7 +202,7 @@
 
   <% if (settings.lab_event_enabled !== 'false') { %>
   <!-- Bangalore Lab Dismissible Top Notice Bar (Above Sticky Header) -->
-  <aside id="lab-event-notice" aria-label="Hyderabad Lab Status" class="w-full bg-slate-900 text-white text-xs border-b border-slate-800 py-1.5 px-3 sm:px-6 transition-all duration-300">
+  <aside id="lab-event-notice" aria-label="Hyderabad Lab Status" class="w-full bg-brand-surface text-white text-xs border-b border-brand-border py-1.5 px-3 sm:px-6 transition-all duration-300">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3" style="max-width: 80rem; margin: 0 auto; width: 100%;">
       <div class="flex items-center space-x-2.5 min-w-0">
         <a href="<%= settings.lab_event_url || '/about#lab' %>" title="<%= settings.lab_status_text || 'Hyderabad Lab: Online • 4 Active SMT Lines • HIL Station #2 Active' %>" class="inline-flex items-center space-x-2 px-2.5 py-0.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-full text-[11px] font-bold text-emerald-400 transition group flex-shrink-0">
@@ -246,7 +241,7 @@
   <% } %>
 
   <!-- Navigation Header (Sticky top-0) -->
-  <header class="sticky top-0 z-50 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors shadow-sm max-w-full overflow-x-clip">
+  <header class="sticky top-0 z-50 backdrop-blur-md border-b border-slate-200 dark:border-brand-border transition-colors shadow-sm max-w-full overflow-x-clip">
     <div class="public-header-inner max-w-[1280px] mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between flex-nowrap gap-1 min-[360px]:gap-2 sm:gap-4 box-border w-full">
       
       <!-- Brand Logo (Vector Icon + Semantic HTML Typography) -->
@@ -256,7 +251,7 @@
         <% } else { %>
           <!-- Iconic Spaceship Delta Arrowhead Brandmark -->
           <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-accent p-0.5 shadow-md shadow-brand-500/20 group-hover:shadow-brand-500/40 transition duration-300 transform group-hover:scale-105 icon-bounce-container flex-shrink-0">
-            <div class="w-full h-full bg-white dark:bg-slate-900 rounded-[7px] sm:rounded-[10px] flex items-center justify-center p-1 sm:p-2">
+            <div class="w-full h-full bg-white dark:bg-brand-dark rounded-[7px] sm:rounded-[10px] flex items-center justify-center p-1 sm:p-2">
               <svg id="siteBrandmarkSvg" class="w-full h-full text-brand-500 dark:text-accent transition-colors duration-300" viewBox="0 0 32 32" fill="currentColor">
                 <path d="M16 3C16.8 3 17.5 3.4 18 4.2L28.5 21.8C29.2 23 28.7 24.5 27.5 25.2C27.1 25.4 26.6 25.5 26.1 25.5H19.8C18.7 25.5 17.7 24.8 17.3 23.8L16 20.3L14.7 23.8C14.3 24.8 13.3 25.5 12.2 25.5H5.9C4.5 25.5 3.4 24.4 3.4 23C3.4 22.5 3.5 22.1 3.8 21.8L14 4.2C14.5 3.4 15.2 3 16 3Z"/>
               </svg>

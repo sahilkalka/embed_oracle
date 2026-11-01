@@ -8,8 +8,9 @@
       <p class="text-xs text-slate-500 mt-1">Directly update homepage headlines, animated typewriter terms, lab telemetry, and toggle sections</p>
     </div>
     
-    <a href="/" target="_blank" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs transition shadow flex items-center space-x-1.5 active:scale-95">
-      <span>👁️ Preview Live Site</span>
+    <a href="/" target="_blank" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs transition shadow flex items-center gap-2 active:scale-95">
+      <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      <span>Preview Live Site</span>
     </a>
   </div>
 
@@ -106,9 +107,59 @@
       </div>
     </div>
 
+    <!-- 4. Contact Visibility & Public Phone Toggle -->
+    <div class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <h3 class="font-black text-sm uppercase tracking-wider text-slate-400">4. Contact Visibility</h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="customizer-phone-number" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Public Phone Number</label>
+          <input type="text" id="customizer-phone-number" name="phone_number" value="<%= settings.phone_number || settings.contact_phone || '+91 83285 14090' %>" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
+        </div>
+        <div>
+          <label for="customizer-whatsapp-number" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">WhatsApp Number</label>
+          <input type="text" id="customizer-whatsapp-number" name="whatsapp_number" value="<%= settings.whatsapp_number || settings.phone_number || settings.contact_phone || '+91 83285 14090' %>" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold pt-2">
+        <div class="flex items-center justify-between gap-3 p-3.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+          <div>
+            <span class="block text-xs font-bold text-slate-900 dark:text-white">Hide / Unhide Mobile Number Section</span>
+            <span class="text-[10px] font-normal text-slate-500">Show or hide mobile number &amp; WhatsApp links globally</span>
+          </div>
+          <%- include('../partials/theme-toggle', {
+            name: 'phone_visible',
+            id: 'customizer_phone_visible',
+            checked: settings.phone_visible !== '0' && settings.phone_visible !== 'false' && settings.phone_visible !== false && settings.phone_visible !== 0,
+            onLabel: 'Visible',
+            offLabel: 'Hidden',
+            label: 'Toggle mobile number visibility on public website',
+            showBadge: true
+          }) %>
+        </div>
+        <div class="flex items-center justify-between gap-3 p-3.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+          <div>
+            <span class="block text-xs font-bold text-slate-900 dark:text-white">Show Email on Public Site</span>
+            <span class="text-[10px] font-normal text-slate-500">Controls visibility of public email links</span>
+          </div>
+          <%- include('../partials/theme-toggle', {
+            name: 'email_visible',
+            id: 'customizer_email_visible',
+            checked: settings.email_visible !== '0' && settings.email_visible !== 'false' && settings.email_visible !== false && settings.email_visible !== 0,
+            onLabel: 'Visible',
+            offLabel: 'Hidden',
+            label: 'Toggle email visibility on public website',
+            showBadge: true
+          }) %>
+        </div>
+      </div>
+    </div>
+
     <!-- Actions -->
     <div class="flex items-center justify-end pt-4">
-      <button type="submit" class="btn-shimmer px-8 py-3 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl text-xs shadow-md transition active:scale-95">
+      <button type="submit" class="btn-shimmer px-8 py-3 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl text-xs shadow-md transition active:scale-95 flex items-center gap-2">
+        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
         <span>Save Customizer Settings &rarr;</span>
       </button>
     </div>

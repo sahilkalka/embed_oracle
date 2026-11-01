@@ -36,9 +36,9 @@ module.exports = {
         }
       },
       fontFamily: {
-        sans: ['Roboto', 'system-ui', '-apple-system', 'sans-serif'],
-        serif: ['"Roboto Slab"', 'Georgia', 'serif'],
-        mono: ['"Fira Code"', 'Consolas', 'Monaco', 'monospace']
+        sans: ['var(--font-body, "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif)'],
+        serif: ['"Roboto Slab"', 'Georgia', 'Cambria', '"Times New Roman"', 'serif'],
+        mono: ['var(--font-mono, ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace)']
       }
       
     },

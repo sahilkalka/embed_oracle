@@ -1,40 +1,44 @@
-    <aside id="settingsLeftSidebar" class="settings-taskbar flex-shrink-0">
-      <div class="hidden lg:flex flex-col items-center gap-1 border-b border-slate-200 dark:border-slate-700 pb-3 mb-2">
-        <div class="w-9 h-9 rounded-xl bg-brand-500 text-white flex items-center justify-center font-black text-xs shadow-sm">EI</div>
-        <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">SETTINGS</span>
-      </div>
-      <nav class="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-1 gap-1.5" id="settings-sidebar-nav" aria-label="Settings modules">
-        <a href="/admin/settings#ai-engine" data-settings-tab="ai-engine" aria-label="AI Engine" aria-current="page" title="AI Content &amp; Copilot Engine" class="settings-nav-btn is-active">
-          <span class="material-symbols-rounded settings-nav-icon" aria-hidden="true">lightbulb</span>
-          <span class="settings-nav-label">AI Engine</span>
-        </a>
-        <a href="/admin/settings#faq-manager" data-settings-tab="faq-manager" aria-label="FAQs" title="FAQ Manager" class="settings-nav-btn">
-          <span class="material-symbols-rounded settings-nav-icon" aria-hidden="true">quiz</span>
-          <span class="settings-nav-label">FAQs</span>
-        </a>
-        <a href="/admin/settings#site-customizer" data-settings-tab="site-customizer" aria-label="Customizer" title="Site Customizer" class="settings-nav-btn">
-          <span class="material-symbols-rounded settings-nav-icon" aria-hidden="true">tune</span>
-          <span class="settings-nav-label">Customizer</span>
-        </a>
-        <a href="/admin/settings#seo-scripts" data-settings-tab="seo-scripts" aria-label="Dynamic SEO" title="Dynamic SEO &amp; AI" class="settings-nav-btn">
-          <span class="material-symbols-rounded settings-nav-icon" aria-hidden="true">query_stats</span>
-          <span class="settings-nav-label">SEO</span>
-        </a>
-        <a href="/admin/settings#monetization-ads" data-settings-tab="monetization-ads" aria-label="Monetization" title="Monetization &amp; Ads" class="settings-nav-btn">
-          <span class="material-symbols-rounded settings-nav-icon" aria-hidden="true">payments</span>
-          <span class="settings-nav-label">Monetization</span>
-        </a>
-        <a href="/admin/settings#newsletter-config" data-settings-tab="newsletter-config" aria-label="Newsletter" title="Newsletter Configuration" class="settings-nav-btn">
-          <span class="material-symbols-rounded settings-nav-icon" aria-hidden="true">mail</span>
-          <span class="settings-nav-label">Newsletter</span>
-        </a>
-        <a href="/admin/settings#smtp-settings" data-settings-tab="smtp-settings" aria-label="SMTP and routing" title="SMTP &amp; Recipient Routing" class="settings-nav-btn">
-          <span class="material-symbols-rounded settings-nav-icon" aria-hidden="true">outgoing_mail</span>
-          <span class="settings-nav-label">Email &amp; routing</span>
-        </a>
-        <a href="/admin/settings#team-accounts" data-settings-tab="team-accounts" aria-label="Staff accounts" title="Staff Accounts &amp; Access" class="settings-nav-btn">
-          <span class="material-symbols-rounded settings-nav-icon" aria-hidden="true">group</span>
-          <span class="settings-nav-label">Team &amp; access</span>
-        </a>
-      </nav>
-    </aside>
+<!-- Horizontal Settings Sub-Header Navigation (Fixed & Attached Directly Inside Top Header) -->
+<div id="settingsLeftSidebar" class="settings-taskbar w-full px-3.5 sm:px-5 lg:px-6 bg-white dark:bg-brand-surface border-t border-slate-200 dark:border-brand-border">
+  <nav aria-label="Settings sections" class="flex flex-row items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar w-full" id="settings-sidebar-nav">
+    <button type="button" data-settings-tab="ai-engine" aria-current="page" class="settings-nav-btn is-active">
+      <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+      <span class="settings-nav-copy"><span class="settings-nav-label">AI Engine</span></span>
+    </button>
+
+    <button type="button" data-settings-tab="faq-manager" class="settings-nav-btn">
+      <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span class="settings-nav-copy"><span class="settings-nav-label">FAQs</span></span>
+    </button>
+
+    <button type="button" data-settings-tab="site-customizer" class="settings-nav-btn">
+      <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"/><path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"/><path d="M14.5 17.5 3.5 15"/></svg>
+      <span class="settings-nav-copy"><span class="settings-nav-label">Customizer</span></span>
+    </button>
+
+    <button type="button" data-settings-tab="seo-scripts" class="settings-nav-btn">
+      <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+      <span class="settings-nav-copy"><span class="settings-nav-label">SEO</span></span>
+    </button>
+
+    <button type="button" data-settings-tab="monetization-ads" class="settings-nav-btn">
+      <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      <span class="settings-nav-copy"><span class="settings-nav-label">Monetization</span></span>
+    </button>
+
+    <button type="button" data-settings-tab="newsletter-config" class="settings-nav-btn">
+      <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      <span class="settings-nav-copy"><span class="settings-nav-label">Newsletter</span></span>
+    </button>
+
+    <button type="button" data-settings-tab="smtp-settings" class="settings-nav-btn">
+      <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <span class="settings-nav-copy"><span class="settings-nav-label">Email &amp; routing</span></span>
+    </button>
+
+    <button type="button" data-settings-tab="team-accounts" class="settings-nav-btn">
+      <svg class="settings-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="settings-nav-copy"><span class="settings-nav-label">Team &amp; access</span></span>
+    </button>
+  </nav>
+</div>

@@ -20,6 +20,13 @@ const path = require('path');
 const multer = require('multer');
 const { formatYouTubeEmbedUrl, YouTubeUrlError } = require('../utils/youtube');
 const { localizeAssetUrl, localizeMarkdownAssets, localizeObjectAssetFields } = require('../services/assetLocalizer');
+const {
+  getTrafficSummary,
+  getLivePayload,
+  exportTrafficCsv,
+  clearTrafficLog,
+  toggleFlagVisitor
+} = require('../middleware/trafficTracker');
 
 const PUBLIC_ROOT = path.resolve(__dirname, '../../public');
 const UPLOADS_ROOT = path.join(PUBLIC_ROOT, 'uploads');
@@ -205,6 +212,30 @@ router.get('/logout', (req, res) => {
 
 // ALL SUBSEQUENT ROUTES REQUIRE AUTHENTICATION
 router.use(requireAuth);
+
+// Populate sidebar & header navigation content counts for all admin GET views
+router.use(async (req, res, next) => {
+  if (req.method !== 'GET') return next();
+  try {
+    const [inquiries, subscribers, posts, projects, reviews] = await Promise.all([
+      prisma.inquiry.count(),
+      prisma.subscriber.count(),
+      prisma.post.count(),
+      prisma.project.count(),
+      prisma.testimonial.count()
+    ]);
+    let assets = 0;
+    try {
+      assets = collectServerAssets().length;
+    } catch (_) {
+      assets = 0;
+    }
+    res.locals.navCounts = { inquiries, subscribers, posts, projects, reviews, assets };
+  } catch (_) {
+    res.locals.navCounts = { inquiries: 0, subscribers: 0, posts: 0, projects: 0, reviews: 0, assets: 0 };
+  }
+  next();
+});
 
 // GET /admin/assets - Server Asset Manager Page
 router.get('/assets', (req, res) => {
@@ -393,6 +424,76 @@ router.get('/', async (req, res) => {
     console.error('[ADMIN DASHBOARD ERROR]', err);
     res.status(500).send('Error loading dashboard metrics');
   }
+});
+
+// GET /admin/traffic - Real-Time Traffic & Visitor Telemetry Dashboard
+router.get('/traffic', async (req, res) => {
+  try {
+    const range = req.query.range || '24h';
+    const routeFilter = req.query.route || '';
+
+    const [persistedPageViews, calculatorStats] = await Promise.all([
+      prisma.analytics ? prisma.analytics.count().catch(() => 0) : 0,
+      (async () => {
+        try {
+          const allStats = await prisma.calculatorStat.findMany();
+          return allStats.map(s => ({
+            calculatorName: String(s.toolName || s.calculatorName || '').toLowerCase().trim(),
+            usageCount: Number(s.executionCount || s.usageCount || 0)
+          }));
+        } catch (_) {
+          return [];
+        }
+      })()
+    ]);
+
+    const summary = getTrafficSummary({
+      range,
+      routeFilter,
+      persistedPageViews,
+      calculatorStats
+    });
+
+    res.render('admin/traffic', {
+      title: 'Live Traffic & Visitor Telemetry',
+      currentPath: '/admin/traffic',
+      telemetry: summary,
+      selectedRange: range,
+      routeFilter
+    });
+  } catch (err) {
+    console.error('[ADMIN TRAFFIC ERROR]', err);
+    res.status(500).send('Error loading traffic telemetry dashboard');
+  }
+});
+
+// GET /admin/traffic/live - Snapshot / Live JSON status for admin pollers
+router.get('/traffic/live', (req, res) => {
+  res.json(getLivePayload());
+});
+
+// GET /admin/traffic/export - Export Wire Log to CSV
+router.get('/traffic/export', (req, res) => {
+  const csv = exportTrafficCsv();
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="embedded-india-telemetry-${Date.now()}.csv"`);
+  res.send(csv);
+});
+
+// POST /admin/traffic/clear - Clear Rolling Wire Log
+router.post('/traffic/clear', (req, res) => {
+  clearTrafficLog();
+  if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+    return res.json({ success: true, message: 'Telemetry wire log cleared.' });
+  }
+  res.redirect('/admin/traffic');
+});
+
+// POST /admin/traffic/flag - Toggle Flag / IP Hash Block
+router.post('/traffic/flag', (req, res) => {
+  const { visitorHash } = req.body || {};
+  const flagged = toggleFlagVisitor(visitorHash);
+  res.json({ success: true, visitorHash, flagged });
 });
 
 // GET /admin/inquiries - List and Filter Inquiries
@@ -726,6 +827,37 @@ router.post('/settings', async (req, res) => {
     }
     const activeTab = fields._active_tab || '';
     delete fields._active_tab;
+    delete fields._csrf;
+
+    if (
+      activeTab === 'site-customizer' ||
+      Object.prototype.hasOwnProperty.call(fields, 'phone_number') ||
+      Object.prototype.hasOwnProperty.call(fields, 'contact_phone') ||
+      Object.prototype.hasOwnProperty.call(fields, 'phone_visible') ||
+      Object.prototype.hasOwnProperty.call(fields, 'phone_visible_present') ||
+      Object.prototype.hasOwnProperty.call(fields, 'email_visible') ||
+      Object.prototype.hasOwnProperty.call(fields, 'email_visible_present')
+    ) {
+      if (Object.prototype.hasOwnProperty.call(fields, 'phone_number') || Object.prototype.hasOwnProperty.call(fields, 'contact_phone')) {
+        const rawPhone = fields.phone_number || fields.contact_phone || '+91 83285 14090';
+        const cleanPhone = String(rawPhone).replace(/[^+0-9\s-]/g, '').trim().slice(0, 20) || '+91 83285 14090';
+        fields.phone_number = cleanPhone;
+        fields.contact_phone = cleanPhone;
+      }
+      if (Object.prototype.hasOwnProperty.call(fields, 'whatsapp_number')) {
+        fields.whatsapp_number = String(fields.whatsapp_number).replace(/[^+0-9\s-]/g, '').trim().slice(0, 20) || '+91 83285 14090';
+      }
+      if (activeTab === 'site-customizer' || Object.prototype.hasOwnProperty.call(fields, 'phone_visible') || Object.prototype.hasOwnProperty.call(fields, 'phone_visible_present')) {
+        const rawPv = Array.isArray(fields.phone_visible) ? fields.phone_visible[fields.phone_visible.length - 1] : fields.phone_visible;
+        fields.phone_visible = (rawPv === '1' || rawPv === 1 || rawPv === 'true' || rawPv === true || rawPv === 'on') ? '1' : '0';
+        delete fields.phone_visible_present;
+      }
+      if (activeTab === 'site-customizer' || Object.prototype.hasOwnProperty.call(fields, 'email_visible') || Object.prototype.hasOwnProperty.call(fields, 'email_visible_present')) {
+        const rawEv = Array.isArray(fields.email_visible) ? fields.email_visible[fields.email_visible.length - 1] : fields.email_visible;
+        fields.email_visible = (rawEv === '1' || rawEv === 1 || rawEv === 'true' || rawEv === true || rawEv === 'on') ? '1' : '0';
+        delete fields.email_visible_present;
+      }
+    }
 
     for (const key of Object.keys(fields).filter(key => /^adsense_.*_slot$/.test(key))) {
       fields[key] = String(fields[key]).trim();
@@ -1466,12 +1598,32 @@ router.get('/customizer', async (req, res) => {
 router.post('/customizer', async (req, res) => {
   try {
     const fields = { ...req.body };
+    delete fields._csrf;
+
+    // Normalize phone_visible & email_visible checkboxes when submitting customizer form
+    fields.phone_visible = (req.body.phone_visible === '1' || req.body.phone_visible === 'true' || req.body.phone_visible === 'on') ? '1' : '0';
+    fields.email_visible = (req.body.email_visible === '1' || req.body.email_visible === 'true' || req.body.email_visible === 'on') ? '1' : '0';
+
+    if (typeof fields.phone_number === 'string') {
+      const sanitizedPhone = fields.phone_number.replace(/[^+0-9\s-]/g, '').trim().slice(0, 20);
+      fields.phone_number = sanitizedPhone || '+91 83285 14090';
+      fields.contact_phone = fields.phone_number;
+    } else if (typeof fields.contact_phone === 'string') {
+      const sanitizedPhone = fields.contact_phone.replace(/[^+0-9\s-]/g, '').trim().slice(0, 20);
+      fields.contact_phone = sanitizedPhone || '+91 83285 14090';
+      fields.phone_number = fields.contact_phone;
+    }
+
+    if (typeof fields.whatsapp_number === 'string') {
+      fields.whatsapp_number = fields.whatsapp_number.replace(/[^+0-9\s-]/g, '').trim().slice(0, 20) || '+91 83285 14090';
+    }
+
     await localizeObjectAssetFields(fields);
     for (const key of Object.keys(fields)) {
       await prisma.setting.upsert({
         where: { key },
-        update: { value: fields[key] },
-        create: { key, value: fields[key] }
+        update: { value: String(fields[key]) },
+        create: { key, value: String(fields[key]) }
       });
     }
     clearSettingsCache();

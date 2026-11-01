@@ -31,16 +31,16 @@
           <span class="text-xs font-mono text-slate-400 uppercase">Conversion Status</span>
           <p id="iconv-status" class="text-xl sm:text-2xl font-bold font-mono text-brand-300 mt-1">Ready for file</p>
         </div>
-        <a id="iconv-download-btn" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-2 cursor-pointer pointer-events-none opacity-50">
+        <a id="iconv-download-btn" aria-disabled="true" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-2 cursor-pointer pointer-events-none opacity-50">
           Download Converted File
         </a>
       </div>
 
       <div class="space-y-2">
         <span class="text-xs font-mono text-slate-400 uppercase">Converted Image Preview</span>
-        <div class="max-h-64 overflow-hidden rounded-2xl bg-black/40 flex items-center justify-center border border-slate-800 p-2">
+        <div class="max-h-64 overflow-hidden rounded-2xl bg-slate-100 dark:bg-black/40 flex items-center justify-center border border-slate-200 dark:border-slate-800 p-2">
           <img id="iconv-preview" class="max-h-56 max-w-full object-contain rounded-lg hidden" alt="Converted Preview">
-          <span id="iconv-placeholder" class="text-xs text-slate-500 py-12">No converted preview yet.</span>
+          <span id="iconv-placeholder" class="text-xs text-slate-600 dark:text-slate-400 py-12">No converted preview yet.</span>
         </div>
       </div>
     </div>
@@ -85,6 +85,7 @@
       downloadBtn.href = url;
       downloadBtn.download = originalFile.name.replace(/\.[^/.]+$/, '') + ext;
       downloadBtn.classList.remove('pointer-events-none', 'opacity-50');
+      downloadBtn.removeAttribute('aria-disabled');
     }, mime, 0.92);
   }
 

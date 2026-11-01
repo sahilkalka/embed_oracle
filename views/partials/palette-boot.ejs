@@ -1,0 +1,11 @@
+<%# Resolves the active palette before first paint so the server-generated tokens apply immediately. %>
+<script>
+  (function () {
+    var keys = <%- JSON.stringify(colorThemes.map(function (preset) { return preset.key; })) %>;
+    var aliases = <%- JSON.stringify(theme.paletteAliases || {}) %>;
+    var saved = null;
+    try { saved = localStorage.getItem('color-palette'); } catch (e) {}
+    var key = aliases[saved] || saved;
+    document.documentElement.setAttribute('data-palette', keys.indexOf(key) > -1 ? key : '<%= theme.paletteKey %>');
+  })();
+</script>

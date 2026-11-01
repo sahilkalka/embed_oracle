@@ -13,6 +13,7 @@ const cors = require('cors');
 const { seoMiddleware } = require('./middleware/seo');
 const { optionalAuth } = require('./middleware/auth');
 const { csrfProtection } = require('./middleware/csrf');
+const { trafficTracker, trafficEvents, getLivePayload } = require('./middleware/trafficTracker');
 const { initCronJobs } = require('./cron/jobs');
 const prisma = require('./services/db');
 const mailer = require('./services/mailer');
@@ -155,6 +156,46 @@ app.use(csrfProtection);
 // SEO & Global View Locals Middleware
 app.use(seoMiddleware);
 app.use(optionalAuth);
+app.use(trafficTracker);
+
+// Real-Time Streaming Telemetry Route (SSE)
+app.get('/api/traffic/live', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  if (typeof res.flushHeaders === 'function') {
+    res.flushHeaders();
+  }
+
+  const sendEvent = (payload) => {
+    try {
+      res.write(`data: ${JSON.stringify(payload)}\n\n`);
+      if (typeof res.flush === 'function') {
+        res.flush();
+      }
+    } catch (_) {}
+  };
+
+  // Initial snapshot immediately on connect
+  sendEvent(getLivePayload());
+
+  const onHit = (payload) => {
+    sendEvent(payload);
+  };
+
+  trafficEvents.on('hit', onHit);
+
+  // 3-second heartbeat interval
+  const heartbeat = setInterval(() => {
+    sendEvent(getLivePayload());
+  }, 3000);
+
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    trafficEvents.off('hit', onHit);
+  });
+});
 
 // Maintenance Mode Interceptor
 app.use((req, res, next) => {

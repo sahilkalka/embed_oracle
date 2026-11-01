@@ -40,19 +40,28 @@
   <% if (uploaded) { %>
     <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex items-center justify-between">
       <span>Asset(s) uploaded to server successfully! You can copy their domain linking paths below.</span>
-      <button type="button" onclick="this.parentElement.remove()" class="text-emerald-600 hover:underline ml-4">Dismiss</button>
+      <button type="button" onclick="this.parentElement.remove()" class="inline-flex items-center gap-1 text-emerald-600 hover:underline ml-4">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Dismiss</span>
+      </button>
     </div>
   <% } %>
   <% if (deleted) { %>
     <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs font-bold flex items-center justify-between">
       <span>Asset deleted from server storage.</span>
-      <button type="button" onclick="this.parentElement.remove()" class="text-amber-600 hover:underline ml-4">Dismiss</button>
+      <button type="button" onclick="this.parentElement.remove()" class="inline-flex items-center gap-1 text-amber-600 hover:underline ml-4">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Dismiss</span>
+      </button>
     </div>
   <% } %>
   <% if (error) { %>
     <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold flex items-center justify-between">
       <span><%= error %></span>
-      <button type="button" onclick="this.parentElement.remove()" class="text-rose-600 hover:underline ml-4">Dismiss</button>
+      <button type="button" onclick="this.parentElement.remove()" class="inline-flex items-center gap-1 text-rose-600 hover:underline ml-4">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Dismiss</span>
+      </button>
     </div>
   <% } %>
 
@@ -108,29 +117,34 @@
   </div>
 
   <!-- Search & Category Filter Bar -->
-  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3">
     <!-- Category Filter Buttons -->
     <div class="flex items-center gap-1.5 flex-wrap" id="assetCategoryFilters">
-      <button type="button" data-filter="all" onclick="setAssetCategoryFilter('all')" class="asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-brand-600 text-white">
-        All (<%= assets.length %>)
+      <button type="button" data-filter="all" onclick="setAssetCategoryFilter('all')" class="asset-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-brand-600 text-white whitespace-nowrap">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>All (<%= assets.length %>)</span>
       </button>
-      <button type="button" data-filter="Uploads" onclick="setAssetCategoryFilter('Uploads')" class="asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
-        Uploads (<%= assets.filter(a => a.category === 'Uploads').length %>)
+      <button type="button" data-filter="Uploads" onclick="setAssetCategoryFilter('Uploads')" class="asset-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>Uploads (<%= assets.filter(a => a.category === 'Uploads').length %>)</span>
       </button>
-      <button type="button" data-filter="Localized" onclick="setAssetCategoryFilter('Localized')" class="asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
-        Localized (<%= assets.filter(a => a.category === 'Localized').length %>)
+      <button type="button" data-filter="Localized" onclick="setAssetCategoryFilter('Localized')" class="asset-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>Localized (<%= assets.filter(a => a.category === 'Localized').length %>)</span>
       </button>
-      <button type="button" data-filter="Site Images" onclick="setAssetCategoryFilter('Site Images')" class="asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
-        Site Images (<%= assets.filter(a => a.category === 'Site Images').length %>)
+      <button type="button" data-filter="Site Images" onclick="setAssetCategoryFilter('Site Images')" class="asset-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>Site Images (<%= assets.filter(a => a.category === 'Site Images').length %>)</span>
       </button>
-      <button type="button" data-filter="Downloads" onclick="setAssetCategoryFilter('Downloads')" class="asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
-        Downloads (<%= assets.filter(a => a.category === 'Downloads').length %>)
+      <button type="button" data-filter="Downloads" onclick="setAssetCategoryFilter('Downloads')" class="asset-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap">
+        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>Downloads (<%= assets.filter(a => a.category === 'Downloads').length %>)</span>
       </button>
     </div>
 
     <!-- Search Input -->
-    <div class="relative min-w-[240px] sm:min-w-[300px]">
-      <input type="search" id="assetSearchInput" oninput="filterAssetsGrid()" placeholder="Filter by filename or path (e.g. /uploads/)..." class="w-full pl-9 pr-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none">
+    <div class="relative w-full xl:w-64 shrink-0">
+      <input type="search" id="assetSearchInput" oninput="filterAssetsGrid()" placeholder="Filter by filename or path..." class="w-full pl-9 pr-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none">
       <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
     </div>
   </div>
@@ -170,10 +184,10 @@
 
               <!-- Category & Extension Badges -->
               <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-slate-900/75 text-white backdrop-blur-xs">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-slate-900 text-white backdrop-blur-xs">
                   <%= asset.category %>
                 </span>
-                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold bg-brand-600/90 text-white">
+                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold bg-brand-600 text-white">
                   <%= asset.ext %>
                 </span>
               </div>
@@ -198,34 +212,34 @@
               <div>
                 <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Domain Linking Path</label>
                 <div class="flex items-center gap-1">
-                  <input type="text" readonly value="<%= asset.relPath %>" onclick="this.select()" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-700 dark:text-slate-300 select-all outline-none">
-                  <button type="button" onclick="copyTextWithFeedback(this, '<%= asset.relPath %>')" title="Copy relative path" class="px-2.5 py-1.5 rounded-lg bg-brand-500/10 dark:bg-accent/15 text-brand-600 dark:text-accent hover:bg-brand-600 hover:text-white text-[11px] font-bold transition cursor-pointer shrink-0">
-                    Copy
+                  <input type="text" readonly value="<%= asset.relPath %>" onclick="this.select()" class="min-w-0 flex-1 px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-700 dark:text-slate-300 select-all outline-none">
+                  <button type="button" onclick="copyTextWithFeedback(this, '<%= asset.relPath %>')" title="Copy relative path" class="inline-flex items-center gap-1 px-2 py-1.5 rounded-lg bg-brand-500/10 dark:bg-accent/15 text-brand-600 dark:text-accent hover:bg-brand-600 hover:text-white text-[11px] font-bold transition cursor-pointer shrink-0 whitespace-nowrap">
+                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <span>Copy</span>
                   </button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Action Footer: Copy URL / Copy Markdown / Preview / Delete -->
-          <div class="px-3.5 py-2.5 bg-slate-50/70 dark:bg-slate-950/50 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-1.5 text-[11px]">
-            <div class="flex items-center gap-1">
-              <button type="button" onclick="copyFullUrlWithFeedback(this, '<%= asset.relPath %>')" class="px-2 py-1 rounded-md bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold transition cursor-pointer" title="Copy full https:// domain URL">
-                Full URL
-              </button>
-              <button type="button" onclick="copyTextWithFeedback(this, '<%= asset.isImage ? `![${asset.name}](${asset.relPath})` : `[${asset.name}](${asset.relPath})` %>')" class="px-2 py-1 rounded-md bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold transition cursor-pointer" title="Copy Markdown embed link">
-                Markdown
-              </button>
-            </div>
-
-            <div class="flex items-center gap-1">
-              <button type="button" onclick="openAssetPreview(<%= JSON.stringify(asset) %>)" class="px-2 py-1 rounded-md text-brand-600 dark:text-accent hover:bg-brand-500/10 font-bold transition cursor-pointer" title="Preview asset">
-                Preview
-              </button>
-              <button type="button" onclick="deleteServerAsset('<%= asset.relPath %>', this)" class="px-2 py-1 rounded-md text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 font-bold transition cursor-pointer" title="Delete asset from server">
-                Delete
-              </button>
-            </div>
+          <!-- Action Footer: 2x2 Balanced Icon Button Grid (No Wrapping or Clipping at 1280px) -->
+          <div class="px-3.5 py-2.5 bg-slate-50/70 dark:bg-slate-950/50 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 gap-1.5 text-xs">
+            <button type="button" onclick="copyFullUrlWithFeedback(this, '<%= asset.relPath %>')" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold transition cursor-pointer whitespace-nowrap" title="Copy full https:// domain URL">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Full URL</span>
+            </button>
+            <button type="button" onclick="copyTextWithFeedback(this, '<%= asset.isImage ? `![${asset.name}](${asset.relPath})` : `[${asset.name}](${asset.relPath})` %>')" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold transition cursor-pointer whitespace-nowrap" title="Copy Markdown embed link">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Markdown</span>
+            </button>
+            <button type="button" onclick="openAssetPreview(<%= JSON.stringify(asset) %>)" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-brand-500/10 dark:bg-accent/15 text-brand-600 dark:text-accent hover:bg-brand-500/20 font-bold transition cursor-pointer whitespace-nowrap" title="Preview asset">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span>Preview</span>
+            </button>
+            <button type="button" onclick="deleteServerAsset('<%= asset.relPath %>', this)" class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 font-bold transition cursor-pointer whitespace-nowrap" title="Delete asset from server">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <span>Delete</span>
+            </button>
           </div>
         </div>
       <% }); %>
@@ -243,11 +257,12 @@
         <p id="previewModalMeta" class="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate"></p>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <a id="previewModalOpenTab" href="#" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition">
-          Open in New Tab ↗
+        <a id="previewModalOpenTab" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span>Open in New Tab</span>
         </a>
-        <button type="button" onclick="closeAssetPreview()" aria-label="Close preview" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-rose-500 hover:text-white flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold transition cursor-pointer">
-          ✕
+        <button type="button" onclick="closeAssetPreview()" aria-label="Close preview" title="Close preview" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-rose-500 hover:text-white flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold transition cursor-pointer">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
     </div>
@@ -263,14 +278,17 @@
         <input id="previewModalPathInput" type="text" readonly onclick="this.select()" class="w-full px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white select-all outline-none">
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <button type="button" id="previewCopyPathBtn" class="px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition cursor-pointer">
-          Copy Domain Path
+        <button type="button" id="previewCopyPathBtn" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition cursor-pointer">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Copy Domain Path</span>
         </button>
-        <button type="button" id="previewCopyFullUrlBtn" class="px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition cursor-pointer">
-          Copy Full URL
+        <button type="button" id="previewCopyFullUrlBtn" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition cursor-pointer">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Copy Full URL</span>
         </button>
-        <button type="button" id="previewCopyMdBtn" class="px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition cursor-pointer">
-          Copy Markdown
+        <button type="button" id="previewCopyMdBtn" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition cursor-pointer">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Copy Markdown</span>
         </button>
       </div>
     </div>
@@ -284,9 +302,9 @@
     activeCategoryFilter = cat;
     document.querySelectorAll('.asset-filter-btn').forEach(btn => {
       if (btn.getAttribute('data-filter') === cat) {
-        btn.className = 'asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-brand-600 text-white';
+        btn.className = 'asset-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-brand-600 text-white';
       } else {
-        btn.className = 'asset-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700';
+        btn.className = 'asset-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700';
       }
     });
     filterAssetsGrid();
@@ -307,9 +325,9 @@
   async function copyTextWithFeedback(btn, text) {
     try {
       await navigator.clipboard.writeText(text);
-      const prev = btn.textContent;
-      btn.textContent = 'Copied!';
-      setTimeout(() => { btn.textContent = prev; }, 1400);
+      const prev = btn.innerHTML;
+      btn.innerHTML = '<svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span>Copied!</span>';
+      setTimeout(() => { btn.innerHTML = prev; }, 1400);
     } catch (_) {
       prompt('Copy path:', text);
     }
@@ -356,7 +374,10 @@
       bodyEl.innerHTML = `<div class="text-center p-8 space-y-3">
         <p class="text-sm font-bold text-slate-700 dark:text-slate-200">${asset.name}</p>
         <p class="text-xs text-slate-500">Direct link: <code>${asset.relPath}</code></p>
-        <a href="${asset.relPath}" target="_blank" rel="noopener" class="inline-block px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Download / View File</a>
+        <a href="${asset.relPath}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Download / View File</span>
+        </a>
       </div>`;
     }
 
@@ -446,3 +467,4 @@
 </script>
 
 <%- include('../layout_bottom') %>
+

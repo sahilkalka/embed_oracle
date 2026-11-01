@@ -1,28 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="<%= (typeof settings !== 'undefined' && settings && settings.default_theme_mode === 'light') ? '' : 'dark' %>" data-palette="<%= theme.paletteKey %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - Embedded India</title>
   <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+  <style>
+    html:not(.dark) { background-color: #f8fafc; color-scheme: light; }
+    html.dark { background-color: #0b1412; color-scheme: dark; }
+  </style>
+  <script>
+    (function() {
+      var configuredThemeMode = '<%= (typeof settings !== "undefined" && settings && settings.default_theme_mode === "light") ? "light" : "dark" %>';
+      var storedTheme = null;
+      try { storedTheme = localStorage.getItem('color-theme'); } catch (e) {}
+      var isDark = storedTheme === 'dark' || (!storedTheme && configuredThemeMode === 'dark');
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      try {
+        if (localStorage.getItem('admin-sidebar-collapsed') === 'true') {
+          document.documentElement.setAttribute('data-sidebar-collapsed', 'true');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=block" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=<%= assetVersion %>">
+  <%- include('../partials/palette-boot') %>
+  <link href="https://fonts.googleapis.com/css2?<%= Array.from(new Set([theme.headingFont, theme.bodyFont])).map(f => 'family=' + f.replace(/\s+/g, '+') + ':wght@400;500;600;700;800;900').join('&') %>&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v=<%= typeof assetVersion !== 'undefined' ? assetVersion : '1' %>-20261101">
+  <link rel="stylesheet" href="/css/admin-settings.css?v=<%= typeof assetVersion !== 'undefined' ? assetVersion : '20261031-3' %>-20261101">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <% if (theme && theme.cssString) { %>
     <style id="dynamic-theme-vars"><%- theme.cssString %></style>
   <% } %>
   <script>
-    const configuredThemeMode = '<%= settings.default_theme_mode === "light" ? "light" : "dark" %>';
-    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && configuredThemeMode === 'dark')) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    const savedPalette = localStorage.getItem('color-palette') || '<%= settings.active_theme_palette || "cyber-emerald" %>';
-    document.documentElement.setAttribute('data-palette', savedPalette);
-
     window.csrfToken = '<%= typeof csrfToken !== "undefined" ? csrfToken : "" %>';
     window.getCsrfToken = function() {
       if (window.csrfToken) return window.csrfToken;
@@ -62,225 +78,573 @@
     })();
   </script>
 
-  <% if (settings) { %>
-    <style id="admin-header-styles">
-      <% 
-        const rawOp = settings.header_opacity || settings.header_transparency || '95';
-        const numOp = Number(rawOp);
-        const headerAlpha = !isNaN(numOp) ? (numOp > 1 ? (numOp / 100).toFixed(2) : numOp.toFixed(2)) : '0.95';
-        const cMaxWidth = settings.container_max_width || '80rem';
-      %>
-      :root {
-        --header-opacity: <%= headerAlpha %>;
-        --container-max-width: <%= cMaxWidth %>;
+  <style id="admin-header-styles">
+    <%
+      const rawOp = (settings && (settings.header_opacity || settings.header_transparency)) || '95';
+      const numOp = Number(rawOp);
+      const headerAlpha = !isNaN(numOp) ? (numOp > 1 ? (numOp / 100).toFixed(2) : numOp.toFixed(2)) : '0.95';
+      const cMaxWidth = (settings && settings.container_max_width) || '90rem';
+    %>
+    :root {
+      --header-opacity: <%= headerAlpha %>;
+      --container-max-width: <%= cMaxWidth %>;
+    }
+    /* Theme-aware thin scrollbar */
+    .thin-dark-scrollbar::-webkit-scrollbar,
+    body.admin-shell::-webkit-scrollbar,
+    #admin-main-content::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .thin-dark-scrollbar::-webkit-scrollbar-track,
+    body.admin-shell::-webkit-scrollbar-track,
+    #admin-main-content::-webkit-scrollbar-track {
+      background: var(--bg-surface, #f1f5f9);
+    }
+    .dark .thin-dark-scrollbar::-webkit-scrollbar-track,
+    .dark body.admin-shell::-webkit-scrollbar-track,
+    .dark #admin-main-content::-webkit-scrollbar-track {
+      background: var(--bg-primary, #0b1412);
+    }
+    .thin-dark-scrollbar::-webkit-scrollbar-thumb,
+    body.admin-shell::-webkit-scrollbar-thumb,
+    #admin-main-content::-webkit-scrollbar-thumb {
+      background: var(--border-color, #cbd5e1);
+      border-radius: 9999px;
+    }
+    .dark .thin-dark-scrollbar::-webkit-scrollbar-thumb,
+    .dark body.admin-shell::-webkit-scrollbar-thumb,
+    .dark #admin-main-content::-webkit-scrollbar-thumb {
+      background: var(--border-color, #334155);
+      border-radius: 9999px;
+    }
+    .thin-dark-scrollbar::-webkit-scrollbar-thumb:hover,
+    body.admin-shell::-webkit-scrollbar-thumb:hover,
+    #admin-main-content::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-color, #059669);
+    }
+    .w-60 { width: 15rem; }
+    .accent-emerald-500,
+    .admin-shell input[type="range"],
+    .admin-shell input[type="checkbox"],
+    .admin-shell input[type="radio"] {
+      accent-color: var(--primary-color, #059669);
+    }
+    /* Full-width admin workspace & strict theme variable synchronization */
+    .admin-shell main,
+    #admin-main-content {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+    /* --admin-* aliases are defined once in src/public/css/input.css from the universal tokens. */
+    body.admin-shell,
+    .admin-shell > div.flex-1,
+    html.dark .admin-shell :is(.dark\:bg-\[\#0d1715\], .dark\:bg-\[\#0b1412\], .dark\:bg-\[\#0b1411\], .dark\:bg-\[\#0c1614\], .bg-\[\#0d1715\], .bg-\[\#0b1412\]) {
+      background-color: var(--admin-bg-canvas) !important;
+    }
+    .admin-shell #adminLeftSidebar,
+    .admin-shell > div.flex-1 > header,
+    .admin-shell > div.flex-1 > footer,
+    .admin-shell .bg-brand-surface,
+    .admin-shell .dark\:bg-brand-surface,
+    html.dark .admin-shell :is(.dark\:bg-slate-900, .dark\:bg-\[\#111e26\], .dark\:bg-\[\#13221f\], .dark\:bg-\[\#13221e\], .dark\:bg-\[\#0f1c18\], .dark\:bg-\[\#182c27\], .bg-\[\#111e26\]) {
+      background-color: var(--admin-bg-panel) !important;
+      border-color: var(--admin-border) !important;
+    }
+    html.dark .admin-shell :is(.dark\:bg-brand-dark, .dark\:bg-slate-800, .dark\:bg-slate-800\/80, .dark\:bg-slate-900\/70, .dark\:bg-slate-900\/90, .dark\:bg-slate-950, .dark\:bg-slate-950\/40, .dark\:bg-slate-950\/50, .dark\:bg-\[\#0c161c\], .dark\:bg-\[\#091217\], .dark\:bg-\[\#070e12\], .dark\:bg-\[\#070e12\]\/60, .bg-\[\#0c161c\], .bg-\[\#070e12\]) {
+      background-color: var(--admin-bg-subtle) !important;
+    }
+    .admin-shell :is(.bg-slate-800, .bg-slate-900):not(body) {
+      background-color: var(--admin-bg-subtle) !important;
+      color: var(--admin-accent-text) !important;
+      border: 1px solid var(--admin-border) !important;
+    }
+    html.dark .admin-shell :is(.dark\:border-brand-border, .dark\:border-slate-700, .dark\:border-slate-700\/80, .dark\:border-slate-800, .dark\:border-slate-800\/80, .dark\:border-\[\#1c2e38\], .dark\:border-\[\#1e3831\], .dark\:divide-slate-800\/80, .border-\[\#1c2e38\]) {
+      border-color: var(--admin-border) !important;
+    }
+    .admin-shell :is(.text-emerald-500, .text-emerald-600, .text-emerald-700, .text-emerald-800, .dark\:text-emerald-300, .dark\:text-emerald-400, .text-brand-500, .text-brand-600, .text-brand-700, .dark\:text-accent, .hover\:text-emerald-300:hover, .hover\:text-emerald-400:hover, .hover\:text-emerald-500:hover, .hover\:text-emerald-600:hover, .hover\:text-emerald-700:hover, .dark\:hover\:text-emerald-300:hover, .dark\:hover\:text-emerald-400:hover),
+    .admin-shell .group:hover :is(.group-hover\:text-emerald-400, .group-hover\:text-emerald-500, .group-hover\:text-emerald-600, .dark\:group-hover\:text-emerald-300, .dark\:group-hover\:text-emerald-400, .group-hover\:text-brand-500, .group-hover\:text-brand-600, .dark\:group-hover\:text-accent) {
+      color: var(--admin-accent-text) !important;
+    }
+    .admin-shell :is(.bg-emerald-500, .bg-emerald-600, .dark\:bg-emerald-400, .dark\:bg-emerald-500, .bg-brand-500, .bg-brand-600):not([class*="/"]),
+    .admin-shell .peer:checked ~ :is(.peer-checked\:bg-emerald-500, .peer-checked\:bg-emerald-600, .peer-checked\:bg-brand-500) {
+      background-color: var(--admin-accent) !important;
+      color: #ffffff !important;
+    }
+    .admin-shell :is(.hover\:bg-emerald-400:hover, .hover\:bg-emerald-500:hover, .hover\:bg-emerald-600:hover, .hover\:bg-emerald-700:hover, .hover\:bg-brand-600:hover):not([class*="/"]) {
+      background-color: var(--admin-accent-hover) !important;
+      color: #ffffff !important;
+    }
+    .admin-shell :is(.bg-emerald-50, .bg-emerald-50\/70, .bg-emerald-100, .bg-emerald-500\/10, .bg-emerald-500\/15, .bg-emerald-500\/20, .dark\:bg-emerald-500\/10, .dark\:bg-emerald-500\/15, .dark\:bg-emerald-500\/20, .dark\:bg-emerald-950, .dark\:bg-emerald-950\/50, .dark\:bg-emerald-950\/60, .bg-brand-50, .bg-brand-500\/10, .bg-brand-500\/20, .dark\:bg-brand-900\/30, .dark\:bg-brand-900\/40, .dark\:bg-accent\/15, .dark\:bg-accent\/20, .hover\:bg-emerald-50:hover, .hover\:bg-emerald-100:hover, .hover\:bg-emerald-500\/10:hover, .hover\:bg-emerald-500\/15:hover, .hover\:bg-emerald-500\/20:hover, .hover\:bg-emerald-500\/25:hover, .dark\:hover\:bg-emerald-500\/10:hover, .dark\:hover\:bg-emerald-500\/15:hover, .dark\:hover\:bg-emerald-500\/20:hover, .dark\:hover\:bg-emerald-500\/25:hover, .hover\:bg-brand-500\/10:hover, .dark\:hover\:bg-accent\/15:hover) {
+      background-color: var(--admin-accent-soft) !important;
+    }
+    .admin-shell :is(.border-emerald-200, .border-emerald-300, .border-emerald-500\/25, .border-emerald-500\/30, .border-emerald-500\/40, .border-emerald-500, .dark\:border-emerald-800, .border-brand-200, .border-brand-500\/20, .border-brand-500\/30, .dark\:border-brand-800, .hover\:border-emerald-400:hover, .hover\:border-emerald-500:hover, .hover\:border-emerald-500\/40:hover, .focus\:border-emerald-500:focus) {
+      border-color: var(--admin-accent-border) !important;
+    }
+    .admin-shell :is(.ring-emerald-500, .ring-brand-500, .focus\:ring-emerald-500:focus, .focus\:ring-brand-500:focus, .focus\:ring-accent:focus) {
+      --tw-ring-color: var(--admin-accent) !important;
+    }
+    #providerCards label:has(input:checked) {
+      background-color: var(--admin-accent-soft) !important;
+      border-color: var(--admin-accent) !important;
+      --tw-ring-color: var(--admin-accent) !important;
+    }
+    .admin-shell input[type="range"] {
+      accent-color: var(--admin-accent) !important;
+    }
+    .admin-shell .from-emerald-500 {
+      --tw-gradient-from: var(--admin-accent) var(--tw-gradient-from-position) !important;
+      --tw-gradient-to: var(--admin-accent-text) var(--tw-gradient-to-position) !important;
+      --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+    }
+    /* Admin Tables, Headers, Rows & Badges */
+    .admin-shell .admin-table-container,
+    html.dark .admin-shell .admin-table-container {
+      background-color: var(--admin-bg-panel) !important;
+      border-color: var(--admin-border) !important;
+    }
+    .admin-shell .admin-table-head {
+      background-color: var(--admin-bg-subtle) !important;
+      color: var(--text-secondary, #475569) !important;
+      border-bottom: 1px solid var(--admin-border) !important;
+    }
+    html.dark .admin-shell .admin-table-head {
+      background-color: var(--admin-bg-subtle) !important;
+      color: #cbd5e1 !important;
+      border-bottom: 1px solid var(--admin-border) !important;
+    }
+    .admin-shell .admin-table-body tr,
+    html.dark .admin-shell .admin-table-body tr,
+    .admin-shell .admin-table-body > div,
+    html.dark .admin-shell .admin-table-body > div {
+      border-color: var(--admin-border) !important;
+    }
+    .admin-shell .admin-table-body tr:hover,
+    html.dark .admin-shell .admin-table-body tr:hover,
+    .admin-shell table tbody tr:hover,
+    html.dark .admin-shell table tbody tr:hover {
+      background-color: var(--admin-accent-soft) !important;
+    }
+    .admin-shell .admin-badge-published,
+    .admin-shell .admin-badge-featured {
+      background-color: var(--admin-accent-soft) !important;
+      color: var(--admin-accent-text) !important;
+      border: 1px solid var(--admin-accent-border) !important;
+    }
+    .admin-shell .admin-badge-category {
+      background-color: var(--admin-bg-subtle) !important;
+      color: var(--admin-accent-text) !important;
+      border: 1px solid var(--admin-border) !important;
+    }
+    .admin-shell .admin-badge-scheduled {
+      background-color: rgba(245, 158, 11, 0.14) !important;
+      color: #d97706 !important;
+      border: 1px solid rgba(245, 158, 11, 0.32) !important;
+    }
+    html.dark .admin-shell .admin-badge-scheduled {
+      color: #fbbf24 !important;
+    }
+    .admin-shell .admin-badge-draft,
+    .admin-shell .admin-badge-standard {
+      background-color: var(--admin-bg-subtle) !important;
+      color: #64748b !important;
+      border: 1px solid var(--admin-border) !important;
+    }
+    html.dark .admin-shell .admin-badge-draft,
+    html.dark .admin-shell .admin-badge-standard {
+      color: #94a3b8 !important;
+    }
+    /* Header Search & Theme Trigger Buttons + Form Controls */
+    .admin-shell .appearance-trigger,
+    .admin-shell .appearance-search,
+    html.dark .admin-shell .appearance-trigger,
+    html.dark .admin-shell .appearance-search {
+      background-color: var(--admin-bg-subtle) !important;
+      border-color: var(--admin-border) !important;
+      color: var(--admin-accent-text) !important;
+    }
+    .admin-shell .appearance-trigger:hover,
+    .admin-shell .appearance-search:hover,
+    html.dark .admin-shell .appearance-trigger:hover,
+    html.dark .admin-shell .appearance-search:hover {
+      background-color: var(--admin-accent-soft) !important;
+      border-color: var(--admin-accent-border) !important;
+    }
+    .admin-shell .appearance-panel,
+    html.dark .admin-shell .appearance-panel {
+      background-color: var(--admin-bg-panel) !important;
+      border-color: var(--admin-border) !important;
+    }
+    html.dark .admin-shell .appearance-current-color {
+      border-color: var(--admin-bg-subtle) !important;
+    }
+    .admin-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    .admin-shell select,
+    .admin-shell textarea,
+    html.dark .admin-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    html.dark .admin-shell select,
+    html.dark .admin-shell textarea {
+      background-color: var(--admin-bg-subtle) !important;
+      border-color: var(--border-strong, #64748b) !important;
+    }
+    /* Sidebar Left-Aligned Horizontal Item Layout (Enlarged Font & Icons) */
+    #adminLeftSidebar nav a.sidebar-nav-item {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      text-align: left !important;
+      gap: 0.85rem !important;
+      min-height: 44px !important;
+      font-size: 0.9375rem !important;
+      line-height: 1.35rem !important;
+    }
+    #adminLeftSidebar nav a.sidebar-nav-item svg {
+      width: 1.25rem !important;
+      height: 1.25rem !important;
+    }
+    /* Collapsible Left Sidebar State (Desktop >= 1024px) */
+    @media (min-width: 1024px) {
+      #adminLeftSidebar[data-collapsed="true"],
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar {
+        width: 4.75rem !important;
       }
-      header.sticky,
-      .admin-shell header {
-        background-color: rgba(255, 255, 255, var(--header-opacity, <%= headerAlpha %>)) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-      }
-      html.dark header.sticky,
-      .dark .admin-shell header {
-        background-color: rgba(15, 23, 42, var(--header-opacity, <%= headerAlpha %>)) !important;
-      }
-      .admin-header-inner,
-      .admin-shell main,
-      .admin-main-container,
-      .custom-container {
-        max-width: var(--container-max-width, <%= cMaxWidth %>) !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        width: 100% !important;
-      }
-      .theme-dropdown-menu.hidden,
-      #admin-palette-dropdown-menu.hidden {
+      #adminLeftSidebar[data-collapsed="true"] .sidebar-collapsible-text,
+      #adminLeftSidebar[data-collapsed="true"] .sidebar-brand-link,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar .sidebar-collapsible-text,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar .sidebar-brand-link {
         display: none !important;
       }
-      .theme-dropdown-menu:not(.hidden),
-      #admin-palette-dropdown-menu:not(.hidden) {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 6px !important;
-        top: calc(100% + 8px) !important;
-        right: 0 !important;
-        width: auto !important;
-        max-width: none !important;
-        z-index: 999999 !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
+      #adminLeftSidebar[data-collapsed="true"] .sidebar-brand-wrap,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar .sidebar-brand-wrap {
+        justify-content: center !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
       }
-      .theme-dropdown-menu .palette-btn,
-      #admin-palette-dropdown-menu .palette-btn {
-        width: 15px !important;
-        height: 15px !important;
-        min-width: 15px !important;
-        min-height: 15px !important;
-        max-width: 15px !important;
-        max-height: 15px !important;
+      #adminLeftSidebar[data-collapsed="true"] #sidebarCollapseBtn,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar #sidebarCollapseBtn {
+        width: 2.625rem !important;
+        height: 2.625rem !important;
         padding: 0 !important;
-        border-radius: 9999px !important;
-        flex-shrink: 0 !important;
+        justify-content: center !important;
       }
-    </style>
-  <% } %>
+      #adminLeftSidebar[data-collapsed="true"] #sidebarCollapseBtn svg,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar #sidebarCollapseBtn svg {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+      }
+      #adminLeftSidebar[data-collapsed="true"] nav a.sidebar-nav-item,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar nav a.sidebar-nav-item {
+        width: 2.875rem !important;
+        height: 2.875rem !important;
+        min-height: 2.875rem !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 0 !important;
+        justify-content: center !important;
+      }
+      #adminLeftSidebar[data-collapsed="true"] nav a.sidebar-nav-item svg,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar nav a.sidebar-nav-item svg {
+        width: 1.4rem !important;
+        height: 1.4rem !important;
+      }
+      #adminLeftSidebar[data-collapsed="true"] .sidebar-user-wrap,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar .sidebar-user-wrap {
+        justify-content: center !important;
+      }
+      #adminLeftSidebar[data-collapsed="true"] .admin-signout,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar .admin-signout {
+        width: 2.625rem !important;
+        height: 2.625rem !important;
+        min-height: 2.625rem !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 0 !important;
+        justify-content: center !important;
+      }
+      #adminLeftSidebar[data-collapsed="true"] .admin-signout svg,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar .admin-signout svg {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+      }
+      #adminLeftSidebar[data-collapsed="true"] #sidebarCollapseChevron,
+      html[data-sidebar-collapsed="true"] #adminLeftSidebar #sidebarCollapseChevron {
+        transform: rotate(180deg);
+      }
+    }
+    .theme-dropdown-menu.hidden,
+    #admin-palette-dropdown-menu.hidden {
+      display: none !important;
+    }
+    .theme-dropdown-menu:not(.hidden),
+    #admin-palette-dropdown-menu:not(.hidden) {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 6px !important;
+      top: calc(100% + 8px) !important;
+      right: 0 !important;
+      width: auto !important;
+      max-width: none !important;
+      z-index: 999999 !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+    .theme-dropdown-menu .palette-btn,
+    #admin-palette-dropdown-menu .palette-btn {
+      width: 15px !important;
+      height: 15px !important;
+      min-width: 15px !important;
+      min-height: 15px !important;
+      max-width: 15px !important;
+      max-height: 15px !important;
+      padding: 0 !important;
+      border-radius: 9999px !important;
+      flex-shrink: 0 !important;
+    }
+  </style>
 </head>
-<body class="ui-shell admin-shell bg-slate-100 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased transition-colors duration-200">
+<body class="ui-shell admin-shell bg-slate-50 dark:bg-brand-dark text-slate-900 dark:text-slate-100 font-sans min-h-screen flex antialiased thin-dark-scrollbar">
 
   <!-- Skip to main content link for accessibility -->
-  <a href="#admin-main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-500 focus:text-white focus:rounded-lg focus:font-bold focus:text-sm">Skip to main content</a>
+  <a href="#admin-main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-500 focus:text-white focus:rounded-lg focus:font-bold focus:text-xs">Skip to main content</a>
 
-  <!-- Top Admin Bar (Sticky with Dynamic Transparency and Max Width matching Public Header) -->
-  <header class="sticky top-0 z-50 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors duration-200 shadow-xs">
-    <div class="admin-header-inner mx-auto px-2 min-[360px]:px-3 sm:px-4 lg:px-6 h-16 flex items-center justify-between flex-nowrap gap-2 sm:gap-3" style="max-width: var(--container-max-width, <%= settings.container_max_width || '80rem' %>); margin: 0 auto; width: 100%;">
-      
-      <!-- Brand & Admin Badge -->
-      <a href="/admin" aria-label="Embedded India Admin" class="flex items-center min-h-[44px] py-1.5 space-x-2 sm:space-x-3 group flex-shrink-0">
-        <% if (settings.site_logo) { %>
-          <img src="<%= settings.site_logo %>" alt="<%= settings.site_name || 'Embedded India' %>" class="h-8 sm:h-10 w-auto object-contain flex-shrink-0">
+  <%
+    const adminUser = (typeof currentUser !== 'undefined' && currentUser) ? currentUser : { username: 'Administrator', email: 'admin@embeddedindia.in', role: 'admin' };
+    const adminDisplayName = adminUser.username || (adminUser.email ? adminUser.email.split('@')[0] : 'Administrator');
+    const adminEmail = adminUser.email || 'admin@embeddedindia.in';
+    const adminInitials = (adminDisplayName.slice(0, 1) || 'A').toUpperCase();
+    const navPath = typeof currentPath !== 'undefined' ? currentPath : '/admin';
+    const counts = (typeof navCounts !== 'undefined' && navCounts) ? navCounts : {
+      inquiries: 0,
+      subscribers: 0,
+      posts: 0,
+      projects: 0,
+      reviews: 0,
+      assets: 0
+    };
+    const isSettingsPage = navPath.startsWith('/admin/settings') || navPath.startsWith('/admin/customizer') || navPath.startsWith('/admin/ai');
+    const workspaceRoutes = [
+      { label: 'Overview', headerLabel: 'Overview', href: '/admin', count: null, active: navPath === '/admin', icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-5a1 1 0 011-1h4a1 1 0 011 1v9a1 1 0 01-1 1h-4a1 1 0 01-1-1v-9z"/>' },
+      { label: 'Inquiries', headerLabel: 'Inquiries', href: '/admin/inquiries', count: counts.inquiries, active: navPath.startsWith('/admin/inquiries'), icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>' },
+      { label: 'Subscribers', headerLabel: 'Subscribers', href: '/admin/subscribers', count: counts.subscribers, active: navPath.startsWith('/admin/subscribers'), icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>' },
+      { label: 'Blog Posts', headerLabel: 'Articles', href: '/admin/posts', count: counts.posts, active: navPath.startsWith('/admin/posts'), icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>' },
+      { label: 'Projects', headerLabel: 'Projects', href: '/admin/projects', count: counts.projects, active: navPath.startsWith('/admin/projects'), icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>' },
+      { label: 'Reviews', headerLabel: 'Reviews', href: '/admin/testimonials', count: counts.reviews, active: navPath.startsWith('/admin/testimonials'), icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>' },
+      { label: 'Assets', headerLabel: 'Assets', href: '/admin/assets', count: counts.assets, active: navPath.startsWith('/admin/assets'), icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>' }
+    ];
+    const systemRoutes = [
+      { label: 'Settings', headerLabel: 'Settings', href: '/admin/settings', count: null, active: isSettingsPage, icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>' }
+    ];
+    const sidebarRoutes = [...workspaceRoutes, ...systemRoutes];
+    const activeRouteObj = sidebarRoutes.find(r => r.active) || (navPath.startsWith('/admin/traffic') ? { label: 'Traffic', href: '/admin/traffic', active: true } : sidebarRoutes[0]);
+  %>
+
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="adminSidebarBackdrop" onclick="toggleMobileAdminSidebar(false)" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs hidden lg:hidden"></div>
+
+  <!-- Persistent Left Sidebar Rail (w-64, Collapsible, Theme-Aware) -->
+  <aside id="adminLeftSidebar" aria-label="Primary Admin Navigation" class="fixed lg:sticky top-0 left-0 z-50 h-screen w-64 bg-white dark:bg-brand-surface border-r border-slate-200 dark:border-brand-border text-slate-700 dark:text-slate-200 flex flex-col justify-between shrink-0 transition-transform lg:transition-[width] duration-200 -translate-x-full lg:translate-x-0 select-none">
+    
+    <!-- Top: Embedded India Brand Block with Avatar / Initials & Collapse Button -->
+    <div class="sidebar-brand-wrap h-14 md:h-16 px-3.5 border-b border-slate-200 dark:border-brand-border flex items-center justify-between gap-2 shrink-0">
+      <a href="/admin" aria-label="Embedded India Admin" class="sidebar-brand-link flex items-center gap-2.5 min-w-0 group">
+        <% if (settings && settings.site_logo) { %>
+          <img src="<%= settings.site_logo %>" alt="<%= settings.site_name || 'Embedded India' %>" class="h-9 w-9 rounded-lg object-contain bg-slate-100 dark:bg-brand-dark p-1 border border-slate-200 dark:border-brand-border shrink-0">
         <% } else { %>
-          <!-- Iconic Spaceship Delta Arrowhead Brandmark -->
-          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-accent p-0.5 shadow-md shadow-brand-500/20 group-hover:shadow-brand-500/40 transition duration-300 transform group-hover:scale-105 icon-bounce-container flex-shrink-0">
-            <div class="w-full h-full bg-white dark:bg-slate-900 rounded-[7px] sm:rounded-[10px] flex items-center justify-center p-1 sm:p-2">
-              <svg id="adminBrandmarkSvg" class="w-full h-full text-brand-500 dark:text-accent transition-colors duration-300" viewBox="0 0 32 32" fill="currentColor">
-                <path d="M16 3C16.8 3 17.5 3.4 18 4.2L28.5 21.8C29.2 23 28.7 24.5 27.5 25.2C27.1 25.4 26.6 25.5 26.1 25.5H19.8C18.7 25.5 17.7 24.8 17.3 23.8L16 20.3L14.7 23.8C14.3 24.8 13.3 25.5 12.2 25.5H5.9C4.5 25.5 3.4 24.4 3.4 23C3.4 22.5 3.5 22.1 3.8 21.8L14 4.2C14.5 3.4 15.2 3 16 3Z"/>
-              </svg>
-            </div>
+          <div class="w-9 h-9 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-black text-sm flex items-center justify-center shrink-0">
+            EI
           </div>
         <% } %>
-
-        <!-- Semantic Brand Typography -->
-        <div class="hidden sm:flex flex-col">
-          <div class="text-xs min-[360px]:text-sm sm:text-xl lg:text-2xl font-black tracking-tight leading-none text-slate-900 dark:text-white flex items-center whitespace-nowrap">
-            <% const adminBrandParts = (settings.site_name || 'Embedded India').split(' '); %>
-            <span><%= adminBrandParts[0] %></span>
-            <% if (adminBrandParts.length > 1) { %>
-              <span class="text-brand-500 dark:text-accent ml-1 sm:ml-1.5 font-black"><%= adminBrandParts.slice(1).join(' ') %></span>
-            <% } %>
+        <div class="sidebar-collapsible-text flex flex-col min-w-0">
+          <div class="text-sm font-extrabold tracking-tight text-slate-900 dark:text-white truncate flex items-center gap-1">
+            <span>Embedded</span>
+            <span class="text-emerald-600 dark:text-emerald-400">India</span>
           </div>
-          <span class="text-[8px] sm:text-[9px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-300 mt-0.5 sm:mt-1">ADMIN CONSOLE</span>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 leading-none mt-0.5">Admin Console</span>
         </div>
-
-        <span class="hidden sm:inline-block text-[10px] bg-brand-500/10 dark:bg-accent/20 text-brand-700 dark:text-accent font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider border border-brand-500/20 whitespace-nowrap ml-1">
-          Admin
-        </span>
       </a>
 
-      <!-- Large Icon Button Navigation Bar (Matching Home Header) -->
-      <nav aria-label="Admin navigation" class="hidden md:flex items-center justify-center gap-1 lg:gap-1.5 text-slate-700 dark:text-slate-200 min-w-0 flex-1 whitespace-nowrap [&>a]:shrink-0">
-        <!-- Overview -->
-        <a href="/admin" aria-label="Overview" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath === '/admin' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-5a1 1 0 011-1h4a1 1 0 011 1v9a1 1 0 01-1 1h-4a1 1 0 01-1-1v-9z"/>
-          </svg>
-          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Overview</span>
-        </a>
+      <!-- Desktop Collapse Rail Button -->
+      <button type="button" id="sidebarCollapseBtn" onclick="toggleAdminSidebarCollapse()" title="Toggle sidebar width" aria-label="Toggle sidebar width" class="hidden lg:inline-flex items-center justify-center gap-1 p-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-brand-border text-xs font-bold transition cursor-pointer shrink-0">
+        <svg id="sidebarCollapseChevron" class="w-4 h-4 transition-transform duration-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        <span class="sr-only">Collapse</span>
+      </button>
 
-        <!-- Inquiries -->
-        <a href="/admin/inquiries" aria-label="Inquiries" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/inquiries') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-          </svg>
-          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Inquiries</span>
-        </a>
-
-        <!-- Subscribers -->
-        <a href="/admin/subscribers" aria-label="Subscribers" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/subscribers') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg>
-          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Subscribers</span>
-        </a>
-
-        <!-- Blog Posts -->
-        <a href="/admin/posts" aria-label="Blog Posts" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/posts') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-          </svg>
-          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Blog Posts</span>
-        </a>
-
-        <!-- Projects -->
-        <a href="/admin/projects" aria-label="Projects" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/projects') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-          </svg>
-          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Projects</span>
-        </a>
-
-        <!-- Reviews -->
-        <a href="/admin/testimonials" aria-label="Testimonials" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/testimonials') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-          </svg>
-          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Reviews</span>
-        </a>
-
-        <!-- Assets -->
-        <a href="/admin/assets" aria-label="Assets" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/assets') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Assets</span>
-        </a>
-
-        <!-- Settings -->
-        <a href="/admin/settings" aria-label="Settings" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] sm:min-w-[54px] lg:min-w-[58px] py-1 sm:py-1.5 px-1.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/admin/settings') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-          <span class="text-xs sm:text-[13px] font-bold tracking-tight mt-1 whitespace-nowrap leading-tight">Settings</span>
-        </a>
-      </nav>
-
-      <!-- Right Header Actions: Grouped Search + Theme, View Site & Sign Out -->
-      <div id="admin-header-actions" class="flex items-center flex-nowrap gap-1.5 sm:gap-2 text-xs flex-shrink-0 ml-auto lg:ml-2">
-        
-        <!-- Grouped Search & Theme Pill (Identical to Public Header) -->
-        <%- include('../partials/theme-button', { showSearch: true, searchLabel: 'Search admin pages and settings', wrapperId: 'admin-palette-dropdown-wrapper', btnId: 'admin-palette-dropdown-btn', menuId: 'admin-palette-dropdown-menu', chevronId: 'admin-palette-chevron', activeDotId: 'admin-active-scheme-dot', activeNameId: 'admin-active-palette-name' }) %>
-        <a href="/admin/logout" class="admin-signout" aria-label="Sign out" title="Sign out">
-          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M14 8l4 4-4 4m-5-4h12"/></svg>
-          <span>Sign out</span>
-        </a>
-      </div>
-
+      <!-- Mobile Close Drawer Button -->
+      <button type="button" onclick="toggleMobileAdminSidebar(false)" title="Close navigation menu" aria-label="Close navigation menu" class="lg:hidden inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-brand-border text-xs font-bold">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <span>Close</span>
+      </button>
     </div>
 
-    <!-- Mobile Sub-Navigation Bar for Small Screens (< 768px) — Non-Scrolling 3x2 / 6x1 Icon Button Grid -->
-    <nav aria-label="Admin mobile navigation" class="md:hidden grid grid-cols-3 sm:grid-cols-6 gap-1.5 px-3 py-2 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-xs font-bold w-full" style="max-width: var(--container-max-width, <%= settings.container_max_width || '80rem' %>); margin: 0 auto;">
-      <a href="/admin" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath === '/admin' ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
-        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-5a1 1 0 011-1h4a1 1 0 011 1v9a1 1 0 01-1 1h-4a1 1 0 01-1-1v-9z"/></svg>
-        <span class="text-[11px] leading-tight">Overview</span>
-      </a>
-      <a href="/admin/inquiries" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/inquiries') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
-        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        <span class="text-[11px] leading-tight">Inquiries</span>
-      </a>
-      <a href="/admin/subscribers" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/subscribers') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
-        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        <span class="text-[11px] leading-tight">Subscribers</span>
-      </a>
-      <a href="/admin/posts" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/posts') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
-        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-        <span class="text-[11px] leading-tight">Posts</span>
-      </a>
-      <a href="/admin/projects" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/projects') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
-        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-        <span class="text-[11px] leading-tight">Projects</span>
-      </a>
-      <a href="/admin/assets" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/assets') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
-        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        <span class="text-[11px] leading-tight">Assets</span>
-      </a>
-      <a href="/admin/settings" class="nav-icon-link flex flex-col items-center justify-center px-2 py-1.5 rounded-xl transition <%= currentPath.startsWith('/admin/settings') ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' %>">
-        <svg class="w-5 h-5 mb-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        <span class="text-[11px] leading-tight">Settings</span>
-      </a>
-    </nav>
-  </header>
+    <!-- Middle: Unified Left-Aligned High-Level Routes with Settings Pinned at Bottom -->
+    <nav aria-label="Admin workspace navigation" class="flex-1 flex flex-col overflow-y-auto thin-dark-scrollbar py-3.5 px-2.5">
+      <div class="space-y-1">
+        <div class="sidebar-collapsible-text px-2.5 pb-1.5 text-[11px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          Workspace
+        </div>
+        <% workspaceRoutes.forEach((item) => { %>
+          <a href="<%= item.href %>"
+             title="<%= item.label %>"
+             aria-label="<%= item.label %>"
+             <% if (item.active) { %>aria-current="page"<% } %>
+             class="sidebar-nav-item group flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 <%= item.active ? 'bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-brand-dark border border-transparent' %>">
+            <svg class="w-5 h-5 shrink-0 transition-transform duration-150 group-hover:scale-105 <%= item.active ? 'text-brand-600 dark:text-accent' : 'text-slate-500 dark:text-slate-400 group-hover:text-brand-600 dark:group-hover:text-accent' %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <%- item.icon %>
+            </svg>
+            <span class="sidebar-collapsible-text truncate"><%= item.label %></span>
+            <% if (item.count !== null && item.count !== undefined) { %>
+              <span class="sidebar-collapsible-text ml-auto px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-brand-dark text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-brand-border shrink-0"><%= item.count %></span>
+            <% } else if (item.active) { %>
+              <span class="sidebar-collapsible-text ml-auto w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+            <% } %>
+          </a>
+        <% }); %>
+      </div>
 
-  <%- include('../partials/search-dialog', { adminSearch: true }) %>
-  <main id="admin-main-content" class="custom-container admin-main-container mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full min-w-0 box-border flex-grow" style="max-width: var(--container-max-width, <%= settings.container_max_width || '80rem' %>) !important; margin: 0 auto !important; width: 100% !important;">
+      <div class="mt-auto pt-4 space-y-1">
+        <div class="sidebar-collapsible-text px-2.5 pb-1.5 text-[11px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          System
+        </div>
+        <% systemRoutes.forEach((item) => { %>
+          <a href="<%= item.href %>"
+             title="<%= item.label %>"
+             aria-label="<%= item.label %>"
+             <% if (item.active) { %>aria-current="page"<% } %>
+             class="sidebar-nav-item group flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 <%= item.active ? 'bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-brand-dark border border-transparent' %>">
+            <svg class="w-5 h-5 shrink-0 transition-transform duration-150 group-hover:scale-105 <%= item.active ? 'text-brand-600 dark:text-accent' : 'text-slate-500 dark:text-slate-400 group-hover:text-brand-600 dark:group-hover:text-accent' %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <%- item.icon %>
+            </svg>
+            <span class="sidebar-collapsible-text truncate"><%= item.label %></span>
+            <% if (item.active) { %>
+              <span class="sidebar-collapsible-text ml-auto w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+            <% } %>
+          </a>
+        <% }); %>
+      </div>
+    </nav>
+
+    <!-- Bottom: Logged-in Administrator Card + Compact Logout Icon Button -->
+    <div class="p-2.5 border-t border-slate-200 dark:border-brand-border shrink-0">
+      <div class="sidebar-user-wrap p-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border flex items-center justify-between gap-2 min-w-0">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-bold text-sm flex items-center justify-center shrink-0" title="<%= adminEmail %>">
+            <%= adminInitials %>
+          </div>
+          <div class="sidebar-collapsible-text min-w-0 flex-1">
+            <p class="text-xs font-bold text-slate-900 dark:text-white truncate leading-tight">Administrator</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate leading-tight mt-0.5">v1.0.0 &bull; Prisma</p>
+          </div>
+        </div>
+        <a href="/admin/logout" class="admin-signout w-8 h-8 rounded-lg inline-flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition shrink-0" aria-label="Sign out" title="Sign out">
+          <svg aria-hidden="true" class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span class="sr-only">Sign out</span>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right Main Content Column -->
+  <div class="flex-1 flex flex-col min-w-0 min-h-screen bg-slate-50 dark:bg-brand-dark">
+
+    <!-- Compact Top Global Bar (+ Attached Settings Sub-Header when on Settings Page) -->
+    <header id="adminTopHeader" class="sticky top-0 z-40 bg-white dark:bg-brand-surface border-b border-slate-200 dark:border-brand-border flex flex-col shrink-0">
+      <div class="h-13 sm:h-14 md:h-16 px-3 sm:px-5 lg:px-6 flex items-center justify-between gap-2 sm:gap-3 w-full">
+        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+          <!-- Mobile Sidebar Trigger -->
+          <button type="button" onclick="toggleMobileAdminSidebar(true)" aria-label="Open navigation sidebar" title="Open navigation sidebar" class="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold shrink-0">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            <span class="sr-only">Menu</span>
+          </button>
+
+          <% if (isSettingsPage) { %>
+            <!-- Settings Dynamic Section Title & Subtitle -->
+            <div class="min-w-0">
+              <div class="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-base leading-tight min-w-0">
+                <svg id="adminHeaderSectionIcon" class="w-4 h-4 text-amber-400 shrink-0 hidden sm:inline-block" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+                <span class="font-extrabold text-slate-900 dark:text-white tracking-tight shrink-0">Settings</span>
+                <span class="text-slate-400 dark:text-slate-500 font-normal shrink-0">/</span>
+                <span id="adminHeaderActiveSection" class="font-bold text-brand-600 dark:text-accent truncate text-xs sm:text-sm">AI Engine</span>
+              </div>
+              <p id="adminHeaderActiveDesc" class="hidden md:block text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                Configure model credentials, draft technical articles, and manage automated scheduled publishing.
+              </p>
+            </div>
+          <% } else { %>
+            <!-- Standard Route Context Breadcrumb -->
+            <div class="flex items-center gap-2 text-xs min-w-0">
+              <span class="text-slate-400 dark:text-slate-500 font-semibold hidden sm:inline">Embedded India</span>
+              <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">/</span>
+              <span class="font-extrabold text-slate-900 dark:text-white truncate text-sm"><%= activeRouteObj.label %></span>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Right Header Actions: Theme Button + Settings Save/Discard -->
+        <div id="admin-header-actions" class="flex items-center gap-1.5 sm:gap-2 text-xs shrink-0">
+          <%- include('../partials/theme-button', { showSearch: !isSettingsPage, searchLabel: 'Search admin pages and settings', wrapperId: 'admin-palette-dropdown-wrapper', btnId: 'admin-palette-dropdown-btn', menuId: 'admin-palette-dropdown-menu', chevronId: 'admin-palette-chevron', activeDotId: 'admin-active-scheme-dot', activeNameId: 'admin-active-palette-name' }) %>
+
+          <% if (isSettingsPage) { %>
+            <button type="button" id="adminHeaderDiscardBtn" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-semibold inline-flex items-center gap-1.5 transition cursor-pointer">
+              <svg class="w-3.5 h-3.5 text-slate-400 shrink-0 hidden sm:inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Discard</span>
+            </button>
+            <button type="button" id="adminHeaderSaveBtn" class="px-2.5 sm:px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold inline-flex items-center gap-1.5 transition shadow-xs cursor-pointer">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span class="sm:hidden">Save</span>
+              <span class="hidden sm:inline">Save Changes</span>
+            </button>
+          <% } else { %>
+            <a href="/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold transition" title="Open live public website">
+              <svg class="w-3.5 h-3.5 text-brand-600 dark:text-accent shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              <span class="hidden sm:inline">Live Site</span>
+            </a>
+          <% } %>
+        </div>
+      </div>
+
+      <% if (isSettingsPage) { %>
+        <%- include('partials/settings-nav') %>
+      <% } %>
+    </header>
+
+    <script>
+      (function() {
+        const sidebar = document.getElementById('adminLeftSidebar');
+        if (sidebar && localStorage.getItem('admin-sidebar-collapsed') === 'true') {
+          sidebar.setAttribute('data-collapsed', 'true');
+          document.documentElement.setAttribute('data-sidebar-collapsed', 'true');
+        }
+      })();
+      window.toggleAdminSidebarCollapse = function() {
+        const sidebar = document.getElementById('adminLeftSidebar');
+        if (!sidebar) return;
+        const next = sidebar.getAttribute('data-collapsed') !== 'true';
+        sidebar.setAttribute('data-collapsed', String(next));
+        if (next) {
+          document.documentElement.setAttribute('data-sidebar-collapsed', 'true');
+        } else {
+          document.documentElement.removeAttribute('data-sidebar-collapsed');
+        }
+        localStorage.setItem('admin-sidebar-collapsed', String(next));
+      };
+      window.toggleMobileAdminSidebar = function(open) {
+        const sidebar = document.getElementById('adminLeftSidebar');
+        const backdrop = document.getElementById('adminSidebarBackdrop');
+        if (!sidebar || !backdrop) return;
+        if (open) {
+          sidebar.classList.remove('-translate-x-full');
+          backdrop.classList.remove('hidden');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        }
+      };
+    </script>
+
+    <%- include('../partials/search-dialog', { adminSearch: true }) %>
+    <main id="admin-main-content" class="admin-main-container flex-1 w-full max-w-none min-w-0 px-3.5 sm:px-5 lg:px-6 py-4 box-border thin-dark-scrollbar">

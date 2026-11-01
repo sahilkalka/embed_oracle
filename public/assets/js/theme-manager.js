@@ -4,38 +4,22 @@
   if (!data) return;
   const presets = JSON.parse(data.textContent);
   const aliases = { emerald:'cyber-emerald', ocean:'vscode-theme', violet:'quantum-cyan', amber:'solar-amber', rose:'titanium-slate', cyan:'quantum-cyan', slate:'titanium-slate', 'clean-light':'vscode-theme' };
-  let active = aliases[localStorage.getItem('color-palette')] || localStorage.getItem('color-palette') || 'cyber-emerald';
-  if (!presets.some(p => p.key === active)) active = 'cyber-emerald';
+  const root = document.documentElement;
+  const stored = localStorage.getItem('color-palette');
+  const isPreset = key => presets.some(p => p.key === key);
+  let active = aliases[stored] || stored;
+  if (!isPreset(active)) active = isPreset(root.dataset.palette) ? root.dataset.palette : presets[0].key;
   function apply() {
     const preset = presets.find(p => p.key === active);
-    const dark = document.documentElement.classList.contains('dark');
-    const variant = dark ? preset.dark : preset.light;
-    const accent = variant['--primary-color'];
-    const vars = {
-      '--primary-color': accent, '--primary-hover': preset.accent, '--primary-active': preset.accent, '--accent-primary': accent,
-      '--secondary-color': preset.secondary, '--accent-secondary': preset.secondary, '--accent-light': preset.bright, '--accent-dark': preset.accent,
-      '--bg-primary': dark ? preset.background : '#ffffff', '--bg-dark': preset.background,
-      '--bg-surface': dark ? preset.surface : '#f8fafc', '--surface-color': dark ? preset.surface : '#f8fafc',
-      '--text-primary': dark ? '#f1f5f9' : '#0f172a', '--text-muted': dark ? '#cbd5e1' : '#475569', '--border-color': dark ? '#334155' : '#e2e8f0',
-      '--action-color': preset.accent, '--readable-primary': dark ? preset.bright : preset.accent,
-      '--glow-color': accent + '44'
-    };
-    Object.assign(vars, variant, {
-      '--accent-primary': accent, '--accent-secondary': variant['--secondary-color'],
-      '--bg-dark': preset.background, '--surface-color': variant['--bg-surface'],
-      '--action-color': variant['--primary-active'] || accent,
-      '--readable-primary': dark ? variant['--accent-light'] : variant['--primary-active']
-    });
+    const dark = root.classList.contains('dark');
+    // Colors come from the server-generated token stylesheet keyed by data-palette + .dark.
+    root.dataset.palette = active;
     document.querySelectorAll('.appearance-trigger').forEach(button => {
-      button.style.setProperty('--appearance-accent', accent);
-      button.title = preset.name + ' · ' + (dark ? 'Night mode' : 'Light mode');
+      button.title = preset.name + ' \u00b7 ' + (dark ? 'Night mode' : 'Light mode');
       button.setAttribute('aria-description', button.title);
       button.querySelector('.appearance-mode-sun').toggleAttribute('hidden', dark);
       button.querySelector('.appearance-mode-moon').toggleAttribute('hidden', !dark);
     });
-    for (const [key, value] of Object.entries(vars)) document.documentElement.style.setProperty(key, value);
-    document.documentElement.dataset.palette = active;
-    localStorage.setItem('color-palette', active);
     document.querySelectorAll('.appearance-palette').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.scheme === active)));
     document.querySelectorAll('.appearance-mode input').forEach(input => { input.checked = dark; });
     window.dispatchEvent(new CustomEvent('appearancechange', { detail: { palette: active, dark } }));
@@ -75,7 +59,7 @@
       document.documentElement.classList.toggle('dark', event.target.checked);
       localStorage.setItem('color-theme', event.target.checked ? 'dark' : 'light'); apply();
     });
-    control.querySelectorAll('.appearance-palette').forEach(button => button.addEventListener('click', () => { active = button.dataset.scheme; apply(); }));
+    control.querySelectorAll('.appearance-palette').forEach(button => button.addEventListener('click', () => { active = button.dataset.scheme; localStorage.setItem('color-palette', active); apply(); }));
   }
   document.addEventListener('click', event => controls.forEach(control => { if (!control.contains(event.target) && control.querySelector('.appearance-trigger').getAttribute('aria-expanded') === 'true') setOpen(control, false); }));
   document.addEventListener('keydown', event => { if (event.key === 'Escape') controls.forEach(control => { if (control.querySelector('.appearance-trigger').getAttribute('aria-expanded') === 'true') setOpen(control, false, true); }); });

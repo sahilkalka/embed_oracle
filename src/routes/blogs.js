@@ -72,6 +72,12 @@ function normalizePost(post) {
   return p;
 }
 
+function toIsoDate(value) {
+  if (!value) return undefined;
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+}
+
 async function injectInArticleAd(html, settings = {}) {
   if (settings.ad_slot_in_article === 'false') return html;
   if (settings.ad_slot_in_article !== 'true' && !canShowAd(settings, settings.adsense_blog_inline_slot || settings.adsense_in_article_slot)) return html;
@@ -264,8 +270,8 @@ router.get('/:slug', async (req, res) => {
         '@type': 'Organization',
         name: post.author || 'Embedded India Engineering Team'
       },
-      datePublished: post.publishedAt?.toISOString(),
-      dateModified: post.updatedAt?.toISOString(),
+      datePublished: toIsoDate(post.publishedAt),
+      dateModified: toIsoDate(post.updatedAt),
       mainEntityOfPage: `${appUrl}/blogs/${post.slug}`
     };
 

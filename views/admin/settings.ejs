@@ -2,26 +2,25 @@
 
 <%- include('partials/settings-styles') %>
 
-<div class="w-full mx-auto space-y-6 pb-20">
+<!-- Global Toast Notification Banner for AJAX Saves -->
+<div id="settingsToast" role="status" aria-live="polite" hidden class="hidden fixed bottom-6 right-6 z-50 p-3.5 rounded-xl bg-brand-600 text-white shadow-2xl text-xs font-bold flex items-center space-x-2.5 animate-in fade-in slide-in-from-bottom duration-200">
+  <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+  <span id="settingsToastMsg">Module settings updated and applied live!</span>
+</div>
 
-  <!-- Global Toast Notification Banner for AJAX Saves -->
-  <div id="settingsToast" role="status" aria-live="polite" class="hidden fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-emerald-600 text-white shadow-2xl text-xs font-bold flex items-center space-x-2.5 animate-in fade-in slide-in-from-bottom duration-200">
-    <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-    <span id="settingsToastMsg">Module settings updated and applied live!</span>
-  </div>
+<div class="w-full mx-auto flex flex-col gap-3 sm:gap-4 pb-12 sm:pb-16">
 
   <% if (success) { %>
-    <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center space-x-2 shadow-sm">
-      <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+    <div class="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center space-x-2.5 shadow-sm">
+      <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
       <span>Settings configuration successfully updated and synced across all pages.</span>
     </div>
   <% } %>
 
-  <!-- Taskbar-style settings navigation -->
-  <div class="settings-workspace flex flex-col lg:flex-row rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-    <%- include('partials/settings-nav') %>
+  <!-- Consolidated Settings Workspace (Sub-Navigation Tabs are Attached Inside Top Header) -->
+  <div class="settings-workspace flex flex-col overflow-visible">
 
-    <!-- RIGHT CONTENT AREA -->
+    <!-- SETTINGS MODULE CONTENT AREA -->
     <div class="settings-content flex-1 min-w-0">
 
     <%- include('partials/settings/ai-engine') %>

@@ -30,11 +30,12 @@ function buildDerivatives(settings) {
     customFaqs = [];
   }
 
-  const publicTheme = resolveTheme(settings);
-  const adminTheme = resolveTheme({
+  const unifiedSettings = {
     ...settings,
-    active_theme_palette: settings.active_theme_palette || 'titanium-slate'
-  });
+    active_theme_palette: settings.active_theme_palette || 'cyber-emerald'
+  };
+  const publicTheme = resolveTheme(unifiedSettings);
+  const adminTheme = resolveTheme(unifiedSettings);
 
   return {
     routeOverrides,
@@ -53,6 +54,25 @@ async function getSettings() {
         acc[curr.key] = curr.value;
         return acc;
       }, {});
+      if (!cachedSettings.phone_number && !cachedSettings.contact_phone) {
+        cachedSettings.phone_number = '+91 83285 14090';
+        cachedSettings.contact_phone = '+91 83285 14090';
+      } else {
+        cachedSettings.phone_number = cachedSettings.phone_number || cachedSettings.contact_phone;
+        cachedSettings.contact_phone = cachedSettings.contact_phone || cachedSettings.phone_number;
+      }
+      if (!cachedSettings.whatsapp_number) {
+        cachedSettings.whatsapp_number = cachedSettings.phone_number || '+91 83285 14090';
+      }
+      if (cachedSettings.phone_visible === undefined) {
+        cachedSettings.phone_visible = '1';
+      }
+      if (cachedSettings.email_visible === undefined) {
+        cachedSettings.email_visible = '1';
+      }
+      cachedSettings.delivered_systems = cachedSettings.delivered_systems || '150+';
+      cachedSettings.hil_rate = cachedSettings.hil_rate || '98%';
+      cachedSettings.response_sla = cachedSettings.response_sla || '<24h';
       cachedDerivatives = buildDerivatives(cachedSettings);
       lastSettingsFetch = now;
     } catch (e) {
@@ -104,7 +124,9 @@ async function seoMiddleware(req, res, next) {
       contactPoint: {
         '@type': 'ContactPoint',
         email: settings.contact_email || 'info@embeddedindia.in',
-        telephone: settings.contact_phone || '+91 83285 14090',
+        ...(settings.phone_visible !== '0' && settings.phone_visible !== 'false' && settings.phone_visible !== false && settings.phone_visible !== 0
+          ? { telephone: settings.contact_phone || '+91 83285 14090' }
+          : {}),
         contactType: 'Customer Service'
       }
     }

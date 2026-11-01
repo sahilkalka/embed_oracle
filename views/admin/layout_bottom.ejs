@@ -1,12 +1,17 @@
-  </main>
+    </main>
 
-  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-4 text-center text-xs text-slate-500 transition-colors">
-    <p>Embedded India Administration Console &bull; Node.js &amp; Prisma ORM &bull; Version 1.0.0</p>
-  </footer>
+    <footer class="bg-white dark:bg-brand-surface border-t border-slate-200 dark:border-brand-border py-2.5 px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400 transition-colors shrink-0">
+      <p>Embedded India Administration Console &bull; Node.js &amp; Prisma ORM &bull; Version 1.0.0</p>
+      <div class="inline-flex items-center gap-1.5 text-[10px] text-slate-400 dark:text-slate-400">
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>
+        <span>Connected to Production DB</span>
+      </div>
+    </footer>
+  </div>
 
   <script src="/assets/js/header-search.js"></script>
   <script>
-    window.HeaderSearch.init([
+    if (document.getElementById('header-search-btn')) window.HeaderSearch.init([
       { title: 'Overview', url: '/admin', type: 'Admin', desc: 'Dashboard metrics and quick actions' },
       { title: 'Inquiries', url: '/admin/inquiries', type: 'Admin', desc: 'Lead and RFQ pipeline' },
       { title: 'Subscribers', url: '/admin/subscribers', type: 'Admin', desc: 'Newsletter leads and subscribers' },
@@ -27,7 +32,7 @@
     ]);
   </script>
 
-  <script src="/assets/js/theme-manager.js?v=<%= assetVersion %>"></script>
-  <script src="/assets/js/admin-asset-localizer.js?v=<%= assetVersion %>"></script>
+  <script src="/assets/js/theme-manager.js?v=<%= assetVersion %>-20261101"></script>
+  <script src="/assets/js/admin-asset-localizer.js?v=<%= assetVersion %>-20261101"></script>
 </body>
 </html>

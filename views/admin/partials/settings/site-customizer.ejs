@@ -8,7 +8,7 @@
 
         <!-- 2A. Bangalore Lab Live Event & Telemetry Pill Controls -->
         <div class="settings-panel p-5 rounded-2xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-2.5">
             <div>
               <h3 class="settings-panel-title">Lab status &amp; telemetry</h3>
               <p class="text-[11px] text-slate-500 mt-0.5">Controls the header status pill and the public homepage telemetry ticker.</p>
@@ -49,10 +49,10 @@
           </div>
 
           <!-- Live Event Pill Mockup -->
-          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
             <span class="text-[11px] font-bold text-slate-500">Live Header Preview:</span>
-            <div id="eventPillMockup" class="inline-flex items-center space-x-2 px-3 py-1 bg-brand-500/10 dark:bg-accent/15 border border-brand-500/20 rounded-full text-[11px] font-bold text-brand-700 dark:text-accent shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-brand-500 dark:bg-accent live-radar"></span>
+            <div id="eventPillMockup" class="inline-flex items-center space-x-2 px-3 py-1 bg-brand-500/10 dark:bg-accent/15 border border-brand-500/20 rounded-full text-[11px] font-bold text-brand-700 dark:text-accent shadow-xs max-w-full">
+              <span class="w-2 h-2 rounded-full bg-brand-500 dark:bg-accent live-radar shrink-0"></span>
               <span id="eventPillText" class="truncate max-w-xs"><%= settings.lab_event_label || 'Bangalore Lab: Online' %></span>
             </div>
           </div>
@@ -178,7 +178,7 @@
               <label class="block font-bold text-slate-800 dark:text-slate-200 mb-1 flex items-center space-x-1.5" for="contact_phone">
                 <span>📞 Direct Line / WhatsApp</span>
               </label>
-              <input type="text" id="contact_phone" name="contact_phone" value="<%= settings.contact_phone || '+91 98765 43210' %>" placeholder="+91 98765 43210" class="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white focus:ring-1 focus:ring-brand-500">
+              <input type="text" id="contact_phone" name="contact_phone" value="<%= settings.phone_number || settings.contact_phone || '+91 83285 14090' %>" placeholder="+91 83285 14090" class="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white focus:ring-1 focus:ring-brand-500">
               <span class="text-[10px] text-slate-400">Telephone and WhatsApp routing number for rapid client dispatch</span>
             </div>
 
@@ -189,6 +189,40 @@
               </label>
               <input type="text" id="contact_turnaround_sla" name="contact_turnaround_sla" value="<%= settings.contact_turnaround_sla || 'Technical reply and feasibility review within 24 business hours' %>" placeholder="Technical reply and feasibility review within 24 business hours" class="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:ring-1 focus:ring-brand-500">
               <span class="text-[10px] text-slate-400">Guaranteed review SLA displayed directly on the Contact Us desk</span>
+            </div>
+
+            <!-- 5. Contact Visibility Toggles -->
+            <div class="sm:col-span-2 pt-3 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-slate-800">
+                <div>
+                  <span class="block text-xs font-bold text-slate-900 dark:text-white">Hide / Unhide Mobile Number Section</span>
+                  <span class="text-[10px] text-slate-500">Show or hide mobile number, WhatsApp &amp; tel: links across the website</span>
+                </div>
+                <%- include('../../../partials/theme-toggle', {
+                  name: 'phone_visible',
+                  id: 'phone_visible',
+                  checked: settings.phone_visible !== '0' && settings.phone_visible !== 'false' && settings.phone_visible !== false && settings.phone_visible !== 0,
+                  onLabel: 'Visible',
+                  offLabel: 'Hidden',
+                  label: 'Toggle mobile number visibility on public website',
+                  showBadge: true
+                }) %>
+              </div>
+              <div class="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-slate-800">
+                <div>
+                  <span class="block text-xs font-bold text-slate-900 dark:text-white">Show Email on Public Site</span>
+                  <span class="text-[10px] text-slate-500">Controls visibility of public email links</span>
+                </div>
+                <%- include('../../../partials/theme-toggle', {
+                  name: 'email_visible',
+                  id: 'email_visible',
+                  checked: settings.email_visible !== '0' && settings.email_visible !== 'false' && settings.email_visible !== false && settings.email_visible !== 0,
+                  onLabel: 'Visible',
+                  offLabel: 'Hidden',
+                  label: 'Toggle email visibility on public website',
+                  showBadge: true
+                }) %>
+              </div>
             </div>
           </div>
         </div>

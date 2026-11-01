@@ -47,7 +47,7 @@
           <span class="text-xs font-mono text-slate-400 uppercase">Estimated Reduction</span>
           <p id="ic-reduction-pct" class="text-3xl sm:text-4xl font-extrabold font-mono text-emerald-400 mt-1">0%</p>
         </div>
-        <a id="ic-download-btn" class="px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-2 cursor-pointer pointer-events-none opacity-50">
+        <a id="ic-download-btn" aria-disabled="true" class="px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-2 cursor-pointer pointer-events-none opacity-50">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           Download Compressed
         </a>
@@ -68,9 +68,9 @@
 
       <div class="space-y-2">
         <span class="text-xs font-mono text-slate-400 uppercase">Preview</span>
-        <div class="max-h-64 overflow-hidden rounded-2xl bg-black/40 flex items-center justify-center border border-slate-800 p-2">
+        <div class="max-h-64 overflow-hidden rounded-2xl bg-slate-100 dark:bg-black/40 flex items-center justify-center border border-slate-200 dark:border-slate-800 p-2">
           <img id="ic-preview" class="max-h-56 max-w-full object-contain rounded-lg hidden" alt="Compressed Preview">
-          <span id="ic-placeholder" class="text-xs text-slate-500 py-12">No image loaded yet.</span>
+          <span id="ic-placeholder" class="text-xs text-slate-600 dark:text-slate-400 py-12">No image loaded yet.</span>
         </div>
       </div>
     </div>
@@ -145,6 +145,7 @@
       downloadBtn.href = url;
       downloadBtn.download = 'compressed-' + (originalFile.name.replace(/\.[^/.]+$/, '')) + (mime === 'image/webp' ? '.webp' : '.jpg');
       downloadBtn.classList.remove('pointer-events-none', 'opacity-50');
+      downloadBtn.removeAttribute('aria-disabled');
     }, mime, q);
   }
 

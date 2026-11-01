@@ -47,13 +47,14 @@
         <div id="digestTriggerResult" class="hidden p-3 rounded-xl text-xs font-mono"></div>
 
         <!-- Link to subscriber management -->
-        <div class="settings-panel p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+        <div class="settings-panel p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div>
             <h3 class="settings-panel-title">Subscriber audience</h3>
             <span class="text-slate-500 dark:text-slate-400">Manage, export, and review confirmed double opt-in subscribers</span>
           </div>
-          <a href="/admin/subscribers" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white rounded-xl font-bold transition">
-            Manage Subscribers &rarr;
+          <a href="/admin/subscribers" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white rounded-xl font-bold transition shrink-0">
+            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span>Manage Subscribers &rarr;</span>
           </a>
         </div>
 

@@ -2,10 +2,53 @@
 const colorThemes = require('../data/colorThemes');
 const PREDEFINED_PALETTES = Object.fromEntries(colorThemes.map(preset => [preset.key, {
   id: preset.key, name: preset.name, bgPrimary: preset.background, bgSurface: preset.surface,
-  textPrimary: '#f1f5f9', textMuted: '#94a3b8', accentPrimary: preset.accent,
-  accentSecondary: preset.secondary, borderColor: '#334155', swatchHex: preset.accent
+  textPrimary: (preset.dark && preset.dark['--text-primary']) || '#f1f5f9',
+  textMuted: (preset.dark && preset.dark['--text-muted']) || '#94a3b8',
+  accentPrimary: preset.accent,
+  accentSecondary: preset.secondary,
+  borderColor: (preset.dark && preset.dark['--border-color']) || '#1e3831',
+  swatchHex: preset.accent
 }]));
 const PALETTE_ALIASES = { emerald:'cyber-emerald', ocean:'vscode-theme', violet:'quantum-cyan', amber:'solar-amber', rose:'titanium-slate', cyan:'quantum-cyan', slate:'titanium-slate', 'clean-light':'vscode-theme' };
+const FONT_FALLBACK = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
+const MONO_STACK = "ui-monospace, 'Cascadia Code', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+
+// Universal design tokens shared by the public site and the admin dashboard.
+function paletteTokens(preset, mode) {
+  const t = preset[mode];
+  const dark = mode === 'dark';
+  const mix = (pct, base) => `color-mix(in srgb, ${t['--primary-color']} ${pct}%, ${base})`;
+  return {
+    ...t,
+    '--accent-primary': t['--primary-color'],
+    '--accent-secondary': t['--secondary-color'],
+    '--surface-color': t['--bg-surface'],
+    '--bg-dark': preset.background,
+    '--glow-accent': `color-mix(in srgb, ${t['--secondary-color']} 20%, transparent)`,
+    '--brand-50': dark ? mix(14, 'transparent') : mix(10, '#ffffff'),
+    '--brand-100': dark ? mix(22, 'transparent') : mix(18, '#ffffff'),
+    '--brand-200': dark ? mix(32, 'transparent') : mix(28, '#ffffff'),
+    '--brand-300': dark ? mix(48, 'transparent') : mix(45, '#ffffff'),
+    '--brand-400': dark ? mix(68, 'transparent') : mix(65, '#ffffff'),
+    '--brand-800': dark ? preset.surface : mix(75, '#0f172a'),
+    '--brand-900': dark ? preset.background : mix(45, '#0f172a')
+  };
+}
+
+const declarations = tokens => Object.entries(tokens).map(([key, value]) => `${key}: ${value};`).join(' ');
+
+function buildPaletteCss(activeKey) {
+  const active = colorThemes.find(preset => preset.key === activeKey) || colorThemes[0];
+  const rules = [
+    `:root { color-scheme: light; ${declarations(paletteTokens(active, 'light'))} }`,
+    `:root.dark { color-scheme: dark; ${declarations(paletteTokens(active, 'dark'))} }`
+  ];
+  for (const preset of colorThemes) {
+    rules.push(`:root[data-palette="${preset.key}"] { ${declarations(paletteTokens(preset, 'light'))} }`);
+    rules.push(`:root.dark[data-palette="${preset.key}"] { ${declarations(paletteTokens(preset, 'dark'))} }`);
+  }
+  return rules.join('\n');
+}
 
 function getAvailablePaletteKey(settings = {}, preferredKey = 'cyber-emerald', excludedKey = null) {
   const preferred = PALETTE_ALIASES[preferredKey] || preferredKey;
@@ -20,9 +63,20 @@ function getAvailablePaletteKey(settings = {}, preferredKey = 'cyber-emerald', e
 
 function resolveTheme(settings = {}) {
   const themes = require('../data/colorThemes');
-  const preset = themes[0];
-  const activeKey = preset.key;
-  const palette = { id: activeKey, name: preset.name, bgPrimary: preset.background, bgSurface: preset.surface, textPrimary: '#f1f5f9', textMuted: '#94a3b8', accentPrimary: preset.accent, accentSecondary: preset.secondary, borderColor: '#334155', swatchHex: preset.accent };
+  const activeKey = getAvailablePaletteKey(settings, settings.active_theme_palette || 'cyber-emerald') || themes[0].key;
+  const preset = themes.find(t => t.key === activeKey) || themes[0];
+  const palette = {
+    id: preset.key,
+    name: preset.name,
+    bgPrimary: preset.background,
+    bgSurface: preset.surface,
+    textPrimary: (preset.dark && preset.dark['--text-primary']) || '#f1f5f9',
+    textMuted: (preset.dark && preset.dark['--text-muted']) || '#94a3b8',
+    accentPrimary: preset.accent,
+    accentSecondary: preset.secondary,
+    borderColor: (preset.dark && preset.dark['--border-color']) || '#1e3831',
+    swatchHex: preset.accent
+  };
 
   const headingFont = settings.heading_font || 'Inter';
   const bodyFont = settings.body_font || 'Inter';
@@ -43,20 +97,11 @@ function resolveTheme(settings = {}) {
   if (bounceIntensity === 'none') springCurve = 'ease';
 
   const cssString = `
+    ${buildPaletteCss(activeKey)}
     :root {
-      --bg-primary: ${palette.bgPrimary};
-      --bg-dark: ${palette.bgPrimary};
-      --bg-surface: ${palette.bgSurface};
-      --surface-color: ${palette.bgSurface};
-      --text-primary: ${palette.textPrimary};
-      --text-muted: ${palette.textMuted};
-      --accent-primary: ${palette.accentPrimary};
-      --primary-color: ${palette.accentPrimary};
-      --accent-secondary: ${palette.accentSecondary};
-      --secondary-color: ${palette.accentSecondary};
-      --border-color: ${palette.borderColor};
-      --font-heading: '${headingFont}', system-ui, sans-serif;
-      --font-body: '${bodyFont}', system-ui, sans-serif;
+      --font-heading: '${headingFont}', ${FONT_FALLBACK};
+      --font-body: '${bodyFont}', ${FONT_FALLBACK};
+      --font-mono: ${MONO_STACK};
       --base-font-size: ${baseFontSize};
       --border-radius-scale: ${borderRadiusScale};
       --container-max-width: ${containerMaxWidth};
@@ -71,6 +116,7 @@ function resolveTheme(settings = {}) {
   return {
     palette,
     paletteKey: activeKey,
+    paletteAliases: PALETTE_ALIASES,
     predefinedPalettes: PREDEFINED_PALETTES,
     cssString,
     headingFont,
@@ -89,5 +135,6 @@ module.exports = {
   PREDEFINED_PALETTES,
   PALETTE_ALIASES,
   getAvailablePaletteKey,
+  buildPaletteCss,
   resolveTheme
 };

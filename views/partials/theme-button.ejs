@@ -19,7 +19,7 @@ const menuId = (locals.menuId || 'palette-dropdown-menu') + '-appearance';
       <label class="appearance-mode"><span>Night mode</span><input id="theme-mode-switch" type="checkbox" role="switch" aria-label="Night mode"><span class="appearance-switch-track" aria-hidden="true"></span></label>
       <div class="appearance-palettes">
         <% colorThemes.forEach(preset => { %>
-        <button type="button" class="appearance-palette min-h-[44px] min-w-[44px] flex items-center justify-center p-1" data-scheme="<%= preset.key %>" aria-label="<%= preset.name %>" aria-pressed="false"><span class="appearance-swatch" style="--swatch:<%= preset.accent %>"><span class="appearance-check" aria-hidden="true">✓</span></span><span><%= preset.label || preset.name %></span></button>
+        <button type="button" class="appearance-palette min-h-[44px] min-w-[44px] flex items-center justify-center p-1" data-scheme="<%= preset.key %>" aria-label="<%= preset.name %>" aria-pressed="false"><span class="appearance-swatch" style="--swatch:<%= preset.accent %>"><span class="appearance-check" aria-hidden="true"><svg class="w-3 h-3 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></span><span><%= preset.label || preset.name %></span></button>
         <% }); %>
       </div>
     </div>
