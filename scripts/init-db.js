@@ -169,8 +169,13 @@ CREATE INDEX IF NOT EXISTS idx_inquiry_status_created ON Inquiry(status, created
 CREATE INDEX IF NOT EXISTS idx_subscriber_status ON Subscriber(status);
 CREATE INDEX IF NOT EXISTS idx_calculatorstat_toolname ON CalculatorStat(toolName);
 CREATE INDEX IF NOT EXISTS idx_analytics_timestamp ON Analytics(timestamp);
-CREATE INDEX IF NOT EXISTS idx_analytics_traffic_timestamp ON Analytics(trafficType, timestamp);
 `);
+
+const analyticsColumns = db.pragma('table_info(Analytics)');
+if (!analyticsColumns.some(column => column.name === 'trafficType')) {
+  db.exec("ALTER TABLE Analytics ADD COLUMN trafficType TEXT NOT NULL DEFAULT 'legacy'");
+}
+db.exec('CREATE INDEX IF NOT EXISTS idx_analytics_traffic_timestamp ON Analytics(trafficType, timestamp)');
 
 require('../src/services/postDuplicates').installPostDuplicateGuards(db);
 
