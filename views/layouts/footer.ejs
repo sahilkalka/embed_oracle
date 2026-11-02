@@ -204,7 +204,7 @@
   <% } %>
 
   <!-- Global Client-Side Scripts -->
-  <script src="/assets/js/header-search.js"></script>
+  <script src="/assets/js/header-search.js?v=<%= assetVersion %>"></script>
   <script>
     // 3. Back-to-Top Button Scroll Handler
     const backToTopBtn = document.getElementById('back-to-top-btn');
@@ -349,9 +349,65 @@
 
   <%- include('../partials/copilot') %>
 
-  <script src="/assets/js/copilot-widget.js?v=<%= assetVersion %>-20261101"></script>
+  <script>
+    (function() {
+      const trigger = document.getElementById('copilot-trigger-btn');
+      if (!trigger) return;
 
-  <script src="/assets/js/theme-manager.js?v=<%= assetVersion %>-20261101"></script>
-  <script src="/assets/js/ui-effects.js?v=<%= assetVersion %>-20261101" defer></script>
+      let loaded = false;
+      let loading = null;
+      let clickReplayPending = false;
+
+      function loadCopilot() {
+        if (loaded) return Promise.resolve();
+        if (loading) return loading;
+
+        loading = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = <%- JSON.stringify('/assets/js/copilot-widget.js?v=' + assetVersion) %>;
+          script.async = true;
+          script.onload = () => {
+            loaded = true;
+            resolve();
+          };
+          script.onerror = () => {
+            script.remove();
+            loading = null;
+            reject(new Error('Failed to load Copilot widget script.'));
+          };
+          document.body.appendChild(script);
+        });
+
+        return loading;
+      }
+
+      function preloadCopilot() {
+        loadCopilot().catch(error => console.error('[COPILOT] Failed to load widget.', error));
+      }
+
+      trigger.addEventListener('pointerenter', preloadCopilot, { once: true });
+      trigger.addEventListener('focus', preloadCopilot, { once: true });
+      trigger.addEventListener('click', event => {
+        if (loaded) return;
+        event.preventDefault();
+        if (clickReplayPending) return;
+
+        clickReplayPending = true;
+        trigger.setAttribute('aria-busy', 'true');
+        loadCopilot().then(() => {
+          clickReplayPending = false;
+          trigger.removeAttribute('aria-busy');
+          trigger.click();
+        }).catch(error => {
+          clickReplayPending = false;
+          trigger.removeAttribute('aria-busy');
+          console.error('[COPILOT] Failed to load widget.', error);
+        });
+      });
+    })();
+  </script>
+
+  <script src="/assets/js/theme-manager.js?v=<%= assetVersion %>"></script>
+  <script src="/assets/js/ui-effects.js?v=<%= assetVersion %>" defer></script>
 </body>
 </html>

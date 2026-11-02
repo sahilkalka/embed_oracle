@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?<%= Array.from(new Set([theme.headingFont, theme.bodyFont])).map(f => 'family=' + f.replace(/\s+/g, '+') + ':wght@400;500;600;700;800;900').join('&') %>&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=<%= assetVersion %>-20261101">
+  <link rel="stylesheet" href="/css/style.css?v=<%= assetVersion %>">
   <style id="dynamic-theme-vars"><%- theme.cssString %></style>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <script>

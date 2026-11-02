@@ -334,6 +334,22 @@
     heroParallax();
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
-  else init();
+  function scheduleInit() {
+    const runWhenIdle = () => {
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(init, { timeout: 2000 });
+      } else {
+        window.setTimeout(init, 250);
+      }
+    };
+
+    if (document.readyState === 'complete') runWhenIdle();
+    else window.addEventListener('load', runWhenIdle, { once: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scheduleInit, { once: true });
+  } else {
+    scheduleInit();
+  }
 })();

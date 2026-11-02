@@ -424,10 +424,17 @@ function flushWriteBuffer() {
       if (analyticsBatch.length > 0) {
         const insertAnalytics = prepareCached(
           db,
-          'INSERT INTO `Analytics` (`id`, `path`, `referrer`, `userAgent`, `timestamp`) VALUES (?, ?, ?, ?, ?)'
+          'INSERT INTO `Analytics` (`id`, `path`, `referrer`, `userAgent`, `timestamp`, `trafficType`) VALUES (?, ?, ?, ?, ?, ?)'
         );
         for (const item of analyticsBatch) {
-          insertAnalytics.run(crypto.randomUUID(), item.path, item.referrer, item.userAgent, item.timestamp || now);
+          insertAnalytics.run(
+            crypto.randomUUID(),
+            item.path,
+            item.referrer,
+            item.userAgent,
+            item.timestamp || now,
+            item.trafficType || 'legacy'
+          );
         }
       }
       if (postViewsBatch.length > 0) {
@@ -479,6 +486,7 @@ function ensureIndexes(db) {
       CREATE INDEX IF NOT EXISTS idx_subscriber_status ON Subscriber(status);
       CREATE INDEX IF NOT EXISTS idx_calculatorstat_toolname ON CalculatorStat(toolName);
       CREATE INDEX IF NOT EXISTS idx_analytics_timestamp ON Analytics(timestamp);
+      CREATE INDEX IF NOT EXISTS idx_analytics_traffic_timestamp ON Analytics(trafficType, timestamp);
     `);
   } catch (_) {
     // Tables may not all exist yet prior to init-db
@@ -495,6 +503,7 @@ const sqlitePrisma = {
   analytics: createModelHandler('Analytics'),
   calculatorStat: createModelHandler('CalculatorStat'),
   testimonial: createModelHandler('Testimonial'),
+  telemetryBlock: createModelHandler('TelemetryBlock'),
 
   recordPageView(data) {
     if (process.env.NODE_ENV === 'test') {
@@ -505,6 +514,7 @@ const sqlitePrisma = {
         path: data.path,
         referrer: data.referrer || null,
         userAgent: data.userAgent || null,
+        trafficType: data.trafficType || 'legacy',
         timestamp: new Date().toISOString()
       });
       scheduleFlush();
@@ -594,6 +604,15 @@ if (process.env.USE_PRISMA_ENGINE === 'true') {
 // Install on startup as well, so restarting an existing installation protects it.
 const guardDb = getSqliteDb();
 guardDb.exec(`
+CREATE TABLE IF NOT EXISTS Analytics (
+  id TEXT PRIMARY KEY,
+  path TEXT NOT NULL,
+  referrer TEXT,
+  userAgent TEXT,
+  ipHash TEXT,
+  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+  trafficType TEXT NOT NULL DEFAULT 'legacy'
+);
 CREATE TABLE IF NOT EXISTS Testimonial (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -607,7 +626,17 @@ CREATE TABLE IF NOT EXISTS Testimonial (
   createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE IF NOT EXISTS TelemetryBlock (
+  id TEXT PRIMARY KEY,
+  visitorHash TEXT UNIQUE NOT NULL,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 `);
+const analyticsColumns = guardDb.pragma('table_info(Analytics)');
+if (!analyticsColumns.some(column => column.name === 'trafficType')) {
+  guardDb.exec("ALTER TABLE Analytics ADD COLUMN trafficType TEXT NOT NULL DEFAULT 'legacy'");
+}
 if (guardDb.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='Post'").get()) {
   require('./postDuplicates').installPostDuplicateGuards(guardDb);
   ensureIndexes(guardDb);

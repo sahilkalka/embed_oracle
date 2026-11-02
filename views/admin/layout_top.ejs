@@ -32,8 +32,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=block" rel="stylesheet">
   <%- include('../partials/palette-boot') %>
   <link href="https://fonts.googleapis.com/css2?<%= Array.from(new Set([theme.headingFont, theme.bodyFont])).map(f => 'family=' + f.replace(/\s+/g, '+') + ':wght@400;500;600;700;800;900').join('&') %>&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=<%= typeof assetVersion !== 'undefined' ? assetVersion : '1' %>-20261101">
-  <link rel="stylesheet" href="/css/admin-settings.css?v=<%= typeof assetVersion !== 'undefined' ? assetVersion : '20261031-3' %>-20261101">
+  <link rel="stylesheet" href="/css/style.css?v=<%= typeof assetVersion !== 'undefined' ? assetVersion : '1' %>">
+  <link rel="stylesheet" href="/css/admin-settings.css?v=<%= typeof assetVersion !== 'undefined' ? assetVersion : '1' %>">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <% if (theme && theme.cssString) { %>
     <style id="dynamic-theme-vars"><%- theme.cssString %></style>
@@ -352,7 +352,11 @@
       }
       #adminLeftSidebar[data-collapsed="true"] .sidebar-user-wrap,
       html[data-sidebar-collapsed="true"] #adminLeftSidebar .sidebar-user-wrap {
+        width: 100% !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
         justify-content: center !important;
+        padding: 0.35rem 0.25rem !important;
       }
       #adminLeftSidebar[data-collapsed="true"] .admin-signout,
       html[data-sidebar-collapsed="true"] #adminLeftSidebar .admin-signout {
@@ -450,7 +454,7 @@
   <aside id="adminLeftSidebar" aria-label="Primary Admin Navigation" class="fixed lg:sticky top-0 left-0 z-50 h-screen w-64 bg-white dark:bg-brand-surface border-r border-slate-200 dark:border-brand-border text-slate-700 dark:text-slate-200 flex flex-col justify-between shrink-0 transition-transform lg:transition-[width] duration-200 -translate-x-full lg:translate-x-0 select-none">
     
     <!-- Top: Embedded India Brand Block with Avatar / Initials & Collapse Button -->
-    <div class="sidebar-brand-wrap h-14 md:h-16 px-3.5 border-b border-slate-200 dark:border-brand-border flex items-center justify-between gap-2 shrink-0">
+    <div class="sidebar-brand-wrap h-auto min-h-16 px-3.5 py-2.5 border-b border-slate-200 dark:border-brand-border flex items-center justify-between gap-2 shrink-0">
       <a href="/admin" aria-label="Embedded India Admin" class="sidebar-brand-link flex items-center gap-2.5 min-w-0 group">
         <% if (settings && settings.site_logo) { %>
           <img src="<%= settings.site_logo %>" alt="<%= settings.site_name || 'Embedded India' %>" class="h-9 w-9 rounded-lg object-contain bg-slate-100 dark:bg-brand-dark p-1 border border-slate-200 dark:border-brand-border shrink-0">
@@ -475,9 +479,8 @@
       </button>
 
       <!-- Mobile Close Drawer Button -->
-      <button type="button" onclick="toggleMobileAdminSidebar(false)" title="Close navigation menu" aria-label="Close navigation menu" class="lg:hidden inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-brand-border text-xs font-bold">
+      <button type="button" onclick="toggleMobileAdminSidebar(false)" title="Close navigation menu" aria-label="Close navigation menu" class="lg:hidden inline-flex w-10 h-10 items-center justify-center p-0 mt-1 rounded-lg bg-slate-100 dark:bg-brand-dark text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-brand-border shrink-0">
         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        <span>Close</span>
       </button>
     </div>
 
@@ -552,8 +555,8 @@
   <div class="flex-1 flex flex-col min-w-0 min-h-screen bg-slate-50 dark:bg-brand-dark">
 
     <!-- Compact Top Global Bar (+ Attached Settings Sub-Header when on Settings Page) -->
-    <header id="adminTopHeader" class="sticky top-0 z-40 bg-white dark:bg-brand-surface border-b border-slate-200 dark:border-brand-border flex flex-col shrink-0">
-      <div class="h-13 sm:h-14 md:h-16 px-3 sm:px-5 lg:px-6 flex items-center justify-between gap-2 sm:gap-3 w-full">
+    <header id="adminTopHeader" class="sticky top-0 z-40 bg-white dark:bg-brand-surface border-b border-slate-200 dark:border-brand-border flex flex-col shrink-0 min-w-0 w-full">
+      <div class="min-h-[3.5rem] sm:min-h-[4rem] px-3 sm:px-5 lg:px-6 py-2 flex items-center justify-between gap-2 sm:gap-3 w-full min-w-0 box-border">
         <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
           <!-- Mobile Sidebar Trigger -->
           <button type="button" onclick="toggleMobileAdminSidebar(true)" aria-label="Open navigation sidebar" title="Open navigation sidebar" class="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold shrink-0">
@@ -639,12 +642,29 @@
         if (open) {
           sidebar.classList.remove('-translate-x-full');
           backdrop.classList.remove('hidden');
+          const sidebarNavigation = sidebar.querySelector('nav');
+          if (sidebarNavigation) sidebarNavigation.scrollTop = 0;
         } else {
           sidebar.classList.add('-translate-x-full');
           backdrop.classList.add('hidden');
         }
       };
+      const mobileAdminSidebar = document.getElementById('adminLeftSidebar');
+      if (mobileAdminSidebar) {
+        mobileAdminSidebar.querySelectorAll('a.sidebar-nav-item').forEach(link => {
+          link.addEventListener('click', () => {
+            if (window.matchMedia('(max-width: 1023px)').matches) {
+              window.toggleMobileAdminSidebar(false);
+            }
+          });
+        });
+      }
+      window.addEventListener('pageshow', () => {
+        if (window.matchMedia('(max-width: 1023px)').matches) {
+          window.toggleMobileAdminSidebar(false);
+        }
+      });
     </script>
 
     <%- include('../partials/search-dialog', { adminSearch: true }) %>
-    <main id="admin-main-content" class="admin-main-container flex-1 w-full max-w-none min-w-0 px-3.5 sm:px-5 lg:px-6 py-4 box-border thin-dark-scrollbar">
+    <main id="admin-main-content" class="admin-main-container flex-1 w-full max-w-none min-w-0 px-3.5 sm:px-5 lg:px-6 py-4 box-border thin-dark-scrollbar overflow-x-clip">

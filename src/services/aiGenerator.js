@@ -1,5 +1,6 @@
 // src/services/aiGenerator.js
 const prisma = require('./db');
+const { invalidateHomepageData } = require('./homepageData');
 const { markdownToHtml } = require('./markdown');
 const slugify = require('slugify');
 
@@ -382,6 +383,7 @@ Return ONLY the raw JSON object without markdown fences.`;
       data: postPayload
     });
 
+    invalidateHomepageData();
     return post;
   }
 
@@ -515,6 +517,7 @@ void WorkerTask(void *argument) {
       data: postPayload
     });
 
+    invalidateHomepageData();
     return post;
   }
 

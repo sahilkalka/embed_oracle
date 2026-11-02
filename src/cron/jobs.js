@@ -1,6 +1,7 @@
 // src/cron/jobs.js
 const cron = require('node-cron');
 const prisma = require('../services/db');
+const { invalidateHomepageData } = require('../services/homepageData');
 const mailer = require('../services/mailer');
 const aiScheduler = require('../services/aiScheduler');
 
@@ -25,6 +26,7 @@ async function publishScheduledPosts() {
             publishedAt: now
           }
         });
+        invalidateHomepageData();
         console.log(`[CRON] Published scheduled post: "${post.title}"`);
       }
     }

@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const slugify = require('slugify');
 const router = express.Router();
 const prisma = require('../services/db');
+const { invalidateHomepageData } = require('../services/homepageData');
 const { requireAuth, verifyToken, JWT_SECRET } = require('../middleware/auth');
 const { loginLimiter } = require('../middleware/rateLimiter');
 const { clearSettingsCache } = require('../middleware/seo');
@@ -25,7 +26,7 @@ const {
   getLivePayload,
   exportTrafficCsv,
   clearTrafficLog,
-  toggleFlagVisitor
+  toggleBlockedVisitor
 } = require('../middleware/trafficTracker');
 
 const PUBLIC_ROOT = path.resolve(__dirname, '../../public');
@@ -387,7 +388,12 @@ router.get('/', async (req, res) => {
       prisma.inquiry.count({ where: { status: 'new' } }),
       prisma.subscriber.count(),
       prisma.subscriber.count({ where: { status: 'active' } }),
-      prisma.analytics.count(),
+      prisma.analytics.count({
+        where: {
+          trafficType: 'human',
+          timestamp: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+        }
+      }),
       prisma.post.findMany({
         orderBy: { views: 'desc' },
         take: 5
@@ -429,37 +435,22 @@ router.get('/', async (req, res) => {
 // GET /admin/traffic - Real-Time Traffic & Visitor Telemetry Dashboard
 router.get('/traffic', async (req, res) => {
   try {
-    const range = req.query.range || '24h';
-    const routeFilter = req.query.route || '';
-
-    const [persistedPageViews, calculatorStats] = await Promise.all([
-      prisma.analytics ? prisma.analytics.count().catch(() => 0) : 0,
-      (async () => {
-        try {
-          const allStats = await prisma.calculatorStat.findMany();
-          return allStats.map(s => ({
-            calculatorName: String(s.toolName || s.calculatorName || '').toLowerCase().trim(),
-            usageCount: Number(s.executionCount || s.usageCount || 0)
-          }));
-        } catch (_) {
-          return [];
-        }
-      })()
-    ]);
-
+    const range = typeof req.query.range === 'string' ? req.query.range : '24h';
+    const routeFilter = typeof req.query.route === 'string' ? req.query.route : '';
+    const trafficFilter = typeof req.query.traffic === 'string' ? req.query.traffic : 'human';
     const summary = getTrafficSummary({
       range,
       routeFilter,
-      persistedPageViews,
-      calculatorStats
+      trafficFilter
     });
 
     res.render('admin/traffic', {
       title: 'Live Traffic & Visitor Telemetry',
       currentPath: '/admin/traffic',
       telemetry: summary,
-      selectedRange: range,
-      routeFilter
+      selectedRange: summary.range,
+      routeFilter: summary.routeFilter,
+      selectedTrafficFilter: summary.trafficFilter
     });
   } catch (err) {
     console.error('[ADMIN TRAFFIC ERROR]', err);
@@ -474,7 +465,11 @@ router.get('/traffic/live', (req, res) => {
 
 // GET /admin/traffic/export - Export Wire Log to CSV
 router.get('/traffic/export', (req, res) => {
-  const csv = exportTrafficCsv();
+  const csv = exportTrafficCsv({
+    range: typeof req.query.range === 'string' ? req.query.range : '24h',
+    routeFilter: typeof req.query.route === 'string' ? req.query.route : '',
+    trafficFilter: typeof req.query.traffic === 'string' ? req.query.traffic : 'human'
+  });
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
   res.setHeader('Content-Disposition', `attachment; filename="embedded-india-telemetry-${Date.now()}.csv"`);
   res.send(csv);
@@ -489,12 +484,22 @@ router.post('/traffic/clear', (req, res) => {
   res.redirect('/admin/traffic');
 });
 
-// POST /admin/traffic/flag - Toggle Flag / IP Hash Block
-router.post('/traffic/flag', (req, res) => {
+// POST /admin/traffic/block - Toggle a persisted block by salted hash
+async function handleTrafficHashBlock(req, res) {
   const { visitorHash } = req.body || {};
-  const flagged = toggleFlagVisitor(visitorHash);
-  res.json({ success: true, visitorHash, flagged });
-});
+  try {
+    const blocked = await toggleBlockedVisitor(visitorHash);
+    if (blocked === null) {
+      return res.status(400).json({ success: false, message: 'A valid visitor hash is required.' });
+    }
+    return res.json({ success: true, visitorHash, blocked });
+  } catch (error) {
+    console.error('[ADMIN TRAFFIC BLOCK ERROR]', error);
+    return res.status(503).json({ success: false, message: 'Unable to update the visitor block list.' });
+  }
+}
+router.post('/traffic/block', handleTrafficHashBlock);
+router.post('/traffic/flag', handleTrafficHashBlock);
 
 // GET /admin/inquiries - List and Filter Inquiries
 router.get('/inquiries', async (req, res) => {
@@ -702,6 +707,7 @@ router.post('/posts/new', async (req, res) => {
       }
     });
 
+    invalidateHomepageData();
     res.redirect('/admin/posts');
   } catch (err) {
     console.error('[CREATE POST ERROR]', err);
@@ -767,6 +773,7 @@ router.post('/posts/:id/edit', async (req, res) => {
       }
     });
 
+    invalidateHomepageData();
     res.redirect('/admin/posts');
   } catch (err) {
     console.error('[UPDATE POST ERROR]', err);
@@ -778,6 +785,7 @@ router.post('/posts/:id/edit', async (req, res) => {
 router.post('/posts/:id/delete', async (req, res) => {
   try {
     await prisma.post.delete({ where: { id: req.params.id } });
+    invalidateHomepageData();
     res.redirect('/admin/posts');
   } catch (err) {
     res.status(500).send('Error deleting post');
@@ -1707,6 +1715,7 @@ router.post('/testimonials', requireAuth, async (req, res) => {
         source: 'admin'
       }
     });
+    invalidateHomepageData();
     res.redirect('/admin/testimonials');
   } catch (err) {
     console.error('Error creating testimonial:', err);
@@ -1748,6 +1757,7 @@ router.post('/testimonials/:id', requireAuth, async (req, res) => {
         isApproved: isApproved === 'true' || isApproved === '1' || isApproved === true
       }
     });
+    invalidateHomepageData();
     res.redirect('/admin/testimonials');
   } catch (err) {
     console.error('Error updating testimonial:', err);
@@ -1766,6 +1776,7 @@ router.post('/testimonials/:id/toggle-approve', requireAuth, async (req, res) =>
         where: { id: req.params.id },
         data: { isApproved: !item.isApproved }
       });
+      invalidateHomepageData();
     }
     res.redirect('/admin/testimonials');
   } catch (err) {
@@ -1780,6 +1791,7 @@ router.post('/testimonials/:id/delete', requireAuth, async (req, res) => {
     await prisma.testimonial.delete({
       where: { id: req.params.id }
     });
+    invalidateHomepageData();
     res.redirect('/admin/testimonials');
   } catch (err) {
     console.error('Error deleting testimonial:', err);

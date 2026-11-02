@@ -1,6 +1,7 @@
 // src/server.js
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 try {
   require('dotenv').config({ path: path.join(__dirname, '../.env') });
 } catch (e) {}
@@ -17,6 +18,7 @@ const { trafficTracker, trafficEvents, getLivePayload } = require('./middleware/
 const { initCronJobs } = require('./cron/jobs');
 const prisma = require('./services/db');
 const mailer = require('./services/mailer');
+const { getHomepageData, invalidateHomepageData } = require('./services/homepageData');
 
 // Route modules
 const seoRoutes = require('./routes/seo');
@@ -31,15 +33,28 @@ const app = express();
 app.locals.toolCategories = require('./data/toolsRegistry').getAllCategories();
 app.locals.totalTools = app.locals.toolCategories.reduce((total, category) => total + category.toolCount, 0);
 
-// Dynamic asset versioning for cache busting across Cloudflare, Nginx, and browser caches
+const publicDirectory = path.join(__dirname, '../public');
+
+// Hash served CSS/JS so cache-busted URLs change whenever a public asset changes.
 const getAssetVersion = () => {
-  try {
-    const cssPath = path.join(__dirname, '../public/css/style.css');
-    const stat = fs.statSync(cssPath);
-    return Math.floor(stat.mtimeMs).toString(36);
-  } catch (_) {
-    return Date.now().toString(36);
+  const assetPaths = [];
+  const collectAssets = directory => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const assetPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        collectAssets(assetPath);
+      } else if (entry.isFile() && /\.(?:css|js)$/i.test(entry.name)) {
+        assetPaths.push(assetPath);
+      }
+    }
+  };
+  const hash = crypto.createHash('sha256');
+  collectAssets(publicDirectory);
+  for (const assetPath of assetPaths.sort()) {
+    hash.update(path.relative(publicDirectory, assetPath).split(path.sep).join('/'));
+    hash.update(fs.readFileSync(assetPath));
   }
+  return hash.digest('hex').slice(0, 16);
 };
 app.locals.assetVersion = getAssetVersion();
 const PORT = process.env.PORT || 3000;
@@ -136,14 +151,27 @@ app.use(cors());
 // Serve static files BEFORE cookie, CSRF, body-parser, and DB settings middleware
 // so static requests do not allocate cookies, CSRF tokens, or hit SQLite.
 // Skip /ads.txt and /robots.txt so they are always served dynamically from SQLite settings.
-const staticMiddleware = express.static(path.join(__dirname, '../public'), {
-  maxAge: process.env.NODE_ENV === 'production' ? '7d' : 0,
+const isProduction = process.env.NODE_ENV === 'production';
+const staticOptions = {
   etag: true,
   lastModified: true
+};
+const staticMiddleware = express.static(publicDirectory, {
+  ...staticOptions,
+  maxAge: isProduction ? '7d' : 0
+});
+const fingerprintedStaticMiddleware = express.static(publicDirectory, {
+  ...staticOptions,
+  maxAge: isProduction ? '1y' : 0,
+  immutable: isProduction
 });
 app.use((req, res, next) => {
   if (req.path === '/ads.txt' || req.path === '/robots.txt') return next();
-  return staticMiddleware(req, res, next);
+  const hasCurrentAssetVersion =
+    isProduction &&
+    req.query.v === app.locals.assetVersion &&
+    /\.(?:css|js)$/i.test(req.path);
+  return (hasCurrentAssetVersion ? fingerprintedStaticMiddleware : staticMiddleware)(req, res, next);
 });
 
 app.use(express.json({ limit: '1mb' }));
@@ -267,31 +295,10 @@ app.use((req, res, next) => {
 // 1. Homepage
 app.get('/', async (req, res) => {
   try {
-    const [recentPosts, testimonials] = await Promise.all([
-      prisma.post.findMany({
-        where: { status: 'published' },
-        orderBy: { publishedAt: 'desc' },
-        take: 3,
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          category: true,
-          summary: true,
-          coverImage: true,
-          author: true,
-          publishedAt: true,
-          readingTime: true
-        }
-      }),
-      prisma.testimonial.findMany({
-        where: { isApproved: true },
-        orderBy: { createdAt: 'desc' },
-        take: 6
-      })
-    ]);
-    res.render('pages/index', { recentPosts, testimonials });
+    const homepageData = await getHomepageData();
+    res.render('pages/index', homepageData);
   } catch (err) {
+    console.error('[HOMEPAGE] Failed to load homepage data; rendering without it.', err);
     res.render('pages/index', { recentPosts: [], testimonials: [] });
   }
 });
@@ -327,6 +334,7 @@ app.post('/submit-review', async (req, res) => {
         source: 'customer'
       }
     });
+    invalidateHomepageData();
     res.render('pages/submit-review', { 
       successMsg: 'Thank you! Your review has been submitted and will appear on the homepage once verified by our engineering desk.', 
       errorMsg: null 

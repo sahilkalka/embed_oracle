@@ -5,11 +5,11 @@
 .settings-main,.settings-content{width:100%;max-width:none;min-width:0}
 .settings-module-header{display:none!important}
 .settings-taskbar{display:block;width:100%!important;position:relative!important;top:0!important;margin:0!important;z-index:25;background-color:var(--admin-bg-panel,var(--settings-surface))!important;border-top:1px solid var(--admin-border,var(--settings-border))!important;border-bottom:0!important;box-shadow:none!important}
-.settings-taskbar #settings-sidebar-nav{display:flex;flex-direction:row;align-items:center;gap:.125rem;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding:0;width:100%}
+.settings-taskbar #settings-sidebar-nav{display:flex;flex-flow:row wrap;align-items:center;gap:.125rem;overflow:visible;padding:.2rem 0;width:100%;min-width:0}
 @media (min-width:640px){.settings-taskbar #settings-sidebar-nav{gap:.25rem}}
 .settings-taskbar #settings-sidebar-nav::-webkit-scrollbar{display:none}
 #adminTopHeader button:hover,#adminTopHeader button:active,#adminTopHeader a:hover,#adminTopHeader a:active,.settings-nav-btn,.settings-nav-btn:hover,.settings-nav-btn:active{transform:none!important}
-.settings-nav-btn{position:relative;display:inline-flex;align-items:center;gap:.4rem;padding:.65rem .7rem;border-radius:0;border:0;border-bottom:2px solid transparent;background:transparent!important;color:var(--settings-muted);text-align:left;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:color .16s ease,border-color .16s ease}
+.settings-nav-btn{position:relative;display:inline-flex;align-items:center;gap:.4rem;padding:.65rem .7rem;border-radius:0;border:0;border-bottom:2px solid transparent;background:transparent!important;color:var(--settings-muted);text-align:left;cursor:pointer;white-space:normal;flex:0 1 auto;min-width:0;max-width:100%;transition:color .16s ease,border-color .16s ease}
 @media (min-width:640px){.settings-nav-btn{gap:.5rem;padding:.75rem .9rem}}
 .settings-nav-btn:hover{color:var(--settings-text);background:transparent!important}
 .settings-nav-btn.is-active,.settings-nav-btn[aria-current="page"]{color:var(--settings-accent)!important;border-bottom:2px solid var(--settings-accent)!important;background:transparent!important}
@@ -36,6 +36,13 @@
 .settings-workspace textarea{min-height:4.5rem}
 .settings-workspace :is(input,select,textarea):focus{outline:none!important;border-color:var(--settings-accent)!important;box-shadow:0 0 0 2px var(--settings-accent-soft)!important}
 .settings-workspace button,.settings-workspace a[role="button"]{letter-spacing:0}
+body.admin-shell{overflow-x:hidden;overflow-x:clip}
+.admin-main-container,.settings-workspace,.settings-content,.settings-section{min-width:0;max-width:100%}
+.settings-taskbar{min-width:0;padding-top:.25rem;padding-bottom:.25rem}
+.settings-nav-btn{min-height:2.5rem}
+.settings-nav-label{white-space:normal;overflow-wrap:anywhere}
+@media (max-width:639px){.settings-taskbar #settings-sidebar-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 .25rem}.settings-nav-btn{width:100%;justify-content:center;gap:.3rem;padding:.45rem .25rem;text-align:center}.settings-nav-copy{width:100%;align-items:center}.settings-nav-label{font-size:.68rem;line-height:.9rem;text-align:center}.settings-nav-icon{width:.9rem;height:.9rem}}
+@media (max-width:1023px){#adminTopHeader{z-index:40!important}#adminSidebarBackdrop{z-index:55!important}#adminLeftSidebar{z-index:60!important}}
 .settings-status-pill,.settings-section .drafting-status,.settings-section .scheduler-status{display:inline-flex;align-items:center;gap:.375rem;padding:.2rem .55rem;border-radius:.375rem;border:1px solid var(--settings-accent-border);background:var(--settings-accent-soft);color:var(--settings-accent);font-size:.75rem;line-height:1rem;font-weight:700}
 .dark .settings-status-pill,.dark .settings-section .drafting-status,.dark .settings-section .scheduler-status{color:var(--settings-accent)}
 .settings-card-grid{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:.75rem}

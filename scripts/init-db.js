@@ -104,7 +104,15 @@ CREATE TABLE IF NOT EXISTS Analytics (
   referrer TEXT,
   userAgent TEXT,
   ipHash TEXT,
-  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+  trafficType TEXT NOT NULL DEFAULT 'legacy'
+);
+
+CREATE TABLE IF NOT EXISTS TelemetryBlock (
+  id TEXT PRIMARY KEY,
+  visitorHash TEXT UNIQUE NOT NULL,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS CalculatorStat (
@@ -161,6 +169,7 @@ CREATE INDEX IF NOT EXISTS idx_inquiry_status_created ON Inquiry(status, created
 CREATE INDEX IF NOT EXISTS idx_subscriber_status ON Subscriber(status);
 CREATE INDEX IF NOT EXISTS idx_calculatorstat_toolname ON CalculatorStat(toolName);
 CREATE INDEX IF NOT EXISTS idx_analytics_timestamp ON Analytics(timestamp);
+CREATE INDEX IF NOT EXISTS idx_analytics_traffic_timestamp ON Analytics(trafficType, timestamp);
 `);
 
 require('../src/services/postDuplicates').installPostDuplicateGuards(db);

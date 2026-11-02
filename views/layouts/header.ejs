@@ -32,7 +32,6 @@
   <!-- Google Fonts Preconnect & Dynamic Font Families -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=swap" rel="stylesheet">
   <% 
     const hFont = (theme && theme.headingFont) ? theme.headingFont.replace(/\s+/g, '+') : 'Inter';
     const bFont = (theme && theme.bodyFont) ? theme.bodyFont.replace(/\s+/g, '+') : 'Inter';
@@ -42,11 +41,13 @@
   <link href="https://fonts.googleapis.com/css2?<%= fontQuery %>&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
-  <link rel="preload" href="/css/style.css?v=<%= assetVersion %>-20261101" as="style">
-  <link rel="stylesheet" href="/css/style.css?v=<%= assetVersion %>-20261101">
+  <link rel="preload" href="/css/style.css?v=<%= assetVersion %>" as="style">
+  <link rel="stylesheet" href="/css/style.css?v=<%= assetVersion %>">
 
   <!-- Highlight.js syntax highlighting theme for code blocks -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css" media="print" onload="this.media='all'">
+  <% if (currentPath !== '/') { %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css" media="print" onload="this.media='all'">
+  <% } %>
 
   <!-- Dynamic Theme & Color Palette Engine Styles -->
   <% if (theme && theme.cssString) { %>

@@ -249,15 +249,15 @@
 
 <!-- Click-to-Preview Modal Lightbox -->
 <div id="assetPreviewModal" class="fixed inset-0 z-[99999] hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 sm:p-6" onclick="if(event.target === this) closeAssetPreview()">
-  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-4xl w-full min-w-0 max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
     <!-- Modal Header -->
-    <div class="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
-      <div class="min-w-0">
-        <h3 id="previewModalTitle" class="text-sm font-black text-slate-900 dark:text-white truncate"></h3>
-        <p id="previewModalMeta" class="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate"></p>
+    <div class="px-4 sm:px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 min-w-0">
+      <div class="w-full sm:flex-1 min-w-0">
+        <h3 id="previewModalTitle" class="text-sm font-black text-slate-900 dark:text-white break-words [overflow-wrap:anywhere]"></h3>
+        <p id="previewModalMeta" class="text-[11px] font-mono text-slate-500 dark:text-slate-400 break-all sm:truncate"></p>
       </div>
-      <div class="flex items-center gap-2 shrink-0">
-        <a id="previewModalOpenTab" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition">
+      <div class="w-full sm:w-auto flex items-center justify-end gap-2 shrink-0">
+        <a id="previewModalOpenTab" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition whitespace-nowrap">
           <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           <span>Open in New Tab</span>
         </a>
@@ -272,23 +272,26 @@
     </div>
 
     <!-- Modal Footer: Quick Copy Paths -->
-    <div class="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-      <div class="flex-1 flex items-center gap-2">
+    <div class="p-3 sm:p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 min-w-0">
+      <div class="w-full sm:flex-1 min-w-0 flex items-center gap-2">
         <span class="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">Link Path:</span>
-        <input id="previewModalPathInput" type="text" readonly onclick="this.select()" class="w-full px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white select-all outline-none">
+        <input id="previewModalPathInput" type="text" readonly onclick="this.select()" class="w-full min-w-0 flex-1 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white select-all outline-none">
       </div>
-      <div class="flex items-center gap-2 shrink-0">
-        <button type="button" id="previewCopyPathBtn" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition cursor-pointer">
+      <div class="w-full sm:w-auto grid grid-cols-3 sm:flex items-stretch sm:items-center gap-2 shrink-0">
+        <button type="button" id="previewCopyPathBtn" aria-label="Copy domain path" title="Copy domain path" class="w-full sm:w-auto min-w-0 inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-[10px] sm:text-xs font-bold leading-tight transition cursor-pointer whitespace-nowrap">
           <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          <span>Copy Domain Path</span>
+          <span class="hidden sm:inline">Copy Domain Path</span>
+          <span class="sm:hidden">Path</span>
         </button>
-        <button type="button" id="previewCopyFullUrlBtn" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition cursor-pointer">
+        <button type="button" id="previewCopyFullUrlBtn" aria-label="Copy full URL" title="Copy full URL" class="w-full sm:w-auto min-w-0 inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-[10px] sm:text-xs font-bold leading-tight transition cursor-pointer whitespace-nowrap">
           <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          <span>Copy Full URL</span>
+          <span class="hidden sm:inline">Copy Full URL</span>
+          <span class="sm:hidden">URL</span>
         </button>
-        <button type="button" id="previewCopyMdBtn" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition cursor-pointer">
+        <button type="button" id="previewCopyMdBtn" aria-label="Copy Markdown link" title="Copy Markdown link" class="w-full sm:w-auto min-w-0 inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-[10px] sm:text-xs font-bold leading-tight transition cursor-pointer whitespace-nowrap">
           <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          <span>Copy Markdown</span>
+          <span class="hidden sm:inline">Copy Markdown</span>
+          <span class="sm:hidden">MD</span>
         </button>
       </div>
     </div>
@@ -467,4 +470,3 @@
 </script>
 
 <%- include('../layout_bottom') %>
-

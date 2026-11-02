@@ -1,5 +1,6 @@
 // src/services/aiScheduler.js
 const prisma = require('./db');
+const { invalidateHomepageData } = require('./homepageData');
 const aiGenerator = require('./aiGenerator');
 
 const DEFAULT_TOPICS = [
@@ -193,6 +194,8 @@ async function executeAutoGeneration({ force = false } = {}) {
       }
     });
   }
+
+  invalidateHomepageData();
 
   // Update last run timestamp in settings
   await prisma.setting.upsert({
