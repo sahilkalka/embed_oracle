@@ -8,14 +8,97 @@ const prisma = require('../services/db');
 const mailer = require('../services/mailer');
 const aiCopilot = require('../services/aiCopilot');
 const { contactLimiter, newsletterLimiter } = require('../middleware/rateLimiter');
+const servicesData = require('../data/servicesData');
+const toolsRegistry = require('../data/toolsRegistry');
 
 const window = new JSDOM('').window;
 const purify = DOMPurify(window);
+let searchIndexCache = null;
+let searchIndexCacheExpiresAt = 0;
 
 function sanitizeText(value) {
   if (value === undefined || value === null) return '';
   return purify.sanitize(String(value), { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
 }
+
+router.get('/search-index', async (req, res) => {
+  res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
+  if (searchIndexCache && Date.now() < searchIndexCacheExpiresAt) {
+    return res.json({ items: searchIndexCache });
+  }
+
+  try {
+    const [projects, posts] = await Promise.all([
+      prisma.project.findMany({
+        select: {
+          title: true,
+          slug: true,
+          summary: true,
+          category: true,
+          industry: true,
+          techStack: true
+        }
+      }),
+      prisma.post.findMany({
+        where: { status: 'published' },
+        orderBy: { publishedAt: 'desc' },
+        select: {
+          title: true,
+          slug: true,
+          summary: true,
+          category: true
+        }
+      })
+    ]);
+
+    const items = [
+      { type: 'Page', title: 'Home', url: '/', desc: 'Embedded system design and firmware engineering' },
+      { type: 'Page', title: 'Engineering Services', url: '/services', desc: 'Hardware, firmware, BSP, IoT, and HMI engineering' },
+      { type: 'Page', title: 'Projects & Case Studies', url: '/projects', desc: 'Client projects and engineering case studies' },
+      { type: 'Page', title: 'Engineering Tools', url: '/tools', desc: 'Engineering calculators and developer utilities' },
+      { type: 'Page', title: 'Engineering Blog', url: '/blogs', desc: 'Technical guides and engineering articles' },
+      { type: 'Page', title: 'About Embedded India', url: '/about', desc: 'Company, engineering labs, and team' },
+      { type: 'Page', title: 'Contact & Request a Quote', url: '/contact', desc: 'Contact the engineering team or request a consultation' },
+      ...Object.values(servicesData).map(service => ({
+        type: 'Service',
+        title: service.title,
+        url: `/services/${encodeURIComponent(service.slug)}`,
+        desc: service.description || service.seoDescription || ''
+      })),
+      ...toolsRegistry.TOOL_CATEGORIES.map(category => ({
+        type: 'Tool category',
+        title: category.title,
+        url: `/tools/${encodeURIComponent(category.slug)}`,
+        desc: category.description || ''
+      })),
+      ...toolsRegistry.TOOLS.map(tool => ({
+        type: 'Tool',
+        title: tool.title,
+        url: `/tools/${encodeURIComponent(tool.groupSlug)}/${encodeURIComponent(tool.slug)}`,
+        desc: tool.description || ''
+      })),
+      ...projects.filter(project => project.title && project.slug).map(project => ({
+        type: 'Project',
+        title: project.title,
+        url: `/projects/${encodeURIComponent(project.slug)}`,
+        desc: [project.category, project.industry, project.techStack, project.summary].filter(Boolean).join(' · ')
+      })),
+      ...posts.filter(post => post.title && post.slug).map(post => ({
+        type: 'Article',
+        title: post.title,
+        url: `/blogs/${encodeURIComponent(post.slug)}`,
+        desc: [post.category, post.summary].filter(Boolean).join(' · ')
+      }))
+    ];
+
+    searchIndexCache = items;
+    searchIndexCacheExpiresAt = Date.now() + 5 * 60 * 1000;
+    return res.json({ items });
+  } catch (err) {
+    console.error('[SEARCH INDEX ERROR]', err);
+    return res.status(503).json({ success: false, message: 'Search is temporarily unavailable.' });
+  }
+});
 
 // POST /api/contact & POST /contact - Handle Contact Us form
 const handleContact = async (req, res) => {

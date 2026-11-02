@@ -3,22 +3,18 @@
 <%
   const totalPosts = Array.isArray(posts) ? posts.length : 0;
   const publishedPosts = Array.isArray(posts) ? posts.filter(p => p.status === 'published').length : 0;
-  const draftPosts = Array.isArray(posts) ? posts.filter(p => p.status !== 'published').length : 0;
+  const draftPosts = Array.isArray(posts) ? posts.filter(p => p.status === 'draft').length : 0;
+  const scheduledPosts = Array.isArray(posts) ? posts.filter(p => p.status === 'scheduled').length : 0;
   const totalArticleViews = Array.isArray(posts) ? posts.reduce((acc, p) => acc + (Number(p.views) || 0), 0) : 0;
 %>
 
-<div class="w-full space-y-5 mx-auto">
+<div class="w-full space-y-6 min-w-0 [overflow-wrap:anywhere] mx-auto">
   
   <!-- Theme-Integrated Header & Actions Card -->
-  <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border rounded-2xl p-5 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-    <div class="flex items-start sm:items-center gap-3">
-      <span class="w-10 h-10 rounded-xl bg-brand-500/10 dark:bg-accent/15 border border-brand-500/30 text-brand-600 dark:text-accent flex items-center justify-center shrink-0">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-      </span>
-      <div>
-        <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Engineering Blog CMS</h1>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Create, edit, schedule, and optimize technical articles</p>
-      </div>
+  <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+    <div class="min-w-0 lg:flex-1">
+      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight"><span>📝 Engineering Blog CMS</span></h1>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Create, review, schedule, and publish technical articles.</p>
     </div>
 
     <div class="flex flex-wrap items-center gap-2.5">
@@ -33,6 +29,9 @@
           Drafts: <span class="font-extrabold font-mono text-slate-900 dark:text-white ml-1"><%= draftPosts %></span>
         </div>
       <% } %>
+      <div class="px-3 py-1.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-900 text-xs font-semibold text-sky-700 dark:text-sky-300">
+        Scheduled: <span class="font-extrabold font-mono ml-1"><%= scheduledPosts %></span>
+      </div>
       <div class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-semibold text-slate-600 dark:text-slate-300">
         Reads: <span class="font-extrabold font-mono text-brand-600 dark:text-accent ml-1"><%= totalArticleViews %></span>
       </div>
@@ -48,17 +47,24 @@
     </div>
   </div>
 
-  <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border rounded-2xl overflow-hidden shadow-xs admin-table-container">
+  <div class="space-y-4">
     <% if (!posts || posts.length === 0) { %>
-      <div class="p-8 text-center text-slate-500 text-xs">
-        No articles found. <a href="/admin/posts/new" class="text-brand-500 font-bold underline">Write your first technical article</a>.
+      <div class="bg-white dark:bg-brand-surface rounded-2xl p-10 sm:p-12 text-center border border-slate-200 dark:border-brand-border shadow-sm">
+        <span class="mx-auto w-11 h-11 rounded-xl bg-brand-500/10 dark:bg-accent/15 text-brand-600 dark:text-accent flex items-center justify-center">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 00-2-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        </span>
+        <p class="mt-3 text-sm font-bold text-slate-900 dark:text-white">No articles yet</p>
+        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Start with a draft and publish when it is ready.</p>
+        <a href="/admin/posts/new" class="mt-4 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Write an article</span>
+        </a>
       </div>
     <% } else { %>
-      <!-- Mobile Card View (Zero Horizontal Scroll) -->
-      <div class="md:hidden admin-table-body divide-y divide-slate-200 dark:divide-brand-border">
+      <div class="space-y-4">
         <% posts.forEach(post => { %>
-          <div class="p-4 space-y-2.5">
-            <div class="flex items-center justify-between gap-2">
+          <article class="bg-white dark:bg-brand-surface rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-brand-border shadow-sm space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-brand-border">
               <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold admin-badge-category truncate max-w-[65%]"><%= post.category %></span>
               <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase shrink-0 <%= post.status === 'published' ? 'admin-badge-published' : post.status === 'scheduled' ? 'admin-badge-scheduled' : 'admin-badge-draft' %>">
                 <%= post.status %>
@@ -67,33 +73,39 @@
             <a href="/blogs/<%= post.slug %>" target="_blank" class="block font-bold text-slate-900 dark:text-white hover:text-brand-600 dark:hover:text-accent transition text-xs leading-snug break-words">
               <%= post.title %>
             </a>
-            <div class="flex items-center justify-between gap-2 pt-1 text-xs">
-              <div class="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-300 whitespace-nowrap">
+            <% if (post.summary) { %>
+              <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed"><%= post.summary %></p>
+            <% } %>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-brand-border text-xs">
+              <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-slate-300">
                 <span class="font-mono font-bold text-slate-700 dark:text-slate-200"><%= post.views %> views</span>
                 <span>&bull;</span>
-                <span><%= post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : (post.scheduledAt ? 'Scheduled: ' + new Date(post.scheduledAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Draft') %></span>
+                <span><%= post.status === 'published' ? 'Published ' + (post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '') : post.status === 'scheduled' ? (post.scheduledAt ? 'Scheduled ' + new Date(post.scheduledAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Schedule time missing') : 'Draft · not public' %></span>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <a href="/blogs/<%= post.slug %>" target="_blank" aria-label="View post" title="View Post" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-600 dark:text-slate-300 hover:border-brand-500/40 hover:text-brand-600 dark:hover:text-accent transition inline-flex items-center justify-center">
+              <div class="flex flex-wrap items-center gap-2 sm:justify-end">
+                <a href="/blogs/<%= post.slug %>" target="_blank" rel="noopener" aria-label="View post" title="View post" class="inline-flex min-h-9 items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-300 dark:border-brand-border text-slate-700 dark:text-slate-300 text-[11px] font-bold hover:bg-slate-50 dark:hover:bg-brand-dark transition">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                  <span>View</span>
                 </a>
-                <a href="/admin/posts/<%= post.id %>/edit" aria-label="Edit post" title="Edit Post" class="w-9 h-9 rounded-xl bg-brand-500/10 dark:bg-accent/15 border border-brand-500/30 text-brand-700 dark:text-accent hover:bg-brand-500 hover:text-white transition inline-flex items-center justify-center">
+                <a href="/admin/posts/<%= post.id %>/edit" aria-label="Edit post" title="Edit post" class="inline-flex min-h-9 items-center gap-1.5 px-3 py-2 rounded-lg border border-brand-300 dark:border-brand-800 text-brand-700 dark:text-accent text-[11px] font-bold hover:bg-brand-50 dark:hover:bg-brand-950/40 transition">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                  <span>Edit</span>
                 </a>
                 <form action="/admin/posts/<%= post.id %>/delete" method="POST" onsubmit="return confirm('Delete this post?')" class="inline">
                   <%- csrfField %>
-                  <button type="submit" aria-label="Delete post" title="Delete Post" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500 hover:text-white transition inline-flex items-center justify-center cursor-pointer">
+                  <button type="submit" aria-label="Delete post" title="Delete post" class="inline-flex min-h-9 items-center gap-1.5 px-3 py-2 rounded-lg border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 text-[11px] font-bold hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <span>Delete</span>
                   </button>
                 </form>
               </div>
             </div>
-          </div>
+          </article>
         <% }) %>
       </div>
 
       <!-- Desktop Table View -->
-      <div class="hidden md:block overflow-x-auto">
+      <div class="hidden">
         <table class="w-full text-left text-xs">
           <thead class="admin-table-head uppercase font-bold text-[11px] tracking-wider">
             <tr>

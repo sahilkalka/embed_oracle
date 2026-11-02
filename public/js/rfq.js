@@ -113,6 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
   try {
     const params = new URLSearchParams(window.location.search);
     const serviceParam = (params.get('service') || '').toLowerCase();
+    const subjectParam = (params.get('subject') || '').trim().slice(0, 160);
+    const subjectInput = document.getElementById('contact-subject');
+    if (subjectInput && subjectParam) subjectInput.value = subjectParam;
+
     if (serviceParam) {
       if (serviceParam.includes('other') || serviceParam.includes('general')) {
         const generalBtn = document.getElementById('rfq-discipline-general');
@@ -124,13 +128,37 @@ document.addEventListener('DOMContentLoaded', () => {
               (serviceParam.includes('firmware') && v.includes('firmware')) ||
               ((serviceParam.includes('hmi') || serviceParam.includes('ui') || serviceParam.includes('touchgfx') || serviceParam.includes('qt')) && v.includes('hmi')) ||
               (serviceParam.includes('iot') && v.includes('iot')) ||
-              (serviceParam.includes('auto') && v.includes('auto'))) {
+              (serviceParam.includes('auto') && v.includes('auto')) ||
+              ((serviceParam.includes('end-to-end') || serviceParam.includes('product') || serviceParam.includes('full-cycle')) && v.includes('end-to-end'))) {
             btn.click();
           }
         });
       }
     }
-  } catch (e) {}
+
+    const estimateDetails = [
+      ['Forecast turnaround', params.get('estimate-timeline')],
+      ['Architecture complexity', params.get('estimate-complexity')],
+      ['Compliance target', params.get('estimate-compliance')],
+      ['Recommended team', params.get('estimate-team')],
+      ['Milestone deliverables', params.get('estimate-deliverables')]
+    ]
+      .map(([label, value]) => [label, (value || '').trim().slice(0, 1200)])
+      .filter(([, value]) => value);
+
+    const messageInput = document.getElementById('contact-message');
+    if (messageInput && estimateDetails.length) {
+      const estimateMessage = [
+        'Interactive scope estimate (planning only; to be confirmed after engineering review):',
+        ...estimateDetails.map(([label, value]) => `- ${label}: ${value}`)
+      ].join('\n');
+      if (!messageInput.value.trim()) messageInput.value = estimateMessage;
+      const estimateNotice = document.getElementById('rfq-estimate-notice');
+      if (estimateNotice) estimateNotice.classList.remove('hidden');
+    }
+  } catch (error) {
+    console.warn('[RFQ] Could not apply contact-form query parameters.', error);
+  }
 
   if (btnNext1) {
     btnNext1.addEventListener('click', () => {

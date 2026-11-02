@@ -410,33 +410,33 @@
     topicQueueTableBody.innerHTML = topics.map((topicItem, idx) => {
       const isNext = idx === 0;
       const badgeHtml = isNext
-        ? `<span class="inline-flex max-w-full items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] text-center leading-tight font-bold whitespace-normal bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+           ? `<span class="inline-flex max-w-full items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] text-center leading-tight font-bold whitespace-normal bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30">
+             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400"></span>
              Next in Cycle
            </span>`
-        : `<span class="inline-flex max-w-full items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] text-center leading-tight font-semibold whitespace-normal bg-slate-800/80 text-slate-300 border border-[#1c2e38]">
+        : `<span class="inline-flex max-w-full items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] text-center leading-tight font-semibold whitespace-normal bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#1c2e38]">
              Queued
            </span>`;
 
       if (editingTopicIndex === idx) {
         return `
-          <tr class="bg-[#111e26] transition" data-topic-index="${idx}">
-            <td class="py-2 px-2 sm:px-3.5 font-mono text-[11px] text-emerald-400">${idx + 1}</td>
+          <tr class="bg-slate-50 dark:bg-[#111e26] transition" data-topic-index="${idx}">
+            <td class="py-2 px-2 sm:px-3.5 font-mono text-[11px] text-emerald-700 dark:text-emerald-400">${idx + 1}</td>
             <td class="py-2 px-2 sm:px-3.5 min-w-0" colspan="2">
               <input
                 type="text"
                 id="inlineEditTopicInput-${idx}"
                 value="${escapeHtml(topicItem)}"
-                class="w-full px-3 py-1.5 rounded-lg bg-[#070e12] border border-emerald-500 text-xs text-white focus:outline-none"
+                class="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#0c161c] border border-emerald-500 text-xs text-slate-900 dark:text-white focus:outline-none"
               >
             </td>
             <td class="py-2 px-1.5 sm:px-3.5 text-center sm:text-right">
               <div class="flex items-center justify-center sm:justify-end gap-1">
-                <button type="button" title="Save topic" aria-label="Save topic" data-queue-action="save" data-index="${idx}" class="w-8 h-8 sm:w-auto sm:h-auto p-0 sm:px-2.5 sm:py-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-[10px] font-bold inline-flex items-center justify-center gap-1 transition">
+                <button type="button" title="Save topic" aria-label="Save topic" data-queue-action="save" data-index="${idx}" class="w-8 h-8 sm:w-auto sm:h-auto p-0 sm:px-2.5 sm:py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold inline-flex items-center justify-center gap-1 transition">
                   <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                   <span class="hidden sm:inline">Save</span>
                 </button>
-                <button type="button" title="Cancel editing" aria-label="Cancel editing" data-queue-action="cancel" data-index="${idx}" class="w-8 h-8 sm:w-auto sm:h-auto p-0 sm:px-2 sm:py-1 rounded-lg bg-[#0c161c] hover:bg-slate-800 text-slate-300 border border-[#1c2e38] text-[10px] font-semibold inline-flex items-center justify-center gap-1 transition">
+                <button type="button" title="Cancel editing" aria-label="Cancel editing" data-queue-action="cancel" data-index="${idx}" class="w-8 h-8 sm:w-auto sm:h-auto p-0 sm:px-2 sm:py-1 rounded-lg bg-white dark:bg-[#0c161c] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#1c2e38] text-[10px] font-semibold inline-flex items-center justify-center gap-1 transition">
                   <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                   <span class="hidden sm:inline">Cancel</span>
                 </button>
@@ -447,18 +447,18 @@
       }
 
       return `
-        <tr class="hover:bg-[#111e26]/60 transition group" data-topic-index="${idx}">
+        <tr class="hover:bg-slate-50 dark:hover:bg-[#111e26]/60 transition group" data-topic-index="${idx}">
           <td class="py-2.5 px-2 sm:px-3.5 font-mono text-[11px] text-slate-400">${idx + 1}</td>
-          <td class="py-2.5 px-2 sm:px-3.5 min-w-0 text-slate-100 font-medium leading-snug break-words [overflow-wrap:anywhere]">${escapeHtml(topicItem)}</td>
+          <td class="py-2.5 px-2 sm:px-3.5 min-w-0 text-slate-800 dark:text-slate-100 font-medium leading-snug break-words [overflow-wrap:anywhere]">${escapeHtml(topicItem)}</td>
           <td class="py-2.5 px-2 sm:px-3.5 min-w-0">${badgeHtml}</td>
           <td class="py-2.5 px-1.5 sm:px-3.5 text-center sm:text-right">
             <div class="flex items-center justify-center sm:justify-end gap-1">
-              <button type="button" title="Edit topic" aria-label="Edit topic" data-queue-action="edit" data-index="${idx}" class="w-8 h-8 sm:w-auto sm:h-auto p-0 sm:px-2 sm:py-1 rounded-lg bg-[#111e26] hover:bg-slate-800 text-slate-300 hover:text-white border border-[#1c2e38] text-[10px] font-semibold inline-flex items-center justify-center gap-1 transition">
-                <svg class="w-3 h-3 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <button type="button" title="Edit topic" aria-label="Edit topic" data-queue-action="edit" data-index="${idx}" class="w-8 h-8 sm:w-auto sm:h-auto p-0 sm:px-2 sm:py-1 rounded-lg bg-white dark:bg-[#111e26] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#1c2e38] text-[10px] font-semibold inline-flex items-center justify-center gap-1 transition">
+                <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 <span class="hidden sm:inline">Edit</span>
               </button>
-              <button type="button" title="Remove topic" aria-label="Remove topic" data-queue-action="remove" data-index="${idx}" class="w-8 h-8 sm:w-auto sm:h-auto p-0 sm:px-2 sm:py-1 rounded-lg bg-[#111e26] hover:bg-red-950/60 text-slate-300 hover:text-red-300 border border-[#1c2e38] text-[10px] font-semibold inline-flex items-center justify-center gap-1 transition">
-                <svg class="w-3 h-3 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <button type="button" title="Remove topic" aria-label="Remove topic" data-queue-action="remove" data-index="${idx}" class="w-8 h-8 sm:w-auto sm:h-auto p-0 sm:px-2 sm:py-1 rounded-lg bg-white dark:bg-[#111e26] hover:bg-red-50 dark:hover:bg-red-950/60 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-300 border border-slate-200 dark:border-[#1c2e38] text-[10px] font-semibold inline-flex items-center justify-center gap-1 transition">
+                <svg class="w-3 h-3 text-red-500 dark:text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 <span class="hidden sm:inline">Remove</span>
               </button>
             </div>

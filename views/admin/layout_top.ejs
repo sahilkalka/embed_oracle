@@ -440,6 +440,14 @@
       { label: 'Reviews', headerLabel: 'Reviews', href: '/admin/testimonials', count: counts.reviews, active: navPath.startsWith('/admin/testimonials'), icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>' },
       { label: 'Assets', headerLabel: 'Assets', href: '/admin/assets', count: counts.assets, active: navPath.startsWith('/admin/assets'), icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>' }
     ];
+    workspaceRoutes.splice(2, 0, {
+      label: 'Traffic',
+      headerLabel: 'Traffic',
+      href: '/admin/traffic',
+      count: null,
+      active: navPath.startsWith('/admin/traffic'),
+      icon: '<polyline stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" points="22 12 18 12 15 21 9 3 6 12 2 12"/>'
+    });
     const systemRoutes = [
       { label: 'Settings', headerLabel: 'Settings', href: '/admin/settings', count: null, active: isSettingsPage, icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>' }
     ];
@@ -592,11 +600,11 @@
           <%- include('../partials/theme-button', { showSearch: !isSettingsPage, searchLabel: 'Search admin pages and settings', wrapperId: 'admin-palette-dropdown-wrapper', btnId: 'admin-palette-dropdown-btn', menuId: 'admin-palette-dropdown-menu', chevronId: 'admin-palette-chevron', activeDotId: 'admin-active-scheme-dot', activeNameId: 'admin-active-palette-name' }) %>
 
           <% if (isSettingsPage) { %>
-            <button type="button" id="adminHeaderDiscardBtn" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-semibold inline-flex items-center gap-1.5 transition cursor-pointer">
-              <svg class="w-3.5 h-3.5 text-slate-400 shrink-0 hidden sm:inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <button type="button" id="adminHeaderDiscardBtn" aria-label="Discard unsaved edits in the current settings section" title="Reset unsaved edits to the last saved values" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-semibold inline-flex items-center gap-1.5 transition cursor-pointer">
+              <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
               <span>Discard</span>
             </button>
-            <button type="button" id="adminHeaderSaveBtn" class="px-2.5 sm:px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold inline-flex items-center gap-1.5 transition shadow-xs cursor-pointer">
+            <button type="button" id="adminHeaderSaveBtn" aria-label="Save the active settings section" title="Save the active settings section" class="px-2.5 sm:px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold inline-flex items-center gap-1.5 transition shadow-xs cursor-pointer">
               <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
               <span class="sm:hidden">Save</span>
               <span class="hidden sm:inline">Save Changes</span>

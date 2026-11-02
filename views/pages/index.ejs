@@ -41,25 +41,36 @@
           <%= settings.hero_description || 'From early napkin architecture and high-speed PCB layouts to deterministic RTOS firmware, HIL automated testing, and volume SMT manufacturing.' %>
         </p>
 
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 pt-1">
+          <a href="/contact" class="btn-shimmer w-full sm:w-auto px-7 py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl shadow-lg shadow-brand-500/25 border border-white/20 transition transform hover:-translate-y-0.5 text-center text-sm active:scale-95 inline-flex items-center justify-center gap-2">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.12.96.36 1.9.7 2.8a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.84.58 2.8.7A2 2 0 0122 16.92z"/></svg>
+            <span>Request a free discovery call</span>
+          </a>
+          <a href="/tools" class="w-full sm:w-auto px-7 py-3.5 bg-white dark:bg-brand-surface hover:bg-slate-100 dark:hover:bg-brand-dark text-slate-900 dark:text-white font-extrabold rounded-xl border border-slate-300 dark:border-brand-border transition shadow-sm text-center inline-flex items-center justify-center gap-2 text-sm active:scale-95">
+            <span>Explore Tools</span>
+            <span class="text-[10px] text-emerald-800 dark:text-emerald-300 font-black uppercase">38+ Tools</span>
+          </a>
+        </div>
+
         <!-- Interactive Archetype Selector Pills (High Contrast, Left Aligned) -->
         <div class="pt-2 text-left">
           <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 block mb-2.5">
             Select an engineering domain to inspect real-world architecture:
           </span>
-          <div class="flex flex-wrap items-center justify-start gap-2 text-xs font-bold" id="archetypePills">
-            <button type="button" data-type="iot" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform hover:scale-105 archetype-btn">
+          <div class="flex flex-wrap items-center justify-start gap-2 text-xs font-bold" id="archetypePills" role="group" aria-label="Engineering architecture examples">
+            <button type="button" data-type="iot" aria-label="IoT and Wireless" aria-pressed="true" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform hover:scale-105 archetype-btn">
               ⚡ IoT &amp; Wireless
             </button>
-            <button type="button" data-type="automotive" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+            <button type="button" data-type="automotive" aria-label="Automotive CAN-FD" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
               🚗 Automotive CAN-FD
             </button>
-            <button type="button" data-type="edgeai" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+            <button type="button" data-type="edgeai" aria-label="TinyML Edge AI" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
               🧠 TinyML Edge AI
             </button>
-            <button type="button" data-type="hmi" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+            <button type="button" data-type="hmi" aria-label="TouchGFX and Qt HMI" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
               🖥️ TouchGFX / Qt HMI
             </button>
-            <button type="button" data-type="highspeed" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+            <button type="button" data-type="highspeed" aria-label="High-Speed PCB" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
               🔌 High-Speed PCB
             </button>
           </div>
@@ -86,17 +97,7 @@
             </div>
           </div>
         </div>
-
-        <!-- CTA Buttons (Left Aligned) -->
-        <div class="flex flex-col sm:flex-row items-center justify-start gap-4 pt-2">
-          <a href="/contact" class="btn-shimmer w-full sm:w-auto px-8 py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl shadow-lg shadow-brand-500/25 border border-white/20 transition transform hover:-translate-y-0.5 text-center text-sm active:scale-95">
-            Start your new design experience with us &rarr;
-          </a>
-          <a href="/tools" class="w-full sm:w-auto px-7 py-3.5 bg-white dark:bg-brand-surface hover:bg-slate-100 dark:hover:bg-brand-dark text-slate-900 dark:text-white font-extrabold rounded-xl border border-slate-300 dark:border-brand-border transition shadow-sm text-center flex items-center justify-center space-x-2 text-sm active:scale-95">
-            <span>Explore Tools</span>
-            <span class="text-[10px] text-emerald-800 dark:text-emerald-300 font-black uppercase">38+ Tools</span>
-          </a>
-        </div>
+        <p id="archetype-announcement" class="sr-only" aria-live="polite" aria-atomic="true">Showing IoT and Wireless reference architecture.</p>
 
         <!-- Animated Numerical Counter Metrics (Left Aligned) -->
         <div class="pt-6 border-t border-slate-200 dark:border-brand-border grid grid-cols-3 gap-4 text-left">
@@ -724,20 +725,20 @@ void init_embedded_system(void) {
         <!-- Step 1: Project Phase -->
         <div class="space-y-2">
           <label class="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">1. Target Engineering Phase</label>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold" id="estimatorPhasePills">
-            <button type="button" data-val="prototype" class="est-phase-btn px-4 py-3 rounded-2xl bg-brand-500 text-white font-black border border-brand-500 shadow-md text-left transition transform active:scale-95">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold" id="estimatorPhasePills" role="group" aria-label="Target engineering phase">
+            <button type="button" data-val="prototype" aria-pressed="true" class="est-phase-btn px-4 py-3 rounded-2xl bg-brand-500 text-white font-black border border-brand-500 shadow-md text-left transition transform active:scale-95">
               <span class="block text-sm">Prototype MVP</span>
               <span class="text-[10px] opacity-80 font-medium block">Schematic, Layout &amp; 5 SMT boards</span>
             </button>
-            <button type="button" data-val="full-cycle" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
+            <button type="button" data-val="full-cycle" aria-pressed="false" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
               <span class="block text-sm">End-to-End Product</span>
               <span class="text-[10px] opacity-75 block font-normal">Hardware + RTOS + Pilot Run</span>
             </button>
-            <button type="button" data-val="firmware" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
+            <button type="button" data-val="firmware" aria-pressed="false" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
               <span class="block text-sm">Firmware Only</span>
               <span class="text-[10px] opacity-75 block font-normal">BSP, RTOS drivers &amp; FOTA</span>
             </button>
-            <button type="button" data-val="hmi" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
+            <button type="button" data-val="hmi" aria-pressed="false" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
               <span class="block text-sm">TouchGFX / Qt HMI</span>
               <span class="text-[10px] opacity-75 block font-normal">STM32 MCU &amp; Linux MPU UI</span>
             </button>
@@ -747,16 +748,16 @@ void init_embedded_system(void) {
         <!-- Step 2: Silicon Architecture Complexity -->
         <div class="space-y-2">
           <label class="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">2. Processing Core &amp; Architecture</label>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-bold" id="estimatorComplexityPills">
-            <button type="button" data-val="low" class="est-comp-btn px-4 py-3 rounded-2xl bg-brand-500 text-white font-black border border-brand-500 shadow-md text-left transition transform active:scale-95">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-bold" id="estimatorComplexityPills" role="group" aria-label="Processing core and architecture">
+            <button type="button" data-val="low" aria-pressed="true" class="est-comp-btn px-4 py-3 rounded-2xl bg-brand-500 text-white font-black border border-brand-500 shadow-md text-left transition transform active:scale-95">
               <span class="block text-sm">Ultra-Low Power</span>
               <span class="text-[10px] opacity-80 block font-semibold">Cortex-M0+/M4, BLE/LoRa</span>
             </button>
-            <button type="button" data-val="medium" class="est-comp-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
+            <button type="button" data-val="medium" aria-pressed="false" class="est-comp-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
               <span class="block text-sm">Dual-Core RTOS</span>
               <span class="text-[10px] opacity-75 block font-normal">ESP32-S3 / STM32F4 + Wi-Fi</span>
             </button>
-            <button type="button" data-val="high" class="est-comp-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
+            <button type="button" data-val="high" aria-pressed="false" class="est-comp-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
               <span class="block text-sm">High-Speed Linux MPU</span>
               <span class="text-[10px] opacity-75 block font-normal">i.MX 8M / STM32MP1, DDR4</span>
             </button>
@@ -766,11 +767,11 @@ void init_embedded_system(void) {
         <!-- Step 3: Regulatory Compliance -->
         <div class="space-y-2">
           <label class="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">3. Regulatory &amp; Environmental Target</label>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold" id="estimatorCompliancePills">
-            <button type="button" data-val="none" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-brand-500 text-center transition active:scale-95">Commercial MVP</button>
-            <button type="button" data-val="ce_fcc" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">CE / FCC EMC</button>
-            <button type="button" data-val="automotive" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">Automotive ISO</button>
-            <button type="button" data-val="medical" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">Medical IEC</button>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold" id="estimatorCompliancePills" role="group" aria-label="Regulatory and environmental target">
+            <button type="button" data-val="none" aria-pressed="true" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-brand-500 text-center transition active:scale-95">Commercial MVP</button>
+            <button type="button" data-val="ce_fcc" aria-pressed="false" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">CE / FCC EMC</button>
+            <button type="button" data-val="automotive" aria-pressed="false" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">Automotive ISO</button>
+            <button type="button" data-val="medical" aria-pressed="false" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">Medical IEC</button>
           </div>
         </div>
 
@@ -807,10 +808,12 @@ void init_embedded_system(void) {
 
         <!-- Lock-In & Request Quote CTA -->
         <div class="pt-2">
-          <a id="estQuoteCta" href="/contact?service=Hardware%20Design" class="btn-shimmer w-full inline-flex items-center justify-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-brand-600 to-accent text-white font-black rounded-xl text-sm shadow-lg shadow-brand-500/25 active:scale-95 transition">
-            <span>Lock In Scope &amp; Request RFQ</span>
-            <span>&rarr;</span>
+          <a id="estQuoteCta" href="/contact?service=Hardware%20Design&amp;subject=Scope%20estimate%3A%203%20-%204%20Weeks&amp;estimate-timeline=3%20-%204%20Weeks&amp;estimate-complexity=Standard%20MCU%20Architecture&amp;estimate-compliance=Commercial%20MVP&amp;estimate-team=1%20Principal%20Hardware%20Architect%20%E2%80%A2%201%20Firmware%20Engineer%20%E2%80%A2%201%20DFM%20Specialist&amp;estimate-deliverables=Schematic%20Capture%20%26%20Component%20Sourcing%3B%20Multi-Layer%20Controlled%20Impedance%20Layout%3B%20First-Pass%20SMT%20Prototypes%20%285%20Assemblies%29" aria-label="Review this planning estimate with engineering" class="btn-shimmer w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand-600 to-accent text-white font-black rounded-xl text-sm shadow-lg shadow-brand-500/25 active:scale-95 transition">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.12.96.36 1.9.7 2.8a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.84.58 2.8.7A2 2 0 0122 16.92z"/></svg>
+            <span>Discuss this estimate with an engineer</span>
+            <span aria-hidden="true">&rarr;</span>
           </a>
+          <p id="estimator-status" role="status" aria-live="polite" class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 mt-2">Planning estimate only; final scope and timeline are confirmed after engineering review.</p>
         </div>
 
       </div>
@@ -1240,14 +1243,18 @@ int ddr3_phy_training(void) {
 
       archetypeBtns.forEach(b => {
         b.className = 'min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white font-bold border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn';
+        b.setAttribute('aria-pressed', 'false');
       });
       btn.className = 'min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform scale-105 archetype-btn';
+      btn.setAttribute('aria-pressed', 'true');
 
       document.getElementById('specMcu').textContent = data.mcu;
       document.getElementById('specPcb').textContent = data.pcb;
       document.getElementById('specPower').textContent = data.power;
       document.getElementById('specTurn').textContent = data.turn;
       document.getElementById('liveCodeSnippet').textContent = data.code;
+      const announcement = document.getElementById('archetype-announcement');
+      if (announcement) announcement.textContent = `Showing ${btn.getAttribute('aria-label') || btn.textContent.trim()} reference architecture.`;
     });
   });
 
@@ -1432,48 +1439,78 @@ int ddr3_phy_training(void) {
   let currentEstPhase = 'prototype';
   let currentEstComplexity = 'low';
   let currentEstCompliance = 'none';
+  let estimatorRequestId = 0;
 
   function updateEstimator() {
+    const requestId = ++estimatorRequestId;
+    const requestState = {
+      phase: currentEstPhase,
+      complexity: currentEstComplexity,
+      compliance: currentEstCompliance
+    };
+    const statusEl = document.getElementById('estimator-status');
+    if (statusEl) statusEl.textContent = 'Updating the planning estimate…';
+
     fetch('/api/estimator/calculate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        phase: currentEstPhase,
-        complexity: currentEstComplexity,
-        compliance: currentEstCompliance
-      })
+      body: JSON.stringify(requestState)
     })
     .then(r => r.json())
     .then(data => {
-      if (data.success) {
-        const timeEl = document.getElementById('estTimelineOutput');
-        const compEl = document.getElementById('estComplexityOutput');
-        const listEl = document.getElementById('estDeliverablesList');
-        const teamEl = document.getElementById('estTeamOutput');
-        const ctaEl = document.getElementById('estQuoteCta');
-
-        if (timeEl) timeEl.textContent = data.timeline;
-        if (compEl) compEl.textContent = data.complexityLabel + ' • ' + data.complianceLabel;
-        if (teamEl) teamEl.textContent = data.recommendedTeam;
-        if (listEl) {
-          listEl.innerHTML = data.deliverables.map(d => 
-            `<li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>${d}</span></li>`
-          ).join('');
-        }
-        if (ctaEl) {
-          ctaEl.href = `/contact?service=${encodeURIComponent(currentEstPhase === 'firmware' ? 'Firmware/BSP' : (currentEstPhase === 'hmi' ? 'Embedded UI / HMI' : 'Hardware Design'))}&subject=${encodeURIComponent('RFQ: ' + data.timeline + ' ' + data.complexityLabel)}`;
-        }
+      if (requestId !== estimatorRequestId) return;
+      if (!data || !data.success) {
+        throw new Error(data && data.message ? data.message : 'The estimator returned an unsuccessful response.');
       }
+      const timeEl = document.getElementById('estTimelineOutput');
+      const compEl = document.getElementById('estComplexityOutput');
+      const listEl = document.getElementById('estDeliverablesList');
+      const teamEl = document.getElementById('estTeamOutput');
+      const ctaEl = document.getElementById('estQuoteCta');
+
+      if (timeEl) timeEl.textContent = data.timeline;
+      if (compEl) compEl.textContent = data.complexityLabel + ' • ' + data.complianceLabel;
+      if (teamEl) teamEl.textContent = data.recommendedTeam;
+      if (listEl) {
+        listEl.innerHTML = data.deliverables.map(d =>
+          `<li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>${d}</span></li>`
+        ).join('');
+      }
+      if (ctaEl) {
+        const serviceByPhase = {
+          prototype: 'Hardware Design',
+          'full-cycle': 'End-to-End Product',
+          firmware: 'Firmware/BSP',
+          hmi: 'Embedded UI / HMI'
+        };
+        const params = new URLSearchParams({
+          service: serviceByPhase[requestState.phase] || 'Hardware Design',
+          subject: `Scope estimate: ${data.timeline} ${data.complexityLabel}`,
+          'estimate-timeline': data.timeline || '',
+          'estimate-complexity': data.complexityLabel || '',
+          'estimate-compliance': data.complianceLabel || '',
+          'estimate-team': data.recommendedTeam || ''
+        });
+        params.set('estimate-deliverables', Array.isArray(data.deliverables) ? data.deliverables.join('; ') : '');
+        ctaEl.href = `/contact?${params.toString()}`;
+      }
+      if (statusEl) statusEl.textContent = 'Planning estimate only; final scope and timeline are confirmed after engineering review.';
     })
-    .catch(err => console.warn('Estimator err:', err));
+    .catch(err => {
+      if (requestId !== estimatorRequestId) return;
+      console.error('[ESTIMATOR] Could not calculate the planning estimate.', err);
+      if (statusEl) statusEl.textContent = 'Unable to refresh the estimate. The displayed planning values remain available to discuss with engineering.';
+    });
   }
 
   document.querySelectorAll('.est-phase-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.est-phase-btn').forEach(b => {
         b.className = 'est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-brand-surface text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-left transition hover:border-brand-500 active:scale-95';
+        b.setAttribute('aria-pressed', 'false');
       });
       btn.className = 'est-phase-btn px-4 py-3 rounded-2xl bg-brand-500 text-white font-black border border-brand-500 shadow-md text-left transition transform active:scale-95';
+      btn.setAttribute('aria-pressed', 'true');
       currentEstPhase = btn.dataset.val;
       updateEstimator();
     });
@@ -1483,8 +1520,10 @@ int ddr3_phy_training(void) {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.est-comp-btn').forEach(b => {
         b.className = 'est-comp-btn px-4 py-3 rounded-2xl bg-white dark:bg-brand-surface text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-left transition hover:border-brand-500 active:scale-95';
+        b.setAttribute('aria-pressed', 'false');
       });
       btn.className = 'est-comp-btn px-4 py-3 rounded-2xl bg-brand-500 text-white font-black border border-brand-500 shadow-md text-left transition transform active:scale-95';
+      btn.setAttribute('aria-pressed', 'true');
       currentEstComplexity = btn.dataset.val;
       updateEstimator();
     });
@@ -1494,12 +1533,16 @@ int ddr3_phy_training(void) {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.est-comp-rule').forEach(b => {
         b.className = 'est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-center transition hover:border-brand-500 active:scale-95';
+        b.setAttribute('aria-pressed', 'false');
       });
       btn.className = 'est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-brand-500 text-center transition active:scale-95';
+      btn.setAttribute('aria-pressed', 'true');
       currentEstCompliance = btn.dataset.val;
       updateEstimator();
     });
   });
+
+  updateEstimator();
 
 </script>
 

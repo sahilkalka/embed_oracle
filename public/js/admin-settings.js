@@ -363,7 +363,29 @@
   // ====================================================================
   // 10. INDEPENDENT MODULE FORM AJAX HANDLER
   // ====================================================================
+  function updateFormResetValues(form) {
+    form.querySelectorAll('input, textarea, select').forEach(field => {
+      if (field.type === 'checkbox' || field.type === 'radio') {
+        field.defaultChecked = field.checked;
+      } else if (field.tagName === 'SELECT') {
+        Array.from(field.options).forEach(option => {
+          option.defaultSelected = option.selected;
+        });
+      } else if (field.type !== 'file' && 'defaultValue' in field) {
+        field.defaultValue = field.value;
+      }
+    });
+  }
+
   document.querySelectorAll('.settings-module-form').forEach(form => {
+    form.addEventListener('reset', () => {
+      window.setTimeout(() => {
+        updateEventPreview();
+        updateAdWireframePreview();
+        calculateSeoScore();
+      }, 0);
+    });
+
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
       if (form.dataset.saving === 'true') return;
@@ -392,6 +414,7 @@
         }
         const moduleName = form.dataset.module || 'Settings';
         showToast(`✅ ${moduleName} saved and applied live!`);
+        updateFormResetValues(form);
 
         // If saving theme or feature flags, refresh the live homepage preview iframe
         if (form.dataset.module?.includes('Theme') || form.dataset.module?.includes('Flags')) {
@@ -463,7 +486,9 @@
     if (headerDiscardBtn) {
       headerDiscardBtn.addEventListener('click', () => {
         const form = getActiveSettingsForm();
-        if (form) form.reset();
+        if (form && window.confirm('Discard unsaved changes in this section? This restores the last saved values and does not undo previous saves.')) {
+          form.reset();
+        }
       });
     }
     if (headerSaveBtn) {

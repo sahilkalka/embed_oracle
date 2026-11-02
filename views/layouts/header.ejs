@@ -136,36 +136,51 @@
     </style>
   <% } %>
 
-  <!-- Monetization: Google AdSense Ownership Verification Meta + Lazy/Async Script Tag -->
-  <% if (/^ca-pub-\d{16}$/.test(settings.adsense_pub_id || '')) { %>
-    <meta name="google-adsense-account" content="<%= settings.adsense_pub_id %>">
+  <%
+    const safeAdsensePubId = /^ca-pub-\d{16}$/.test(settings.adsense_pub_id || '') ? settings.adsense_pub_id : '';
+    const safeMetaPixelId = /^\d{5,20}$/.test(String(settings.meta_pixel_id || '')) ? String(settings.meta_pixel_id) : '';
+    const consentAdsensePubId = settings.enable_adsense === 'true' && /^\/(tools|blogs)(\/|$)/.test(currentPath) ? safeAdsensePubId : '';
+  %>
+  <% if (safeAdsensePubId) { %>
+    <meta name="google-adsense-account" content="<%= safeAdsensePubId %>">
   <% } %>
-  <% if (settings.enable_adsense === 'true' && /^ca-pub-\d{16}$/.test(settings.adsense_pub_id || '') && /^\/(tools|blogs)(\/|$)/.test(currentPath)) { %>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= settings.adsense_pub_id %>" crossorigin="anonymous"></script>
-    <script defer src="/js/ads.js"></script>
-  <% } %>
-
-  <!-- Monetization: Meta Pixel Tracking -->
-  <% const safeMetaPixelId = /^\d{5,20}$/.test(String(settings.meta_pixel_id || '')) ? String(settings.meta_pixel_id) : ''; %>
-  <% if (settings.enable_meta_pixel === 'true' && safeMetaPixelId) { %>
-    <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '<%= safeMetaPixelId %>');
-      fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<%= safeMetaPixelId %>&amp;ev=PageView&amp;noscript=1"/></noscript>
-  <% } %>
-
-  <!-- Admin Dynamic Head Script Injection -->
   <% if (settings.custom_head_scripts && settings.custom_head_scripts.trim()) { %>
     <%- settings.custom_head_scripts %>
+  <% } %>
+  <script id="optional-tracking-config" type="application/json"><%- JSON.stringify({
+    metaPixelId: settings.enable_meta_pixel === 'true' ? safeMetaPixelId : '',
+    adsensePubId: consentAdsensePubId,
+    adsenseInitUrl: `/js/ads.js?v=${assetVersion}`
+  }).replace(/</g, '\\u003c') %></script>
+
+  <% if (settings.cookie_banner_enabled !== 'false') { %>
+    <style>
+      html[data-cookie-consent-pending="true"] #copilot-widget-container,
+      html[data-cookie-consent-pending="true"] #whatsapp-widget-container {
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    </style>
+    <script>
+      (function() {
+        function hasSavedChoice(storageName) {
+          try {
+            const storage = window[storageName];
+            const preferences = JSON.parse(storage.getItem('cookie-preferences-v1') || 'null');
+            if (preferences && preferences.necessary === true && typeof preferences.advertising === 'boolean') return true;
+            const legacyChoice = storage.getItem('cookie-choice');
+            return legacyChoice === 'accepted' || legacyChoice === 'declined';
+          } catch (error) {
+            console.warn('[COOKIE CONSENT] Could not read saved preferences.', error);
+            return false;
+          }
+        }
+
+        if (!hasSavedChoice('localStorage')) {
+          document.documentElement.dataset.cookieConsentPending = 'true';
+        }
+      })();
+    </script>
   <% } %>
 
   <!-- Inline Script to apply dark/light mode & color scheme instantly and prevent flickering -->
@@ -342,7 +357,7 @@
         <!-- Desktop CTA -->
         <a href="/contact" class="btn-shimmer hidden lg:inline-flex items-center gap-1.5 min-h-[42px] px-4 py-2 bg-gradient-to-r from-brand-600 via-brand-500 to-accent text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition shadow-brand-500/20 hover:shadow-brand-500/35 active:scale-95 transform hover:-translate-y-0.5 whitespace-nowrap ml-1">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          <span>Request Quote &rarr;</span>
+          <span>Request a Free Discovery Call &rarr;</span>
         </a>
 
         <!-- Mobile Menu Toggle Button (Visible only on mobile phones < 768px) -->
@@ -407,13 +422,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
           </svg>
           <span class="text-[11px] sm:text-xs font-bold">Connect</span>
-        </a>
-        <!-- HMI UI Shortcut -->
-        <a href="/services/embedded-ui-hmi-development" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.includes('embedded-ui-hmi') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-          </svg>
-          <span class="text-[11px] sm:text-xs font-bold">HMI UI</span>
         </a>
       </div>
     </nav>

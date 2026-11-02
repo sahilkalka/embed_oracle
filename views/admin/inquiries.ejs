@@ -12,12 +12,48 @@
 
     <!-- Top Action Buttons -->
     <div class="flex items-center flex-wrap gap-2">
-      <a href="/admin/inquiries/export" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5 active:scale-95 whitespace-nowrap flex-shrink-0">
+      <a href="/admin/inquiries/export<%= selectedStatus ? '?status=' + encodeURIComponent(selectedStatus) : '' %>" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5 active:scale-95 whitespace-nowrap flex-shrink-0">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         <span class="whitespace-nowrap flex-shrink-0">Export CSV</span>
       </a>
     </div>
   </div>
+
+  <% if (notice) { %>
+    <div role="status" aria-live="polite" class="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <span><%= notice %></span>
+    </div>
+  <% } %>
+
+  <form action="/admin/inquiries" method="GET" class="sm:hidden">
+    <label for="mobileInquiryStatusFilter" class="sr-only">Filter inquiries by pipeline stage</label>
+    <div class="relative">
+      <select id="mobileInquiryStatusFilter" name="status" onchange="this.form.submit()" class="w-full min-h-11 appearance-none rounded-xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border px-3 pr-10 text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <% inquiryFilters.forEach(filter => { %>
+          <option value="<%= filter.value %>" <%= filter.value === selectedStatus ? 'selected' : '' %>><%= filter.label %> inquiries (<%= filter.count %>)</option>
+        <% }) %>
+      </select>
+      <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <noscript>
+      <button type="submit" class="mt-2 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200 dark:border-brand-border text-xs font-bold">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+        <span>Apply filter</span>
+      </button>
+    </noscript>
+  </form>
+
+  <nav aria-label="Filter inquiries by pipeline stage" class="hidden sm:flex flex-wrap gap-2">
+    <% inquiryFilters.forEach(filter => { %>
+      <a href="<%= filter.value ? '/admin/inquiries?status=' + encodeURIComponent(filter.value) : '/admin/inquiries' %>"
+         <%= filter.value === selectedStatus ? 'aria-current="page"' : '' %>
+         class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold transition <%= filter.value === selectedStatus ? 'bg-brand-600 border-brand-600 text-white' : 'bg-white dark:bg-brand-surface border-slate-200 dark:border-brand-border text-slate-700 dark:text-slate-300 hover:border-brand-500/50 hover:text-brand-700 dark:hover:text-accent' %>">
+        <span><%= filter.label %></span>
+        <span class="px-1.5 py-0.5 rounded-full text-[10px] <%= filter.value === selectedStatus ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-brand-dark text-slate-500 dark:text-slate-400' %>"><%= filter.count %></span>
+      </a>
+    <% }) %>
+  </nav>
 
   <% if (inquiries.length === 0) { %>
     <div class="bg-white dark:bg-brand-surface rounded-2xl p-12 text-center border border-slate-200 dark:border-brand-border">
@@ -60,12 +96,14 @@
             <!-- Pipeline Status Selector -->
             <form action="/admin/inquiries/<%= inq.id %>/status" method="POST" class="inline flex-1 sm:flex-initial">
               <%- csrfField %>
+              <input type="hidden" name="returnStatus" value="<%= selectedStatus %>">
               <select name="status" aria-label="Pipeline stage for <%= inq.name %>" onchange="this.form.submit()" class="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-brand-500 !min-h-[36px]">
                 <option value="new" <%= inq.status === 'new' ? 'selected' : '' %>>Stage: New</option>
                 <option value="in_progress" <%= inq.status === 'in_progress' ? 'selected' : '' %>>Stage: In Progress</option>
                 <option value="quoted" <%= inq.status === 'quoted' ? 'selected' : '' %>>Stage: Quoted</option>
                 <option value="won" <%= inq.status === 'won' ? 'selected' : '' %>>Stage: Won</option>
-                <option value="archived" <%= (inq.status === 'archived' || inq.status === 'resolved') ? 'selected' : '' %>>Stage: Archived</option>
+                <option value="resolved" <%= inq.status === 'resolved' ? 'selected' : '' %>>Stage: Resolved</option>
+                <option value="archived" <%= inq.status === 'archived' ? 'selected' : '' %>>Stage: Archived</option>
               </select>
             </form>
 
@@ -76,6 +114,7 @@
 
               <form action="/admin/inquiries/<%= inq.id %>/delete" method="POST" onsubmit="return confirm('Delete this inquiry?')" class="inline">
                 <%- csrfField %>
+                <input type="hidden" name="returnStatus" value="<%= selectedStatus %>">
                 <button type="submit" aria-label="Delete inquiry" title="Delete Inquiry" class="w-9 h-9 !min-h-0 !min-w-0 rounded-xl bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 transition inline-flex items-center justify-center">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 </button>

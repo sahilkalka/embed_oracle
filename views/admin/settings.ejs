@@ -10,6 +10,11 @@
 
 <div class="w-full mx-auto flex flex-col gap-3 sm:gap-4 pb-12 sm:pb-16">
 
+  <div class="flex items-start gap-2.5 p-3 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60 text-sky-900 dark:text-sky-200 text-[11px] leading-relaxed">
+    <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11v5m0-8h.01"/></svg>
+    <p>Each settings section saves independently. <strong>Save Changes</strong> applies the active section; <strong>Discard</strong> restores its last successfully saved values and does not undo earlier saves.</p>
+  </div>
+
   <% if (success) { %>
     <div class="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center space-x-2.5 shadow-sm">
       <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>

@@ -1,5 +1,11 @@
 <%- include('../layout_top') %>
 
+<%
+  const validPostStatuses = ['published', 'scheduled', 'draft'];
+  const currentPostStatus = post && validPostStatuses.includes(post.status) ? post.status : 'draft';
+  const scheduledAtIso = post && post.scheduledAt ? new Date(post.scheduledAt).toISOString() : '';
+%>
+
 <div class="space-y-6">
   
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -50,7 +56,7 @@
     <div id="aiAgentStatus" class="hidden p-3 rounded-xl text-xs font-mono"></div>
   </div>
 
-  <form action="<%= post ? '/admin/posts/' + post.id + '/edit' : '/admin/posts/new' %>" method="POST" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+  <form id="postEditorForm" data-original-status="<%= currentPostStatus %>" data-is-existing="<%= post ? 'true' : 'false' %>" action="<%= post ? '/admin/posts/' + post.id + '/edit' : '/admin/posts/new' %>" method="POST" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
       <%- csrfField %>
     <!-- Left: Content Inputs (8 Cols) -->
     <div class="lg:col-span-8 space-y-5 bg-white dark:bg-brand-surface rounded-2xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-sm">
@@ -139,21 +145,24 @@
         <div>
           <label for="postStatus" class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1">Status</label>
           <select id="postStatus" name="status" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-bold">
-            <option value="published" <%= post && post.status === 'published' ? 'selected' : '' %>>Published (Live Immediately)</option>
-            <option value="scheduled" <%= post && post.status === 'scheduled' ? 'selected' : '' %>>Scheduled (Auto-Publish via Cron)</option>
-            <option value="draft" <%= post && post.status === 'draft' ? 'selected' : '' %>>Draft</option>
+            <option value="draft" <%= currentPostStatus === 'draft' ? 'selected' : '' %>>Draft (Private)</option>
+            <option value="scheduled" <%= currentPostStatus === 'scheduled' ? 'selected' : '' %>>Scheduled</option>
+            <option value="published" <%= currentPostStatus === 'published' ? 'selected' : '' %>>Published (Live Immediately)</option>
           </select>
+          <p id="postStatusHelp" class="mt-1.5 text-[10px] leading-relaxed text-slate-500 dark:text-slate-400">Drafts stay private. Publishing makes this article public immediately. Scheduled articles need a future date and time.</p>
         </div>
 
-        <div id="scheduleGroup" style="<%= post && post.status === 'scheduled' ? '' : 'display:none;' %>">
-          <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1">Scheduled Date &amp; Time</label>
-          <input 
+        <div id="scheduleGroup" style="<%= currentPostStatus === 'scheduled' ? '' : 'display:none;' %>">
+          <label for="scheduledAtLocal" class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1">Scheduled Date &amp; Time</label>
+          <input
             type="datetime-local" 
-            name="scheduledAt" 
-            value="<%= post && post.scheduledAt ? new Date(post.scheduledAt).toISOString().slice(0,16) : '' %>"
+            id="scheduledAtLocal"
+            aria-describedby="postStatusHelp"
+            value=""
             class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono"
           >
         </div>
+        <input type="hidden" id="scheduledAt" name="scheduledAt" value="<%= scheduledAtIso %>">
 
         <div>
           <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1">Reading Time (Minutes)</label>
@@ -172,7 +181,7 @@
           type="submit" 
           class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow-lg tracking-wide"
         >
-          <span class="inline-flex items-center justify-center gap-2"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span><%= post ? 'Update Article' : 'Publish Article' %></span></span>
+          <span class="inline-flex items-center justify-center gap-2"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span id="postSubmitLabel"><%= currentPostStatus === 'published' ? 'Update Published Article' : currentPostStatus === 'scheduled' ? 'Update Schedule' : (post ? 'Save Draft Changes' : 'Save as Draft') %></span></span>
         </button>
       </div>
 
@@ -208,12 +217,66 @@
 </div>
 
 <script>
-  // Show / Hide Schedule Group
+  const postEditorForm = document.getElementById('postEditorForm');
   const statusSelect = document.getElementById('postStatus');
   const scheduleGroup = document.getElementById('scheduleGroup');
-  statusSelect.addEventListener('change', () => {
-    scheduleGroup.style.display = statusSelect.value === 'scheduled' ? 'block' : 'none';
+  const scheduledAtLocalInput = document.getElementById('scheduledAtLocal');
+  const scheduledAtInput = document.getElementById('scheduledAt');
+  const postSubmitLabel = document.getElementById('postSubmitLabel');
+  const originalPostStatus = postEditorForm.dataset.originalStatus;
+  const draftActionLabel = postEditorForm.dataset.isExisting === 'true' ? 'Save Draft Changes' : 'Save as Draft';
+
+  function toLocalDateTimeValue(date) {
+    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return localDate.toISOString().slice(0, 16);
+  }
+
+  function syncScheduledAtValue() {
+    if (!scheduledAtLocalInput.value) {
+      scheduledAtInput.value = '';
+      return;
+    }
+
+    const date = new Date(scheduledAtLocalInput.value);
+    scheduledAtInput.value = Number.isNaN(date.getTime()) ? '' : date.toISOString();
+  }
+
+  if (scheduledAtInput.value) {
+    const initialScheduledDate = new Date(scheduledAtInput.value);
+    if (!Number.isNaN(initialScheduledDate.getTime())) {
+      scheduledAtLocalInput.value = toLocalDateTimeValue(initialScheduledDate);
+    }
+  }
+
+  function syncPublicationControls() {
+    const isScheduled = statusSelect.value === 'scheduled';
+    scheduleGroup.style.display = isScheduled ? 'block' : 'none';
+    scheduledAtLocalInput.required = isScheduled;
+    scheduledAtLocalInput.min = toLocalDateTimeValue(new Date());
+    if (!isScheduled) scheduledAtInput.value = '';
+
+    if (postSubmitLabel) {
+      postSubmitLabel.textContent = statusSelect.value === 'published'
+        ? (originalPostStatus === 'published' ? 'Update Published Article' : 'Publish Article')
+        : statusSelect.value === 'scheduled'
+          ? 'Schedule Article'
+          : draftActionLabel;
+    }
+  }
+
+  statusSelect.addEventListener('change', syncPublicationControls);
+  scheduledAtLocalInput.addEventListener('input', syncScheduledAtValue);
+  postEditorForm.addEventListener('submit', event => {
+    syncScheduledAtValue();
+    if (
+      statusSelect.value === 'published'
+      && originalPostStatus !== 'published'
+      && !window.confirm('Publish this article now? It will be visible to website visitors immediately.')
+    ) {
+      event.preventDefault();
+    }
   });
+  syncPublicationControls();
 
   // Real-Time SEO Analyzer
   const titleInput = document.getElementById('postTitle');

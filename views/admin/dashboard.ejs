@@ -13,6 +13,7 @@
   const isPhoneVisible = !(typeof settings !== 'undefined' && settings && settings.show_phone_section === 'false');
   const isHeroVisible = !(typeof settings !== 'undefined' && settings && settings.show_hero_section === 'false');
   const isPortfolioVisible = !(typeof settings !== 'undefined' && settings && settings.show_portfolio_section === 'false');
+  const attentionCount = (Number(newInquiries) || 0) + (Number(draftPostCount) || 0) + (Number(scheduledPostCount) || 0);
 %>
 
 <div class="w-full space-y-5 sm:space-y-6">
@@ -52,6 +53,133 @@
       </a>
     </div>
   </div>
+
+  <section aria-labelledby="needs-attention-title" class="space-y-3">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-1">
+      <div>
+        <h2 id="needs-attention-title" class="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-white">
+          <svg class="w-4 h-4 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.7 3h16.96a2 2 0 001.7-3L13.7 3.86a2 2 0 00-3.4 0z"/></svg>
+          <span>Needs attention</span>
+        </h2>
+        <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+          <%= attentionCount %> item<%= attentionCount === 1 ? '' : 's' %> to review or monitor.
+        </p>
+      </div>
+      <span class="text-[10px] font-bold uppercase tracking-wider <%= attentionCount > 0 ? 'text-amber-700 dark:text-amber-300' : 'text-emerald-700 dark:text-emerald-300' %>">
+        <%= attentionCount > 0 ? 'Action queue' : 'All caught up' %>
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <article class="min-w-0 bg-white dark:bg-brand-surface rounded-2xl p-4 border border-slate-200 dark:border-brand-border shadow-xs">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-300 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16v14H4zM4 7l8 6 8-6"/></svg>
+            </span>
+            <div class="min-w-0">
+              <h3 class="text-xs font-black text-slate-900 dark:text-white">New RFQs</h3>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400"><%= newInquiries %> awaiting first review</p>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black <%= newInquiries > 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400' %>"><%= newInquiries %></span>
+        </div>
+        <% if (!Array.isArray(newInquiryLeads) || newInquiryLeads.length === 0) { %>
+          <p class="mt-3 text-[11px] text-slate-500 dark:text-slate-400">No new inquiries are waiting.</p>
+        <% } else { %>
+          <ul class="mt-3 space-y-2">
+            <% newInquiryLeads.forEach(inquiry => { %>
+              <li>
+                <a href="/admin/inquiries?status=new" class="flex items-center justify-between gap-2 rounded-lg p-2 -mx-2 hover:bg-slate-50 dark:hover:bg-brand-dark transition group">
+                  <span class="min-w-0">
+                    <span class="block text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-brand-600 dark:group-hover:text-accent"><%= inquiry.name %></span>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400 truncate"><%= inquiry.subject || inquiry.serviceCategory || 'General inquiry' %></span>
+                  </span>
+                  <span class="text-[10px] text-slate-400 shrink-0"><%= new Date(inquiry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %></span>
+                </a>
+              </li>
+            <% }) %>
+          </ul>
+        <% } %>
+        <a href="/admin/inquiries?status=new" class="mt-3 pt-2.5 border-t border-slate-100 dark:border-brand-border text-[11px] text-brand-700 dark:text-accent hover:underline font-bold inline-flex items-center gap-1.5">
+          <span>Review new RFQs</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+        </a>
+      </article>
+
+      <article class="min-w-0 bg-white dark:bg-brand-surface rounded-2xl p-4 border border-slate-200 dark:border-brand-border shadow-xs">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-300 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
+            </span>
+            <div class="min-w-0">
+              <h3 class="text-xs font-black text-slate-900 dark:text-white">Draft articles</h3>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400"><%= draftPostCount %> not public yet</p>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"><%= draftPostCount %></span>
+        </div>
+        <% if (!Array.isArray(draftPostQueue) || draftPostQueue.length === 0) { %>
+          <p class="mt-3 text-[11px] text-slate-500 dark:text-slate-400">No drafts are waiting for review.</p>
+        <% } else { %>
+          <ul class="mt-3 space-y-2">
+            <% draftPostQueue.forEach(post => { %>
+              <li>
+                <a href="/admin/posts/<%= post.id %>/edit" class="flex items-center justify-between gap-2 rounded-lg p-2 -mx-2 hover:bg-slate-50 dark:hover:bg-brand-dark transition group">
+                  <span class="min-w-0">
+                    <span class="block text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-brand-600 dark:group-hover:text-accent"><%= post.title %></span>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Updated <%= new Date(post.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %></span>
+                  </span>
+                  <svg class="w-3.5 h-3.5 text-slate-400 shrink-0 group-hover:text-brand-600 dark:group-hover:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                </a>
+              </li>
+            <% }) %>
+          </ul>
+        <% } %>
+        <a href="/admin/posts" class="mt-3 pt-2.5 border-t border-slate-100 dark:border-brand-border text-[11px] text-brand-700 dark:text-accent hover:underline font-bold inline-flex items-center gap-1.5">
+          <span>Manage articles</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+        </a>
+      </article>
+
+      <article class="min-w-0 bg-white dark:bg-brand-surface rounded-2xl p-4 border border-slate-200 dark:border-brand-border shadow-xs">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-300 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7v5l3 2"/></svg>
+            </span>
+            <div class="min-w-0">
+              <h3 class="text-xs font-black text-slate-900 dark:text-white">Scheduled articles</h3>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400"><%= scheduledPostCount %> queued to publish</p>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300"><%= scheduledPostCount %></span>
+        </div>
+        <% if (!Array.isArray(scheduledPostQueue) || scheduledPostQueue.length === 0) { %>
+          <p class="mt-3 text-[11px] text-slate-500 dark:text-slate-400">No articles are scheduled.</p>
+        <% } else { %>
+          <ul class="mt-3 space-y-2">
+            <% scheduledPostQueue.forEach(post => { %>
+              <li>
+                <a href="/admin/posts/<%= post.id %>/edit" class="flex items-center justify-between gap-2 rounded-lg p-2 -mx-2 hover:bg-slate-50 dark:hover:bg-brand-dark transition group">
+                  <span class="min-w-0">
+                    <span class="block text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-brand-600 dark:group-hover:text-accent"><%= post.title %></span>
+                    <span class="block text-[10px] <%= post.scheduledAt ? 'text-slate-500 dark:text-slate-400' : 'text-amber-700 dark:text-amber-300 font-semibold' %>"><%= post.scheduledAt ? new Date(post.scheduledAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'Schedule time missing' %></span>
+                  </span>
+                  <svg class="w-3.5 h-3.5 text-slate-400 shrink-0 group-hover:text-brand-600 dark:group-hover:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+                </a>
+              </li>
+            <% }) %>
+          </ul>
+        <% } %>
+        <a href="/admin/posts" class="mt-3 pt-2.5 border-t border-slate-100 dark:border-brand-border text-[11px] text-brand-700 dark:text-accent hover:underline font-bold inline-flex items-center gap-1.5">
+          <span>Review schedule</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7-7 7"/></svg>
+        </a>
+      </article>
+    </div>
+  </section>
 
   <!-- ZONE 1: Compact KPI Pulse Ribbon (2-col on mobile, 3-col on tablet, 5-col on desktop) -->
   <section aria-label="Key Performance Indicators">

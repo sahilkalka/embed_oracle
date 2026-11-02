@@ -115,6 +115,10 @@
       <div class="mt-12 pt-8 border-t border-slate-200 dark:border-brand-border flex flex-col sm:flex-row items-center justify-between text-xs text-slate-600 dark:text-slate-400">
         <p><%= settings.footer_copyright || ('© ' + new Date().getFullYear() + ' ' + (settings.site_name || 'Embedded India') + '. All rights reserved. Built for performance, security, and precision.') %></p>
         <div class="flex flex-wrap gap-4 sm:gap-6 mt-4 sm:mt-0 text-slate-600 dark:text-slate-400 items-center">
+          <button type="button" id="cookie-settings-open" class="min-h-[44px] py-3.5 inline-flex items-center gap-1.5 hover:underline hover:text-slate-900 dark:hover:text-white">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8V4m0 16v-4m8-4h-4M8 12H4m13.657-5.657l-2.828 2.828M9.172 14.828l-2.829 2.829m11.314 0l-2.828-2.829M9.172 9.172L6.343 6.343"/></svg>
+            <span>Cookie settings</span>
+          </button>
           <a href="/privacy-policy" class="min-h-[44px] py-3.5 inline-flex items-center hover:underline hover:text-slate-900 dark:hover:text-white">Privacy Policy</a>
           <a href="/contact" class="min-h-[44px] py-3.5 inline-flex items-center hover:underline hover:text-slate-900 dark:hover:text-white">Engineering Inquiries</a>
           <a href="/robots.txt" class="min-h-[44px] py-3.5 inline-flex items-center hover:underline hover:text-slate-900 dark:hover:text-white">Robots.txt</a>
@@ -127,24 +131,30 @@
 
   <!-- Cookie Consent Banner -->
   <% if (settings.cookie_banner_enabled !== 'false') { %>
-  <div id="cookie-banner" class="hidden fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 bg-white dark:bg-[#182c27] border border-slate-200 dark:border-brand-border rounded-2xl p-5 shadow-2xl transition">
+  <div id="cookie-banner" role="region" aria-labelledby="cookie-banner-title" class="hidden fixed left-3 right-3 sm:left-4 sm:right-auto sm:max-w-md z-[10000] bg-white dark:bg-[#182c27] border border-slate-200 dark:border-brand-border rounded-2xl p-4 shadow-2xl transition overflow-y-auto" style="bottom: calc(4rem + env(safe-area-inset-bottom)); max-height: min(60dvh, 30rem);">
     <div class="flex items-start gap-4">
-      <div class="p-2 bg-brand-50 dark:bg-brand-900/50 rounded-xl text-brand-500 dark:text-accent">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      <div class="p-2 bg-brand-50 dark:bg-brand-900/50 rounded-xl text-brand-500 dark:text-accent shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
       </div>
-      <div class="flex-1">
-        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Cookie &amp; Privacy Notice</h4>
-        <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">
-          <%= settings.cookie_banner_text || 'We use cookies to ensure optimal functionality, save your theme preferences, and provide interactive engineering tools.' %>
+      <div class="flex-1 min-w-0">
+        <h2 id="cookie-banner-title" class="text-sm font-bold text-slate-900 dark:text-white">Privacy preferences</h2>
+        <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300 mt-1">
+          <%= settings.cookie_banner_text || 'Necessary storage supports core site features and remembers your preferences.' %>
+          Optional advertising scripts, including Meta Pixel and AdSense, load only if you allow them.
         </p>
-        <div class="flex items-center space-x-3 mt-3">
-          <button id="cookie-accept" class="min-h-[44px] px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
+        <p id="cookie-banner-status" role="status" aria-live="polite" class="hidden text-xs text-amber-700 dark:text-amber-300 mt-2"></p>
+        <div class="grid grid-cols-2 gap-2 mt-3">
+          <button id="cookie-accept" type="button" class="min-h-[44px] px-3 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-bold transition inline-flex items-center justify-center gap-1.5">
             <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            <span>Accept</span>
+            <span>Accept all</span>
           </button>
-          <button id="cookie-decline" class="min-h-[44px] px-4 py-2 bg-slate-200 dark:bg-brand-dark hover:bg-slate-300 dark:hover:bg-brand-900 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5">
+          <button id="cookie-decline" type="button" class="min-h-[44px] px-3 py-2 bg-slate-200 dark:bg-brand-dark hover:bg-slate-300 dark:hover:bg-brand-900 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center gap-1.5">
             <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            <span>Decline</span>
+            <span>Reject optional</span>
+          </button>
+          <button id="cookie-manage" type="button" class="col-span-2 min-h-[40px] px-3 py-2 text-brand-700 dark:text-accent rounded-lg text-xs font-semibold transition hover:bg-brand-50 dark:hover:bg-brand-900/30 inline-flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8V4m0 16v-4m8-4h-4M8 12H4m13.657-5.657l-2.828 2.828M9.172 14.828l-2.829 2.829m11.314 0l-2.828-2.829M9.172 9.172L6.343 6.343"/></svg>
+            <span>Manage preferences</span>
           </button>
         </div>
       </div>
@@ -152,11 +162,61 @@
   </div>
   <% } %>
 
+  <dialog id="cookie-preferences-dialog" aria-labelledby="cookie-preferences-title" aria-describedby="cookie-preferences-description" class="m-auto w-full max-w-lg p-0 rounded-2xl bg-white dark:bg-[#182c27] text-slate-900 dark:text-white border border-slate-200 dark:border-brand-border shadow-2xl overflow-y-auto backdrop:bg-slate-950/60" style="width: calc(100% - 2rem); max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem);">
+    <div class="p-5 sm:p-6">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h2 id="cookie-preferences-title" class="text-lg font-black">Cookie preferences</h2>
+          <p id="cookie-preferences-description" class="text-xs leading-relaxed text-slate-600 dark:text-slate-300 mt-1">
+            Choose whether optional advertising scripts may load. Necessary storage is always active.
+          </p>
+        </div>
+        <button id="cookie-preferences-close" type="button" aria-label="Close cookie preferences" class="min-w-[40px] min-h-[40px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="mt-5 space-y-3">
+        <div class="flex items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+          <div>
+            <h3 class="text-sm font-bold">Necessary storage</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">Supports site features and remembers your preferences.</p>
+          </div>
+          <span class="shrink-0 text-[11px] font-bold text-emerald-700 dark:text-emerald-300">Always on</span>
+        </div>
+        <div class="flex items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+          <div>
+            <h3 class="text-sm font-bold">Advertising (optional)</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">Allows Meta Pixel and AdSense to load.</p>
+          </div>
+          <label class="inline-flex items-center gap-2 cursor-pointer shrink-0">
+            <span class="sr-only">Allow optional advertising scripts</span>
+            <input id="cookie-advertising-toggle" type="checkbox" class="peer sr-only">
+            <span class="relative block w-11 h-6 rounded-full bg-slate-300 dark:bg-slate-600 transition peer-checked:bg-brand-500 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-500 after:content-[''] after:absolute after:left-1 after:top-1 after:w-4 after:h-4 after:rounded-full after:bg-white after:transition-transform peer-checked:after:translate-x-5"></span>
+          </label>
+        </div>
+      </div>
+      <p class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 mt-4">
+        If you turn advertising off after allowing it, scripts already loaded during this visit cannot be recalled; the preference applies to subsequent page loads. See our <a href="/privacy-policy" class="text-brand-600 dark:text-accent underline">Privacy Policy</a>.
+      </p>
+      <p id="cookie-preferences-status" role="status" aria-live="polite" class="hidden text-xs text-amber-700 dark:text-amber-300 mt-3"></p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-5">
+        <button id="cookie-preferences-save" type="button" class="min-h-[44px] px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-bold transition inline-flex items-center justify-center gap-1.5">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+          <span>Save preferences</span>
+        </button>
+        <button id="cookie-preferences-accept-all" type="button" class="min-h-[44px] px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center gap-1.5">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Accept all</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
   <!-- Floating WhatsApp Widget -->
   <% if (settings.enable_whatsapp_widget === 'true' && isPhoneVisible && (settings.whatsapp_number || settings.contact_phone)) { %>
     <% const waNum = (settings.whatsapp_number || settings.contact_phone || '').replace(/[^0-9]/g, ''); %>
     <% const waMsg = encodeURIComponent(settings.whatsapp_preset_msg || 'Hello Embedded India, I have an inquiry about custom hardware and firmware engineering.'); %>
-    <aside aria-label="WhatsApp Chat Widget" class="fixed bottom-6 left-6 z-40">
+    <aside id="whatsapp-widget-container" aria-label="WhatsApp Chat Widget" class="fixed bottom-6 left-6 z-40">
       <a href="https://wa.me/<%= waNum %>?text=<%= waMsg %>" target="_blank" rel="noopener noreferrer" class="bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 rounded-full shadow-2xl flex items-center justify-center transition-all transform hover:scale-110 active:scale-95 group" aria-label="Chat with an Engineer on WhatsApp">
         <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
           <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.06-2.124-.531-1.428-.591-2.348-2.036-2.42-2.133-.071-.097-.577-.768-.577-1.464 0-.697.362-1.039.49-1.182.129-.144.281-.179.375-.179.094 0 .188.001.27.006.087.004.204-.033.319.243.118.283.403.98.438 1.052.036.072.06.156.012.251-.048.096-.072.156-.144.239-.072.084-.152.187-.217.251-.072.072-.147.15-.063.294.084.144.372.613.799.992.549.487 1.012.638 1.156.709.144.072.228.06.312-.036.084-.096.36-.419.456-.563.096-.144.192-.12.324-.072.132.048.837.395.981.467.144.072.24.108.276.168.036.06.036.348-.108.753z"/>
@@ -227,14 +287,23 @@
     const rfqDismiss = document.getElementById('rfq-modal-dismiss');
     if (rfqModal && !sessionStorage.getItem('rfq-dismissed')) {
       const delaySec = Number('<%= settings.rfq_modal_delay_sec || 5 %>') || 5;
-      setTimeout(() => {
+      const showRfqModal = () => {
         if (!sessionStorage.getItem('rfq-dismissed')) {
+          rfqModal.setAttribute('aria-hidden', 'false');
           rfqModal.classList.remove('hidden');
+        }
+      };
+      setTimeout(() => {
+        if (document.documentElement.dataset.cookieConsentPending === 'true') {
+          document.addEventListener('cookieconsentresolved', showRfqModal, { once: true });
+        } else {
+          showRfqModal();
         }
       }, delaySec * 1000);
 
       const hideRfq = () => {
         rfqModal.classList.add('hidden');
+        rfqModal.setAttribute('aria-hidden', 'true');
         sessionStorage.setItem('rfq-dismissed', 'true');
       };
       if (rfqClose) rfqClose.addEventListener('click', hideRfq);
@@ -270,48 +339,7 @@
     }
 
     // 7. Header Quick Search Widget
-    const SEARCH_INDEX = [
-      { type: 'Service', title: 'Full-Cycle Product Realization', url: '/services/full-cycle-embedded-product-engineering', desc: 'End-to-end electronic hardware, RTOS firmware, DFM validation' },
-      { type: 'Service', title: 'Embedded UI for Industrial & Medical HMI', url: '/services/embedded-ui-hmi-development', desc: 'TouchGFX on STM32 MCUs (our core specialty) & Qt 6 / QML on Embedded Linux MPUs' },
-      { type: 'Service', title: 'Embedded Software & Firmware Development', url: '/services/embedded-software-firmware-development', desc: 'Deterministic bare-metal, FreeRTOS, Zephyr drivers' },
-      { type: 'Service', title: 'Hardware Design & High-Speed PCB Layout', url: '/services/hardware-design-engineering', desc: 'Multi-layer PCB, HDI microvias, impedance matching' },
-      { type: 'Service', title: 'Board Support Package (BSP) Development', url: '/services/bsp-development', desc: 'Custom U-Boot, Linux kernel device trees, drivers' },
-      { type: 'Service', title: 'IoT and Edge Computing Solutions', url: '/services/iot-edge-computing-solutions', desc: 'LoRaWAN, 4G, BLE, TinyML predictive vibration' },
-      { type: 'Service', title: 'Automotive Embedded Systems & HIL', url: '/services/automotive-embedded-systems', desc: 'ECUs, CAN-FD, ISO 26262, Hardware-in-the-Loop' },
-      { type: 'Tool', title: 'IPC-2221 PCB Trace Width Calculator', url: '/tools/pcb-trace', desc: 'Copper trace ampacity and thermal cross section' },
-      { type: 'Tool', title: '555 Timer Frequency & Duty Cycle', url: '/tools/555-timer', desc: 'Astable and monostable oscillation calculations' },
-      { type: 'Tool', title: 'LED Series Current Limiting Resistor', url: '/tools/led-resistor', desc: 'Forward drop and power dissipation calculator' },
-      { type: 'Tool', title: 'UART Baud Rate Error Calculator', url: '/tools/uart-baud', desc: 'Clock divider and framing error tolerances' },
-      { type: 'Tool', title: 'SMD Resistor 3/4-Digit & EIA-96 Code Decoder', url: '/tools/smd-code', desc: 'Surface-mount component marking lookup' },
-      { type: 'Tool', title: 'IoT Battery Life & Deep-Sleep Estimator', url: '/tools/battery-life', desc: 'Duty cycle and multi-year cell lifetime' },
-      { type: 'Tool', title: 'Microstrip Controlled Trace Impedance', url: '/tools/trace-impedance', desc: 'Characteristic impedance 50-ohm calculation' },
-      { type: 'Tool', title: 'Microcontroller Pinout & Peripheral Reference', url: '/tools/mcu-pinout', desc: 'STM32, ESP32, and RP2040 pin multiplexing' },
-      { type: 'Blog', title: 'Hardware & Firmware Co-Design', url: '/blogs/bridging-the-divide', desc: 'Aligning hardware and firmware engineering workflows' },
-      { type: 'Blog', title: 'Hardware-in-the-Loop (HIL) Testing', url: '/blogs/hardware-in-the-loop-hil', desc: 'Automated test rigs for mission-critical validation' },
-      { type: 'Page', title: 'Engineering Services Portfolio', url: '/services', desc: 'All hardware, firmware, and TouchGFX/Qt HMI disciplines' },
-      { type: 'Page', title: 'Client Projects & Case Studies', url: '/projects', desc: 'Bus AC controllers, water dispensers, IoT gateways' },
-      { type: 'Page', title: 'About Embedded India', url: '/about', desc: 'Company vision, precision standards, and engineering presence' },
-      { type: 'Page', title: 'Contact Us & Request Quote', url: '/contact', desc: 'Initiate custom embedded project inquiry' }
-    ];
-
-    window.HeaderSearch.init(SEARCH_INDEX);
-
-    // 8. Cookie Banner Handling
-    const cookieBanner = document.getElementById('cookie-banner');
-    const cookieAccept = document.getElementById('cookie-accept');
-    const cookieDecline = document.getElementById('cookie-decline');
-
-    if (cookieBanner && !navigator.webdriver && !localStorage.getItem('cookie-choice')) {
-      cookieBanner.classList.remove('hidden');
-      cookieAccept?.addEventListener('click', () => {
-        localStorage.setItem('cookie-choice', 'accepted');
-        cookieBanner.classList.add('hidden');
-      });
-      cookieDecline?.addEventListener('click', () => {
-        localStorage.setItem('cookie-choice', 'declined');
-        cookieBanner.classList.add('hidden');
-      });
-    }
+    window.HeaderSearch.init();
 
     // 9. Newsletter Form Submission AJAX
     const newsletterForm = document.getElementById('newsletter-form');
@@ -408,6 +436,7 @@
   </script>
 
   <script src="/assets/js/theme-manager.js?v=<%= assetVersion %>"></script>
+  <script src="/assets/js/cookie-consent.js?v=<%= assetVersion %>" defer></script>
   <script src="/assets/js/ui-effects.js?v=<%= assetVersion %>" defer></script>
 </body>
 </html>

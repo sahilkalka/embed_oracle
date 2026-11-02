@@ -38,6 +38,30 @@ const ALLOWED_UPLOAD_EXTS = new Set([
 const IMAGE_ASSET_EXTS = new Set([
   '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.avif', '.ico', '.bmp'
 ]);
+const INQUIRY_STATUS_OPTIONS = [
+  { value: 'new', label: 'New' },
+  { value: 'in_progress', label: 'In Progress' },
+  { value: 'quoted', label: 'Quoted' },
+  { value: 'won', label: 'Won' },
+  { value: 'resolved', label: 'Resolved' },
+  { value: 'archived', label: 'Archived' }
+];
+const INQUIRY_STATUS_VALUES = new Set(INQUIRY_STATUS_OPTIONS.map(option => option.value));
+const POST_STATUS_VALUES = new Set(['draft', 'scheduled', 'published']);
+
+function getInquiryListRedirect(req, outcome) {
+  const params = new URLSearchParams();
+  const returnStatus = typeof req.body.returnStatus === 'string' ? req.body.returnStatus : '';
+  if (INQUIRY_STATUS_VALUES.has(returnStatus)) params.set('status', returnStatus);
+  params.set(outcome, '1');
+  return `/admin/inquiries?${params.toString()}`;
+}
+
+function parseScheduledAt(value) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  const timestamp = Date.parse(value);
+  return Number.isNaN(timestamp) ? null : new Date(timestamp);
+}
 
 const assetUploadStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -381,7 +405,12 @@ router.get('/', async (req, res) => {
       topPosts,
       calculatorStats,
       totalProjects,
-      featuredProjects
+      featuredProjects,
+      draftPostCount,
+      scheduledPostCount,
+      newInquiryLeads,
+      draftPostQueue,
+      scheduledPostQueue
     ] = await Promise.all([
       prisma.post.count(),
       prisma.inquiry.count(),
@@ -411,7 +440,27 @@ router.get('/', async (req, res) => {
         } catch (e) { return []; }
       })(),
       prisma.project ? prisma.project.count().catch(() => 0) : 0,
-      prisma.project ? prisma.project.count({ where: { featured: true } }).catch(() => 0) : 0
+      prisma.project ? prisma.project.count({ where: { featured: true } }).catch(() => 0) : 0,
+      prisma.post.count({ where: { status: 'draft' } }),
+      prisma.post.count({ where: { status: 'scheduled' } }),
+      prisma.inquiry.findMany({
+        where: { status: 'new' },
+        orderBy: { createdAt: 'desc' },
+        take: 3,
+        select: { id: true, name: true, subject: true, serviceCategory: true, createdAt: true }
+      }),
+      prisma.post.findMany({
+        where: { status: 'draft' },
+        orderBy: { updatedAt: 'desc' },
+        take: 3,
+        select: { id: true, title: true, updatedAt: true }
+      }),
+      prisma.post.findMany({
+        where: { status: 'scheduled' },
+        orderBy: { scheduledAt: 'asc' },
+        take: 3,
+        select: { id: true, title: true, scheduledAt: true }
+      })
     ]);
 
     res.render('admin/dashboard', {
@@ -424,7 +473,12 @@ router.get('/', async (req, res) => {
       topPosts,
       calculatorStats,
       totalProjects: totalProjects || 0,
-      featuredProjects: featuredProjects || 0
+      featuredProjects: featuredProjects || 0,
+      draftPostCount,
+      scheduledPostCount,
+      newInquiryLeads,
+      draftPostQueue,
+      scheduledPostQueue
     });
   } catch (err) {
     console.error('[ADMIN DASHBOARD ERROR]', err);
@@ -504,16 +558,39 @@ router.post('/traffic/flag', handleTrafficHashBlock);
 // GET /admin/inquiries - List and Filter Inquiries
 router.get('/inquiries', async (req, res) => {
   try {
-    const status = req.query.status || undefined;
+    const status = typeof req.query.status === 'string' ? req.query.status : '';
+    if (status && !INQUIRY_STATUS_VALUES.has(status)) {
+      return res.status(400).send('Invalid inquiry status filter.');
+    }
+
     const where = status ? { status } : {};
+    const [inquiries, totalInquiries, statusCounts] = await Promise.all([
+      prisma.inquiry.findMany({
+        where,
+        orderBy: { createdAt: 'desc' }
+      }),
+      prisma.inquiry.count(),
+      Promise.all(INQUIRY_STATUS_OPTIONS.map(async option => ({
+        ...option,
+        count: await prisma.inquiry.count({ where: { status: option.value } })
+      })))
+    ]);
 
-    const inquiries = await prisma.inquiry.findMany({
-      where,
-      orderBy: { createdAt: 'desc' }
+    const inquiryFilters = [{ value: '', label: 'All', count: totalInquiries }, ...statusCounts];
+    const notice = req.query.updated === '1'
+      ? 'Inquiry stage updated.'
+      : req.query.deleted === '1'
+        ? 'Inquiry deleted.'
+        : '';
+
+    res.render('admin/inquiries', {
+      inquiries,
+      selectedStatus: status,
+      inquiryFilters,
+      notice
     });
-
-    res.render('admin/inquiries', { inquiries, selectedStatus: status });
   } catch (err) {
+    console.error('[INQUIRIES LIST ERROR]', err);
     res.status(500).send('Error loading inquiries');
   }
 });
@@ -522,7 +599,10 @@ router.get('/inquiries', async (req, res) => {
 // GET /admin/inquiries/export - One-Click CSV Export
 router.get('/inquiries/export', async (req, res) => {
   try {
-    const status = req.query.status || undefined;
+    const status = typeof req.query.status === 'string' ? req.query.status : '';
+    if (status && !INQUIRY_STATUS_VALUES.has(status)) {
+      return res.status(400).send('Invalid inquiry status filter.');
+    }
     const where = status ? { status } : {};
     const inquiries = await prisma.inquiry.findMany({
       where,
@@ -562,13 +642,18 @@ router.get('/inquiries/export', async (req, res) => {
 
 router.post('/inquiries/:id/status', async (req, res) => {
   try {
-    const { status } = req.body;
+    const status = typeof req.body.status === 'string' ? req.body.status : '';
+    if (!INQUIRY_STATUS_VALUES.has(status)) {
+      return res.status(400).send('Invalid inquiry status.');
+    }
+
     await prisma.inquiry.update({
       where: { id: req.params.id },
       data: { status }
     });
-    res.redirect('/admin/inquiries');
+    res.redirect(getInquiryListRedirect(req, 'updated'));
   } catch (err) {
+    console.error('[INQUIRY STATUS UPDATE ERROR]', err);
     res.status(500).send('Failed to update status');
   }
 });
@@ -577,8 +662,9 @@ router.post('/inquiries/:id/status', async (req, res) => {
 router.post('/inquiries/:id/delete', async (req, res) => {
   try {
     await prisma.inquiry.delete({ where: { id: req.params.id } });
-    res.redirect('/admin/inquiries');
+    res.redirect(getInquiryListRedirect(req, 'deleted'));
   } catch (err) {
+    console.error('[INQUIRY DELETE ERROR]', err);
     res.status(500).send('Failed to delete inquiry');
   }
 });
@@ -684,10 +770,18 @@ router.get('/posts/new', (req, res) => {
 router.post('/posts/new', async (req, res) => {
   try {
     const { title, category, tags, summary, contentMarkdown, status, scheduledAt, readingTime } = req.body;
+    if (status !== undefined && (typeof status !== 'string' || !POST_STATUS_VALUES.has(status))) {
+      return res.status(400).send('Invalid article status.');
+    }
+    const targetStatus = status || 'draft';
+    const validScheduledAt = parseScheduledAt(scheduledAt);
+    if (targetStatus === 'scheduled' && (!validScheduledAt || validScheduledAt <= new Date())) {
+      return res.status(400).send('Choose a future date and time to schedule this article.');
+    }
+
     const cleanTitle = (title || 'Untitled Technical Guide').trim();
     const slug = slugify(cleanTitle, { lower: true, strict: true }) || 'post-' + Date.now();
 
-    const validScheduledAt = scheduledAt && !isNaN(Date.parse(scheduledAt)) ? new Date(scheduledAt) : null;
     const { markdown: localizedMarkdown } = await localizeMarkdownAssets(contentMarkdown || '');
     const contentHtml = renderMarkdown(localizedMarkdown);
 
@@ -700,10 +794,10 @@ router.post('/posts/new', async (req, res) => {
         summary: summary || '',
         contentMarkdown: localizedMarkdown,
         contentHtml,
-        status: status || 'published',
+        status: targetStatus,
         readingTime: parseInt(readingTime) || 4,
-        scheduledAt: validScheduledAt,
-        publishedAt: status === 'published' ? new Date() : (validScheduledAt ? null : null)
+        scheduledAt: targetStatus === 'scheduled' ? validScheduledAt : null,
+        publishedAt: targetStatus === 'published' ? new Date() : null
       }
     });
 
@@ -747,14 +841,25 @@ router.post('/posts/:id/edit', async (req, res) => {
     });
     if (existing) return res.status(409).send('Another post already uses this URL. Edit the existing post or choose a different URL.');
 
-    const validScheduledAt = scheduledAt && !isNaN(Date.parse(scheduledAt)) ? new Date(scheduledAt) : null;
+    const postExists = await prisma.post.findUnique({ where: { id: req.params.id } });
+    if (!postExists) return res.status(404).send('Post no longer exists. Reload the post list before saving.');
+    if (status !== undefined && (typeof status !== 'string' || !POST_STATUS_VALUES.has(status))) {
+      return res.status(400).send('Invalid article status.');
+    }
+    const targetStatus = typeof status === 'string' && status ? status : postExists.status;
+    if (!POST_STATUS_VALUES.has(targetStatus)) {
+      return res.status(400).send('Select a valid article status before saving.');
+    }
+
+    const validScheduledAt = parseScheduledAt(scheduledAt);
+    if (targetStatus === 'scheduled' && (!validScheduledAt || validScheduledAt <= new Date())) {
+      return res.status(400).send('Choose a future date and time to schedule this article.');
+    }
+
     const { markdown: localizedMarkdown } = await localizeMarkdownAssets(
       contentMarkdown !== undefined ? contentMarkdown : ''
     );
     const contentHtml = renderMarkdown(localizedMarkdown);
-
-    const postExists = await prisma.post.findUnique({ where: { id: req.params.id } });
-    if (!postExists) return res.status(404).send('Post no longer exists. Reload the post list before saving.');
 
     await prisma.post.update({
       where: { id: req.params.id },
@@ -766,10 +871,12 @@ router.post('/posts/:id/edit', async (req, res) => {
         summary: summary !== undefined ? summary : postExists.summary,
         contentMarkdown: contentMarkdown !== undefined ? localizedMarkdown : postExists.contentMarkdown,
         contentHtml,
-        status: status || postExists.status,
+        status: targetStatus,
         readingTime: parseInt(readingTime) || postExists.readingTime || 4,
-        scheduledAt: validScheduledAt,
-        publishedAt: status === 'published' ? (postExists.publishedAt || new Date()) : postExists.publishedAt
+        scheduledAt: targetStatus === 'scheduled' ? validScheduledAt : null,
+        publishedAt: targetStatus === 'published'
+          ? (postExists.status === 'published' && postExists.publishedAt ? postExists.publishedAt : new Date())
+          : null
       }
     });
 
