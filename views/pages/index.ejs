@@ -43,7 +43,7 @@
 
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 pt-1">
           <a href="/contact" class="btn-shimmer w-full sm:w-auto px-7 py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl shadow-lg shadow-brand-500/25 border border-white/20 transition transform hover:-translate-y-0.5 text-center text-sm active:scale-95 inline-flex items-center justify-center gap-2">
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.12.96.36 1.9.7 2.8a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.84.58 2.8.7A2 2 0 0122 16.92z"/></svg>
+            <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">call</span>
             <span>Request a free discovery call</span>
           </a>
           <a href="/tools" class="w-full sm:w-auto px-7 py-3.5 bg-white dark:bg-brand-surface hover:bg-slate-100 dark:hover:bg-brand-dark text-slate-900 dark:text-white font-extrabold rounded-xl border border-slate-300 dark:border-brand-border transition shadow-sm text-center inline-flex items-center justify-center gap-2 text-sm active:scale-95">
@@ -58,20 +58,25 @@
             Select an engineering domain to inspect real-world architecture:
           </span>
           <div class="flex flex-wrap items-center justify-start gap-2 text-xs font-bold" id="archetypePills" role="group" aria-label="Engineering architecture examples">
-            <button type="button" data-type="iot" aria-label="IoT and Wireless" aria-pressed="true" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform hover:scale-105 archetype-btn">
-              ⚡ IoT &amp; Wireless
+            <button type="button" data-type="iot" aria-pressed="true" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform hover:scale-105 archetype-btn">
+              <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">sensors</span>
+              <span>IoT &amp; Wireless</span>
             </button>
-            <button type="button" data-type="automotive" aria-label="Automotive CAN-FD" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
-              🚗 Automotive CAN-FD
+            <button type="button" data-type="automotive" aria-label="Automotive CAN-FD" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+              <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">directions_car</span>
+              <span>Automotive CAN-FD</span>
             </button>
-            <button type="button" data-type="edgeai" aria-label="TinyML Edge AI" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
-              🧠 TinyML Edge AI
+            <button type="button" data-type="edgeai" aria-label="TinyML Edge AI" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+              <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">psychology</span>
+              <span>TinyML Edge AI</span>
             </button>
-            <button type="button" data-type="hmi" aria-label="TouchGFX and Qt HMI" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
-              🖥️ TouchGFX / Qt HMI
+            <button type="button" data-type="hmi" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+              <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">devices</span>
+              <span>TouchGFX / Qt HMI</span>
             </button>
-            <button type="button" data-type="highspeed" aria-label="High-Speed PCB" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
-              🔌 High-Speed PCB
+            <button type="button" data-type="highspeed" aria-label="High-Speed PCB" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+              <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">developer_board</span>
+              <span>High-Speed PCB</span>
             </button>
           </div>
         </div>
@@ -127,8 +132,8 @@
       <div class="relative w-full" data-particles="off">
 
 
-        <div id="hero-console" class="relative w-full h-[320px] md:h-[420px] lg:h-[500px] bg-white dark:bg-brand-surface rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white overflow-hidden flex flex-col justify-between">
-          <div class="relative z-10 flex flex-col h-full justify-between">
+        <div id="hero-console" class="relative w-full min-h-[320px] md:min-h-[420px] lg:min-h-[500px] bg-white dark:bg-brand-surface rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white flex flex-col">
+          <div class="relative z-10 flex flex-col">
         
         <!-- Floating Glassmorphic Status Pill (Top) -->
         <div class="hidden sm:flex absolute -top-5 -left-4 z-20 items-center space-x-2 px-3.5 py-1.5 bg-white dark:bg-brand-surface border border-slate-300 dark:border-brand-border rounded-xl shadow-xl text-[11px] font-black text-slate-900 dark:text-white backdrop-blur-md animate-float-slow">
@@ -136,16 +141,10 @@
           <span>IPC-A-610 Class 3 SMT Standards</span>
         </div>
 
-        <!-- Floating Glassmorphic Status Pill (Bottom) -->
-        <div class="hidden sm:flex absolute -bottom-4 left-6 z-20 items-center space-x-2 px-3.5 py-1.5 bg-white dark:bg-brand-surface border border-slate-300 dark:border-brand-border rounded-xl shadow-xl text-[11px] font-black text-slate-900 dark:text-white backdrop-blur-md animate-float-reverse">
-          <span class="w-2.5 h-2.5 rounded-full bg-accent animate-pulse"></span>
-          <span>Live HIL Telemetry Active</span>
-        </div>
-
-        <div class="hero-console-panel relative mx-auto max-w-md lg:max-w-none bg-white dark:bg-brand-dark rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white overflow-hidden">
+        <div class="hero-console-panel relative mx-auto w-full max-w-md lg:max-w-none min-w-0 bg-white dark:bg-brand-dark rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white">
           
           <!-- Console Header & Tab Bar -->
-          <div class="hero-console-header flex items-center justify-between pb-4 border-b border-slate-200 dark:border-brand-border">
+          <div class="hero-console-header flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-brand-border">
             <div class="flex items-center space-x-2">
               <div class="w-3 h-3 rounded-full bg-red-500"></div>
               <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
@@ -153,17 +152,17 @@
             </div>
             
             <!-- Interactive Tabs -->
-            <div class="flex items-center space-x-1.5 text-[11px] font-mono" id="consoleTabs">
-              <button type="button" data-tab="code" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-brand-500 text-white font-black border border-brand-500 shadow-sm console-tab-btn inline-flex items-center justify-center gap-1.5 transition">
-                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            <div class="min-w-0 flex flex-wrap items-center gap-1.5 text-[11px] font-mono" id="consoleTabs">
+              <button type="button" data-tab="code" class="min-h-[38px] shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg bg-brand-500 text-white font-black border border-brand-500 shadow-sm console-tab-btn inline-flex items-center justify-center gap-1.5 transition">
+                <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">code</span>
                 <span>firmware.c</span>
               </button>
-              <button type="button" data-tab="scope" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-950 dark:hover:text-white border border-slate-200/80 dark:border-transparent font-bold console-tab-btn inline-flex items-center justify-center gap-1.5 transition">
-                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+              <button type="button" data-tab="scope" class="min-h-[38px] shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-950 dark:hover:text-white border border-slate-200/80 dark:border-transparent font-bold console-tab-btn inline-flex items-center justify-center gap-1.5 transition">
+                <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">show_chart</span>
                 <span>Oscilloscope</span>
               </button>
-              <button type="button" data-tab="terminal" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-950 dark:hover:text-white border border-slate-200/80 dark:border-transparent font-bold console-tab-btn inline-flex items-center justify-center gap-1.5 transition">
-                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <button type="button" data-tab="terminal" class="min-h-[38px] shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-950 dark:hover:text-white border border-slate-200/80 dark:border-transparent font-bold console-tab-btn inline-flex items-center justify-center gap-1.5 transition">
+                <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">terminal</span>
                 <span>Serial Monitor</span>
               </button>
             </div>
@@ -189,15 +188,15 @@ void init_embedded_system(void) {
               <!-- Signal Selectors -->
               <div class="mt-3 flex gap-2" role="group" aria-label="Waveform">
                 <button type="button" data-wave="square" onclick="setWaveform('square')" class="waveform-btn min-h-[36px] min-w-[44px] px-2.5 py-1.5 inline-flex items-center justify-center gap-1 bg-brand-500 text-white rounded-lg text-xs font-bold border border-brand-500 shadow-sm transition">
-                  <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16h4V8h5v8h5V8h4"/></svg>
+                  <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">graphic_eq</span>
                   <span>Square</span>
                 </button>
                 <button type="button" data-wave="sine" onclick="setWaveform('sine')" class="waveform-btn min-h-[36px] min-w-[44px] px-2.5 py-1.5 inline-flex items-center justify-center gap-1 bg-slate-100 dark:bg-brand-surface hover:bg-brand-500 hover:text-white rounded-lg text-xs text-slate-800 dark:text-slate-200 font-bold border border-slate-300 dark:border-brand-border transition">
-                  <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12c2.5-6 5.5-6 9 0s6.5 6 9 0"/></svg>
+                  <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">waves</span>
                   <span>Sine</span>
                 </button>
                 <button type="button" data-wave="burst" onclick="setWaveform('burst')" class="waveform-btn min-h-[36px] min-w-[44px] px-2.5 py-1.5 inline-flex items-center justify-center gap-1 bg-slate-100 dark:bg-brand-surface hover:bg-brand-500 hover:text-white rounded-lg text-xs text-slate-800 dark:text-slate-200 font-bold border border-slate-300 dark:border-brand-border transition">
-                  <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">electric_bolt</span>
                   <span>Burst</span>
                 </button>
               </div>
@@ -219,13 +218,19 @@ void init_embedded_system(void) {
           </div>
 
           <!-- Interactive Action Bar: Run Virtual Bring-up -->
-          <div class="mt-4 pt-4 border-t border-slate-200 dark:border-brand-border flex items-center justify-between">
-            <button type="button" id="btnRunBringUp" class="min-h-[44px] px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-mono text-xs font-black rounded-xl transition flex items-center space-x-2 shadow-lg shadow-brand-500/20 border border-white/20 active:scale-95">
-              <span>▶ Run Virtual Bring-Up</span>
+          <div class="mt-4 pt-4 border-t border-slate-200 dark:border-brand-border flex flex-wrap items-center justify-between gap-3">
+            <button type="button" id="btnRunBringUp" class="min-h-[44px] shrink-0 px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-mono text-xs font-black rounded-xl transition flex items-center space-x-2 shadow-lg shadow-brand-500/20 border border-white/20 active:scale-95">
+              <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">play_arrow</span>
+              <span>Run Virtual Bring-Up</span>
             </button>
-            <span id="bringUpStatus" class="text-[11px] font-mono text-brand-700 dark:text-accent font-black tracking-wide">Board Status: ONLINE</span>
+            <span id="bringUpStatus" class="min-w-0 text-[11px] font-mono text-brand-700 dark:text-accent font-black tracking-wide">Board Status: ONLINE</span>
           </div>
 
+        </div>
+
+        <div class="hidden sm:flex relative z-20 self-start items-center space-x-2 mt-3 px-3.5 py-1.5 bg-white dark:bg-brand-surface border border-slate-300 dark:border-brand-border rounded-xl shadow-xl text-[11px] font-black text-slate-900 dark:text-white backdrop-blur-md animate-float-reverse">
+          <span class="w-2.5 h-2.5 rounded-full bg-accent animate-pulse"></span>
+          <span>Live HIL Telemetry Active</span>
         </div>
 
       </div>
@@ -338,8 +343,8 @@ void init_embedded_system(void) {
       <!-- Value Prop 1: Performance and Cost Optimization -->
       <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
-          <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent font-black text-xl">
-            ⚡
+          <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent">
+            <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">bolt</span>
           </div>
           <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Performance and Cost Optimization</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
@@ -356,8 +361,8 @@ void init_embedded_system(void) {
       <!-- Value Prop 2: Accelerated Time-to-Market -->
       <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
-          <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent font-black text-xl">
-            🚀
+          <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent">
+            <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">rocket_launch</span>
           </div>
           <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Accelerated Time-to-Market</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
@@ -374,8 +379,8 @@ void init_embedded_system(void) {
       <!-- Value Prop 3: Lifecycle Engineering -->
       <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
-          <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent font-black text-xl">
-            🛡️
+          <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent">
+            <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">shield</span>
           </div>
           <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Lifecycle Engineering</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
@@ -484,7 +489,7 @@ void init_embedded_system(void) {
       <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
           <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
-            <img src="/assets/images/download-2.svg" alt="Full-Cycle Embedded Product Engineering Architecture" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+            <img src="/assets/images/download-2.svg" alt="Full-Cycle Embedded Product Engineering Architecture" class="w-8 h-8" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
           </div>
           <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Full-Cycle Product Realization</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
@@ -502,7 +507,7 @@ void init_embedded_system(void) {
       <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
           <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
-            <img src="/assets/images/download-3.svg" alt="Embedded C/C++ Firmware and RTOS Development" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+            <img src="/assets/images/download-3.svg" alt="Embedded C/C++ Firmware and RTOS Development" class="w-8 h-8" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
           </div>
           <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Embedded Software &amp; Firmware</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
@@ -520,7 +525,7 @@ void init_embedded_system(void) {
       <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
           <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
-            <img src="/assets/images/download-4.svg" alt="Multi-layer PCB Layout and FPGA Hardware Engineering" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+            <img src="/assets/images/download-4.svg" alt="Multi-layer PCB Layout and FPGA Hardware Engineering" class="w-8 h-8" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
           </div>
           <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Hardware Design &amp; High-Speed PCB</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
@@ -538,7 +543,7 @@ void init_embedded_system(void) {
       <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
           <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
-            <img src="/assets/images/download-5.svg" alt="Board Support Package (BSP) and Linux Kernel Porting" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+            <img src="/assets/images/download-5.svg" alt="Board Support Package (BSP) and Linux Kernel Porting" class="w-8 h-8" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
           </div>
           <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Board Support Package (BSP) Development</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
@@ -556,7 +561,7 @@ void init_embedded_system(void) {
       <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
           <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
-            <img src="/assets/images/download-6.svg" alt="IoT and Edge Computing Solutions Architecture" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+            <img src="/assets/images/download-6.svg" alt="IoT and Edge Computing Solutions Architecture" class="w-8 h-8" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
           </div>
           <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">IoT and Edge Computing Solutions</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
@@ -574,7 +579,7 @@ void init_embedded_system(void) {
       <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
           <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
-            <img src="/assets/images/download-7.svg" alt="Automotive Embedded Systems and HIL Verification" class="w-8 h-8" onerror="this.src='/favicon.svg'">
+            <img src="/assets/images/download-7.svg" alt="Automotive Embedded Systems and HIL Verification" class="w-8 h-8" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
           </div>
           <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Automotive Embedded Systems</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
@@ -594,7 +599,7 @@ void init_embedded_system(void) {
           <div class="space-y-2.5 max-w-3xl">
             <div class="inline-flex flex-wrap items-center gap-2">
               <div class="w-11 h-11 rounded-2xl bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">devices</span>
               </div>
               <span class="px-2.5 py-1 rounded-full bg-brand-500 text-white text-[11px] font-black uppercase tracking-wider">Flagship Specialty: TouchGFX on STM32 MCU</span>
               <span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-[11px] font-bold uppercase tracking-wider border border-slate-300 dark:border-slate-700">Rich MPU UI: Qt 6 / QML</span>
@@ -606,11 +611,11 @@ void init_embedded_system(void) {
           </div>
           <div class="flex flex-wrap sm:flex-nowrap gap-3 shrink-0">
             <a href="/services/embedded-ui-hmi-development" class="inline-flex items-center justify-center gap-2 min-h-[44px] px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold border border-slate-300 dark:border-slate-700 hover:border-brand-500 transition">
-              <svg class="w-4 h-4 text-brand-500 dark:text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">devices</span>
               <span>Explore HMI Architecture &rarr;</span>
             </a>
             <a href="/contact?service=Embedded%20UI%20%2F%20HMI" class="btn-shimmer inline-flex items-center justify-center gap-2 min-h-[44px] px-5 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-black shadow-md transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">bolt</span>
               <span>Request HMI Quote</span>
             </a>
           </div>
@@ -767,11 +772,11 @@ void init_embedded_system(void) {
         <!-- Step 3: Regulatory Compliance -->
         <div class="space-y-2">
           <label class="block text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">3. Regulatory &amp; Environmental Target</label>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold" id="estimatorCompliancePills" role="group" aria-label="Regulatory and environmental target">
-            <button type="button" data-val="none" aria-pressed="true" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-brand-500 text-center transition active:scale-95">Commercial MVP</button>
-            <button type="button" data-val="ce_fcc" aria-pressed="false" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">CE / FCC EMC</button>
-            <button type="button" data-val="automotive" aria-pressed="false" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">Automotive ISO</button>
-            <button type="button" data-val="medical" aria-pressed="false" class="est-comp-rule min-h-[44px] px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">Medical IEC</button>
+          <div class="grid grid-cols-1 min-[400px]:grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold" id="estimatorCompliancePills" role="group" aria-label="Regulatory and environmental target">
+            <button type="button" data-val="none" aria-pressed="true" class="est-comp-rule min-h-[44px] w-full min-w-0 whitespace-nowrap px-3 py-2.5 flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-brand-500 text-center transition active:scale-95">Commercial MVP</button>
+            <button type="button" data-val="ce_fcc" aria-pressed="false" class="est-comp-rule min-h-[44px] w-full min-w-0 whitespace-nowrap px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">CE / FCC EMC</button>
+            <button type="button" data-val="automotive" aria-pressed="false" class="est-comp-rule min-h-[44px] w-full min-w-0 whitespace-nowrap px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">Automotive ISO</button>
+            <button type="button" data-val="medical" aria-pressed="false" class="est-comp-rule min-h-[44px] w-full min-w-0 whitespace-nowrap px-3 py-2.5 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-center transition hover:border-brand-500 active:scale-95">Medical IEC</button>
           </div>
         </div>
 
@@ -808,8 +813,8 @@ void init_embedded_system(void) {
 
         <!-- Lock-In & Request Quote CTA -->
         <div class="pt-2">
-          <a id="estQuoteCta" href="/contact?service=Hardware%20Design&amp;subject=Scope%20estimate%3A%203%20-%204%20Weeks&amp;estimate-timeline=3%20-%204%20Weeks&amp;estimate-complexity=Standard%20MCU%20Architecture&amp;estimate-compliance=Commercial%20MVP&amp;estimate-team=1%20Principal%20Hardware%20Architect%20%E2%80%A2%201%20Firmware%20Engineer%20%E2%80%A2%201%20DFM%20Specialist&amp;estimate-deliverables=Schematic%20Capture%20%26%20Component%20Sourcing%3B%20Multi-Layer%20Controlled%20Impedance%20Layout%3B%20First-Pass%20SMT%20Prototypes%20%285%20Assemblies%29" aria-label="Review this planning estimate with engineering" class="btn-shimmer w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand-600 to-accent text-white font-black rounded-xl text-sm shadow-lg shadow-brand-500/25 active:scale-95 transition">
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.12.96.36 1.9.7 2.8a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.84.58 2.8.7A2 2 0 0122 16.92z"/></svg>
+          <a id="estQuoteCta" href="/contact?service=Hardware%20Design&amp;subject=Scope%20estimate%3A%203%20-%204%20Weeks&amp;estimate-timeline=3%20-%204%20Weeks&amp;estimate-complexity=Standard%20MCU%20Architecture&amp;estimate-compliance=Commercial%20MVP&amp;estimate-team=1%20Principal%20Hardware%20Architect%20%E2%80%A2%201%20Firmware%20Engineer%20%E2%80%A2%201%20DFM%20Specialist&amp;estimate-deliverables=Schematic%20Capture%20%26%20Component%20Sourcing%3B%20Multi-Layer%20Controlled%20Impedance%20Layout%3B%20First-Pass%20SMT%20Prototypes%20%285%20Assemblies%29" class="btn-shimmer w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand-600 to-accent text-white font-black rounded-xl text-sm shadow-lg shadow-brand-500/25 active:scale-95 transition">
+            <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">call</span>
             <span>Discuss this estimate with an engineer</span>
             <span aria-hidden="true">&rarr;</span>
           </a>
@@ -963,7 +968,7 @@ void init_embedded_system(void) {
         <div>
           <div class="flex items-center space-x-0.5 mb-4">
             <% for(let i = 0; i < (t.rating || 5); i++) { %>
-            <svg class="w-4 h-4 text-yellow-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <span class="material-symbols-rounded shrink-0 text-base leading-none text-yellow-400" aria-hidden="true">star</span>
             <% } %>
             <span class="text-[10px] text-slate-500 dark:text-slate-400 ml-2 font-bold"><%= t.rating || 5 %>.0 / 5</span>
           </div>
@@ -983,7 +988,8 @@ void init_embedded_system(void) {
     <% if (!displayTestimonials.length) { %><p class="text-center text-sm text-slate-600 dark:text-slate-300">Worked with our team? Share your engineering experience below.</p><% } %>
     <div class="mt-10 text-center">
       <a href="/submit-review" class="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-xs font-bold text-brand-600 dark:text-accent hover:border-brand-500 transition">
-        <span>⭐ Worked with Embedded India? Share your experience</span>
+        <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">star</span>
+        <span>Worked with Embedded India? Share your experience</span>
         <span>&rarr;</span>
       </a>
     </div>
@@ -1091,7 +1097,7 @@ void init_embedded_system(void) {
 <%- include('../partials/cta-banner') %>
 
 <!-- Interactive Scripts: Typewriter, Spotlight Cursor, Oscilloscope & Bring-Up -->
-<script>
+<script type="module">
   // 1. Typewriter Animation
   const typewriterTarget = document.getElementById('typewriterTarget');
   const typewriterPhrases = [
@@ -1242,10 +1248,10 @@ int ddr3_phy_training(void) {
       if (!data) return;
 
       archetypeBtns.forEach(b => {
-        b.className = 'min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white font-bold border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn';
+        b.className = 'min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white font-bold border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn';
         b.setAttribute('aria-pressed', 'false');
       });
-      btn.className = 'min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform scale-105 archetype-btn';
+      btn.className = 'min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform scale-105 archetype-btn';
       btn.setAttribute('aria-pressed', 'true');
 
       document.getElementById('specMcu').textContent = data.mcu;
@@ -1263,8 +1269,8 @@ int ddr3_phy_training(void) {
   const tabCode = document.getElementById('tabContentCode');
   const tabScope = document.getElementById('tabContentScope');
   const tabTerm = document.getElementById('tabContentTerminal');
-  const ACTIVE_TAB_CLS = 'min-h-[38px] px-3 py-1.5 rounded-lg bg-brand-500 text-white font-black border border-brand-500 shadow-sm console-tab-btn inline-flex items-center justify-center gap-1.5 transition';
-  const INACTIVE_TAB_CLS = 'min-h-[38px] px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-950 dark:hover:text-white border border-slate-200/80 dark:border-transparent font-bold console-tab-btn inline-flex items-center justify-center gap-1.5 transition';
+  const ACTIVE_TAB_CLS = 'min-h-[38px] shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg bg-brand-500 text-white font-black border border-brand-500 shadow-sm console-tab-btn inline-flex items-center justify-center gap-1.5 transition';
+  const INACTIVE_TAB_CLS = 'min-h-[38px] shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-950 dark:hover:text-white border border-slate-200/80 dark:border-transparent font-bold console-tab-btn inline-flex items-center justify-center gap-1.5 transition';
 
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1303,6 +1309,7 @@ int ddr3_phy_training(void) {
       btn.className = btn.getAttribute('data-wave') === type ? ACTIVE_WAVE_CLS : INACTIVE_WAVE_CLS;
     });
   }
+  window.setWaveform = setWaveform;
 
   function startOscilloscope() {
     if (scopeAnimId) cancelAnimationFrame(scopeAnimId);

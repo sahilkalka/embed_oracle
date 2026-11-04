@@ -1,10 +1,13 @@
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
   <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
-    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-brand-border pb-3">
       <h3 class="text-base font-bold text-slate-900 dark:text-white">Plain Text Input</h3>
-      <div class="flex gap-2">
-        <button type="button" id="b64-encode-btn" class="px-3 py-1 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-lg shadow">Encode &rarr;</button>
-        <button type="button" id="b64-clear-plain" class="px-2.5 py-1 bg-slate-100 dark:bg-brand-dark text-slate-600 dark:text-slate-300 text-xs rounded-lg">Clear</button>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" id="b64-encode-btn" class="shrink-0 whitespace-nowrap inline-flex min-h-[44px] items-center justify-center gap-1.5 px-3 py-1 bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs rounded-lg shadow">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          <span>Encode</span>
+        </button>
+        <button type="button" id="b64-clear-plain" class="shrink-0 whitespace-nowrap px-2.5 py-1 bg-slate-100 dark:bg-brand-dark text-slate-600 dark:text-slate-300 text-xs rounded-lg">Clear</button>
       </div>
     </div>
     <div>
@@ -18,11 +21,17 @@
   </div>
 
   <div class="lg:col-span-6 bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-md space-y-5">
-    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-brand-border pb-3">
       <h3 class="text-base font-bold text-slate-900 dark:text-white">Base64 Output</h3>
-      <div class="flex gap-2">
-        <button type="button" id="b64-decode-btn" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-lg shadow">&larr; Decode</button>
-        <button type="button" id="b64-copy-btn" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs rounded-lg">Copy</button>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" id="b64-decode-btn" class="shrink-0 whitespace-nowrap inline-flex min-h-[44px] items-center justify-center gap-1.5 px-3 py-1 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-lg shadow">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 7h10v10M17 7 7 17"/></svg>
+          <span>Decode</span>
+        </button>
+        <button type="button" id="b64-copy-btn" class="shrink-0 whitespace-nowrap inline-flex min-h-[44px] items-center justify-center gap-1.5 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs rounded-lg">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+          <span>Copy</span>
+        </button>
       </div>
     </div>
     <div>

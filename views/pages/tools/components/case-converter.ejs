@@ -5,7 +5,10 @@
         <h3 class="text-base font-bold text-slate-900 dark:text-white">String Case Converter</h3>
         <p class="text-xs text-slate-500 dark:text-slate-400">Transform identifier conventions for C/C++, JavaScript, Python, SQL, and URLs.</p>
       </div>
-      <button type="button" id="cc-copy-active" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow">Copy Selected</button>
+          <button type="button" id="cc-copy-active" class="inline-flex min-h-[44px] items-center justify-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+            <span>Copy Selected</span>
+          </button>
     </div>
 
     <div>
@@ -17,7 +20,10 @@
       <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
         <div class="flex items-center justify-between mb-1.5">
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">camelCase</span>
-          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+          <button type="button" class="cc-copy-row inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1 text-xs text-brand-600 dark:text-accent font-bold">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+            <span>Copy</span>
+          </button>
         </div>
         <p id="cc-val-camel" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
       </div>
@@ -25,7 +31,10 @@
       <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
         <div class="flex items-center justify-between mb-1.5">
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">PascalCase</span>
-          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+          <button type="button" class="cc-copy-row inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1 text-xs text-brand-600 dark:text-accent font-bold">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+            <span>Copy</span>
+          </button>
         </div>
         <p id="cc-val-pascal" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
       </div>
@@ -33,7 +42,10 @@
       <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
         <div class="flex items-center justify-between mb-1.5">
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">snake_case</span>
-          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+          <button type="button" class="cc-copy-row inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1 text-xs text-brand-600 dark:text-accent font-bold">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+            <span>Copy</span>
+          </button>
         </div>
         <p id="cc-val-snake" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
       </div>
@@ -41,7 +53,10 @@
       <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
         <div class="flex items-center justify-between mb-1.5">
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">CONSTANT_CASE</span>
-          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+          <button type="button" class="cc-copy-row inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1 text-xs text-brand-600 dark:text-accent font-bold">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+            <span>Copy</span>
+          </button>
         </div>
         <p id="cc-val-constant" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
       </div>
@@ -49,7 +64,10 @@
       <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-2xl border border-slate-200 dark:border-brand-border">
         <div class="flex items-center justify-between mb-1.5">
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase font-mono">kebab-case</span>
-          <button type="button" class="cc-copy-row text-xs text-brand-600 dark:text-accent font-bold">Copy</button>
+          <button type="button" class="cc-copy-row inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1 text-xs text-brand-600 dark:text-accent font-bold">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+            <span>Copy</span>
+          </button>
         </div>
         <p id="cc-val-kebab" class="font-mono text-xs text-slate-900 dark:text-white break-all"></p>
       </div>

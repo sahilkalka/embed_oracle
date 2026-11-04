@@ -19,7 +19,7 @@ marked.use({
     code({ text, lang }) {
       const language = hljs.getLanguage(lang) ? lang : 'plaintext';
       const highlighted = hljs.highlight(text, { language }).value;
-      return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>`;
+      return `<pre tabindex="0" role="region" aria-label="Scrollable code example" class="max-w-full overflow-x-auto"><code class="hljs language-${language}">${highlighted}</code></pre>`;
     }
   }
 });
@@ -29,7 +29,7 @@ function renderMarkdown(content) {
   const rawHtml = marked.parse(content);
   return getPurify().sanitize(rawHtml, {
     ADD_TAGS: ['iframe'],
-    ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling', 'class']
+    ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling', 'class', 'tabindex', 'role', 'aria-label']
   });
 }
 

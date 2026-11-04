@@ -5,6 +5,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const slugify = require('slugify');
 const router = express.Router();
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  res.set('X-Robots-Tag', 'noindex, nofollow');
+  next();
+});
 const prisma = require('../services/db');
 const { invalidateHomepageData } = require('../services/homepageData');
 const { requireAuth, verifyToken, JWT_SECRET } = require('../middleware/auth');

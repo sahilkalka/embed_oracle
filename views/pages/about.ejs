@@ -40,7 +40,7 @@
       <!-- Pillar 1 -->
       <div class="spotlight-card reveal-on-scroll bg-white dark:bg-brand-surface p-8 rounded-3xl border border-slate-200 dark:border-brand-border shadow-md">
         <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6 icon-bounce-container">
-          <img src="/assets/images/mission1.svg" alt="Precision Engineering" class="w-10 h-10" onerror="this.src='/favicon.svg'">
+          <img src="/assets/images/mission1.svg" alt="Precision Engineering" class="w-10 h-10" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
         </div>
         <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Precision Engineering</h3>
         <p class="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
@@ -51,7 +51,7 @@
       <!-- Pillar 2 -->
       <div class="spotlight-card reveal-on-scroll delay-100 bg-white dark:bg-brand-surface p-8 rounded-3xl border border-slate-200 dark:border-brand-border shadow-md">
         <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6 icon-bounce-container">
-          <img src="/assets/images/mission2.svg" alt="Future-Proof Innovation" class="w-10 h-10" onerror="this.src='/favicon.svg'">
+          <img src="/assets/images/mission2.svg" alt="Future-Proof Innovation" class="w-10 h-10" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
         </div>
         <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Future-Proof Innovation</h3>
         <p class="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
@@ -62,7 +62,7 @@
       <!-- Pillar 3 -->
       <div class="spotlight-card reveal-on-scroll delay-200 bg-white dark:bg-brand-surface p-8 rounded-3xl border border-slate-200 dark:border-brand-border shadow-md">
         <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6 icon-bounce-container">
-          <img src="/assets/images/mission3.svg" alt="Transparent Partnership" class="w-10 h-10" onerror="this.src='/favicon.svg'">
+          <img src="/assets/images/mission3.svg" alt="Transparent Partnership" class="w-10 h-10" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
         </div>
         <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Transparent Partnership</h3>
         <p class="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
@@ -113,7 +113,6 @@
 </div></div></section>
 <%- include('../partials/cta-banner') %>
 
-<script src="/js/counters.js"></script>
+<script src="/js/counters.js" defer></script>
 
 <%- include('../layouts/footer') %>
-

@@ -23,19 +23,25 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-red-500 uppercase tracking-wider">Header: Algorithm &amp; Type</span>
-          <button type="button" id="jwt-copy-header" class="text-[11px] text-slate-400 hover:text-white font-mono">Copy</button>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span id="jwt-header-label" class="text-xs font-bold text-red-500 uppercase tracking-wider">Header: Algorithm &amp; Type</span>
+          <button type="button" id="jwt-copy-header" class="shrink-0 whitespace-nowrap inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 px-2 text-[11px] text-slate-400 hover:text-white font-mono">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+            <span>Copy</span>
+          </button>
         </div>
-        <textarea id="jwt-header-json" readonly rows="7" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-red-400 font-mono text-xs outline-none"></textarea>
+        <textarea id="jwt-header-json" aria-labelledby="jwt-header-label" readonly rows="7" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-red-400 font-mono text-xs outline-none"></textarea>
       </div>
 
       <div class="space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Payload: Data Claims</span>
-          <button type="button" id="jwt-copy-payload" class="text-[11px] text-slate-400 hover:text-white font-mono">Copy</button>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span id="jwt-payload-label" class="text-xs font-bold text-purple-400 uppercase tracking-wider">Payload: Data Claims</span>
+          <button type="button" id="jwt-copy-payload" class="shrink-0 whitespace-nowrap inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 px-2 text-[11px] text-slate-400 hover:text-white font-mono">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+            <span>Copy</span>
+          </button>
         </div>
-        <textarea id="jwt-payload-json" readonly rows="7" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-purple-300 font-mono text-xs outline-none"></textarea>
+        <textarea id="jwt-payload-json" aria-labelledby="jwt-payload-label" readonly rows="7" class="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 text-purple-300 font-mono text-xs outline-none"></textarea>
       </div>
     </div>
 

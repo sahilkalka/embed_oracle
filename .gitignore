@@ -36,6 +36,8 @@ tmp/
 scratch/
 logs/
 reports/
+/ADMIN_REPORT.md
+/AGENT_REPORT.md
 test-results/
 playwright-report/
 .playwright/

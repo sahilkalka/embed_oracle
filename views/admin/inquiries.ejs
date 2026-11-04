@@ -2,17 +2,22 @@
 
 <div class="w-full space-y-6 mx-auto">
   
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <div>
-      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-        <span>📊 Lead / RFQ Pipeline &amp; Customer Inquiries</span>
+  <div class="bg-white dark:bg-brand-surface rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-brand-border shadow-xs flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-4 min-w-0">
+    <div class="min-w-0 flex-1">
+      <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-brand-500/10 dark:bg-accent/15 border border-brand-500/20 text-brand-700 dark:text-accent text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+        <span>Engineering Operations Console</span>
+      </div>
+      <h1 class="flex min-w-0 items-center gap-2 text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+        <span class="material-symbols-rounded shrink-0 text-2xl text-brand-600 dark:text-accent" aria-hidden="true">monitoring</span>
+        <span>Lead / RFQ Pipeline &amp; Customer Inquiries</span>
       </h1>
-      <p class="text-xs text-slate-500 mt-1">Track inbound RFQ leads through each lifecycle stage, export data, and verify outgoing notifications</p>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Track inbound RFQ leads through each lifecycle stage, export data, and verify outgoing notifications</p>
     </div>
 
     <!-- Top Action Buttons -->
-    <div class="flex items-center flex-wrap gap-2">
-      <a href="/admin/inquiries/export<%= selectedStatus ? '?status=' + encodeURIComponent(selectedStatus) : '' %>" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5 active:scale-95 whitespace-nowrap flex-shrink-0">
+    <div class="flex w-full flex-wrap items-center gap-2 shrink-0 2xl:w-auto">
+      <a href="/admin/inquiries/export<%= selectedStatus ? '?status=' + encodeURIComponent(selectedStatus) : '' %>" class="shrink-0 whitespace-nowrap px-3.5 py-2.5 sm:py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm inline-flex items-center gap-1.5 active:scale-95">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         <span class="whitespace-nowrap flex-shrink-0">Export CSV</span>
       </a>
@@ -50,7 +55,7 @@
          <%= filter.value === selectedStatus ? 'aria-current="page"' : '' %>
          class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold transition <%= filter.value === selectedStatus ? 'bg-brand-600 border-brand-600 text-white' : 'bg-white dark:bg-brand-surface border-slate-200 dark:border-brand-border text-slate-700 dark:text-slate-300 hover:border-brand-500/50 hover:text-brand-700 dark:hover:text-accent' %>">
         <span><%= filter.label %></span>
-        <span class="px-1.5 py-0.5 rounded-full text-[10px] <%= filter.value === selectedStatus ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-brand-dark text-slate-500 dark:text-slate-400' %>"><%= filter.count %></span>
+        <span class="px-1.5 py-0.5 rounded-full text-[10px] <%= filter.value === selectedStatus ? 'bg-white text-slate-900' : 'bg-slate-100 dark:bg-brand-dark text-slate-500 dark:text-slate-400' %>"><%= filter.count %></span>
       </a>
     <% }) %>
   </nav>

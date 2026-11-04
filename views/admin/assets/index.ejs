@@ -81,6 +81,7 @@
         <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
         <label for="assetFileInput" class="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-brand-500 dark:hover:border-accent rounded-xl p-4 cursor-pointer transition bg-slate-50/60 dark:bg-slate-950/40">
           <input id="assetFileInput" type="file" name="assets" multiple required accept=".png,.jpg,.jpeg,.webp,.gif,.svg,.avif,.ico,.bmp,.pdf,.zip,.txt,.csv,.json,.mp4,.webm" class="block w-full text-xs text-slate-600 dark:text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-500/10 file:text-brand-600 dark:file:bg-accent/20 dark:file:text-accent hover:file:bg-brand-500/20 cursor-pointer">
+          <span class="sr-only">Select files to upload</span>
         </label>
         <div class="flex justify-end">
           <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-sm transition cursor-pointer flex items-center gap-1.5">
@@ -212,7 +213,7 @@
               <div>
                 <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Domain Linking Path</label>
                 <div class="flex items-center gap-1">
-                  <input type="text" readonly value="<%= asset.relPath %>" onclick="this.select()" class="min-w-0 flex-1 px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-700 dark:text-slate-300 select-all outline-none">
+                  <input type="text" aria-label="Domain linking path for <%= asset.name %>" readonly value="<%= asset.relPath %>" onclick="this.select()" class="min-w-0 flex-1 px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-700 dark:text-slate-300 select-all outline-none">
                   <button type="button" onclick="copyTextWithFeedback(this, '<%= asset.relPath %>')" title="Copy relative path" class="inline-flex items-center gap-1 px-2 py-1.5 rounded-lg bg-brand-500/10 dark:bg-accent/15 text-brand-600 dark:text-accent hover:bg-brand-600 hover:text-white text-[11px] font-bold transition cursor-pointer shrink-0 whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     <span>Copy</span>
@@ -274,7 +275,7 @@
     <!-- Modal Footer: Quick Copy Paths -->
     <div class="p-3 sm:p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 min-w-0">
       <div class="w-full sm:flex-1 min-w-0 flex items-center gap-2">
-        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">Link Path:</span>
+        <label for="previewModalPathInput" class="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">Link Path:</label>
         <input id="previewModalPathInput" type="text" readonly onclick="this.select()" class="w-full min-w-0 flex-1 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white select-all outline-none">
       </div>
       <div class="w-full sm:w-auto grid grid-cols-3 sm:flex items-stretch sm:items-center gap-2 shrink-0">

@@ -29,11 +29,11 @@
   <div class="lg:col-span-6 space-y-6">
     <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-xs font-mono font-bold text-brand-400 uppercase">Generated HTML Code</h3>
+        <h3 id="meta-output-label" class="text-xs font-mono font-bold text-brand-400 uppercase">Generated HTML Code</h3>
         <button type="button" id="meta-copy-btn" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl">Copy Snippet</button>
       </div>
 
-      <textarea id="meta-output" readonly rows="12" class="w-full px-4 py-3 rounded-2xl bg-slate-800/80 border border-slate-700 text-emerald-400 font-mono text-[11px] outline-none"></textarea>
+      <textarea id="meta-output" aria-labelledby="meta-output-label" readonly rows="12" class="w-full px-4 py-3 rounded-2xl bg-slate-800/80 border border-slate-700 text-emerald-400 font-mono text-[11px] outline-none"></textarea>
     </div>
   </div>
 </div>

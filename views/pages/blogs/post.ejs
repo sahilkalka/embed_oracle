@@ -59,14 +59,14 @@
       <div class="w-full min-w-0 <%= settings.ad_slot_blog_sidebar === 'true' ? 'lg:col-span-8' : 'max-w-4xl mx-auto' %>">
         
         <!-- Markdown / HTML Content (with auto-injected In-Article Ad Slot 2) -->
-        <div class="bg-white dark:bg-brand-surface rounded-3xl p-4 sm:p-8 lg:p-12 border border-slate-200 dark:border-brand-border shadow-md prose dark:prose-invert max-w-none text-slate-800 dark:text-slate-200 text-base leading-relaxed space-y-6 overflow-x-hidden min-w-0">
+        <div class="bg-white dark:bg-brand-surface rounded-3xl p-4 sm:p-8 lg:p-12 border border-slate-200 dark:border-brand-border shadow-md prose dark:prose-invert max-w-none text-slate-800 dark:text-slate-200 text-base leading-relaxed space-y-6 min-w-0">
           <%- contentHtml %>
         </div>
 
         <!-- Native Mid-Article Internal Promotion Card -->
         <div class="my-10 bg-gradient-to-r from-brand-900 to-brand-800 rounded-3xl p-8 text-white border border-brand-700 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
-            <span class="px-2.5 py-1 bg-accent/20 text-accent rounded-full text-xs font-bold uppercase tracking-wider">Engineering Feasibility</span>
+            <span class="inline-flex items-center px-2.5 py-1 bg-slate-950 text-white border border-white/20 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">Engineering Feasibility</span>
             <h3 class="text-xl font-bold mt-2">Designing a Custom Microcontroller or IoT Board?</h3>
             <p class="text-xs text-slate-300 mt-1 max-w-lg">
               Embedded India provides schematic design, impedance-controlled layouts, and HIL verification test benches.

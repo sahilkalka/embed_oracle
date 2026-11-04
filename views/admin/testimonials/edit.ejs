@@ -20,33 +20,33 @@
     
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+        <label for="testimonial-name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
           Client / Reviewer Name <span class="text-red-500">*</span>
         </label>
-        <input type="text" name="name" required value="<%= testimonial ? testimonial.name : '' %>" placeholder="e.g. Rajesh Kumar" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+        <input id="testimonial-name" type="text" name="name" required value="<%= testimonial ? testimonial.name : '' %>" placeholder="e.g. Rajesh Kumar" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
       </div>
 
       <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+        <label for="testimonial-role" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
           Role / Designation <span class="text-red-500">*</span>
         </label>
-        <input type="text" name="role" required value="<%= testimonial ? testimonial.role : '' %>" placeholder="e.g. VP Hardware Engineering" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+        <input id="testimonial-role" type="text" name="role" required value="<%= testimonial ? testimonial.role : '' %>" placeholder="e.g. VP Hardware Engineering" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
       </div>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+        <label for="testimonial-company" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
           Company Name
         </label>
-        <input type="text" name="company" value="<%= testimonial ? (testimonial.company || '') : '' %>" placeholder="e.g. EV Powertrain Solutions" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+        <input id="testimonial-company" type="text" name="company" value="<%= testimonial ? (testimonial.company || '') : '' %>" placeholder="e.g. EV Powertrain Solutions" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
       </div>
 
       <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+        <label for="testimonial-rating" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
           Star Rating (1 - 5)
         </label>
-        <select name="rating" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
+        <select id="testimonial-rating" name="rating" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500">
           <option value="5" <%= (!testimonial || testimonial.rating === 5) ? 'selected' : '' %>>5 Stars (★★★★★) - Excellent</option>
           <option value="4" <%= (testimonial && testimonial.rating === 4) ? 'selected' : '' %>>4 Stars (★★★★☆) - Very Good</option>
           <option value="3" <%= (testimonial && testimonial.rating === 3) ? 'selected' : '' %>>3 Stars (★★★☆☆) - Average</option>
@@ -57,29 +57,29 @@
     </div>
 
     <div>
-      <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+      <label for="testimonial-quote" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
         Testimonial Quote <span class="text-red-500">*</span>
       </label>
-      <textarea name="quote" required rows="4" placeholder="Client review quote..." class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500"><%= testimonial ? testimonial.quote : '' %></textarea>
+      <textarea id="testimonial-quote" name="quote" required rows="4" placeholder="Client review quote..." class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500"><%= testimonial ? testimonial.quote : '' %></textarea>
     </div>
 
     <div class="p-4 bg-slate-50 dark:bg-brand-dark rounded-xl border border-slate-200 dark:border-brand-border flex items-center justify-between">
       <div>
-        <span class="text-xs font-bold text-slate-900 dark:text-white block">Approval Status</span>
-        <span class="text-[11px] text-slate-500">If enabled, this testimonial will immediately display on the homepage.</span>
+        <span id="testimonial-approval-label" class="text-xs font-bold text-slate-900 dark:text-white block">Approval Status</span>
+        <span id="testimonial-approval-help" class="text-[11px] text-slate-500">If enabled, this testimonial will immediately display on the homepage.</span>
       </div>
       <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" name="isApproved" value="true" class="sr-only peer" <%= (testimonial && testimonial.isApproved) ? 'checked' : '' %>>
+        <input id="testimonial-is-approved" type="checkbox" name="isApproved" value="true" aria-labelledby="testimonial-approval-label" aria-describedby="testimonial-approval-help" class="sr-only peer" <%= (testimonial && testimonial.isApproved) ? 'checked' : '' %>>
         <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500"></div>
       </label>
     </div>
 
-    <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100 dark:border-brand-border">
-      <a href="/admin/testimonials" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-brand-dark transition">
+    <div class="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-brand-border">
+      <a href="/admin/testimonials" class="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-brand-dark transition">
         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         <span>Cancel</span>
       </a>
-      <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition shadow-sm">
+      <button type="submit" class="shrink-0 whitespace-nowrap inline-flex items-center gap-2 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition shadow-sm">
         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
         <span><%= testimonial ? 'Update Testimonial' : 'Create Testimonial' %></span>
       </button>

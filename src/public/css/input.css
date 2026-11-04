@@ -28,6 +28,41 @@
   }
 }
 
+@media (min-width: 768px) {
+  .public-shell nav.public-desktop-nav a.nav-icon-link {
+    position: relative;
+  }
+  .public-shell nav.public-desktop-nav a.nav-icon-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0.125rem;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    border-radius: 9999px;
+    background-color: currentColor;
+    transform: translateX(-50%);
+    transition: width 180ms ease;
+  }
+  .public-shell nav.public-desktop-nav a.nav-icon-link.font-black::after {
+    width: calc(100% - 1rem);
+  }
+}
+
+.public-shell #mobile-menu a {
+  position: relative;
+}
+.public-shell #mobile-menu a.font-black::after {
+  content: '';
+  position: absolute;
+  bottom: 0.375rem;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  border-radius: 9999px;
+  background-color: currentColor;
+}
+
 .ui-shell .text-xs {
   font-size: 0.875rem;
   line-height: 1.5;
@@ -53,6 +88,46 @@
   align-items: center !important;
   justify-content: center !important;
   text-align: center;
+}
+@media (min-width: 768px) {
+  .public-shell nav.public-desktop-nav {
+    flex-wrap: wrap !important;
+  }
+  .public-shell nav.public-desktop-nav a.nav-icon-link {
+    flex-direction: column !important;
+    gap: 0.125rem !important;
+    min-width: 0 !important;
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+    white-space: nowrap;
+  }
+  .public-shell nav.public-desktop-nav a.nav-icon-link > span.material-symbols-rounded {
+    font-size: 1.75rem !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+  }
+  .public-shell nav.public-desktop-nav a.nav-icon-link > span:not(.material-symbols-rounded) {
+    margin-top: 0.125rem !important;
+    font-size: 0.65rem !important;
+    line-height: 1.1 !important;
+  }
+}
+@media (min-width: 1280px) {
+  .public-shell nav.public-desktop-nav {
+    gap: 1.3rem !important;
+  }
+  .public-shell nav.public-desktop-nav a.nav-icon-link {
+    gap: 0.65rem !important;
+    padding-left: 0.65rem !important;
+    padding-right: 0.65rem !important;
+  }
+  .public-shell nav.public-desktop-nav a.nav-icon-link > span.material-symbols-rounded {
+    font-size: 2.125rem !important;
+    font-variation-settings: 'FILL' 0, 'wght' 250, 'GRAD' 0, 'opsz' 24 !important;
+  }
+  .public-shell nav.public-desktop-nav a.nav-icon-link > span:not(.material-symbols-rounded) {
+    font-size: 0.75rem !important;
+  }
 }
 .public-shell header,
 .admin-shell header {
@@ -759,19 +834,20 @@ html.dark .ui-shell :is(.bg-slate-900, .bg-slate-950, .bg-slate-800, .bg-brand-9
     gap: 12px;
   }
   .public-shell #consoleTabs {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     width: 100%;
     gap: 4px;
     margin: 0;
   }
   .public-shell #consoleTabs .console-tab-btn {
     margin: 0;
-    padding: 6px 2px;
-    min-width: 0;
+    padding: 6px 8px;
+    min-width: max-content;
     min-height: 44px;
-    flex-direction: column;
-    gap: 2px;
+    flex: 0 0 auto;
+    flex-direction: row;
+    gap: 6px;
     font-size: 12px;
     line-height: 1.25;
     white-space: nowrap;

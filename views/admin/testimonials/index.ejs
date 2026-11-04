@@ -2,15 +2,20 @@
 
 <div class="w-full space-y-6 min-w-0 [overflow-wrap:anywhere] mx-auto">
   
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <div class="min-w-0 flex-1 basis-96">
-      <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">
-        <span>⭐ Client Testimonials &amp; Customer Reviews</span>
+  <div class="bg-white dark:bg-brand-surface rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-brand-border shadow-xs flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-4 min-w-0">
+    <div class="min-w-0 2xl:flex-1">
+      <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-brand-500/10 dark:bg-accent/15 border border-brand-500/20 text-brand-700 dark:text-accent text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+        <span>Engineering Operations Console</span>
+      </div>
+      <h1 class="flex min-w-0 flex-wrap items-center gap-2 text-2xl font-extrabold text-slate-900 dark:text-white">
+        <span class="material-symbols-rounded shrink-0 text-2xl text-brand-600 dark:text-accent" aria-hidden="true">star</span>
+        <span>Client Testimonials &amp; Customer Reviews</span>
       </h1>
       <p class="text-xs text-slate-500 mt-1">Manage client social proof displayed on the homepage. Customer-submitted reviews remain pending until approved by an admin.</p>
     </div>
 
-    <div class="flex items-center flex-wrap gap-2">
+    <div class="flex w-full 2xl:w-auto flex-wrap items-center gap-2 2xl:justify-end">
       <a href="/admin/testimonials/new" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         <span>Add Testimonial</span>
@@ -40,7 +45,7 @@
               </div>
             </div>
 
-            <div class="flex items-center space-x-2">
+            <div class="flex flex-wrap items-center gap-2">
               <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider <%= t.isApproved ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300' %>">
                 <%= t.isApproved ? 'Published' : 'Pending Moderation' %>
               </span>
@@ -68,20 +73,20 @@
             <div class="flex items-center space-x-2">
               <form action="/admin/testimonials/<%= t.id %>/toggle-approve" method="POST" class="inline">
                 <%- csrfField %>
-                <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition <%= t.isApproved ? 'border-amber-300 text-amber-600 hover:bg-amber-50' : 'border-emerald-500 text-emerald-600 hover:bg-emerald-50' %>">
+                <button type="submit" class="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition <%= t.isApproved ? 'border-amber-300 text-amber-600 hover:bg-amber-50' : 'border-emerald-500 text-emerald-600 hover:bg-emerald-50' %>">
                   <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                   <span><%= t.isApproved ? 'Unpublish' : 'Approve & Publish' %></span>
                 </button>
               </form>
 
-              <a href="/admin/testimonials/<%= t.id %>/edit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-brand-border text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-brand-dark transition">
+              <a href="/admin/testimonials/<%= t.id %>/edit" class="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-brand-border text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-brand-dark transition">
                 <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 <span>Edit</span>
               </a>
 
               <form action="/admin/testimonials/<%= t.id %>/delete" method="POST" onsubmit="return confirm('Permanently delete this testimonial?')" class="inline">
                 <%- csrfField %>
-                <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-200 text-xs font-bold text-red-600 hover:bg-red-50 transition">
+                <button type="submit" class="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-200 text-xs font-bold text-red-600 hover:bg-red-50 transition">
                   <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                   <span>Delete</span>
                 </button>

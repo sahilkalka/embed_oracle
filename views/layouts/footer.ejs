@@ -116,7 +116,7 @@
         <p><%= settings.footer_copyright || ('© ' + new Date().getFullYear() + ' ' + (settings.site_name || 'Embedded India') + '. All rights reserved. Built for performance, security, and precision.') %></p>
         <div class="flex flex-wrap gap-4 sm:gap-6 mt-4 sm:mt-0 text-slate-600 dark:text-slate-400 items-center">
           <button type="button" id="cookie-settings-open" class="min-h-[44px] py-3.5 inline-flex items-center gap-1.5 hover:underline hover:text-slate-900 dark:hover:text-white">
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8V4m0 16v-4m8-4h-4M8 12H4m13.657-5.657l-2.828 2.828M9.172 14.828l-2.829 2.829m11.314 0l-2.828-2.829M9.172 9.172L6.343 6.343"/></svg>
+            <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">tune</span>
             <span>Cookie settings</span>
           </button>
           <a href="/privacy-policy" class="min-h-[44px] py-3.5 inline-flex items-center hover:underline hover:text-slate-900 dark:hover:text-white">Privacy Policy</a>
@@ -134,7 +134,7 @@
   <div id="cookie-banner" role="region" aria-labelledby="cookie-banner-title" class="hidden fixed left-3 right-3 sm:left-4 sm:right-auto sm:max-w-md z-[10000] bg-white dark:bg-[#182c27] border border-slate-200 dark:border-brand-border rounded-2xl p-4 shadow-2xl transition overflow-y-auto" style="bottom: calc(4rem + env(safe-area-inset-bottom)); max-height: min(60dvh, 30rem);">
     <div class="flex items-start gap-4">
       <div class="p-2 bg-brand-50 dark:bg-brand-900/50 rounded-xl text-brand-500 dark:text-accent shrink-0">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">lock</span>
       </div>
       <div class="flex-1 min-w-0">
         <h2 id="cookie-banner-title" class="text-sm font-bold text-slate-900 dark:text-white">Privacy preferences</h2>
@@ -145,15 +145,15 @@
         <p id="cookie-banner-status" role="status" aria-live="polite" class="hidden text-xs text-amber-700 dark:text-amber-300 mt-2"></p>
         <div class="grid grid-cols-2 gap-2 mt-3">
           <button id="cookie-accept" type="button" class="min-h-[44px] px-3 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-bold transition inline-flex items-center justify-center gap-1.5">
-            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">check</span>
             <span>Accept all</span>
           </button>
           <button id="cookie-decline" type="button" class="min-h-[44px] px-3 py-2 bg-slate-200 dark:bg-brand-dark hover:bg-slate-300 dark:hover:bg-brand-900 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center gap-1.5">
-            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">close</span>
             <span>Reject optional</span>
           </button>
           <button id="cookie-manage" type="button" class="col-span-2 min-h-[40px] px-3 py-2 text-brand-700 dark:text-accent rounded-lg text-xs font-semibold transition hover:bg-brand-50 dark:hover:bg-brand-900/30 inline-flex items-center justify-center gap-1.5">
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8V4m0 16v-4m8-4h-4M8 12H4m13.657-5.657l-2.828 2.828M9.172 14.828l-2.829 2.829m11.314 0l-2.828-2.829M9.172 9.172L6.343 6.343"/></svg>
+            <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">tune</span>
             <span>Manage preferences</span>
           </button>
         </div>
@@ -172,7 +172,7 @@
           </p>
         </div>
         <button id="cookie-preferences-close" type="button" aria-label="Close cookie preferences" class="min-w-[40px] min-h-[40px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">close</span>
         </button>
       </div>
       <div class="mt-5 space-y-3">
@@ -201,11 +201,11 @@
       <p id="cookie-preferences-status" role="status" aria-live="polite" class="hidden text-xs text-amber-700 dark:text-amber-300 mt-3"></p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-5">
         <button id="cookie-preferences-save" type="button" class="min-h-[44px] px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-bold transition inline-flex items-center justify-center gap-1.5">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+          <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">save</span>
           <span>Save preferences</span>
         </button>
         <button id="cookie-preferences-accept-all" type="button" class="min-h-[44px] px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded-lg text-xs font-semibold transition inline-flex items-center justify-center gap-1.5">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">check</span>
           <span>Accept all</span>
         </button>
       </div>
@@ -230,7 +230,7 @@
   <!-- Back-to-Top Floating Button -->
   <% if (settings.enable_back_to_top !== 'false') { %>
     <button id="back-to-top-btn" type="button" aria-label="Back to top"  class="hidden pointer-events-none fixed bottom-20 right-6 z-40 p-3 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition active:scale-95">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+      <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">arrow_upward</span>
     </button>
   <% } %>
 
@@ -239,18 +239,18 @@
     <div id="rfq-auto-modal" aria-hidden="true" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
       <div class="w-full max-w-lg bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-brand-border shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
         <button id="rfq-modal-close" type="button" aria-label="Close dialog" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-white p-1 rounded-lg">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">close</span>
         </button>
         <span class="px-2.5 py-1 bg-accent/20 text-accent font-bold rounded-full text-xs uppercase tracking-wider">Fast-Track RFQ</span>
         <h3 class="text-xl font-black text-slate-900 dark:text-white mt-2">Have a New Embedded Design Project?</h3>
         <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">Get an engineering proposal with turnaround times and BOM estimates within 24 hours.</p>
         <div class="mt-6 flex flex-col sm:flex-row gap-3">
           <a href="/contact" class="btn-shimmer flex-1 inline-flex items-center justify-center gap-2 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs shadow-md transition">
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">electric_bolt</span>
             <span>Request Quote Now &rarr;</span>
           </a>
           <button type="button" id="rfq-modal-dismiss" class="px-4 py-3 bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold hover:bg-slate-200 transition inline-flex items-center justify-center gap-1.5">
-            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">schedule</span>
             <span>Maybe Later</span>
           </button>
         </div>
@@ -435,7 +435,7 @@
     })();
   </script>
 
-  <script src="/assets/js/theme-manager.js?v=<%= assetVersion %>"></script>
+  <script src="/assets/js/theme-manager.js?v=<%= assetVersion %>" defer></script>
   <script src="/assets/js/cookie-consent.js?v=<%= assetVersion %>" defer></script>
   <script src="/assets/js/ui-effects.js?v=<%= assetVersion %>" defer></script>
 </body>

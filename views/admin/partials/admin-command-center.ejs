@@ -1,0 +1,40 @@
+<%
+  const isDashboardHeader = typeof isDashboard !== 'undefined' && isDashboard;
+%>
+<div class="bg-white dark:bg-brand-surface rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-brand-border shadow-xs flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-4 min-w-0">
+  <div class="flex-1 min-w-0">
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-brand-500/10 dark:bg-accent/15 border border-brand-500/20 text-brand-700 dark:text-accent text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+      <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+      <span>Engineering Operations Console</span>
+    </div>
+    <% if (isDashboardHeader) { %>
+      <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Admin Command Center</h1>
+    <% } else { %>
+      <p class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Admin Command Center</p>
+    <% } %>
+    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">Unified workspace for RFQ leads, portfolio publishing, calculator telemetry, and system configuration.</p>
+  </div>
+
+  <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 shrink-0">
+    <a href="/admin/posts/new" class="col-span-2 sm:col-span-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-xs transition">
+      <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">add</span>
+      <span>New Article</span>
+    </a>
+    <a href="/admin/projects/new" class="inline-flex items-center justify-center sm:justify-start gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-brand-500/10 dark:hover:bg-accent/15 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold transition">
+      <span class="material-symbols-rounded shrink-0 text-base leading-none text-brand-600 dark:text-accent" aria-hidden="true">folder_open</span>
+      <span class="truncate">New Case Study</span>
+    </a>
+    <a href="/admin/settings#ai-engine" class="inline-flex items-center justify-center sm:justify-start gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-brand-500/10 dark:hover:bg-accent/15 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold transition">
+      <span class="material-symbols-rounded shrink-0 text-base leading-none text-brand-600 dark:text-accent" aria-hidden="true">auto_awesome</span>
+      <span class="truncate">AI Studio</span>
+    </a>
+    <a href="/admin/traffic" class="inline-flex items-center justify-center sm:justify-start gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-brand-500/10 dark:hover:bg-accent/15 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold transition">
+      <span class="material-symbols-rounded shrink-0 text-base leading-none text-brand-600 dark:text-accent" aria-hidden="true">monitoring</span>
+      <span class="truncate">Traffic Stream</span>
+    </a>
+    <a href="/admin/settings#site-customizer" class="inline-flex items-center justify-center sm:justify-start gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-brand-500/10 dark:hover:bg-accent/15 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold transition">
+      <span class="material-symbols-rounded shrink-0 text-base leading-none text-brand-600 dark:text-accent" aria-hidden="true">tune</span>
+      <span class="truncate">Site Customizer</span>
+    </a>
+  </div>
+</div>

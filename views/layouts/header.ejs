@@ -38,14 +38,17 @@
     const fontFamilies = Array.from(new Set([hFont, bFont]));
     const fontQuery = fontFamilies.map(f => `family=${f}:wght@300;400;500;600;700;800;900`).join('&');
   %>
-  <link href="https://fonts.googleapis.com/css2?<%= fontQuery %>&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?<%= fontQuery %>&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?<%= fontQuery %>&display=swap" rel="stylesheet"></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=swap" rel="stylesheet"></noscript>
 
   <!-- Tailwind CSS -->
   <link rel="preload" href="/css/style.css?v=<%= assetVersion %>" as="style">
   <link rel="stylesheet" href="/css/style.css?v=<%= assetVersion %>">
 
   <!-- Highlight.js syntax highlighting theme for code blocks -->
-  <% if (currentPath !== '/') { %>
+  <% if (currentPath.startsWith('/blogs/')) { %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css" media="print" onload="this.media='all'">
   <% } %>
 
@@ -209,7 +212,7 @@
         <span class="bg-white/20 text-white px-1.5 py-0.5 rounded-full text-[9px] tracking-wider uppercase font-black animate-pulse flex-shrink-0">New</span>
         <span class="text-white drop-shadow-sm font-bold text-[11px] sm:text-xs"><%= settings.promo_banner_title || 'Engineering Feasibility Consultation Available' %></span>
       </div>
-      <a href="<%= settings.promo_banner_url || '/contact' %>" class="underline hover:text-white/80 text-white font-black whitespace-nowrap text-[11px] sm:text-xs inline-flex items-center group drop-shadow-sm">
+      <a href="<%= settings.promo_banner_url || '/contact' %>" class="underline hover:text-white/80 text-white font-black whitespace-nowrap text-[11px] sm:text-xs inline-flex min-h-[44px] items-center px-2 group drop-shadow-sm">
         <span><%= settings.promo_banner_cta || 'Book Consultation' %></span>
         <span class="inline-block transform group-hover:translate-x-1 transition ml-0.5">&rarr;</span>
       </a>
@@ -221,7 +224,7 @@
   <aside id="lab-event-notice" aria-label="Hyderabad Lab Status" class="w-full bg-brand-surface text-white text-xs border-b border-brand-border py-1.5 px-3 sm:px-6 transition-all duration-300">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3" style="max-width: 80rem; margin: 0 auto; width: 100%;">
       <div class="flex items-center space-x-2.5 min-w-0">
-        <a href="<%= settings.lab_event_url || '/about#lab' %>" title="<%= settings.lab_status_text || 'Hyderabad Lab: Online • 4 Active SMT Lines • HIL Station #2 Active' %>" class="inline-flex items-center space-x-2 px-2.5 py-0.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-full text-[11px] font-bold text-emerald-400 transition group flex-shrink-0">
+        <a href="<%= settings.lab_event_url || '/about#lab' %>" title="<%= settings.lab_status_text || 'Hyderabad Lab: Online • 4 Active SMT Lines • HIL Station #2 Active' %>" class="inline-flex min-h-[44px] items-center space-x-2 px-2.5 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-full text-[11px] font-bold text-emerald-400 transition group flex-shrink-0">
           <span class="w-2 h-2 rounded-full bg-emerald-400 live-radar flex-shrink-0"></span>
           <span><%= settings.lab_event_label || 'Hyderabad Lab Active' %></span>
         </a>
@@ -234,7 +237,7 @@
         <a href="/contact" class="font-bold text-emerald-400 hover:text-emerald-300 hover:underline">Schedule Lab Visit &rarr;</a>
         <!-- Dismiss Button (Minimum 32x32px Tap Target) -->
         <button type="button" id="dismiss-lab-notice-btn" aria-label="Dismiss Lab Notice" title="Dismiss notice" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition cursor-pointer flex-shrink-0">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">close</span>
         </button>
       </div>
     </div>
@@ -261,17 +264,15 @@
     <div class="public-header-inner max-w-[1280px] mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between flex-nowrap gap-1 min-[360px]:gap-2 sm:gap-4 box-border w-full">
       
       <!-- Brand Logo (Vector Icon + Semantic HTML Typography) -->
-      <a href="/" aria-label="<%= settings.site_name || 'Embedded India' %>" class="flex items-center min-h-[44px] py-1.5 space-x-2 sm:space-x-3 group min-w-0 shrink">
+      <a href="/" class="flex items-center min-h-[44px] py-1.5 space-x-2 sm:space-x-3 group min-w-0 shrink">
         <% if (settings.site_logo) { %>
           <img src="<%= settings.site_logo %>" alt="<%= settings.site_name || 'Embedded India' %>" class="h-8 sm:h-10 w-auto object-contain flex-shrink-0">
         <% } else { %>
           <!-- Iconic Spaceship Delta Arrowhead Brandmark -->
-          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-accent p-0.5 shadow-md shadow-brand-500/20 group-hover:shadow-brand-500/40 transition duration-300 transform group-hover:scale-105 icon-bounce-container flex-shrink-0">
-            <div class="w-full h-full bg-white dark:bg-brand-dark rounded-[7px] sm:rounded-[10px] flex items-center justify-center p-1 sm:p-2">
-              <svg id="siteBrandmarkSvg" class="w-full h-full text-brand-500 dark:text-accent transition-colors duration-300" viewBox="0 0 32 32" fill="currentColor">
-                <path d="M16 3C16.8 3 17.5 3.4 18 4.2L28.5 21.8C29.2 23 28.7 24.5 27.5 25.2C27.1 25.4 26.6 25.5 26.1 25.5H19.8C18.7 25.5 17.7 24.8 17.3 23.8L16 20.3L14.7 23.8C14.3 24.8 13.3 25.5 12.2 25.5H5.9C4.5 25.5 3.4 24.4 3.4 23C3.4 22.5 3.5 22.1 3.8 21.8L14 4.2C14.5 3.4 15.2 3 16 3Z"/>
-              </svg>
-            </div>
+          <div class="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-xl border-2 border-brand-500 bg-white dark:bg-brand-dark p-1 sm:p-2 shadow-md shadow-brand-500/20 group-hover:shadow-brand-500/40 transition duration-300 transform group-hover:scale-105 icon-bounce-container flex items-center justify-center">
+            <svg id="siteBrandmarkSvg" class="w-full h-full text-brand-500 dark:text-accent transition-colors duration-300" viewBox="0 0 32 32" fill="currentColor">
+              <path d="M16 3C16.8 3 17.5 3.4 18 4.2L28.5 21.8C29.2 23 28.7 24.5 27.5 25.2C27.1 25.4 26.6 25.5 26.1 25.5H19.8C18.7 25.5 17.7 24.8 17.3 23.8L16 20.3L14.7 23.8C14.3 24.8 13.3 25.5 12.2 25.5H5.9C4.5 25.5 3.4 24.4 3.4 23C3.4 22.5 3.5 22.1 3.8 21.8L14 4.2C14.5 3.4 15.2 3 16 3Z"/>
+            </svg>
           </div>
         <% } %>
 
@@ -289,62 +290,48 @@
       </a>
 
       <!-- Desktop & Tablet Icon Navigation Menu Bar -->
-      <nav aria-label="Primary Navigation" class="public-desktop-nav hidden md:flex items-center justify-center gap-0.5 md:gap-1 lg:gap-2 text-slate-700 dark:text-slate-200 min-w-0 flex-1 whitespace-nowrap [&>a]:shrink-0">
+      <nav aria-label="Primary Navigation" class="public-desktop-nav hidden md:flex md:flex-wrap items-center justify-center gap-0.5 md:gap-1 lg:gap-2 xl:gap-1 xl:flex-wrap text-slate-700 dark:text-slate-200 min-w-0 flex-1 whitespace-nowrap [&>a]:shrink-0">
         
         <!-- Home -->
-        <a href="/" aria-label="Home" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-          </svg>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Home</span>
+        <a href="/" aria-label="Home" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">home</span>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Home</span>
         </a>
 
         <!-- Services -->
-        <a href="/services" aria-label="Services" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/services') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
-          </svg>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Services</span>
+        <a href="/services" aria-label="Services" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/services') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">memory</span>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Services</span>
         </a>
 
         <!-- Projects -->
-        <a href="/projects" aria-label="Projects" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/projects') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-          </svg>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Projects</span>
+        <a href="/projects" aria-label="Projects" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/projects') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">inventory_2</span>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Projects</span>
         </a>
 
         <!-- Tools -->
-        <a href="/tools" aria-label="Tools" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 relative <%= currentPath.startsWith('/tools') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-          </svg>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Tools</span>
+        <a href="/tools" aria-label="Tools" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 relative <%= currentPath.startsWith('/tools') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">calculate</span>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Tools</span>
         </a>
 
         <!-- Blogs -->
-        <a href="/blogs" aria-label="Blogs" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/blogs') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-          </svg>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Blogs</span>
+        <a href="/blogs" aria-label="Blogs" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/blogs') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">article</span>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Blogs</span>
         </a>
 
         <!-- About -->
-        <a href="/about" aria-label="About" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/about' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">About</span>
+        <a href="/about" aria-label="About" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/about' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">info</span>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">About</span>
         </a>
 
         <!-- Connect -->
-        <a href="/contact" aria-label="Connect" class="nav-icon-link group flex flex-col items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/contact' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10 dark:bg-accent/15' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-          </svg>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 whitespace-nowrap leading-tight">Connect</span>
+        <a href="/contact" aria-label="Connect" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/contact' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">forum</span>
+          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Connect</span>
         </a>
 
       </nav>
@@ -356,15 +343,13 @@
 
         <!-- Desktop CTA -->
         <a href="/contact" class="btn-shimmer hidden lg:inline-flex items-center gap-1.5 min-h-[42px] px-4 py-2 bg-gradient-to-r from-brand-600 via-brand-500 to-accent text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition shadow-brand-500/20 hover:shadow-brand-500/35 active:scale-95 transform hover:-translate-y-0.5 whitespace-nowrap ml-1">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          <span>Request a Free Discovery Call &rarr;</span>
+          <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">call</span>
+          <span>Book a Call</span>
         </a>
 
         <!-- Mobile Menu Toggle Button (Visible only on mobile phones < 768px) -->
         <button id="mobile-menu-btn" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" class="public-mobile-btn md:hidden min-w-[38px] min-h-[38px] min-[360px]:min-w-[42px] min-[360px]:min-h-[42px] p-1.5 min-[360px]:p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-brand-surface rounded-lg border border-slate-200 dark:border-[#1e3831] active:scale-95 flex items-center justify-center">
-          <svg class="w-5 h-5 min-[360px]:w-6 min-[360px]:h-6" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
+          <span class="material-symbols-rounded text-xl min-[360px]:text-2xl leading-none" aria-hidden="true">menu</span>
         </button>
       </div>
     </div>
@@ -375,52 +360,38 @@
     <nav aria-label="Mobile Navigation" id="mobile-menu" aria-hidden="true" class="hidden md:hidden border-t border-slate-200 dark:border-brand-border bg-white dark:bg-[#13221f] px-4 pt-4 pb-6 space-y-3">
       <div class="grid grid-cols-4 gap-2 text-center">
         <!-- Home -->
-        <a href="/" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath === '/' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-          </svg>
+        <a href="/" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath === '/' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl sm:text-3xl mb-1 leading-none" aria-hidden="true">home</span>
           <span class="text-[11px] sm:text-xs font-bold">Home</span>
         </a>
         <!-- Services -->
-        <a href="/services" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/services') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
-          </svg>
+        <a href="/services" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/services') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl sm:text-3xl mb-1 leading-none" aria-hidden="true">memory</span>
           <span class="text-[11px] sm:text-xs font-bold">Services</span>
         </a>
         <!-- Projects -->
-        <a href="/projects" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/projects') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-          </svg>
+        <a href="/projects" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/projects') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl sm:text-3xl mb-1 leading-none" aria-hidden="true">inventory_2</span>
           <span class="text-[11px] sm:text-xs font-bold">Projects</span>
         </a>
         <!-- Tools -->
-        <a href="/tools" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/tools') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-          </svg>
+        <a href="/tools" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/tools') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl sm:text-3xl mb-1 leading-none" aria-hidden="true">calculate</span>
           <span class="text-[11px] sm:text-xs font-bold">Tools</span>
         </a>
         <!-- Blogs -->
-        <a href="/blogs" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/blogs') ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-          </svg>
+        <a href="/blogs" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath.startsWith('/blogs') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl sm:text-3xl mb-1 leading-none" aria-hidden="true">article</span>
           <span class="text-[11px] sm:text-xs font-bold">Blogs</span>
         </a>
         <!-- About -->
-        <a href="/about" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath === '/about' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+        <a href="/about" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath === '/about' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl sm:text-3xl mb-1 leading-none" aria-hidden="true">info</span>
           <span class="text-[11px] sm:text-xs font-bold">About</span>
         </a>
         <!-- Connect -->
-        <a href="/contact" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath === '/contact' ? 'text-brand-600 dark:text-accent font-black bg-brand-500/10' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <svg class="w-6 h-6 sm:w-7 sm:h-7 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-          </svg>
+        <a href="/contact" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath === '/contact' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl sm:text-3xl mb-1 leading-none" aria-hidden="true">forum</span>
           <span class="text-[11px] sm:text-xs font-bold">Connect</span>
         </a>
       </div>

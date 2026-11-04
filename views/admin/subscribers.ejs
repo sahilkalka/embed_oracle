@@ -9,15 +9,20 @@
 
 <div class="w-full space-y-6 min-w-0 [overflow-wrap:anywhere] mx-auto">
   
-  <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
-    <div class="min-w-0 lg:flex-1">
-      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-        <span>✉️ Newsletter Leads &amp; Subscribers</span>
+  <div class="bg-white dark:bg-brand-surface rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-brand-border shadow-xs flex flex-col 2xl:flex-row 2xl:items-start justify-between gap-4 min-w-0">
+    <div class="min-w-0 2xl:flex-1">
+      <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-brand-500/10 dark:bg-accent/15 border border-brand-500/20 text-brand-700 dark:text-accent text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+        <span>Engineering Operations Console</span>
+      </div>
+      <h1 class="flex min-w-0 items-center gap-2 text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+        <span class="material-symbols-rounded shrink-0 text-2xl text-brand-600 dark:text-accent" aria-hidden="true">mail</span>
+        <span>Newsletter Leads &amp; Subscribers</span>
       </h1>
-      <p class="text-xs text-slate-500 mt-1">Manage signups, approve subscribers, and export your campaign list.</p>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Manage signups, approve subscribers, and export your campaign list.</p>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2">
+    <div class="flex w-full 2xl:w-auto flex-wrap items-center gap-2 2xl:justify-end">
       <div class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-semibold text-slate-600 dark:text-slate-300">
         Total: <span class="font-extrabold font-mono text-slate-900 dark:text-white ml-1"><%= totalSubs %></span>
       </div>
