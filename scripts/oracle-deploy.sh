@@ -61,7 +61,7 @@ EOF
 
   echo "==> [Remote 5/6] Initializing SQLite schema, indexes, and running smoke check..."
   node scripts/init-db.js
-  if [ "$(sqlite3 "$APP_DIR/prisma/dev.db" 'SELECT COUNT(*) FROM User;' 2>/dev/null || echo 0)" -eq 0 ]; then
+  if [ "$(sqlite3 "$APP_DIR/prisma/dev.db" "SELECT COUNT(*) FROM User WHERE role = 'admin';" 2>/dev/null || echo 0)" -eq 0 ]; then
     if [ -n "$ADMIN_BOOTSTRAP_PASSWORD" ]; then
       ADMIN_DEFAULT_PASSWORD="$ADMIN_BOOTSTRAP_PASSWORD" node scripts/seed-sqlite.js
     else
