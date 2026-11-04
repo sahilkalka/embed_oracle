@@ -35,7 +35,7 @@ jobs:
         run: |
           npm ci
           npm run pre-deploy
-          npm run db:init
+          ADMIN_DEFAULT_PASSWORD="$(openssl rand -hex 32)" npm run db:init
           node src/deployment-check.js
           npm run pack
 
@@ -44,11 +44,20 @@ jobs:
           ORACLE_SSH_KEY: ${{ secrets.ORACLE_SSH_KEY }}
           ORACLE_HOST: ${{ secrets.ORACLE_HOST || '129.225.79.183' }}
           ORACLE_USER: ${{ secrets.ORACLE_USER || 'ubuntu' }}
+          ADMIN_DEFAULT_PASSWORD: ${{ secrets.ADMIN_DEFAULT_PASSWORD }}
           DOMAIN: ${{ inputs.domain || 'embeddedindia.in' }}
           APP_DIR: '/var/www/embeddedindia'
         run: |
           if [ -z "$ORACLE_SSH_KEY" ]; then
             echo "::error::Missing ORACLE_SSH_KEY repository secret. Add the contents of keys/ssh-key-2026-10-30.key as ORACLE_SSH_KEY in GitHub Repo > Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          if [ -z "$ADMIN_DEFAULT_PASSWORD" ] || [ "${#ADMIN_DEFAULT_PASSWORD}" -lt 16 ]; then
+            echo "::error::Set the ADMIN_DEFAULT_PASSWORD repository secret to at least 16 characters for the initial admin account."
+            exit 1
+          fi
+          if [[ "$ADMIN_DEFAULT_PASSWORD" == *$'\n'* || "$ADMIN_DEFAULT_PASSWORD" == *$'\r'* ]]; then
+            echo "::error::ADMIN_DEFAULT_PASSWORD must be a single-line secret."
             exit 1
           fi
           mkdir -p ~/.ssh
@@ -61,16 +70,15 @@ jobs:
           scp -i ~/.ssh/oracle_deploy_key embeddedindia.zip "${ORACLE_USER}@${ORACLE_HOST}:${APP_DIR}/embeddedindia.zip"
           scp -i ~/.ssh/oracle_deploy_key scripts/oracle-setup.sh scripts/oracle-deploy.sh "${ORACLE_USER}@${ORACLE_HOST}:${APP_DIR}/scripts/"
 
-          ssh -i ~/.ssh/oracle_deploy_key "${ORACLE_USER}@${ORACLE_HOST}" "cd '${APP_DIR}' && python3 -c \"
+          printf '%s\n' "$ADMIN_DEFAULT_PASSWORD" | ssh -i ~/.ssh/oracle_deploy_key "${ORACLE_USER}@${ORACLE_HOST}" "cd '${APP_DIR}' && python3 -c \"
           import zipfile
           with zipfile.ZipFile('embeddedindia.zip', 'r') as z:
               for member in z.namelist():
                   if member in ('.env',) or member.startswith(('prisma/dev.db', 'public/uploads/')):
                       continue
                   z.extract(member, '.')
-          \" && rm -f embeddedindia.zip && DOMAIN='${DOMAIN}' APP_DIR='${APP_DIR}' bash scripts/oracle-deploy.sh --remote-apply"
+          \" && rm -f embeddedindia.zip && IFS= read -r ADMIN_DEFAULT_PASSWORD && export ADMIN_DEFAULT_PASSWORD && DOMAIN='${DOMAIN}' APP_DIR='${APP_DIR}' bash scripts/oracle-deploy.sh --remote-apply"
 
       - name: Cleanup SSH key
         if: always()
         run: rm -f ~/.ssh/oracle_deploy_key
-
