@@ -33,7 +33,7 @@ try {
   console.warn('[SELF-BOOTSTRAP NOTICE]', err.message);
 }
 
-// 2. Initialize a missing SQLite database using the native database scripts
+// 2. Initialize a missing or unseeded SQLite database using the native database scripts
 const initDbScript = path.join(__dirname, 'scripts/init-db.js');
 const seedSqliteScript = path.join(__dirname, 'scripts/seed-sqlite.js');
 try {
@@ -41,8 +41,27 @@ try {
   if (!fs.existsSync(dbFile)) {
     needsInitialization = true;
   } else {
-    const stats = fs.statSync(dbFile);
-    if (stats.size === 0) needsInitialization = true;
+    try {
+      const stats = fs.statSync(dbFile);
+      if (stats.size === 0) {
+        needsInitialization = true;
+      } else {
+        const Database = require('better-sqlite3');
+        const testDb = new Database(dbFile, { readonly: true });
+        const userTable = testDb.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='User'").get();
+        if (!userTable) {
+          needsInitialization = true;
+        } else {
+          const adminCount = testDb.prepare("SELECT COUNT(*) as count FROM User WHERE role = 'admin'").get();
+          if (!adminCount || adminCount.count === 0) {
+            needsInitialization = true;
+          }
+        }
+        testDb.close();
+      }
+    } catch (_) {
+      needsInitialization = true;
+    }
   }
 
   if (needsInitialization) {

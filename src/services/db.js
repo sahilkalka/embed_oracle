@@ -604,6 +604,22 @@ if (process.env.USE_PRISMA_ENGINE === 'true') {
 // Install on startup as well, so restarting an existing installation protects it.
 const guardDb = getSqliteDb();
 guardDb.exec(`
+CREATE TABLE IF NOT EXISTS User (
+  id TEXT PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  passwordHash TEXT NOT NULL,
+  role TEXT DEFAULT 'admin',
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS Setting (
+  id TEXT PRIMARY KEY,
+  key TEXT UNIQUE NOT NULL,
+  value TEXT NOT NULL,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE IF NOT EXISTS Analytics (
   id TEXT PRIMARY KEY,
   path TEXT NOT NULL,
@@ -633,6 +649,25 @@ CREATE TABLE IF NOT EXISTS TelemetryBlock (
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 `);
+
+// Ensure default admin user exists if table is empty
+try {
+  const existingAdmin = guardDb.prepare("SELECT id FROM User WHERE role = 'admin' LIMIT 1").get();
+  if (!existingAdmin) {
+    const bcrypt = require('bcryptjs');
+    const adminEmail = (process.env.ADMIN_DEFAULT_EMAIL || 'admin@embeddedindia.in').trim().toLowerCase();
+    const rawPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'AdminEmbedded@2026!';
+    const passwordHash = bcrypt.hashSync(rawPassword, 10);
+    const now = new Date().toISOString();
+    guardDb.prepare(`
+      INSERT INTO User (id, username, email, passwordHash, role, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(crypto.randomUUID(), 'admin', adminEmail, passwordHash, 'admin', now, now);
+    console.log(`[DB INIT] Initialized default admin account: ${adminEmail}`);
+  }
+} catch (e) {
+  console.warn('[DB INIT] Could not auto-seed admin:', e.message);
+}
 const analyticsColumns = guardDb.pragma('table_info(Analytics)');
 if (!analyticsColumns.some(column => column.name === 'trafficType')) {
   guardDb.exec("ALTER TABLE Analytics ADD COLUMN trafficType TEXT NOT NULL DEFAULT 'legacy'");

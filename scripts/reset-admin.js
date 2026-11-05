@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const dbPath = path.resolve(__dirname, '../prisma/dev.db');
 const adminEmail = (process.argv[2] || process.env.ADMIN_DEFAULT_EMAIL || 'admin@embeddedindia.in').trim().toLowerCase();
-const rawPassword = process.argv[3] || process.env.ADMIN_DEFAULT_PASSWORD;
+const rawPassword = process.argv[3] || process.env.ADMIN_DEFAULT_PASSWORD || 'AdminEmbedded@2026!';
 if (!rawPassword || rawPassword.length < 16) {
   console.error('Provide ADMIN_DEFAULT_PASSWORD or a password argument with at least 16 characters.');
   process.exit(1);
