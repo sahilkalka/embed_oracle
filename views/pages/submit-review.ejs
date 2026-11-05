@@ -35,11 +35,14 @@
     <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-brand-border shadow-xl">
       <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Write Your Review</h2>
       <form method="POST" action="/submit-review" class="space-y-5">
+        <%- csrfField %>
         <!-- Anti-Spam Honeypot -->
         <div class="hidden" aria-hidden="true">
           <label for="website_trap">Do not fill this</label>
           <input type="text" id="website_trap" name="website_trap" tabindex="-1" autocomplete="off">
         </div>
+
+        <%- include('../partials/turnstile') %>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>

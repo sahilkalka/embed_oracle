@@ -253,15 +253,18 @@ document.addEventListener('DOMContentLoaded', () => {
           contactStatus.innerHTML = `<strong>Inquiry Received!</strong> ${result.message}`;
         }
         form.reset();
+        window.resetTurnstileForForm?.(form);
         isDirectQuery = false;
         updateStepUI(1);
       } else {
+        if (result.captchaFailed) window.resetTurnstileForForm?.(form);
         if (contactStatus) {
           contactStatus.className = 'p-4 rounded-xl text-xs bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-300 font-semibold block border border-red-200 dark:border-red-800 shadow-sm';
           contactStatus.innerHTML = `<strong>Submission Error:</strong> ${result.message || 'Please check all required fields.'}`;
         }
       }
     } catch (err) {
+      window.resetTurnstileForForm?.(form);
       if (contactStatus) {
         contactStatus.className = 'p-4 rounded-xl text-xs bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-300 font-semibold block border border-red-200 dark:border-red-800 shadow-sm';
         contactStatus.innerHTML = '<strong>Connection Error:</strong> Could not reach the server. Please email <a href="mailto:info@embeddedindia.in" class="underline font-bold">info@embeddedindia.in</a> directly.';

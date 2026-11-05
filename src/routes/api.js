@@ -7,6 +7,7 @@ const DOMPurify = require('dompurify');
 const prisma = require('../services/db');
 const mailer = require('../services/mailer');
 const aiCopilot = require('../services/aiCopilot');
+const { verifyTurnstile } = require('../services/turnstile');
 const { contactLimiter, newsletterLimiter } = require('../middleware/rateLimiter');
 const servicesData = require('../data/servicesData');
 const toolsRegistry = require('../data/toolsRegistry');
@@ -19,6 +20,16 @@ let searchIndexCacheExpiresAt = 0;
 function sanitizeText(value) {
   if (value === undefined || value === null) return '';
   return purify.sanitize(String(value), { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
+}
+
+function sendTurnstileFailure(res, verification) {
+  return res.status(verification.unavailable ? 503 : 400).json({
+    success: false,
+    captchaFailed: verification.configured,
+    message: verification.unavailable
+      ? 'Online form verification is temporarily unavailable. Please try again later.'
+      : 'Please complete the anti-spam verification and try again.'
+  });
 }
 
 router.get('/search-index', async (req, res) => {
@@ -130,6 +141,9 @@ const handleContact = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please provide a valid email address.' });
     }
 
+    const verification = await verifyTurnstile(req);
+    if (!verification.ok) return sendTurnstileFailure(res, verification);
+
     const formattedMessage = cleanCompany
       ? `Company: ${cleanCompany}\n\n${cleanMessage}`
       : cleanMessage;
@@ -190,6 +204,9 @@ router.post('/newsletter/subscribe', newsletterLimiter, async (req, res) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({ success: false, message: 'Please enter a valid email address format.' });
     }
+
+    const verification = await verifyTurnstile(req);
+    if (!verification.ok) return sendTurnstileFailure(res, verification);
 
     const verifyToken = crypto.randomBytes(32).toString('hex');
 

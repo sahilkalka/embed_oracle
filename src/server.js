@@ -19,6 +19,7 @@ const { initCronJobs } = require('./cron/jobs');
 const prisma = require('./services/db');
 const mailer = require('./services/mailer');
 const { getHomepageData, invalidateHomepageData } = require('./services/homepageData');
+const { getSiteKey, verifyTurnstile } = require('./services/turnstile');
 
 // Route modules
 const seoRoutes = require('./routes/seo');
@@ -32,6 +33,8 @@ const servicesData = require('./data/servicesData');
 const app = express();
 app.locals.toolCategories = require('./data/toolsRegistry').getAllCategories();
 app.locals.totalTools = app.locals.toolCategories.reduce((total, category) => total + category.toolCount, 0);
+app.locals.turnstileSiteKey = getSiteKey();
+app.locals.turnstileRequired = process.env.NODE_ENV === 'production';
 
 const publicDirectory = path.join(__dirname, '../public');
 
@@ -101,7 +104,8 @@ app.use(helmet({
         "https://cdn.carbonads.com",
         "https://srv.carbonads.net",
         "https://fonts.googleapis.com",
-        "https://static.cloudflareinsights.com"
+        "https://static.cloudflareinsights.com",
+        "https://challenges.cloudflare.com"
       ],
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: [
@@ -121,14 +125,16 @@ app.use(helmet({
         "https://www.facebook.com",
         "https://srv.carbonads.net",
         "https://cloudflareinsights.com",
-        "https://static.cloudflareinsights.com"
+        "https://static.cloudflareinsights.com",
+        "https://challenges.cloudflare.com"
       ],
       frameSrc: [
         "'self'",
         "https://www.youtube.com",
         "https://www.youtube-nocookie.com",
         "https://googleads.g.doubleclick.net",
-        "https://tpc.googlesyndication.com"
+        "https://tpc.googlesyndication.com",
+        "https://challenges.cloudflare.com"
       ],
       frameAncestors: ["'none'"],
       objectSrc: ["'none'"],
@@ -320,6 +326,15 @@ app.post('/submit-review', async (req, res) => {
   }
   if (!name || !role || !quote) {
     return res.render('pages/submit-review', { successMsg: null, errorMsg: 'Please fill out all required fields marked with *.' });
+  }
+
+  const verification = await verifyTurnstile(req);
+  if (!verification.ok) {
+    const status = verification.unavailable ? 503 : 400;
+    const errorMsg = verification.unavailable
+      ? 'Online review verification is temporarily unavailable. Please try again shortly.'
+      : 'Please complete the anti-spam verification and try again.';
+    return res.status(status).render('pages/submit-review', { successMsg: null, errorMsg });
   }
 
   try {

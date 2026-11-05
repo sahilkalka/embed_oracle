@@ -363,17 +363,25 @@
             newsletterStatus.textContent = result.message;
             newsletterStatus.className = 'text-xs text-accent font-semibold';
             newsletterForm.reset();
+            window.resetTurnstileForForm?.(newsletterForm);
           } else {
+            if (result.captchaFailed) window.resetTurnstileForForm?.(newsletterForm);
             newsletterStatus.textContent = result.message;
             newsletterStatus.className = 'text-xs text-red-400';
           }
         } catch (err) {
+          window.resetTurnstileForForm?.(newsletterForm);
           newsletterStatus.textContent = 'Error connecting to server. Please try again.';
           newsletterStatus.className = 'text-xs text-red-400';
         }
       });
     }
   </script>
+
+  <% if (turnstileSiteKey) { %>
+  <script src="/js/turnstile.js?v=<%= assetVersion %>" defer></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&amp;render=explicit" defer></script>
+  <% } %>
 
   <%- include('../partials/copilot') %>
 

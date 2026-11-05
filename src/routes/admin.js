@@ -491,17 +491,101 @@ router.get('/', async (req, res) => {
   }
 });
 
+function getDemoTrafficHits(trafficFilter, routeFilter) {
+  const routes = [
+    '/',
+    '/contact',
+    '/services/firmware-development',
+    '/tools/uart-baud-rate-calculator',
+    '/blogs/embedded-linux-board-support-package',
+    '/api/contact',
+    '/projects/industrial-edge-gateway',
+    '/services/embedded-linux-board-support-package-and-custom-device-driver-development'
+  ];
+  const clients = [
+    { os: 'iOS', browser: 'Safari', deviceType: 'Mobile' },
+    { os: 'Android', browser: 'Chrome', deviceType: 'Mobile' },
+    { os: 'Windows 11', browser: 'Edge', deviceType: 'Desktop' },
+    { os: 'macOS', browser: 'Safari', deviceType: 'Desktop' },
+    { os: 'Ubuntu Linux', browser: 'Firefox', deviceType: 'Desktop' },
+    { os: 'Android', browser: 'Samsung Internet', deviceType: 'Mobile' }
+  ];
+  const geographies = [
+    { city: 'Hyderabad', countryCode: 'IN', country: 'India', flag: '' },
+    { city: 'Bengaluru', countryCode: 'IN', country: 'India', flag: '' },
+    { city: 'Austin', countryCode: 'US', country: 'United States', flag: '' },
+    { city: 'London', countryCode: 'GB', country: 'United Kingdom', flag: '' },
+    { city: 'Berlin', countryCode: 'DE', country: 'Germany', flag: '' },
+    { city: 'Unknown', countryCode: 'Unknown', country: 'Unknown', flag: '' }
+  ];
+  const statuses = [
+    { statusCode: 200, statusText: 'OK' },
+    { statusCode: 201, statusText: 'Created' },
+    { statusCode: 301, statusText: 'Moved Permanently' },
+    { statusCode: 403, statusText: 'Forbidden' },
+    { statusCode: 404, statusText: 'Not Found' },
+    { statusCode: 429, statusText: 'Too Many Requests' },
+    { statusCode: 500, statusText: 'Internal Server Error' }
+  ];
+  const referrers = [
+    'Direct',
+    'https://www.google.com/search?q=embedded+firmware+engineering',
+    'https://www.linkedin.com/company/embedded-india/',
+    'https://news.example.com/articles/industrial-iot-and-edge-device-engineering-roundup'
+  ];
+  const routeNeedle = String(routeFilter || '').trim().toLowerCase();
+  const hits = Array.from({ length: 30 }, (_, index) => {
+    const trafficSlot = index % 6;
+    const trafficType = trafficSlot === 4 ? 'scanner' : trafficSlot === 5 ? 'bot' : 'human';
+    const visitorHash = `d3e00000${String(index + 1).padStart(8, '0')}`;
+    const route = routes[index % routes.length];
+    return {
+      id: `demo-hit-${index + 1}`,
+      visitorHash,
+      maskedHash: `${visitorHash.slice(0, 6)}...${visitorHash.slice(-4)}`,
+      path: route,
+      route,
+      method: index % 7 === 0 ? 'POST' : 'GET',
+      referrer: referrers[index % referrers.length],
+      geo: geographies[index % geographies.length],
+      client: clients[index % clients.length],
+      timestamp: new Date(Date.now() - index * 75000).toISOString(),
+      ...statuses[index % statuses.length],
+      trafficType,
+      botName: trafficType === 'human' ? null : trafficType === 'scanner' ? 'Security Scanner' : 'Crawler',
+      pageView: trafficType === 'human',
+      blocked: false,
+      classificationReason: trafficType === 'human' ? 'Browser' : trafficType === 'scanner' ? 'Scanner path' : 'Automated client',
+      demo: true
+    };
+  });
+
+  return hits.filter(hit => {
+    const matchesTraffic = trafficFilter === 'human'
+      ? hit.trafficType === 'human' && hit.pageView
+      : trafficFilter === 'automated'
+        ? hit.trafficType !== 'human'
+        : hit.trafficType !== 'human' || hit.pageView;
+    const matchesRoute = !routeNeedle || hit.route.toLowerCase().includes(routeNeedle);
+    return matchesTraffic && matchesRoute;
+  }).slice(0, 30);
+}
+
 // GET /admin/traffic - Real-Time Traffic & Visitor Telemetry Dashboard
 router.get('/traffic', async (req, res) => {
   try {
     const range = typeof req.query.range === 'string' ? req.query.range : '24h';
     const routeFilter = typeof req.query.route === 'string' ? req.query.route : '';
     const trafficFilter = typeof req.query.traffic === 'string' ? req.query.traffic : 'human';
+    const demoMode = req.query.demo === '1';
     const summary = getTrafficSummary({
       range,
       routeFilter,
       trafficFilter
     });
+    if (demoMode) {
+      summary.recentHits = getDemoTrafficHits(summary.trafficFilter, summary.routeFilter);
+    }
 
     res.render('admin/traffic', {
       title: 'Live Traffic & Visitor Telemetry',
@@ -509,7 +593,8 @@ router.get('/traffic', async (req, res) => {
       telemetry: summary,
       selectedRange: summary.range,
       routeFilter: summary.routeFilter,
-      selectedTrafficFilter: summary.trafficFilter
+      selectedTrafficFilter: summary.trafficFilter,
+      demoMode
     });
   } catch (err) {
     console.error('[ADMIN TRAFFIC ERROR]', err);

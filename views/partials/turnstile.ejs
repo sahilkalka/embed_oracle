@@ -1,0 +1,11 @@
+<% if (turnstileSiteKey) { %>
+  <div class="w-full min-w-0">
+    <input type="hidden" name="turnstileToken" value="">
+    <div data-turnstile-widget data-sitekey="<%= turnstileSiteKey %>" class="min-h-[65px] w-full"></div>
+  </div>
+<% } else if (turnstileRequired) { %>
+  <p role="status" class="text-xs text-red-700 dark:text-red-300">
+    Online form verification is temporarily unavailable. Please email
+    <a href="mailto:info@embeddedindia.in" class="underline">info@embeddedindia.in</a>.
+  </p>
+<% } %>

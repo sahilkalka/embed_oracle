@@ -89,6 +89,7 @@
       </a>
 
       <!-- Clear Wire Log Button -->
+      <% if (!demoMode) { %>
       <form action="/admin/traffic/clear" method="POST" class="w-full sm:w-auto" onsubmit="return confirm('Clear in-memory wire log entries?');">
         <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
         <button type="submit"
@@ -102,6 +103,7 @@
           <span>Clear Log</span>
         </button>
       </form>
+      <% } %>
     </div>
   </div>
 </div>
@@ -358,14 +360,20 @@
 </div>
 
 <style>
+  .traffic-wire-value { display: contents; }
+
   @media (max-width: 639px) {
     .traffic-wire-table-wrap {
-      overflow: visible !important;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: hidden !important;
     }
 
     .traffic-wire-table {
       display: block;
       width: 100%;
+      max-width: 100%;
       min-width: 0;
     }
 
@@ -374,19 +382,24 @@
     }
 
     .traffic-wire-table tbody {
-      display: grid;
-      gap: 0.75rem;
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
       padding: 0.75rem;
     }
 
     .traffic-wire-table tbody tr[data-hit-id] {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      align-items: start;
-      gap: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.4rem;
       width: 100%;
+      max-width: 100%;
       min-width: 0;
-      padding: 1rem;
+      box-sizing: border-box;
+      padding: 0.75rem;
+      margin-bottom: 0.75rem;
       border: 1px solid #e2e8f0;
       border-radius: 1rem;
       background-color: #fff;
@@ -411,10 +424,12 @@
     }
 
     .traffic-wire-table td {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.25rem;
+      display: grid;
+      grid-template-columns: minmax(5.75rem, 6.5rem) minmax(0, 1fr);
+      align-items: start;
+      column-gap: 0.5rem;
+      width: 100%;
+      max-width: 100%;
       min-width: 0;
       padding: 0 !important;
       white-space: normal !important;
@@ -422,7 +437,27 @@
       border: 0 !important;
     }
 
+    .traffic-wire-table td .traffic-wire-value {
+      display: block;
+      grid-column: 2;
+      grid-row: 1;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      white-space: normal !important;
+      overflow-wrap: anywhere;
+    }
+
+    .traffic-wire-table td .traffic-wire-value.flex-values {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.25rem 0.5rem;
+    }
+
     .traffic-wire-table td::before {
+      grid-column: 1;
+      grid-row: 1;
       color: #64748b;
       font: 700 0.625rem/1rem ui-monospace, SFMono-Regular, Menlo, monospace;
       letter-spacing: 0.06em;
@@ -442,14 +477,14 @@
     .traffic-wire-table td:nth-child(7)::before { content: "Referrer"; }
     .traffic-wire-table td:nth-child(8)::before { content: "Actions"; }
 
-    .traffic-wire-table td:nth-child(3),
-    .traffic-wire-table td:nth-child(6),
-    .traffic-wire-table td:nth-child(7),
-    .traffic-wire-table td:nth-child(8) {
-      grid-column: 1 / -1;
+    .traffic-wire-table td:nth-child(4) .traffic-wire-value > div {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.35rem;
     }
 
-    .traffic-wire-table td:nth-child(8) > div {
+    .traffic-wire-table td:nth-child(8) .wire-actions {
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-start;
@@ -486,9 +521,12 @@
 <!-- Live Wire Log Table (Rolling 30 Hits) -->
 <div class="bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border rounded-2xl overflow-hidden shadow-xs">
   <div class="p-4 sm:p-5 border-b border-slate-200 dark:border-brand-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-    <div class="flex items-center gap-2.5">
+    <div class="flex flex-wrap items-center gap-2.5">
       <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-ping"></span>
       <h2 class="text-sm sm:text-base font-black uppercase tracking-wider text-slate-900 dark:text-white"><%= selectedTrafficFilter === 'automated' ? 'Threat & Crawler Log' : 'Live Wire Log' %> (Last 30 Requests)</h2>
+      <% if (demoMode) { %>
+        <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-[10px] font-mono font-bold">DEMO DATA - NOT RECORDED</span>
+      <% } %>
       <% if (routeFilter) { %>
         <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/30 text-cyan-700 dark:text-cyan-300 text-xs font-mono font-bold">
           <span>Filter: <%= routeFilter %></span>
@@ -497,6 +535,21 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-2">
+      <% if (demoMode) { %>
+        <a href="/admin/traffic?range=<%= selectedRange %>&traffic=<%= selectedTrafficFilter %><%= routeFilter ? '&route=' + encodeURIComponent(routeFilter) : '' %>"
+           aria-label="Return to live traffic"
+           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-xs font-bold transition">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>
+          <span>Return to live traffic</span>
+        </a>
+      <% } else { %>
+        <a href="/admin/traffic?range=<%= selectedRange %>&traffic=all&demo=1"
+           aria-label="Preview 30 sample wire log entries"
+           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-xs font-bold transition">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"></path><path d="M10 3v6.5l-5.3 8.2A2 2 0 0 0 6.4 21h11.2a2 2 0 0 0 1.7-3.3L14 9.5V3"></path><path d="M8 15h8"></path></svg>
+          <span>Preview sample entries</span>
+        </a>
+      <% } %>
       <button type="button" id="btnHideAutomatedHits" aria-pressed="false"
               <%= selectedTrafficFilter !== 'all' ? 'disabled title="Select All Traffic to use this quick filter."' : '' %>
               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
@@ -569,44 +622,58 @@
           %>
             <tr data-hit-id="<%= hit.id %>"
                 data-visitor-hash="<%= hit.visitorHash %>"
+              data-demo-hit="<%= hit.demo ? 'true' : 'false' %>"
                 data-traffic-type="<%= hit.trafficType %>"
                 data-blocked="<%= hit.blocked ? 'true' : 'false' %>"
                 class="hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors <%= hit.blocked ? 'bg-rose-50 dark:bg-rose-950/30' : '' %>">
               <td class="py-3 px-4 whitespace-nowrap text-slate-600 dark:text-slate-300">
-                <span class="text-emerald-700 dark:text-emerald-400 font-bold"><%= hit.timestamp.slice(11, 19) %></span>
-                <span class="text-slate-400 dark:text-slate-500 text-[10px] ml-1">UTC</span>
+                <div class="traffic-wire-value flex-values">
+                  <span class="text-emerald-700 dark:text-emerald-400 font-bold"><%= hit.timestamp.slice(11, 19) %></span>
+                  <span class="text-slate-400 dark:text-slate-500 text-[10px] ml-1">UTC</span>
+                </div>
               </td>
               <td class="py-3 px-4 whitespace-nowrap">
-                <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-cyan-700 dark:text-cyan-300 font-semibold" title="Salted SHA-256 Visitor Hash: <%= hit.visitorHash %>">
-                  <%= hit.maskedHash %>
-                </span>
+                <div class="traffic-wire-value">
+                  <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-cyan-700 dark:text-cyan-300 font-semibold" title="Salted SHA-256 Visitor Hash: <%= hit.visitorHash %>">
+                    <%= hit.maskedHash %>
+                  </span>
+                </div>
               </td>
               <td class="py-3 px-4">
-                <a href="<%= hit.path %>" target="_blank" rel="noopener" class="text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold break-all">
-                  <%= hit.route %>
-                </a>
+                <div class="traffic-wire-value">
+                  <a href="<%= hit.path %>" target="_blank" rel="noopener" class="text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold break-all">
+                    <%= hit.route %>
+                  </a>
+                </div>
               </td>
               <td class="py-3 px-4 whitespace-nowrap">
-                <div class="flex flex-col items-start gap-1">
-                  <span class="px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase tracking-wide <%= trafficClass %>"><%= trafficLabel %></span>
-                  <span title="<%= hit.statusText %>" class="px-2 py-0.5 rounded-md border text-[10px] font-bold <%= statusClass %>"><%= hit.statusCode %> <%= hit.statusText %></span>
+                <div class="traffic-wire-value">
+                  <div class="flex flex-col items-start gap-1">
+                    <span class="px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase tracking-wide <%= trafficClass %>"><%= trafficLabel %></span>
+                    <span title="<%= hit.statusText %>" class="px-2 py-0.5 rounded-md border text-[10px] font-bold <%= statusClass %>"><%= hit.statusCode %> <%= hit.statusText %></span>
+                  </div>
                 </div>
               </td>
               <td class="py-3 px-4 whitespace-nowrap text-slate-700 dark:text-slate-300">
-                <span class="mr-1"><%= hit.geo.flag || '🌐' %></span>
-                <span><%= hit.geo.city || 'Unknown' %>, <%= hit.geo.countryCode || 'Unknown' %></span>
+                <div class="traffic-wire-value flex-values">
+                  <span class="mr-1"><%= hit.geo.flag || '🌐' %></span>
+                  <span><%= hit.geo.city || 'Unknown' %>, <%= hit.geo.countryCode || 'Unknown' %></span>
+                </div>
               </td>
               <td class="py-3 px-4 whitespace-nowrap">
-                <span class="text-slate-700 dark:text-slate-200"><%= hit.client.os || 'Unknown' %></span>
-                <span class="text-slate-400 dark:text-slate-500">·</span>
-                <span class="text-cyan-700 dark:text-cyan-400 font-semibold"><%= hit.client.browser || 'Unknown' %></span>
-                <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"><%= hit.client.deviceType || 'Unknown' %></span>
+                <div class="traffic-wire-value flex-values">
+                  <span class="text-slate-700 dark:text-slate-200"><%= hit.client.os || 'Unknown' %></span>
+                  <span class="text-slate-400 dark:text-slate-500">·</span>
+                  <span class="text-cyan-700 dark:text-cyan-400 font-semibold"><%= hit.client.browser || 'Unknown' %></span>
+                  <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"><%= hit.client.deviceType || 'Unknown' %></span>
+                </div>
               </td>
               <td class="py-3 px-4 whitespace-nowrap text-slate-500 dark:text-slate-400">
-                <%= hit.referrer || 'Unknown Referrer' %>
+                <div class="traffic-wire-value"><span><%= hit.referrer || 'Unknown Referrer' %></span></div>
               </td>
               <td class="py-3 px-4 whitespace-nowrap text-right">
-                <div class="inline-flex items-center justify-end gap-1.5">
+                <div class="traffic-wire-value">
+                <div class="inline-flex items-center justify-end gap-1.5 wire-actions">
                   <!-- Copy Hash Button -->
                   <button type="button"
                           data-action="copy-hash"
@@ -634,6 +701,7 @@
                     <span>Route</span>
                   </button>
 
+                  <% if (!hit.demo) { %>
                   <!-- Block or Unblock Hash Button -->
                   <button type="button"
                           data-action="toggle-block"
@@ -648,6 +716,8 @@
                     </svg>
                     <span><%= hit.blocked ? 'Blocked' : 'Block' %></span>
                   </button>
+                  <% } %>
+                </div>
                 </div>
               </td>
             </tr>
@@ -833,41 +903,45 @@
 
       tr.innerHTML =
         '<td class="py-3 px-4 whitespace-nowrap text-slate-600 dark:text-slate-300">' +
-          '<span class="text-emerald-600 dark:text-emerald-400 font-semibold">' + escapeHtml(timeStr) + '</span>' +
-          '<span class="text-slate-400 dark:text-slate-500 text-[10px] ml-1">UTC</span>' +
-        '</td>' +
+          '<div class="traffic-wire-value flex-values">' +
+            '<span class="text-emerald-600 dark:text-emerald-400 font-semibold">' + escapeHtml(timeStr) + '</span>' +
+            '<span class="text-slate-400 dark:text-slate-500 text-[10px] ml-1">UTC</span>' +
+          '</div>' +
+          '</td>' +
         '<td class="py-3 px-4 whitespace-nowrap">' +
-          '<span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-cyan-700 dark:text-cyan-300 font-semibold" title="Salted SHA-256 Visitor Hash: ' + escapeHtml(hit.visitorHash) + '">' +
+          '<div class="traffic-wire-value"><span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-cyan-700 dark:text-cyan-300 font-semibold" title="Salted SHA-256 Visitor Hash: ' + escapeHtml(hit.visitorHash) + '">' +
             escapeHtml(hit.maskedHash) +
-          '</span>' +
+          '</span></div>' +
         '</td>' +
         '<td class="py-3 px-4">' +
-          '<a href="' + escapeHtml(hit.path) + '" target="_blank" rel="noopener" class="text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold break-all">' +
+          '<div class="traffic-wire-value"><a href="' + escapeHtml(hit.path) + '" target="_blank" rel="noopener" class="text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold break-all">' +
             escapeHtml(hit.route) +
-          '</a>' +
+          '</a></div>' +
         '</td>' +
-        '<td class="py-3 px-4 whitespace-nowrap"><div class="flex flex-col items-start gap-1">' +
+        '<td class="py-3 px-4 whitespace-nowrap"><div class="traffic-wire-value"><div class="flex flex-col items-start gap-1">' +
           '<span class="px-2 py-0.5 rounded-md border text-[10px] font-bold uppercase tracking-wide ' + trafficPillClass(trafficType) + '">' +
             escapeHtml(trafficLabel(trafficType)) +
           '</span>' +
           '<span title="' + escapeHtml(statusText) + '" class="px-2 py-0.5 rounded-md border text-[10px] font-bold ' + statusPillClass(statusCode) + '">' +
             escapeHtml(statusCode + ' ' + statusText) +
-          '</span></div></td>' +
+          '</span></div></div></td>' +
         '<td class="py-3 px-4 whitespace-nowrap text-slate-700 dark:text-slate-300">' +
-          '<span class="mr-1">' + escapeHtml(geo.flag || '🌐') + '</span>' +
-          '<span>' + escapeHtml(geo.city || 'Unknown') + ', ' + escapeHtml(geo.countryCode || 'Unknown') + '</span>' +
+          '<div class="traffic-wire-value flex-values"><span class="mr-1">' + escapeHtml(geo.flag || '🌐') + '</span>' +
+          '<span>' + escapeHtml(geo.city || 'Unknown') + ', ' + escapeHtml(geo.countryCode || 'Unknown') + '</span></div>' +
         '</td>' +
         '<td class="py-3 px-4 whitespace-nowrap">' +
-          '<span class="text-slate-800 dark:text-slate-200">' + escapeHtml(client.os || 'Unknown') + '</span> ' +
-          '<span class="text-slate-400 dark:text-slate-500">·</span> ' +
-          '<span class="text-cyan-600 dark:text-cyan-400 font-semibold">' + escapeHtml(client.browser || 'Unknown') + '</span>' +
-          '<span class="ml-1 px-1.5 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">' + escapeHtml(client.deviceType || 'Unknown') + '</span>' +
+          '<div class="traffic-wire-value flex-values">' +
+            '<span class="text-slate-800 dark:text-slate-200">' + escapeHtml(client.os || 'Unknown') + '</span>' +
+            '<span class="text-slate-400 dark:text-slate-500">·</span>' +
+            '<span class="text-cyan-600 dark:text-cyan-400 font-semibold">' + escapeHtml(client.browser || 'Unknown') + '</span>' +
+            '<span class="ml-1 px-1.5 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">' + escapeHtml(client.deviceType || 'Unknown') + '</span>' +
+          '</div>' +
         '</td>' +
         '<td class="py-3 px-4 whitespace-nowrap text-slate-500 dark:text-slate-400">' +
-          escapeHtml(hit.referrer || 'Unknown Referrer') +
+          '<div class="traffic-wire-value"><span>' + escapeHtml(hit.referrer || 'Unknown Referrer') + '</span></div>' +
         '</td>' +
         '<td class="py-3 px-4 whitespace-nowrap text-right">' +
-          '<div class="inline-flex items-center justify-end gap-1.5">' +
+          '<div class="traffic-wire-value"><div class="inline-flex items-center justify-end gap-1.5 wire-actions">' +
             '<button type="button" data-action="copy-hash" data-hash="' + escapeHtml(hash) + '" aria-label="Copy visitor hash" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 text-[11px] font-mono">' +
               '<svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>' +
               '<span>Hash</span>' +
@@ -880,7 +954,7 @@
               '<svg class="w-3.5 h-3.5 text-rose-500 dark:text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>' +
               '<span>' + (hit.blocked ? 'Blocked' : 'Block') + '</span>' +
             '</button>' +
-          '</div>' +
+          '</div></div>' +
         '</td>';
 
       wireTableBody.insertBefore(tr, wireTableBody.firstChild);
