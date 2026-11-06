@@ -30,7 +30,8 @@
     const rect = control.getBoundingClientRect();
     const width = Math.min(264, innerWidth - 24);
     panel.style.width = width + 'px';
-    panel.style.maxHeight = Math.max(100, innerHeight - rect.bottom - 20) + 'px';
+    const opensAbove = Boolean(control.closest('.admin-settings-mobile-bottom'));
+    panel.style.maxHeight = Math.max(100, opensAbove ? rect.top - 20 : innerHeight - rect.bottom - 20) + 'px';
     panel.style.left = Math.max(12, Math.min(rect.right - width, innerWidth - width - 12)) - rect.left + 'px';
   }
   function setOpen(control, open, restoreFocus = false) {

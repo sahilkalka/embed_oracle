@@ -93,10 +93,37 @@
   const btnTestAi = document.getElementById('btnTestAi');
   const aiTestResult = document.getElementById('aiTestResult');
 
-  if (btnTestAi) {
+  function renderAiConnectionResult(state, title, { message, latency, provider, model, response, tip } = {}) {
+    if (!aiTestResult) return;
+    aiTestResult.className = 'ai-connection-result';
+    aiTestResult.dataset.state = state;
+    aiTestResult.setAttribute('aria-busy', String(state === 'loading'));
+    const iconPath = state === 'success'
+      ? '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>'
+      : state === 'error'
+        ? '<circle cx="12" cy="12" r="9"/><path d="M12 7v6m0 4h.01"/>'
+        : '<path d="M21 12a9 9 0 1 1-6.219-8.56"/>';
+    aiTestResult.innerHTML = `
+      <div class="ai-connection-heading">
+        <svg class="ai-connection-icon${state === 'loading' ? ' animate-spin' : ''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPath}</svg>
+        <strong>${escapeHtml(title)}</strong>
+      </div>
+      ${latency != null ? `<span class="ai-connection-latency">${escapeHtml(latency)}ms</span>` : ''}
+      ${provider || model ? `<dl class="ai-connection-details">
+        <div><dt>Provider</dt><dd>${escapeHtml(provider || '')}</dd></div>
+        <div><dt>Model</dt><dd>${escapeHtml(model || '')}</dd></div>
+      </dl>` : ''}
+      ${message ? `<p>${escapeHtml(message)}</p>` : ''}
+      ${response != null ? `<blockquote class="ai-connection-response">${escapeHtml(response)}</blockquote>` : ''}
+      ${tip ? `<p class="ai-connection-tip">${escapeHtml(tip)}</p>` : ''}
+    `;
+  }
+
+  if (btnTestAi && aiTestResult) {
     btnTestAi.addEventListener('click', async () => {
-      aiTestResult.className = 'p-3.5 rounded-xl text-xs font-mono bg-[#0c161c] text-emerald-300 border border-[#1c2e38] block';
-      aiTestResult.innerHTML = '<span class="animate-pulse">🔄 Testing AI model endpoint and validating response payload...</span>';
+      renderAiConnectionResult('loading', 'Testing AI connection', {
+        message: 'Testing AI model endpoint and validating response payload…'
+      });
       btnTestAi.disabled = true;
 
       const selectedProvider = document.querySelector('input[name="ai_provider"]:checked')?.value || 'nvidia';
@@ -124,29 +151,20 @@
         });
         const data = await res.json();
         if (data.success) {
-          aiTestResult.className = 'p-3.5 rounded-xl text-xs font-mono bg-emerald-950/50 text-emerald-300 border border-emerald-500/30 block space-y-1.5 shadow-sm';
-          aiTestResult.innerHTML = `
-            <div class="font-bold text-xs flex items-center space-x-2">
-              <span>✅ Connection Verified Successfully!</span>
-              <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">${data.latencyMs}ms</span>
-            </div>
-            <div><strong>Provider:</strong> ${(data.provider || selectedProvider).toUpperCase()} | <strong>Model:</strong> ${data.model || payload.model}</div>
-            <div class="mt-2 p-2.5 bg-[#070e12] rounded-lg border border-[#1c2e38] text-[11px] text-slate-200">
-              &ldquo;${data.response}&rdquo;
-            </div>
-          `;
+          renderAiConnectionResult('success', 'Connection verified successfully', {
+            latency: data.latencyMs,
+            provider: String(data.provider || selectedProvider).toUpperCase(),
+            model: data.model || payload.model,
+            response: data.response
+          });
         } else {
-          const errorMsg = data.error || data.message || 'Connection test failed';
-          aiTestResult.className = 'p-3.5 rounded-xl text-xs font-mono bg-red-950/50 text-red-300 border border-red-500/30 block space-y-1';
-          aiTestResult.innerHTML = `
-            <div class="font-bold text-xs">❌ AI Connection Error</div>
-            <div>${errorMsg}</div>
-            <div class="text-[10px] text-slate-400 mt-1">Tip: Leave API key blank to test the built-in local simulation pipeline.</div>
-          `;
+          renderAiConnectionResult('error', 'AI connection error', {
+            message: data.error || data.message || 'Connection test failed',
+            tip: 'Tip: Leave API key blank to test the built-in local simulation pipeline.'
+          });
         }
       } catch (err) {
-        aiTestResult.className = 'p-3.5 rounded-xl text-xs font-mono bg-red-950/50 text-red-300 border border-red-500/30 block';
-        aiTestResult.innerHTML = `❌ <strong>Network Request Failed:</strong> ${err.message}`;
+        renderAiConnectionResult('error', 'Network request failed', { message: err.message });
       } finally {
         btnTestAi.disabled = false;
       }

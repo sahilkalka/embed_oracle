@@ -557,22 +557,22 @@
   </aside>
 
   <!-- Right Main Content Column -->
-  <div class="flex-1 flex flex-col min-w-0 min-h-screen bg-slate-50 dark:bg-brand-dark">
+  <div class="admin-mobile-page flex-1 flex flex-col min-w-0 min-h-screen bg-slate-50 dark:bg-brand-dark">
 
     <!-- Compact Top Global Bar (+ Attached Settings Sub-Header when on Settings Page) -->
     <header id="adminTopHeader" class="sticky top-0 z-40 bg-white dark:bg-brand-surface border-b border-slate-200 dark:border-brand-border flex flex-col shrink-0 min-w-0 w-full">
-      <div class="min-h-[3.5rem] sm:min-h-[4rem] px-3 sm:px-5 lg:px-6 py-2 flex items-center justify-between gap-2 sm:gap-3 w-full min-w-0 box-border">
-        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+      <div class="admin-header-row min-h-[3.5rem] sm:min-h-[4rem] px-3 sm:px-5 lg:px-6 py-2 flex items-center justify-between gap-2 sm:gap-3 w-full min-w-0 box-border">
+        <div class="admin-header-context flex items-center gap-2 sm:gap-2.5 min-w-0">
           <!-- Mobile Sidebar Trigger -->
-          <button type="button" onclick="toggleMobileAdminSidebar(true)" aria-label="Open navigation sidebar" title="Open navigation sidebar" class="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold shrink-0">
+          <button type="button" id="adminHeaderMenuBtn" onclick="toggleMobileAdminSidebar(true)" aria-label="Open navigation sidebar" title="Open navigation sidebar" class="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold shrink-0">
             <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">menu</span>
             <span class="sr-only">Menu</span>
           </button>
 
           <% if (isSettingsPage) { %>
             <!-- Settings Dynamic Section Title & Subtitle -->
-            <div class="min-w-0">
-              <div class="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-base leading-tight min-w-0">
+            <div class="settings-header-title min-w-0">
+              <div class="settings-header-title-copy flex items-center gap-1 sm:gap-1.5 text-xs sm:text-base leading-tight min-w-0">
                 <span id="adminHeaderSectionIcon" class="material-symbols-rounded text-base text-amber-400 shrink-0 hidden sm:inline-block leading-none" aria-hidden="true">lightbulb</span>
                 <span class="font-extrabold text-slate-900 dark:text-white tracking-tight shrink-0">Settings</span>
                 <span class="text-slate-400 dark:text-slate-500 font-normal shrink-0">/</span>
@@ -584,7 +584,7 @@
             </div>
           <% } else { %>
             <!-- Standard Route Context Breadcrumb -->
-            <div class="flex items-center gap-2 text-xs min-w-0">
+            <div class="admin-route-title flex items-center gap-2 text-xs min-w-0">
               <span class="text-slate-400 dark:text-slate-500 font-semibold hidden sm:inline">Embedded India</span>
               <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">/</span>
               <span class="font-extrabold text-slate-900 dark:text-white truncate text-sm"><%= activeRouteObj.label %></span>
@@ -619,6 +619,44 @@
         <%- include('partials/settings-nav') %>
       <% } %>
     </header>
+
+    <div id="adminSettingsMobileBottom" class="admin-settings-mobile-bottom" hidden>
+      <div id="adminSettingsMobileControls" class="admin-settings-mobile-controls"></div>
+    </div>
+    <script>
+      (function() {
+        const dock = document.getElementById('adminSettingsMobileBottom');
+        const controls = document.getElementById('adminSettingsMobileControls');
+        const page = dock.closest('.admin-mobile-page');
+        const mobile = window.matchMedia('(max-width: 767px)');
+        // Move the existing controls so handlers and IDs stay intact at every width.
+        const placements = [
+          [document.getElementById('adminHeaderMenuBtn'), controls],
+          [document.getElementById('admin-header-actions'), controls]
+        ].filter(([node]) => node).map(([node, destination]) => {
+          const marker = document.createComment('Header control position');
+          node.before(marker);
+          return { node, destination, marker };
+        });
+        function updateDockHeight() {
+          page.style.setProperty('--admin-mobile-bottom-height', mobile.matches ? dock.offsetHeight + 'px' : '0px');
+        }
+        function updateHeaderPlacement() {
+          if (mobile.matches) {
+            dock.hidden = false;
+            placements.forEach(({ node, destination }) => destination.appendChild(node));
+          } else {
+            placements.forEach(({ node, marker }) => marker.after(node));
+            dock.hidden = true;
+          }
+          updateDockHeight();
+        }
+        mobile.addEventListener('change', updateHeaderPlacement);
+        if (typeof ResizeObserver !== 'undefined') new ResizeObserver(updateDockHeight).observe(dock);
+        window.addEventListener('resize', updateDockHeight);
+        updateHeaderPlacement();
+      })();
+    </script>
 
     <script>
       (function() {
