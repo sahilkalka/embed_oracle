@@ -68,9 +68,9 @@
         <span id="testimonial-approval-label" class="text-xs font-bold text-slate-900 dark:text-white block">Approval Status</span>
         <span id="testimonial-approval-help" class="text-[11px] text-slate-500">If enabled, this testimonial will immediately display on the homepage.</span>
       </div>
-      <label class="relative inline-flex items-center cursor-pointer">
+      <label class="admin-checkbox-switch relative inline-flex items-center cursor-pointer">
         <input id="testimonial-is-approved" type="checkbox" name="isApproved" value="true" aria-labelledby="testimonial-approval-label" aria-describedby="testimonial-approval-help" class="sr-only peer" <%= (testimonial && testimonial.isApproved) ? 'checked' : '' %>>
-        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500"></div>
+        <span class="admin-checkbox-track" aria-hidden="true"><span class="admin-checkbox-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></span></span>
       </label>
     </div>
 

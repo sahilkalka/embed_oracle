@@ -383,9 +383,9 @@ const initialTopicsList = (schedulerView.rawTopics || '')
             <div class="text-xs font-bold text-slate-900 dark:text-white">Enable Automated Scheduled Blog Generation</div>
             <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">When turned on, the system synthesizes articles and adds them to the CMS at your specified frequency until max limit is reached.</div>
           </div>
-          <label class="relative inline-flex items-center cursor-pointer ml-4 shrink-0">
+          <label class="admin-checkbox-switch relative inline-flex items-center cursor-pointer ml-4 shrink-0">
             <input type="checkbox" id="ai_auto_gen_enabled" aria-label="Enable automatic article generation" name="ai_auto_gen_enabled" value="true" <%= schedulerView.enabled ? 'checked' : '' %> class="sr-only peer">
-            <div class="w-10 h-5 bg-slate-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+            <span class="admin-checkbox-track" aria-hidden="true"><span class="admin-checkbox-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></span></span>
           </label>
         </div>
 

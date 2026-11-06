@@ -181,3 +181,17 @@ body.admin-shell{overflow-x:hidden;overflow-x:clip}
 @media (max-width:767px) and (prefers-reduced-motion:reduce){
   .admin-mobile-page #adminTopHeader{transition:none}
 }
+
+/* Switch hit areas stay 44px; their visual tracks must not inherit button sizing. */
+.admin-shell .theme-toggle-switch,.admin-shell .admin-checkbox-switch{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px!important;min-width:44px!important;max-width:44px;height:44px!important;min-height:44px!important;max-height:44px;padding:0!important;border:0!important;border-radius:9999px;background:transparent!important;box-sizing:border-box;vertical-align:middle}
+.admin-shell .theme-toggle-switch::before,.admin-shell .admin-checkbox-track{content:"";position:absolute;left:0;top:10px;width:44px;height:24px;border-radius:9999px;background:var(--border-strong,#64748b);transition:background-color .2s ease;pointer-events:none}
+.admin-shell .theme-toggle-switch[aria-checked="true"]::before,.admin-shell .admin-checkbox-switch>input:checked~.admin-checkbox-track{background:var(--admin-accent,var(--action-color,#007f5f))}
+.admin-shell .theme-toggle-switch .theme-toggle-thumb,.admin-shell .admin-checkbox-thumb{position:absolute;left:2px;top:12px;display:inline-flex;align-items:center;justify-content:center;flex:none;width:20px!important;min-width:20px;height:20px!important;min-height:20px;border-radius:50%;background:#fff!important;color:#475569;box-shadow:0 1px 3px rgba(15,23,42,.2)}
+.admin-shell .admin-checkbox-thumb{top:2px;transition:transform .2s ease}
+.admin-shell .admin-checkbox-switch>input:checked~.admin-checkbox-track .admin-checkbox-thumb{transform:translateX(20px)}
+.admin-shell :is(.theme-toggle-thumb,.admin-checkbox-thumb)>svg{display:block;flex:none;width:10px!important;height:10px!important;color:#475569}
+.admin-shell .theme-toggle-switch:hover,.admin-shell .theme-toggle-switch:active{transform:none!important}
+.admin-shell .admin-checkbox-switch:focus-within{outline:2px solid var(--focus-ring,var(--admin-accent));outline-offset:2px}
+.admin-shell .theme-toggle-wrapper{align-items:center;gap:.625rem}
+.admin-shell .theme-toggle-badge{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+@media (prefers-reduced-motion:reduce){.admin-shell .theme-toggle-switch .theme-toggle-thumb,.admin-shell .admin-checkbox-thumb{transition:none!important}}
