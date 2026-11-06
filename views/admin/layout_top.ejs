@@ -655,6 +655,45 @@
         if (typeof ResizeObserver !== 'undefined') new ResizeObserver(updateDockHeight).observe(dock);
         window.addEventListener('resize', updateDockHeight);
         updateHeaderPlacement();
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const header = document.getElementById('adminTopHeader');
+          const content = document.getElementById('admin-main-content');
+          let previousTop = content.scrollTop;
+          let travel = 0;
+          let settlingUntil = 0;
+          function measureHeader() {
+            page.style.setProperty('--admin-mobile-header-height', header.offsetHeight + 'px');
+          }
+          function revealHeader() {
+            page.classList.remove('admin-mobile-header-hidden');
+            header.inert = false;
+            previousTop = content.scrollTop;
+            travel = 0;
+          }
+          content.addEventListener('scroll', () => {
+            if (!mobile.matches) return;
+            const top = Math.max(0, content.scrollTop);
+            const delta = top - previousTop;
+            previousTop = top;
+            if (top <= 0) { revealHeader(); return; }
+            // Ignore scroll adjustments caused by the header changing the content height.
+            if (performance.now() < settlingUntil) return;
+            travel = Math.sign(delta) === Math.sign(travel) ? travel + delta : delta;
+            if (Math.abs(travel) < 12) return;
+            const hide = travel > 0 && top > 24;
+            travel = 0;
+            if (hide && (header.contains(document.activeElement) || content.scrollHeight - content.clientHeight < header.offsetHeight + 24)) return;
+            if (page.classList.contains('admin-mobile-header-hidden') === hide) return;
+            page.classList.toggle('admin-mobile-header-hidden', hide);
+            header.inert = hide;
+            settlingUntil = performance.now() + 240;
+          }, { passive: true });
+          mobile.addEventListener('change', revealHeader);
+          if (typeof ResizeObserver !== 'undefined') new ResizeObserver(measureHeader).observe(header);
+          window.addEventListener('resize', measureHeader);
+          measureHeader();
+        }, { once: true });
       })();
     </script>
 
