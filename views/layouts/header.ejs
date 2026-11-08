@@ -142,7 +142,7 @@
   <%
     const safeAdsensePubId = /^ca-pub-\d{16}$/.test(settings.adsense_pub_id || '') ? settings.adsense_pub_id : '';
     const safeMetaPixelId = /^\d{5,20}$/.test(String(settings.meta_pixel_id || '')) ? String(settings.meta_pixel_id) : '';
-    const consentAdsensePubId = settings.enable_adsense === 'true' && /^\/(tools|blogs)(\/|$)/.test(currentPath) ? safeAdsensePubId : '';
+    const consentAdsensePubId = settings.enable_adsense === 'true' && /^\/(tools|blogs|blog)(\/|$)/.test(currentPath) ? safeAdsensePubId : '';
   %>
   <% if (safeAdsensePubId) { %>
     <meta name="google-adsense-account" content="<%= safeAdsensePubId %>">

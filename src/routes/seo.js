@@ -27,6 +27,7 @@ router.get('/sitemap.xml', async (req, res) => {
       { path: '/blogs', priority: '0.9', changefreq: 'daily' },
       { path: '/contact', priority: '0.8', changefreq: 'monthly' },
       { path: '/privacy-policy', priority: '0.3', changefreq: 'yearly' },
+      { path: '/terms', priority: '0.3', changefreq: 'yearly' },
       { path: '/tools', priority: '0.9', changefreq: 'weekly' },
       ...Object.values(servicesData).map(service => ({ path: '/services/' + encodeURIComponent(service.slug), priority: '0.8', changefreq: 'weekly' })),
       ...toolsRegistry.TOOL_CATEGORIES.map(category => ({ path: '/tools/' + encodeURIComponent(category.slug), priority: '0.85', changefreq: 'weekly' })),

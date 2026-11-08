@@ -106,6 +106,46 @@
           </div>
         <% } %>
 
+        <!-- Author Profile & Editorial E-E-A-T Card -->
+        <div class="mt-10 p-6 sm:p-8 bg-white dark:bg-brand-surface rounded-3xl border border-slate-200 dark:border-brand-border shadow-md">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-brand-border">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-accent font-black text-xl flex items-center justify-center shrink-0">
+                <span class="material-symbols-rounded text-2xl" aria-hidden="true">engineering</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="text-base font-extrabold text-slate-900 dark:text-white"><%= post.author %></h4>
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold uppercase tracking-wider">
+                    <span class="material-symbols-rounded text-xs shrink-0" aria-hidden="true">verified</span>
+                    <span>Verified Author</span>
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Hardware &amp; Firmware Systems Engineering Division</p>
+              </div>
+            </div>
+            <a href="/contact" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-slate-100 dark:bg-brand-dark hover:bg-brand-500 hover:text-white text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition shadow-xs">
+              <span class="material-symbols-rounded text-sm shrink-0 leading-none" aria-hidden="true">forum</span>
+              <span>Consult Author</span>
+            </a>
+          </div>
+          <div class="mt-4 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p>
+              Articles on Embedded India are authored and reviewed by practicing electronics engineers specializing in high-speed multi-layer PCB layouts, deterministic RTOS firmware architectures, automotive bus networks (CAN-FD, LIN, Ethernet), and Hardware-in-the-Loop verification.
+            </p>
+            <div class="mt-3 flex flex-wrap items-center gap-4 text-[11px] text-slate-500 dark:text-slate-400">
+              <span class="inline-flex items-center gap-1">
+                <span class="material-symbols-rounded text-xs text-brand-500 dark:text-accent" aria-hidden="true">task_alt</span>
+                <span>IPC-2152 &amp; CISPR-25 Lab-Tested</span>
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <span class="material-symbols-rounded text-xs text-brand-500 dark:text-accent" aria-hidden="true">shield</span>
+                <span>ISO 26262 &amp; MISRA-C Guidelines</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Slot 3: Sticky Blog Sidebar Ad Column (if enabled) -->
@@ -113,35 +153,40 @@
         <aside class="lg:col-span-4 space-y-6">
           <div class="sticky top-28 space-y-6">
             
-            <div class="p-5 bg-white dark:bg-brand-surface rounded-3xl border border-slate-200 dark:border-brand-border shadow-sm text-center">
-              <span class="block mb-3 text-[10px] uppercase font-bold tracking-wider text-slate-400">Partner Spotlight</span>
-              <% if (settings.custom_ad_html_sidebar && settings.custom_ad_html_sidebar.trim()) { %>
+            <% if (settings.custom_ad_html_sidebar && settings.custom_ad_html_sidebar.trim()) { %>
+              <div class="p-5 bg-white dark:bg-brand-surface rounded-3xl border border-slate-200 dark:border-brand-border shadow-sm text-center">
+                <span class="block mb-3 text-[10px] uppercase font-bold tracking-wider text-slate-400">Partner Spotlight</span>
                 <%- settings.custom_ad_html_sidebar %>
-              <% } else if (settings.carbon_serve_id && settings.enable_carbon_ads === 'true') { %>
+              </div>
+            <% } else if (settings.carbon_serve_id && settings.enable_carbon_ads === 'true') { %>
+              <div class="p-5 bg-white dark:bg-brand-surface rounded-3xl border border-slate-200 dark:border-brand-border shadow-sm text-center">
+                <span class="block mb-3 text-[10px] uppercase font-bold tracking-wider text-slate-400">Partner Spotlight</span>
                 <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=<%= settings.carbon_serve_id %>&placement=<%= settings.carbon_placement_id || 'embeddedindiain' %>" id="_carbonads_sidebar_js"></script>
-              <% } else if (settings.enable_sponsor_banner === 'true' && settings.sponsor_banner_img) { %>
+              </div>
+            <% } else if (settings.enable_sponsor_banner === 'true' && settings.sponsor_banner_img) { %>
+              <div class="p-5 bg-white dark:bg-brand-surface rounded-3xl border border-slate-200 dark:border-brand-border shadow-sm text-center">
+                <span class="block mb-3 text-[10px] uppercase font-bold tracking-wider text-slate-400">Partner Spotlight</span>
                 <a href="<%= settings.sponsor_banner_url || '#' %>" target="_blank" rel="noopener sponsored" class="block group">
                   <img src="<%= settings.sponsor_banner_img %>" alt="<%= settings.sponsor_banner_alt || 'Sponsor' %>" class="w-full rounded-2xl shadow-sm mb-3">
                   <h4 class="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition"><%= settings.sponsor_banner_alt || 'Featured Sponsor' %></h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1"><%= settings.sponsor_banner_text || '' %></p>
                 </a>
-              <% } else if (canShowAd(settings, settings.adsense_sidebar_slot)) { %>
-<%- include('../../partials/ad-slot', { slot: settings.adsense_sidebar_slot, format: 'vertical' }) %>
-              <% } else { %>
-                <div class="p-6 border-2 border-dashed border-slate-200 dark:border-brand-border rounded-2xl text-xs text-slate-400">
-                  <p class="font-bold">Sidebar Ad Slot Active</p>
-                  <p class="text-[10px] mt-1">Configure AdSense, Carbon, or Sponsor in /admin</p>
-                </div>
-              <% } %>
-            </div>
+              </div>
+            <% } else if (canShowAd(settings, settings.adsense_sidebar_slot)) { %>
+              <div class="p-5 bg-white dark:bg-brand-surface rounded-3xl border border-slate-200 dark:border-brand-border shadow-sm text-center">
+                <span class="block mb-3 text-[10px] uppercase font-bold tracking-wider text-slate-400">Sponsored</span>
+                <%- include('../../partials/ad-slot', { slot: settings.adsense_sidebar_slot, format: 'vertical' }) %>
+              </div>
+            <% } %>
 
             <!-- Lead Magnet Quick Box in Sidebar -->
             <div class="p-5 bg-gradient-to-br from-brand-900 to-slate-900 text-white rounded-3xl border border-brand-700 shadow-md">
               <span class="text-[10px] bg-accent/20 text-accent font-bold px-2 py-0.5 rounded-full uppercase">Free Engineering PDF</span>
               <h4 class="font-bold text-sm mt-2">PCB Layout &amp; DFM Checklist</h4>
               <p class="text-xs text-slate-300 mt-1">Complete 42-point review list for zero-spin hardware releases.</p>
-              <a href="/contact?service=Hardware%20Design" class="mt-3 block text-center py-2 px-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition">
-                Download Free Checklist &rarr;
+              <a href="/contact?service=Hardware%20Design" class="mt-3 inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow-sm">
+                <span class="material-symbols-rounded text-sm shrink-0 leading-none" aria-hidden="true">download</span>
+                <span>Download Free Checklist &rarr;</span>
               </a>
             </div>
 

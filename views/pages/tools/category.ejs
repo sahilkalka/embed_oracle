@@ -23,7 +23,7 @@
 
       <!-- Return to Tools Page Button (Sticky Top Bar) -->
       <a href="/tools" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-accent hover:border-brand-500 font-bold text-xs transition shadow-xs flex-shrink-0 group" title="Return to Tools Suite Landing Page">
-        <span class="transition-transform duration-200 group-hover:-translate-x-1">&larr;</span>
+        <span class="material-symbols-rounded text-sm shrink-0 leading-none transition-transform duration-200 group-hover:-translate-x-1" aria-hidden="true">arrow_back</span>
         <span class="hidden sm:inline">Return to Tools Page</span>
         <span class="sm:hidden">All Tools</span>
       </a>
@@ -114,94 +114,72 @@
         <div class="flex items-center gap-2.5 flex-wrap">
           <!-- Return to Tools Page Button (Tool Header) -->
           <a href="/tools" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-accent hover:border-brand-500 font-bold text-xs transition shadow-xs group" title="Return to Tools Suite Landing Page">
-            <span class="transition-transform duration-200 group-hover:-translate-x-1">&larr;</span>
+            <span class="material-symbols-rounded text-sm shrink-0 leading-none transition-transform duration-200 group-hover:-translate-x-1" aria-hidden="true">arrow_back</span>
             <span>Return to Tools Page</span>
           </a>
 
           <button type="button" onclick="navigator.clipboard.writeText(window.location.href); alert('Direct link copied to clipboard!');" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-xs font-bold text-slate-700 dark:text-slate-200 hover:border-brand-500 transition shadow-xs">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            <span class="material-symbols-rounded text-sm shrink-0 leading-none" aria-hidden="true">share</span>
             <span>Share Link</span>
           </button>
         </div>
       </div>
 
-      <!-- ============================================================ -->
       <!-- AD PLACEHOLDER SLOT: TOOLS HEADER (Controlled by Admin Page) -->
-      <!-- ============================================================ -->
       <% if (settings.ad_slot_tools_header === 'true') { %>
-        <div class="w-full my-4 flex justify-center">
-          <% if (settings.custom_ad_html_tools_header && settings.custom_ad_html_tools_header.trim()) { %>
+        <% if (settings.custom_ad_html_tools_header && settings.custom_ad_html_tools_header.trim()) { %>
+          <div class="w-full my-4 flex justify-center">
             <div class="ad-slot-tools-header w-full overflow-hidden flex justify-center">
               <%- settings.custom_ad_html_tools_header %>
             </div>
-          <% } else if (canShowAd(settings, settings.adsense_tools_top_slot)) { %>
-<%- include('../../partials/ad-slot', { slot: settings.adsense_tools_top_slot, format: 'auto' }) %>
-<% } else { %>
-            <!-- Default Sponsored / Partner Ad Placeholder -->
-            <div class="w-full max-w-4xl p-4 rounded-2xl bg-white dark:bg-brand-surface border border-dashed border-slate-300 dark:border-brand-border text-center shadow-xs">
-              <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-2.5 bg-slate-50 dark:bg-brand-dark/70 rounded-xl border border-slate-200/60 dark:border-brand-border/40">
-                <div class="flex items-center gap-3 text-left">
-                  <div class="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-accent font-bold text-base flex-shrink-0">
-                    📢
-                  </div>
-                  <div>
-                    <span class="text-[10px] font-mono font-bold uppercase text-slate-400">Sponsored Hardware Partner</span>
-                    <p class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">High-Speed PCB Fabrication &amp; Prototype SMT Assembly</p>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Complete component procurement, stencil fabrication, and quick-turn SMT line.</p>
-                  </div>
-                </div>
-                <a href="/contact" class="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold transition shadow-xs whitespace-nowrap">
-                  Inquire Sponsorship &rarr;
-                </a>
-              </div>
-            </div>
-          <% } %>
-        </div>
+          </div>
+        <% } else if (canShowAd(settings, settings.adsense_tools_top_slot)) { %>
+          <div class="w-full my-4 flex justify-center">
+            <%- include('../../partials/ad-slot', { slot: settings.adsense_tools_top_slot, format: 'auto' }) %>
+          </div>
+        <% } %>
       <% } %>
 
       <div class="tool-ad-layout <%= canShowAd(settings, settings.adsense_tools_sidebar_slot) ? 'tool-ad-layout-enabled' : '' %>">
-<div class="min-w-0">
-<!-- Active Tool Component Dynamic Injection -->
-      <section id="interactive-tool" class="relative">
-        <%- include('components/' + activeTool.slug) %>
-      </section>
+        <div class="min-w-0">
+          <!-- Active Tool Component Dynamic Injection -->
+          <section id="interactive-tool" class="relative">
+            <%- include('components/' + activeTool.slug) %>
+          </section>
 
+          <!-- Engineering Estimation & Standards Notice -->
+          <div class="mt-6 p-4 rounded-2xl bg-slate-100/80 dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-xs text-slate-600 dark:text-slate-300 flex items-start gap-3">
+            <span class="material-symbols-rounded text-brand-500 dark:text-accent shrink-0 text-lg mt-0.5" aria-hidden="true">info</span>
+            <div>
+              <span class="font-bold text-slate-800 dark:text-slate-200 block">Engineering Estimation &amp; Standards Notice</span>
+              <span class="text-[11px] leading-relaxed">
+                Calculations provided by this utility represent nominal mathematical and IPC standard estimations. Manufacturing tolerances, copper finish, and environmental conditions will impact physical hardware. Always validate designs through breadboard, prototype testing, and benchtop measurement. Review our <a href="/terms" class="underline font-semibold hover:text-brand-500 dark:hover:text-accent">Terms of Service</a>.
+              </span>
+            </div>
+          </div>
+        </div>
+        <% if (canShowAd(settings, settings.adsense_tools_sidebar_slot)) { %>
+          <aside class="tool-ad-sidebar" aria-label="Sponsored content">
+            <div class="sticky top-24">
+              <%- include('../../partials/ad-slot', { slot: settings.adsense_tools_sidebar_slot, format: 'vertical' }) %>
+            </div>
+          </aside>
+        <% } %>
       </div>
-<% if (canShowAd(settings, settings.adsense_tools_sidebar_slot)) { %>
-<aside class="tool-ad-sidebar" aria-label="Sponsored content"><div class="sticky top-24"><%- include('../../partials/ad-slot', { slot: settings.adsense_tools_sidebar_slot, format: 'vertical' }) %></div></aside>
-<% } %>
-</div>
-<!-- AD PLACEHOLDER SLOT: TOOLS MID/FOOTER (Controlled by Admin) -->
-      <!-- ============================================================ -->
+
+      <!-- AD PLACEHOLDER SLOT: TOOLS MID/FOOTER (Controlled by Admin) -->
       <% if (settings.ad_slot_tools_footer === 'true') { %>
-        <div class="w-full my-6 flex justify-center">
-          <% if (settings.custom_ad_html_tools_footer && settings.custom_ad_html_tools_footer.trim()) { %>
+        <% if (settings.custom_ad_html_tools_footer && settings.custom_ad_html_tools_footer.trim()) { %>
+          <div class="w-full my-6 flex justify-center">
             <div class="ad-slot-tools-footer w-full overflow-hidden flex justify-center">
               <%- settings.custom_ad_html_tools_footer %>
             </div>
-          <% } else if (canShowAd(settings, settings.adsense_tools_bottom_slot)) { %>
-<%- include('../../partials/ad-slot', { slot: settings.adsense_tools_bottom_slot, format: 'auto' }) %>
-<% } else { %>
-            <!-- Default Mid-Page Content Sponsor Placeholder -->
-            <div class="w-full max-w-4xl p-4 rounded-2xl bg-white dark:bg-brand-surface border border-dashed border-slate-300 dark:border-brand-border text-center shadow-xs">
-              <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 bg-slate-50 dark:bg-brand-dark/70 rounded-xl border border-slate-200/60 dark:border-brand-border/40">
-                <div class="flex items-center gap-3 text-left">
-                  <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold text-base flex-shrink-0">
-                    ⚡
-                  </div>
-                  <div>
-                    <span class="text-[10px] font-mono font-bold uppercase text-slate-400">Featured Engineering Tools</span>
-                    <p class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Precision Mixed-Signal Oscilloscopes &amp; Protocol Analyzers</p>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Calibrated for IPC-2152 temperature profiling and CAN/SPI bus diagnostics.</p>
-                  </div>
-                </div>
-                <a href="/tools" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-brand-500 hover:text-white text-slate-700 dark:text-slate-200 text-xs font-bold transition shadow-xs whitespace-nowrap">
-                  Explore All Tools &rarr;
-                </a>
-              </div>
-            </div>
-          <% } %>
-        </div>
+          </div>
+        <% } else if (canShowAd(settings, settings.adsense_tools_bottom_slot)) { %>
+          <div class="w-full my-6 flex justify-center">
+            <%- include('../../partials/ad-slot', { slot: settings.adsense_tools_bottom_slot, format: 'auto' }) %>
+          </div>
+        <% } %>
       <% } %>
 
       <!-- Server-Side Rendered SEO Sections (Formula, Worked Example, FAQs) -->
@@ -273,7 +251,7 @@
           <!-- Return to Tools Page Button (Bottom Section) -->
           <div class="flex items-center gap-3">
             <a href="/tools" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-accent hover:border-brand-500 transition shadow-xs group">
-              <span class="transition-transform duration-200 group-hover:-translate-x-1">&larr;</span>
+              <span class="material-symbols-rounded text-sm shrink-0 leading-none transition-transform duration-200 group-hover:-translate-x-1" aria-hidden="true">arrow_back</span>
               <span>Return to Tools Page (All 8 Hubs)</span>
             </a>
           </div>
@@ -293,7 +271,7 @@
               </div>
               <div class="mt-4 pt-3 border-t border-slate-100 dark:border-brand-border text-xs font-bold text-brand-600 dark:text-accent flex items-center justify-between">
                 <span>Launch Tool</span>
-                <span>&rarr;</span>
+                <span class="material-symbols-rounded text-sm shrink-0 leading-none transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
               </div>
             </a>
           <% }); %>

@@ -123,6 +123,14 @@ const TOOLS = [
       {
         q: 'Should I use IPC-2152 or IPC-2221 for high-reliability boards?',
         a: 'IPC-2221 is based on legacy 1950s National Bureau of Standards tests on unclad boards, while IPC-2152 incorporates modern multi-layer thermal spreading effects, copper planes, and PCB thickness. For critical automotive or aerospace designs, IPC-2152 provides tighter, more conservative thermal predictions.'
+      },
+      {
+        q: 'How does copper foil roughness affect high-frequency trace impedance and current carrying?',
+        a: 'At high frequencies (above 1 GHz), the skin depth drops below the surface roughness profile of standard electrodeposited (ED) copper. This increases the effective resistance and insertion loss. For multi-gigabit links or high RF power, specify rolled-annealed (RA) or very low profile (VLP) copper foil.'
+      },
+      {
+        q: 'What is the standard design margin for temperature rise in industrial PCBs?',
+        a: 'In industrial environments with ambient temperatures up to 60°C or 70°C, typical design guidelines limit trace temperature rise (Delta T) to 10°C to 20°C. This ensures the operating temperature remains comfortably below the glass transition temperature (Tg) of standard FR-4 (typically 130°C to 150°C).'
       }
     ]
   },
@@ -153,6 +161,14 @@ const TOOLS = [
       {
         q: 'How does load impedance affect divider output voltage?',
         a: 'Any load impedance connected across R2 sits in parallel with R2. If the load impedance is less than 10 to 100 times R2, significant voltage sag occurs. Buffer the divider with an operational amplifier voltage follower for high-impedance ADC inputs.'
+      },
+      {
+        q: 'What is the optimal resistance range for a microcontroller ADC voltage divider?',
+        a: 'For microcontrollers like STM32 or ESP32 whose internal ADC sample-and-hold capacitor has a recommended maximum source impedance (e.g., 10 kOhms), select total divider impedance between 10 kOhms and 100 kOhms with a 10 nF ceramic capacitor across R2 to provide instant charge during the ADC sampling window without causing excess quiescent battery drain.'
+      },
+      {
+        q: 'Why should I use 1% metal film resistors instead of 5% carbon film in dividers?',
+        a: 'Precision 1% metal film resistors have a much lower temperature coefficient of resistance (TCR), typically 50 ppm/°C, compared to carbon film resistors (up to 350-500 ppm/°C). Using matched TCR resistors ensures the division ratio remains rock-solid across temperature fluctuations.'
       }
     ]
   },
@@ -182,6 +198,14 @@ const TOOLS = [
       {
         q: 'Why are some SMD resistors marked with an R (e.g., 4R7)?',
         a: 'The letter R serves as a decimal point for values under 10 Ohms to prevent confusion with tiny printed dots. For example, 4R7 equals 4.7 Ohms, and 0R22 equals 0.22 Ohms.'
+      },
+      {
+        q: 'What does a 000 marking indicate on an SMD resistor?',
+        a: 'A 000 marking indicates a zero-ohm resistor (jumper). Zero-ohm resistors are used as configurable PCB jumpers, single-sided trace bridges, or current-sensing measurement points without requiring circuit board revision.'
+      },
+      {
+        q: 'Why do tiny packages like 0402 and 0201 have no printed markings?',
+        a: 'Packages smaller than 0603 (such as 0402 and 0201) are physically too small for laser marking text to remain legible. They must be identified using their carrier reel label, digital calipers, or an LCR precision meter.'
       }
     ]
   },
@@ -213,6 +237,14 @@ const TOOLS = [
       {
         q: 'Why should I derate battery capacity for IoT designs?',
         a: 'Batteries degrade due to chemistry self-discharge (1-3% per year for lithium primaries), temperature extremes, and internal resistance causing voltage droop during high-current wireless transmission bursts. A 10-20% derating factor represents practical real-world capacity.'
+      },
+      {
+        q: 'What is battery passivation in primary Lithium Thionyl Chloride (LiSOCl2) cells?',
+        a: 'LiSOCl2 cells form a passivation layer of lithium chloride crystals on the anode during prolonged storage or low-current sleep. This layer causes a brief transient voltage dip upon high-current wake-up. Placing a hybrid layer capacitor (HLC) or supercapacitor in parallel buffers transient radio peak currents.'
+      },
+      {
+        q: 'How does operating temperature affect coin cell runtime?',
+        a: 'Coin cell (CR2032) internal resistance increases dramatically at freezing temperatures (from ~10-20 Ohms at 25°C to >100 Ohms at -10°C). During 15-20 mA BLE transmission bursts, this internal resistance causes severe voltage sag below the MCU brownout threshold.'
       }
     ]
   },
@@ -275,6 +307,14 @@ const TOOLS = [
       {
         q: 'How can I get a 50% duty cycle on a standard 555 timer?',
         a: 'In a standard astable 555 timer, the duty cycle is always greater than 50% because C charges through R1+R2 and discharges through R2 only. To achieve a 50% or lower duty cycle, place a diode (like 1N4148) in parallel with R2 pointing towards the capacitor, so charging bypasses R2.'
+      },
+      {
+        q: 'What is the primary advantage of CMOS 555 timers (e.g. TLC555, LMC555) over classic NE555?',
+        a: 'Classic bipolar NE555 timers draw 3-10 mA quiescent current and generate a massive 300-400 mA supply crowbar spike during output transitions. Modern CMOS variants consume only 100-250 microamperes, operate down to 1.5V-2.0V, and produce zero supply shoot-through spikes.'
+      },
+      {
+        q: 'Why should Pin 5 (Control Voltage) be decoupled with a 10 nF capacitor?',
+        a: 'Pin 5 connects directly to the internal 2/3 Vcc resistor divider tap. Electrical noise on this node modulates the comparator switching threshold, resulting in output frequency jitter and phase noise. A 10 nF ceramic capacitor shunts high-frequency noise to ground.'
       }
     ]
   },
@@ -307,6 +347,14 @@ const TOOLS = [
       {
         q: 'What is the maximum tolerable UART clock error percentage?',
         a: 'Standard 8N1 UART frames tolerate a maximum clock mismatch of approximately &plusmn;2.5% across both communicating nodes. Beyond &plusmn;3%, the receiver sample point drifts past the stop bit margin, causing framing errors and corrupted bytes.'
+      },
+      {
+        q: 'Why are specific crystal frequencies like 11.0592 MHz or 14.7456 MHz commonly used for UART?',
+        a: 'Standard microcontroller clock frequencies (such as 8 MHz or 16 MHz) do not divide into standard baud rates (such as 9600, 19200, 115200) without integer rounding remainders. Crystals cut to integer multiples of baud rates (e.g. 11.0592 MHz = 115200 * 96) yield exactly 0.00% baud rate error across all baud speeds.'
+      },
+      {
+        q: 'How does fractional baud rate generation work in modern 32-bit MCUs (like STM32)?',
+        a: 'Modern UART peripherals incorporate a fractional baud rate register (BRR) that divides the peripheral clock by a mantissa and a fractional component (e.g. 4-bit fraction representing sixteenths). This allows sub-0.1% baud error even when running off non-standard PLL clock frequencies.'
       }
     ]
   },
@@ -334,6 +382,14 @@ const TOOLS = [
       {
         q: 'Why is 50 Ohms the universal standard for RF and high-speed traces?',
         a: 'In 1930s coaxial cable research, 30 Ohms delivered maximum power handling, while 77 Ohms minimized signal attenuation. 50 Ohms was selected as the optimal engineering compromise between power handling and insertion loss.'
+      },
+      {
+        q: 'How does solder mask coating affect microstrip characteristic impedance?',
+        a: 'Liquid photoimageable (LPI) solder mask has a relative dielectric constant (Er ~ 3.3 to 3.8) higher than air (Er = 1.0). Applying 0.5 to 1.0 mil of solder mask over a surface microstrip trace lowers its characteristic impedance by 2 to 3 Ohms compared to bare copper.'
+      },
+      {
+        q: 'What is the difference in propagation velocity between microstrip and stripline?',
+        a: 'Surface microstrip traces have an inhomogeneous dielectric medium (partly FR-4 underneath, partly air above), yielding an effective dielectric constant of ~3.1 and propagation speed of ~170 mm/ns. Embedded striplines are completely encapsulated in FR-4 (Er ~ 4.4), slowing propagation down to ~145 mm/ns.'
       }
     ]
   },

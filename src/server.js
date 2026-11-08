@@ -271,7 +271,15 @@ if (apiRoutes.handleContact) {
 // Mount Interactive Calculators
 app.use('/tools', toolsRoutes);
 
-// Mount Dynamic Technical Blog
+// Mount Dynamic Technical Blog (/blogs with backward-compatible 301 redirects for /blog)
+app.get(['/blog', '/blog/'], (req, res) => {
+  const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+  res.redirect(301, `/blogs${query}`);
+});
+app.get('/blog/:slug', (req, res) => {
+  const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+  res.redirect(301, `/blogs/${encodeURIComponent(req.params.slug)}${query}`);
+});
 app.use('/blogs', blogsRoutes);
 
 // Mount Admin Management Dashboard
@@ -407,7 +415,15 @@ app.get('/contact', (req, res) => {
 // 6. Privacy Policy
 app.get(['/privacy-policy', '/privacy'], (req, res) => {
   res.locals.seo.title = 'Privacy Policy - Embedded India';
+  res.locals.seo.description = 'Embedded India privacy policy, client IP protection standards, cookie disclosures, and Google advertising compliance.';
   res.render('pages/privacy');
+});
+
+// 7. Terms of Service & Engineering Calculator Disclaimers
+app.get(['/terms-of-service', '/terms', '/disclaimer'], (req, res) => {
+  res.locals.seo.title = 'Terms of Service & Engineering Disclaimers - Embedded India';
+  res.locals.seo.description = 'Terms of Service, engineering tool usage guidelines, IPC calculation disclaimers, and intellectual property terms for Embedded India.';
+  res.render('pages/terms');
 });
 
 // Legacy route removed - 410 Gone

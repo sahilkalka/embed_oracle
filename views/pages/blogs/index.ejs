@@ -87,8 +87,9 @@
 </div>
 <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border/60 flex items-center justify-between text-xs">
                 <span class="text-slate-400"><%= post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Draft' %></span>
-                <a href="/blogs/<%= post.slug %>" class="font-bold text-brand-500 dark:text-accent group-hover:translate-x-1 transition inline-flex items-center">
-                  Read Guide &rarr;
+                <a href="/blogs/<%= post.slug %>" class="font-bold text-brand-500 dark:text-accent group-hover:translate-x-1 transition inline-flex items-center gap-1">
+                  <span>Read Guide</span>
+                  <span class="material-symbols-rounded text-sm shrink-0 leading-none" aria-hidden="true">arrow_forward</span>
                 </a>
               </div>
             </article>
@@ -122,7 +123,7 @@
             Partner with India's specialized embedded engineering team. We deliver custom schematics, high-speed PCB layouts, and robust RTOS firmware.
           </p>
           <a href="/contact?utm_source=blog_sidebar&utm_medium=native_card&utm_campaign=engineering_promo" class="inline-flex items-center justify-center gap-2 w-full text-center mt-5 py-3 px-4 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow-md">
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">bolt</span>
             <span>Request Engineering Review &rarr;</span>
           </a>
         </div>
@@ -131,13 +132,13 @@
         <!-- Calculators Sidebar Card -->
         <div class="bg-white dark:bg-brand-surface rounded-3xl p-6 border border-slate-200 dark:border-brand-border shadow-sm">
           <h3 class="font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wider mb-4 border-b border-slate-100 dark:border-brand-border pb-2">
-            Popular Calculators
+            Popular Engineering Tools
           </h3>
           <ul class="space-y-3 text-xs font-semibold">
-            <li><a href="/tools/pcb-trace" class="text-slate-700 dark:text-slate-300 hover:text-brand-500 dark:hover:text-accent flex items-center justify-between"><span>IPC-2221 PCB Trace Width</span><span>&rarr;</span></a></li>
-            <li><a href="/tools/555-timer" class="text-slate-700 dark:text-slate-300 hover:text-brand-500 dark:hover:text-accent flex items-center justify-between"><span>555 Timer Astable/Mono</span><span>&rarr;</span></a></li>
-            <li><a href="/tools/uart-baud" class="text-slate-700 dark:text-slate-300 hover:text-brand-500 dark:hover:text-accent flex items-center justify-between"><span>UART Baud Rate Error Calc</span><span>&rarr;</span></a></li>
-            <li><a href="/tools/smd-code" class="text-slate-700 dark:text-slate-300 hover:text-brand-500 dark:hover:text-accent flex items-center justify-between"><span>SMD Resistor Decoder</span><span>&rarr;</span></a></li>
+            <li><a href="/tools/engineering-hardware/pcb-trace" class="text-slate-700 dark:text-slate-300 hover:text-brand-500 dark:hover:text-accent flex items-center justify-between"><span>IPC-2221 PCB Trace Width</span><span class="material-symbols-rounded text-xs shrink-0" aria-hidden="true">arrow_forward</span></a></li>
+            <li><a href="/tools/engineering-hardware/555-timer" class="text-slate-700 dark:text-slate-300 hover:text-brand-500 dark:hover:text-accent flex items-center justify-between"><span>555 Timer Astable/Mono</span><span class="material-symbols-rounded text-xs shrink-0" aria-hidden="true">arrow_forward</span></a></li>
+            <li><a href="/tools/engineering-hardware/uart-baud" class="text-slate-700 dark:text-slate-300 hover:text-brand-500 dark:hover:text-accent flex items-center justify-between"><span>UART Baud Rate Error Calc</span><span class="material-symbols-rounded text-xs shrink-0" aria-hidden="true">arrow_forward</span></a></li>
+            <li><a href="/tools/engineering-hardware/smd-code" class="text-slate-700 dark:text-slate-300 hover:text-brand-500 dark:hover:text-accent flex items-center justify-between"><span>SMD Resistor Decoder</span><span class="material-symbols-rounded text-xs shrink-0" aria-hidden="true">arrow_forward</span></a></li>
           </ul>
         </div>
 
