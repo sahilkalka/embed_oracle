@@ -52,6 +52,25 @@
           </a>
         </div>
 
+        <!-- Hairline Silicon Lattice Kinetic Badge -->
+        <div class="p-3.5 rounded-2xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border shadow-md backdrop-blur-sm flex items-center gap-4">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 relative overflow-hidden">
+            <hairline-figure figure="silicon-lattice" intensity="0.85" play="true" class="w-full h-full"></hairline-figure>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5 text-brand-600 dark:text-accent text-[11px] font-mono font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-ping"></span>
+              <span>SILICON CORE KINETICS</span>
+            </div>
+            <p class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white mt-0.5 truncate">
+              Hairline Isometric IC Bring-Up
+            </p>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 font-sans mt-0.5 line-clamp-1">
+              Tracks cursor vector in real-time. Automatically adapts to active theme.
+            </p>
+          </div>
+        </div>
+
         <!-- Animated Numerical Counter Metrics (Left Aligned) -->
         <div class="pt-6 border-t border-slate-200 dark:border-brand-border grid grid-cols-3 gap-4 text-left max-w-lg">
           <div>
@@ -95,36 +114,40 @@
             </div>
           </div>
 
-          <!-- Segmented Tab Navigation Bar (Full Width, Never Wraps) -->
-          <div class="mt-3.5 p-1 bg-slate-100 dark:bg-slate-900/90 rounded-xl border border-slate-200 dark:border-brand-border flex items-center w-full gap-1" id="consoleTabs" role="tablist">
-            <button type="button" data-tab="code" class="console-tab-btn flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-white dark:bg-brand-surface text-brand-600 dark:text-accent font-black text-xs shadow-xs border border-slate-200/80 dark:border-white/10 inline-flex items-center justify-center gap-1.5 transition">
+          <!-- Segmented Tab Navigation Bar (2x2 on Mobile, Full-width 4-across on Tablet & Desktop) -->
+          <div class="mt-3.5 p-1 bg-slate-100 dark:bg-slate-900/90 rounded-xl border border-slate-200 dark:border-brand-border grid grid-cols-2 md:flex md:items-center w-full gap-1.5 md:gap-1" id="consoleTabs" role="tablist">
+            <button type="button" data-tab="code" title="firmware.c (C Source Code)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-white dark:bg-brand-surface text-brand-600 dark:text-accent font-black text-xs shadow-xs border border-slate-200/80 dark:border-white/10 inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
               <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">code</span>
-              <span>firmware.c</span>
+              <span class="whitespace-nowrap truncate">firmware.c</span>
             </button>
-            <button type="button" data-tab="scope" class="console-tab-btn flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition">
+            <button type="button" data-tab="scope" title="Oscilloscope (Live Waveform)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
               <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">show_chart</span>
-              <span>Oscilloscope</span>
+              <span class="whitespace-nowrap truncate"><span class="hidden xl:inline">Oscilloscope</span><span class="xl:hidden">Scope</span></span>
             </button>
-            <button type="button" data-tab="terminal" class="console-tab-btn flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition">
+            <button type="button" data-tab="terminal" title="Serial Monitor (UART 115200)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
               <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">terminal</span>
-              <span>Serial Monitor</span>
+              <span class="whitespace-nowrap truncate">Serial</span>
+            </button>
+            <button type="button" data-tab="logic" title="Logic Probe (Digital Analyzer)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
+              <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">polyline</span>
+              <span class="whitespace-nowrap truncate"><span class="hidden xl:inline">Logic Probe</span><span class="xl:hidden">Logic</span></span>
             </button>
           </div>
 
           <!-- IDE / Terminal Body (High Contrast Dark Slate Console) -->
-          <div class="relative mt-3 rounded-2xl bg-slate-950 border border-slate-800 text-slate-200 shadow-inner overflow-hidden flex flex-col min-h-[240px]">
+          <div class="console-bench relative mt-3 rounded-2xl bg-[#030712] border border-slate-800 text-slate-200 shadow-inner overflow-hidden flex flex-col min-h-[240px]" style="background-color: #030712 !important; border-color: #1e293b !important;">
             <!-- Terminal Internal Status Bar -->
-            <div class="px-4 py-2 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <div class="console-bench-header px-4 py-2 bg-[#0b1117] border-b border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400" style="background-color: #0b1117 !important; border-color: #1e293b !important; color: #94a3b8 !important;">
               <div class="flex items-center gap-2 min-w-0">
-                <span class="material-symbols-rounded text-sm text-brand-400 shrink-0">terminal</span>
-                <span id="consoleActiveFilename" class="font-bold text-slate-300 truncate">src/bringup/main.c</span>
+                <span class="material-symbols-rounded text-sm text-brand-400 shrink-0" style="color: #38bdf8 !important;">terminal</span>
+                <span id="consoleActiveFilename" class="font-bold text-slate-300 truncate" style="color: #e2e8f0 !important;">src/bringup/main.c</span>
               </div>
-              <span class="text-[10px] text-slate-500 font-semibold shrink-0">GCC 13.2 • ARM Cortex-M</span>
+              <span class="text-[10px] text-slate-400 font-semibold shrink-0" style="color: #94a3b8 !important;">GCC 13.2 • ARM Cortex-M</span>
             </div>
 
             <!-- Tab Content 1: Code View -->
-            <div id="tabContentCode" class="p-4 font-mono text-xs leading-relaxed overflow-x-auto flex-1">
-              <pre class="whitespace-pre-wrap break-words"><code id="liveCodeSnippet" class="text-emerald-400 font-semibold">// Embedded India Hardware & Firmware Core
+            <div id="tabContentCode" class="p-4 font-mono text-xs leading-relaxed overflow-x-auto flex-1" style="background-color: #030712 !important;">
+              <pre class="whitespace-pre-wrap break-words" style="margin: 0;"><code id="liveCodeSnippet" class="text-emerald-400 font-semibold" style="color: #34d399 !important; text-shadow: 0 0 10px rgba(52, 211, 153, 0.3); display: block;">// Embedded India Hardware & Firmware Core
 void init_embedded_system(void) {
     power_rail_config(RAIL_3V3, ULTRA_LOW_NOISE);
     uart_baud_init(115200, OVERSAMPLE_16);
@@ -136,7 +159,7 @@ void init_embedded_system(void) {
             </div>
 
             <!-- Tab Content 2: Live HTML5 Canvas Oscilloscope with Multi-Signal Switcher -->
-            <div id="tabContentScope" class="p-4 hidden flex-1 flex flex-col justify-between">
+            <div id="tabContentScope" class="p-4 hidden flex-1 flex flex-col justify-between" style="background-color: #030712 !important;">
               <div class="text-[11px] font-mono text-slate-200 mb-2.5 font-bold flex flex-col min-[520px]:flex-row min-[520px]:items-center justify-between gap-2">
                 <div class="flex items-center gap-1.5 text-brand-400 min-w-0">
                   <span class="material-symbols-rounded text-sm shrink-0 text-brand-400" aria-hidden="true">insights</span>
@@ -163,14 +186,28 @@ void init_embedded_system(void) {
             </div>
 
             <!-- Tab Content 3: Serial Monitor Boot Logs -->
-            <div id="tabContentTerminal" class="p-4 hidden font-mono text-xs overflow-y-auto space-y-1.5 flex-1 max-h-[220px]">
-              <div class="text-slate-400 font-bold mb-2">// Connected to /dev/ttyUSB0 (115200 8N1)</div>
+            <div id="tabContentTerminal" class="p-4 hidden font-mono text-xs overflow-y-auto space-y-1.5 flex-1 max-h-[220px]" style="background-color: #030712 !important;">
+              <div class="text-slate-400 font-bold mb-2" style="color: #94a3b8 !important;">// Connected to /dev/ttyUSB0 (115200 8N1)</div>
               <div id="terminalLogs" class="space-y-1">
-                <div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.001s]</span> <span class="text-cyan-400 font-bold">[POWER]</span> VDD_3V3 rail nominal: 3.302V &plusmn;0.01V... <span class="text-emerald-300 font-bold">OK</span></div>
-                <div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.015s]</span> <span class="text-cyan-400 font-bold">[CLOCK]</span> 72MHz PLL locked, jitter &lt; 5ps... <span class="text-emerald-300 font-bold">OK</span></div>
-                <div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.045s]</span> <span class="text-cyan-400 font-bold">[FLASH]</span> SPI NOR Winbond 16MB verified... <span class="text-emerald-300 font-bold">OK</span></div>
-                <div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.092s]</span> <span class="text-amber-400 font-bold">[HIL]</span> Automated CAN bus fault loopback test... <span class="text-emerald-300 font-bold">PASS</span></div>
-                <div class="text-brand-400 font-bold"><span class="text-slate-500">[0.120s]</span> <span class="text-emerald-400 font-bold">[RTOS]</span> FreeRTOS kernel started. 4 tasks active.</div>
+                <div class="font-medium" style="color: #34d399 !important;"><span class="text-slate-500" style="color: #64748b !important;">[0.001s]</span> <span class="font-bold" style="color: #38bdf8 !important;">[POWER]</span> VDD_3V3 rail nominal: 3.302V &plusmn;0.01V... <span class="font-bold" style="color: #6ee7b7 !important;">OK</span></div>
+                <div class="font-medium" style="color: #34d399 !important;"><span class="text-slate-500" style="color: #64748b !important;">[0.015s]</span> <span class="font-bold" style="color: #38bdf8 !important;">[CLOCK]</span> 72MHz PLL locked, jitter &lt; 5ps... <span class="font-bold" style="color: #6ee7b7 !important;">OK</span></div>
+                <div class="font-medium" style="color: #34d399 !important;"><span class="text-slate-500" style="color: #64748b !important;">[0.045s]</span> <span class="font-bold" style="color: #38bdf8 !important;">[FLASH]</span> SPI NOR Winbond 16MB verified... <span class="font-bold" style="color: #6ee7b7 !important;">OK</span></div>
+                <div class="font-medium" style="color: #34d399 !important;"><span class="text-slate-500" style="color: #64748b !important;">[0.092s]</span> <span class="font-bold" style="color: #fbbf24 !important;">[HIL]</span> Automated CAN bus fault loopback test... <span class="font-bold" style="color: #6ee7b7 !important;">PASS</span></div>
+                <div class="font-bold" style="color: #38bdf8 !important;"><span class="text-slate-500" style="color: #64748b !important;">[0.120s]</span> <span class="font-bold" style="color: #34d399 !important;">[RTOS]</span> FreeRTOS kernel started. 4 tasks active.</div>
+              </div>
+            </div>
+
+            <!-- Tab Content 4: Hairline Isometric Logic Analyzer -->
+            <div id="tabContentLogic" class="p-3 hidden flex-1 flex flex-col justify-between" style="background-color: #030712 !important;">
+              <div class="text-[11px] font-mono text-slate-200 mb-2 font-bold flex flex-wrap items-center justify-between gap-1">
+                <div class="flex items-center gap-1.5 text-brand-400 min-w-0">
+                  <span class="material-symbols-rounded text-sm shrink-0 text-brand-400" aria-hidden="true">insights</span>
+                  <span>SPI / I2C Dual Phosphor Hairline (60 FPS)</span>
+                </div>
+                <span class="text-[10px] text-slate-400 font-mono">Cursor-Responsive Sweep</span>
+              </div>
+              <div class="h-44 w-full rounded-xl bg-slate-900/60 border border-slate-800 relative overflow-hidden" style="background-color: #030712 !important; border-color: #1e293b !important;">
+                <hairline-figure figure="phosphor-analyzer" intensity="0.85" play="true" class="w-full h-full"></hairline-figure>
               </div>
             </div>
           </div>
@@ -841,42 +878,55 @@ void init_embedded_system(void) {
       </div>
 
       <!-- Right Result: Live Dynamic Calculation Card -->
-      <div class="lg:col-span-5 bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-lg space-y-6">
+      <div class="lg:col-span-5 bg-white dark:bg-slate-800 rounded-3xl p-5 sm:p-7 border border-slate-200 dark:border-slate-700 shadow-lg space-y-4 flex flex-col justify-between">
         
-        <div class="space-y-1 pb-4 border-b border-slate-100 dark:border-slate-700">
+        <!-- Turnaround Header -->
+        <div class="space-y-1 pb-3 border-b border-slate-100 dark:border-slate-700/80">
           <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block">Forecasted Turnaround</span>
-          <div class="flex items-baseline space-x-2">
-            <span id="estTimelineOutput" class="text-3xl sm:text-4xl font-black text-brand-600 dark:text-accent font-mono">3 - 4 Weeks</span>
+          <div class="flex items-baseline min-w-0">
+            <span id="estTimelineOutput" class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-accent font-mono tracking-tight truncate">3 - 4 Weeks</span>
           </div>
-          <p id="estComplexityOutput" class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Standard MCU Architecture</p>
+          <p id="estComplexityOutput" class="text-xs text-slate-500 dark:text-slate-400 font-semibold truncate">Standard MCU Architecture</p>
         </div>
 
-        <!-- Deliverables Checklist -->
-        <div class="space-y-2">
+        <!-- Milestone Deliverables -->
+        <div class="space-y-1.5">
           <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block">Milestone Deliverables</span>
-          <ul id="estDeliverablesList" class="space-y-1.5 text-xs text-slate-700 dark:text-slate-200 font-medium">
-            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>Schematic Capture &amp; Component Sourcing</span></li>
-            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>Multi-Layer Controlled Impedance Layout</span></li>
-            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>First-Pass Prototypes (Third-Party SMT 3-5 Boards)</span></li>
+          <ul id="estDeliverablesList" class="space-y-1 text-xs text-slate-700 dark:text-slate-200 font-medium">
+            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold shrink-0">✓</span><span class="truncate">Schematic Capture &amp; Component Sourcing</span></li>
+            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold shrink-0">✓</span><span class="truncate">Multi-Layer Controlled Impedance Layout</span></li>
+            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold shrink-0">✓</span><span class="truncate">First-Pass Prototypes (SMT 3-5 Boards)</span></li>
           </ul>
         </div>
 
-        <!-- Team Composition -->
-        <div class="p-3.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl text-xs space-y-1 border border-slate-200/60 dark:border-slate-700/60">
-          <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block">Dedicated Engineering Pod</span>
-          <p id="estTeamOutput" class="font-bold text-slate-800 dark:text-slate-200 text-xs">
-            1 Senior Hardware Architect &bull; 1 Firmware / UI Specialist &bull; 1 Prototype Test Engineer
-          </p>
+        <!-- Dedicated Pod (Streamlined Clean Row) -->
+        <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-700/60 text-xs">
+          <span class="material-symbols-rounded text-base text-brand-500 dark:text-accent shrink-0 mt-0.5" aria-hidden="true">groups</span>
+          <div class="min-w-0 flex-1">
+            <span class="text-[9px] uppercase font-bold text-slate-400 dark:text-slate-500 block leading-none mb-1">Dedicated Engineering Pod</span>
+            <p id="estTeamOutput" class="font-bold text-slate-800 dark:text-slate-200 text-xs leading-snug">
+              1 Senior Hardware Architect &bull; 1 Firmware / UI Specialist &bull; 1 Prototype Test Engineer
+            </p>
+          </div>
+        </div>
+
+        <!-- Hairline Exploded Hardware Stack Visualizer (Compact & Sleek) -->
+        <div class="h-32 sm:h-36 w-full bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 p-2 relative overflow-hidden shadow-inner">
+          <div class="absolute top-2 left-3 text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5 z-10 pointer-events-none">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <span>Layer Exploded Architecture</span>
+          </div>
+          <hairline-figure figure="exploded-stack" intensity="0.8" play="true" class="w-full h-full"></hairline-figure>
         </div>
 
         <!-- Lock-In & Request Quote CTA -->
-        <div class="pt-2">
-          <a id="estQuoteCta" href="/contact?service=Hardware%20Design&amp;subject=Scope%20estimate%3A%203%20-%204%20Weeks&amp;estimate-timeline=3%20-%204%20Weeks&amp;estimate-complexity=Standard%20MCU%20Architecture&amp;estimate-compliance=Commercial%20MVP&amp;estimate-team=1%20Principal%20Hardware%20Architect%20%E2%80%A2%201%20Firmware%20Engineer%20%E2%80%A2%201%20DFM%20Specialist&amp;estimate-deliverables=Schematic%20Capture%20%26%20Component%20Sourcing%3B%20Multi-Layer%20Controlled%20Impedance%20Layout%3B%20First-Pass%20SMT%20Prototypes%20%285%20Assemblies%29" class="btn-shimmer w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand-600 to-accent text-white font-black rounded-xl text-sm shadow-lg shadow-brand-500/25 active:scale-95 transition">
+        <div class="pt-1">
+          <a id="estQuoteCta" href="/contact?service=Hardware%20Design&amp;subject=Scope%20estimate%3A%203%20-%204%20Weeks&amp;estimate-timeline=3%20-%204%20Weeks&amp;estimate-complexity=Standard%20MCU%20Architecture&amp;estimate-compliance=Commercial%20MVP&amp;estimate-team=1%20Principal%20Hardware%20Architect%20%E2%80%A2%201%20Firmware%20Engineer%20%E2%80%A2%201%20DFM%20Specialist&amp;estimate-deliverables=Schematic%20Capture%20%26%20Component%20Sourcing%3B%20Multi-Layer%20Controlled%20Impedance%20Layout%3B%20First-Pass%20SMT%20Prototypes%20%285%20Assemblies%29" class="btn-shimmer w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-brand-600 to-accent text-white font-black rounded-xl text-sm shadow-lg shadow-brand-500/25 active:scale-95 transition">
             <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">call</span>
             <span>Discuss this estimate with an engineer</span>
             <span aria-hidden="true">&rarr;</span>
           </a>
-          <p id="estimator-status" role="status" aria-live="polite" class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 mt-2">Planning estimate only; final scope and timeline are confirmed after engineering review.</p>
+          <p id="estimator-status" role="status" aria-live="polite" class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 mt-1.5 text-center">Planning estimate only; confirmed after engineering review.</p>
         </div>
 
       </div>
@@ -972,6 +1022,15 @@ void init_embedded_system(void) {
       <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">
         What technology leaders and engineering directors say about partnering with Embedded India.
       </p>
+
+      <!-- Hairline Turntable Inspection Pedestal -->
+      <div class="mt-8 mb-2 max-w-sm mx-auto h-44 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-2 shadow-sm dark:shadow-lg relative overflow-hidden">
+        <div class="absolute top-2 left-3 text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5 z-10">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+          Turnkey Enclosure Inspection (Hairline Turntable)
+        </div>
+        <hairline-figure figure="turntable-inspection" intensity="0.75" play="true" class="w-full h-full"></hairline-figure>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1303,8 +1362,9 @@ int ddr3_phy_training(void) {
   const tabCode = document.getElementById('tabContentCode');
   const tabScope = document.getElementById('tabContentScope');
   const tabTerm = document.getElementById('tabContentTerminal');
-  const ACTIVE_TAB_CLS = 'console-tab-btn flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-white dark:bg-brand-surface text-brand-600 dark:text-accent font-black text-xs shadow-xs border border-slate-200/80 dark:border-white/10 inline-flex items-center justify-center gap-1.5 transition';
-  const INACTIVE_TAB_CLS = 'console-tab-btn flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition';
+  const tabLogic = document.getElementById('tabContentLogic');
+  const ACTIVE_TAB_CLS = 'console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-white dark:bg-brand-surface text-brand-600 dark:text-accent font-black text-xs shadow-xs border border-slate-200/80 dark:border-white/10 inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden';
+  const INACTIVE_TAB_CLS = 'console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden';
 
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1314,23 +1374,26 @@ int ddr3_phy_training(void) {
       });
       btn.className = ACTIVE_TAB_CLS;
 
-      tabCode.classList.add('hidden');
-      tabScope.classList.add('hidden');
-      tabTerm.classList.add('hidden');
+      if (tabCode) tabCode.classList.add('hidden');
+      if (tabScope) tabScope.classList.add('hidden');
+      if (tabTerm) tabTerm.classList.add('hidden');
+      if (tabLogic) tabLogic.classList.add('hidden');
 
       const fnEl = document.getElementById('consoleActiveFilename');
       if (fnEl) {
         if (target === 'code') fnEl.textContent = 'src/bringup/main.c';
         if (target === 'scope') fnEl.textContent = 'rigol_ds1054z.ch1';
         if (target === 'terminal') fnEl.textContent = '/dev/ttyUSB0 (115200 8N1)';
+        if (target === 'logic') fnEl.textContent = 'saleae_logic_pro16.spi';
       }
 
-      if (target === 'code') tabCode.classList.remove('hidden');
-      if (target === 'scope') {
+      if (target === 'code' && tabCode) tabCode.classList.remove('hidden');
+      if (target === 'scope' && tabScope) {
         tabScope.classList.remove('hidden');
         startOscilloscope();
       }
-      if (target === 'terminal') tabTerm.classList.remove('hidden');
+      if (target === 'terminal' && tabTerm) tabTerm.classList.remove('hidden');
+      if (target === 'logic' && tabLogic) tabLogic.classList.remove('hidden');
     });
   });
 

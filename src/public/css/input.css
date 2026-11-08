@@ -874,21 +874,24 @@ pre code.hljs {
     gap: 12px;
   }
   .public-shell #consoleTabs {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    gap: 4px;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    gap: 6px !important;
     margin: 0;
   }
   .public-shell #consoleTabs .console-tab-btn {
     margin: 0;
     padding: 6px 8px;
-    min-width: max-content;
-    min-height: 44px;
-    flex: 0 0 auto;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 40px !important;
+    flex: 1 1 0% !important;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
     gap: 6px;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.25;
     white-space: nowrap;
     overflow-wrap: normal;
@@ -1191,7 +1194,7 @@ html.dark .ui-shell :is(.dark\:bg-slate-900, .dark\:bg-\[\#111e26\], .dark\:bg-\
 html.dark .ui-shell :is(.dark\:bg-brand-dark, .dark\:bg-slate-800, .dark\:bg-slate-800\/80, .dark\:bg-slate-900\/70, .dark\:bg-slate-900\/90, .dark\:bg-slate-950, .dark\:bg-slate-950\/40, .dark\:bg-slate-950\/50, .dark\:bg-\[\#0c161c\], .dark\:bg-\[\#091217\], .dark\:bg-\[\#070e12\], .dark\:bg-\[\#070e12\]\/60, .bg-\[\#0c161c\], .bg-\[\#070e12\], .bg-slate-950:not(body), .hero-console-panel) {
   background-color: var(--admin-bg-subtle) !important;
 }
-.ui-shell :is(.bg-slate-800, .bg-slate-900):not(body):not(footer):not(aside):not(section):not(.schematic-well) {
+.ui-shell :is(.bg-slate-800, .bg-slate-900):not(body):not(footer):not(aside):not(section):not(.schematic-well):not(.console-bench):not(.console-bench *):not(#hero-console *) {
   background-color: var(--admin-bg-subtle) !important;
   color: var(--admin-accent-text) !important;
   border: 1px solid var(--admin-border) !important;
@@ -1341,31 +1344,54 @@ html body.ui-shell :is(input:not([type="checkbox"]):not([type="radio"]):not([typ
 .appearance-current-color { background: var(--readable-primary, #00664c); }
 
 /* Brand tints (50-400) are background tints; as text they use the readable accent. */
-.ui-shell :is(.text-brand-100, .text-brand-200, .text-brand-300, .text-brand-400, .text-emerald-300, .text-emerald-400, .text-accent-light):not(:where([class*="bg-brand-5"], [class*="bg-brand-6"], [class*="bg-brand-7"], [class*="bg-gradient-to-"], .bg-accent) *) {
+.ui-shell :is(.text-brand-100, .text-brand-200, .text-brand-300, .text-brand-400, .text-emerald-300, .text-emerald-400, .text-accent-light):not(:where([class*="bg-brand-5"], [class*="bg-brand-6"], [class*="bg-brand-7"], [class*="bg-gradient-to-"], .bg-accent, .console-bench, .console-bench *, #hero-console *) *) {
   color: var(--readable-primary, #00664c);
 }
 /* Status hues map to mode-aware semantic tokens. */
-.ui-shell :is(.text-red-400, .text-red-500, .text-red-600, .text-rose-400, .text-rose-500, .text-rose-600, [class*="text-red-500/"]):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"], .bg-red-500, .bg-red-600) *) { color: var(--danger-text, #b91c1c); }
-.ui-shell :is(.text-amber-400, .text-amber-500, .text-amber-600, .text-yellow-400, .text-yellow-500, .text-orange-400, .text-orange-500):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"]) *) { color: var(--warning-text, #92400e); }
-.ui-shell :is(.text-blue-400, .text-blue-500, .text-blue-600, .text-sky-400, .text-sky-500, .text-indigo-400):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"]) *) { color: var(--info-text, #1d4ed8); }
-.ui-shell :is(.text-purple-400, .text-purple-500, .text-violet-400, .text-violet-500, .text-pink-400):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"]) *) { color: var(--violet-text, #6d28d9); }
-.ui-shell :is(.text-cyan-400, .text-cyan-500, .text-cyan-600, .text-teal-400):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"]) *) { color: var(--cyan-text, #155e75); }
-.ui-shell :is(.text-green-400, .text-green-500, .text-green-600, .text-lime-400, [class*="text-emerald-500/"], [class*="text-emerald-600/"], [class*="text-emerald-400/"]):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"]) *) { color: var(--success-text, #065f46); }
+.ui-shell :is(.text-red-400, .text-red-500, .text-red-600, .text-rose-400, .text-rose-500, .text-rose-600, [class*="text-red-500/"]):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"], .bg-red-500, .bg-red-600, .console-bench, .console-bench *, #hero-console *) *) { color: var(--danger-text, #b91c1c); }
+.ui-shell :is(.text-amber-400, .text-amber-500, .text-amber-600, .text-yellow-400, .text-yellow-500, .text-orange-400, .text-orange-500):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"], .console-bench, .console-bench *, #hero-console *) *) { color: var(--warning-text, #92400e); }
+.ui-shell :is(.text-blue-400, .text-blue-500, .text-blue-600, .text-sky-400, .text-sky-500, .text-indigo-400):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"], .console-bench, .console-bench *, #hero-console *) *) { color: var(--info-text, #1d4ed8); }
+.ui-shell :is(.text-purple-400, .text-purple-500, .text-violet-400, .text-violet-500, .text-pink-400):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"], .console-bench, .console-bench *, #hero-console *) *) { color: var(--violet-text, #6d28d9); }
+.ui-shell :is(.text-cyan-400, .text-cyan-500, .text-cyan-600, .text-teal-400):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"], .console-bench, .console-bench *, #hero-console *) *) { color: var(--cyan-text, #155e75); }
+.ui-shell :is(.text-green-400, .text-green-500, .text-green-600, .text-lime-400, [class*="text-emerald-500/"], [class*="text-emerald-600/"], [class*="text-emerald-400/"]):not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"], .console-bench, .console-bench *, #hero-console *) *) { color: var(--success-text, #065f46); }
 
 /* Dark-styled panels (solid or translucent slate) become light panels in light mode. */
-html:not(.dark) .ui-shell :is([class*="bg-slate-800/"], [class*="bg-slate-900/"], [class*="bg-slate-950/"]):not(body, footer, aside, section, [class*="bg-black/"]) {
+html:not(.dark) .ui-shell :is([class*="bg-slate-800/"], [class*="bg-slate-900/"], [class*="bg-slate-950/"]):not(body, footer, aside, section, [class*="bg-black/"], .console-bench, .console-bench *, #hero-console *) {
   background-color: var(--admin-bg-panel, #ffffff) !important;
 }
-html:not(.dark) .ui-shell :is(.border-slate-700, .border-slate-800, [class*="border-slate-700/"], [class*="border-slate-800/"]) {
+html:not(.dark) .ui-shell :is(.border-slate-700, .border-slate-800, [class*="border-slate-700/"], [class*="border-slate-800/"]):not(.console-bench, .console-bench *, #hero-console *) {
   border-color: var(--border-color, #e2e8f0) !important;
 }
-html:not(.dark) .ui-shell :is(.bg-slate-800, .bg-slate-900, [class*="bg-slate-800/"], [class*="bg-slate-900/"]):not(body, footer, aside, section) :is(.text-white, .text-slate-50, .text-slate-100, .text-slate-200):not(:where([class*="bg-brand-"], [class*="bg-emerald-"], [class*="bg-red-"], [class*="bg-blue-"], [class*="bg-gradient-to-"], button, a[class*="bg-"]), :where([class*="bg-brand-5"], [class*="bg-brand-6"], [class*="bg-emerald-6"], [class*="bg-gradient-to-"], button, a[class*="bg-"]) *) {
+html:not(.dark) .ui-shell :is(.bg-slate-800, .bg-slate-900, [class*="bg-slate-800/"], [class*="bg-slate-900/"]):not(body, footer, aside, section, .console-bench, .console-bench *, #hero-console *) :is(.text-white, .text-slate-50, .text-slate-100, .text-slate-200):not(:where([class*="bg-brand-"], [class*="bg-emerald-"], [class*="bg-red-"], [class*="bg-blue-"], [class*="bg-gradient-to-"], button, a[class*="bg-"]), :where([class*="bg-brand-5"], [class*="bg-brand-6"], [class*="bg-emerald-6"], [class*="bg-gradient-to-"], button, a[class*="bg-"]) *) {
   color: var(--text-primary, #0f172a) !important;
 }
-html:not(.dark) .ui-shell .text-slate-300:not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"], .bg-black, [class*="bg-black/"]) *) { color: var(--text-muted, #475569); }
+html:not(.dark) .ui-shell .text-slate-300:not(:where([class*="bg-brand-5"], [class*="bg-gradient-to-"], .bg-black, [class*="bg-black/"], .console-bench, .console-bench *, #hero-console *) *) { color: var(--text-muted, #475569); }
 
-/* Schematic diagrams keep their dark bench well in both modes (SVG labels are tuned for it). */
+/* Schematic diagrams & Bring-Up Console keep their dark bench well in both modes */
 .ui-shell .schematic-well { background-color: #0f172a; }
+.ui-shell .console-bench,
+.public-shell #hero-console .console-bench {
+  background-color: #030712 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+.ui-shell .console-bench-header,
+.public-shell #hero-console .console-bench-header {
+  background-color: #0b1117 !important;
+  border-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+.public-shell #hero-console #liveCodeSnippet {
+  color: #34d399 !important;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.3);
+  font-weight: 600 !important;
+}
+.public-shell #consoleTabs .console-tab-btn {
+  white-space: nowrap !important;
+}
+.public-shell #consoleTabs .console-tab-btn span {
+  white-space: nowrap !important;
+}
 
 /* Light-tint copy on brand fills: use the on-primary token at full strength. */
 .ui-shell :is([class*="bg-brand-5"], [class*="bg-brand-6"], .bg-emerald-600, [class*="from-brand-"]) :is(.opacity-70, .opacity-75, .opacity-80, .opacity-90):is(span, p, small) { opacity: 1; }
