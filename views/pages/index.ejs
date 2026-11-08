@@ -63,7 +63,7 @@
               <span>SILICON CORE KINETICS</span>
             </div>
             <p class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white mt-0.5 truncate">
-              Hairline Isometric IC Bring-Up
+              Interactive Isometric IC Bring-Up
             </p>
             <p class="text-[11px] text-slate-600 dark:text-slate-300 font-sans mt-0.5 line-clamp-1">
               Tracks cursor vector in real-time. Automatically adapts to active theme.
@@ -116,19 +116,19 @@
 
           <!-- Segmented Tab Navigation Bar (2x2 on Mobile, Full-width 4-across on Tablet & Desktop) -->
           <div class="mt-3.5 p-1 bg-slate-100 dark:bg-slate-900/90 rounded-xl border border-slate-200 dark:border-brand-border grid grid-cols-2 md:flex md:items-center w-full gap-1.5 md:gap-1" id="consoleTabs" role="tablist">
-            <button type="button" data-tab="code" title="firmware.c (C Source Code)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-white dark:bg-brand-surface text-brand-600 dark:text-accent font-black text-xs shadow-xs border border-slate-200/80 dark:border-white/10 inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
+            <button id="tabBtnCode" type="button" role="tab" aria-selected="true" aria-controls="tabContentCode" data-tab="code" title="firmware.c (C Source Code)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-white dark:bg-brand-surface text-brand-600 dark:text-accent font-black text-xs shadow-xs border border-slate-200/80 dark:border-white/10 inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
               <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">code</span>
               <span class="whitespace-nowrap truncate">firmware.c</span>
             </button>
-            <button type="button" data-tab="scope" title="Oscilloscope (Live Waveform)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
+            <button id="tabBtnScope" type="button" role="tab" aria-selected="false" aria-controls="tabContentScope" data-tab="scope" title="Oscilloscope (Live Waveform)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
               <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">show_chart</span>
               <span class="whitespace-nowrap truncate"><span class="hidden xl:inline">Oscilloscope</span><span class="xl:hidden">Scope</span></span>
             </button>
-            <button type="button" data-tab="terminal" title="Serial Monitor (UART 115200)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
+            <button id="tabBtnTerm" type="button" role="tab" aria-selected="false" aria-controls="tabContentTerminal" data-tab="terminal" title="Serial Monitor (UART 115200)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
               <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">terminal</span>
               <span class="whitespace-nowrap truncate">Serial</span>
             </button>
-            <button type="button" data-tab="logic" title="Logic Probe (Digital Analyzer)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
+            <button id="tabBtnLogic" type="button" role="tab" aria-selected="false" aria-controls="tabContentLogic" data-tab="logic" title="Logic Probe (Digital Analyzer)" class="console-tab-btn w-full md:flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition whitespace-nowrap overflow-hidden">
               <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">polyline</span>
               <span class="whitespace-nowrap truncate"><span class="hidden xl:inline">Logic Probe</span><span class="xl:hidden">Logic</span></span>
             </button>
@@ -202,7 +202,7 @@ void init_embedded_system(void) {
               <div class="text-[11px] font-mono text-slate-200 mb-2 font-bold flex flex-wrap items-center justify-between gap-1">
                 <div class="flex items-center gap-1.5 text-brand-400 min-w-0">
                   <span class="material-symbols-rounded text-sm shrink-0 text-brand-400" aria-hidden="true">insights</span>
-                  <span>SPI / I2C Dual Phosphor Hairline (60 FPS)</span>
+                  <span>SPI / I2C Dual Phosphor Analyzer (60 FPS)</span>
                 </div>
                 <span class="text-[10px] text-slate-400 font-mono">Cursor-Responsive Sweep</span>
               </div>
@@ -1027,7 +1027,7 @@ void init_embedded_system(void) {
       <div class="mt-8 mb-2 max-w-sm mx-auto h-44 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-2 shadow-sm dark:shadow-lg relative overflow-hidden">
         <div class="absolute top-2 left-3 text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5 z-10">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-          Turnkey Enclosure Inspection (Hairline Turntable)
+          Turnkey Enclosure &amp; Mechanical Inspection
         </div>
         <hairline-figure figure="turntable-inspection" intensity="0.75" play="true" class="w-full h-full"></hairline-figure>
       </div>
@@ -1371,8 +1371,10 @@ int ddr3_phy_training(void) {
       const target = btn.getAttribute('data-tab');
       tabBtns.forEach(b => {
         b.className = INACTIVE_TAB_CLS;
+        b.setAttribute('aria-selected', 'false');
       });
       btn.className = ACTIVE_TAB_CLS;
+      btn.setAttribute('aria-selected', 'true');
 
       if (tabCode) tabCode.classList.add('hidden');
       if (tabScope) tabScope.classList.add('hidden');

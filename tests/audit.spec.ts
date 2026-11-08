@@ -47,6 +47,8 @@ const ENABLED_CHECKS = new Set<string>([
   'IMG_DISTORTED',     // stretched image
   'PAGE_OVERFLOW',     // whole page scrolls sideways
   'BOTTOM_BAR_COVER',  // footer hidden behind bottom nav
+  'CODE_BACKGROUND_CLIP', // code block background truncated / half-missing on horizontal scroll
+  'MOBILE_OVERFLOW_SCROLL', // mobile horizontal scrollbar on non-whitelisted elements
   // 'TEXT_CLIPPED_V',
   // 'TEXT_ELLIPSIS',
   // 'TEXT_SQUEEZED',
@@ -78,6 +80,8 @@ const VISUAL_CATEGORY: Record<string, string> = {
   TOUCH_TARGET:    'Mobile UX: Touch target',
   PAGE_OVERFLOW:   'Responsive: Page scrolls sideways',
   BOTTOM_BAR_COVER:'Visual: Content under fixed bar',
+  CODE_BACKGROUND_CLIP: 'Visual: Code block background truncated',
+  MOBILE_OVERFLOW_SCROLL: 'Visual: Unintended horizontal scroll',
 };
 
 // ---------------------------------------------------------------------------
@@ -525,6 +529,48 @@ const visualScan = (args: { scope: string | null; isTouch: boolean; fixedOnly: b
       if (!inlineInText && (r.width < 32 || r.height < 32)) {
         push(el, 'TOUCH_TARGET', 'Medium', `Touch target only ${Math.round(r.width)}x${Math.round(r.height)}px`,
           'Increase padding or add min-h-[44px] min-w-[44px] on touch devices.');
+      }
+    }
+
+    // 9b. Code block background clipping / missing background during horizontal scroll
+    if (el.tagName === 'PRE') {
+      const codeChild = el.querySelector('code');
+      const isScrollable = el.scrollWidth > el.clientWidth + 4;
+      if (isScrollable) {
+        const preBg = cs.backgroundColor;
+        const codeCs = codeChild ? getComputedStyle(codeChild) : null;
+        const codeBg = codeCs ? codeCs.backgroundColor : 'rgba(0, 0, 0, 0)';
+        const isPreTransparent = preBg === 'rgba(0, 0, 0, 0)' || preBg === 'transparent';
+        const isCodeTransparent = codeBg === 'rgba(0, 0, 0, 0)' || codeBg === 'transparent';
+
+        if (codeChild && !isCodeTransparent && isPreTransparent) {
+          const codeWidth = codeChild.getBoundingClientRect().width;
+          if (codeWidth < el.scrollWidth - 8) {
+            push(el, 'CODE_BACKGROUND_CLIP', 'High',
+              `Code snippet background only covers ${Math.round(codeWidth)}px out of ${el.scrollWidth}px scroll width`,
+              'Add min-w-full w-max block to the <code> element and ensure <pre> has the matching background color.');
+          }
+        } else if (isPreTransparent && isCodeTransparent) {
+          push(el, 'CODE_BACKGROUND_CLIP', 'Low',
+            `Scrollable code snippet lacks background fill, text will blend into container`,
+            'Add explicit background color (e.g. bg-[#282c34]) to <pre> and <code>.');
+        }
+      }
+    }
+
+    // 9c. Unintended horizontal scroll container on mobile
+    if (args.isTouch) {
+      const hasHScroll = (cs.overflowX === 'auto' || cs.overflowX === 'scroll') && el.scrollWidth > el.clientWidth + 6;
+      if (hasHScroll) {
+        const isAllowedScroll = el.tagName === 'PRE' || el.tagName === 'TABLE' ||
+          el.classList.contains('prose') || el.closest('pre, table') ||
+          el.getAttribute('role') === 'region' || el.getAttribute('data-scrollable') === 'true' ||
+          el.classList.contains('overflow-x-auto') || el.classList.contains('tabs-nav');
+        if (!isAllowedScroll && el.tagName !== 'HTML' && el.tagName !== 'BODY') {
+          push(el, 'MOBILE_OVERFLOW_SCROLL', 'Medium',
+            `Element <${el.tagName.toLowerCase()}> has accidental horizontal scroll (${el.scrollWidth}px content in ${el.clientWidth}px container)`,
+            'Prevent text wrap overflow or set max-w-full and break-words.');
+        }
       }
     }
   }

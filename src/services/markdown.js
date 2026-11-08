@@ -19,7 +19,7 @@ marked.use({
     code({ text, lang }) {
       const language = hljs.getLanguage(lang) ? lang : 'plaintext';
       const highlighted = hljs.highlight(text, { language }).value;
-      return `<pre tabindex="0" role="region" aria-label="Scrollable code example" class="max-w-full overflow-x-auto"><code class="hljs language-${language}">${highlighted}</code></pre>`;
+      return `<div class="code-block-wrapper my-6 max-w-full rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-white/10"><div class="code-block-header px-4 py-2 bg-slate-900 border-b border-slate-800 text-[10px] font-mono text-slate-400 flex items-center justify-between"><span class="font-bold text-slate-300 uppercase">${language}</span><span class="text-[9px] text-slate-500">Scrollable</span></div><pre tabindex="0" role="region" aria-label="Code snippet" class="max-w-full overflow-x-auto bg-[#282c34] m-0 p-0 text-xs sm:text-sm"><code class="hljs language-${language} block min-w-full w-max p-4 bg-[#282c34] text-slate-200">${highlighted}</code></pre></div>`;
     },
     table(token) {
       let header = '';

@@ -824,9 +824,17 @@ html.dark .ui-shell :is(.bg-slate-900, .bg-slate-950, .bg-slate-800, .bg-brand-9
   overflow-wrap: break-word !important;
   word-wrap: break-word !important;
 }
-.prose pre {
+.prose pre,
+pre:has(> code.hljs),
+pre[class*="overflow-x-"] {
+  background-color: #282c34 !important;
+  border-radius: 0.875rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   max-width: 100% !important;
   overflow-x: auto !important;
+  padding: 0 !important;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+  -webkit-overflow-scrolling: touch;
 }
 .prose table {
   display: block !important;
@@ -839,9 +847,30 @@ html.dark .ui-shell :is(.bg-slate-900, .bg-slate-950, .bg-slate-800, .bg-brand-9
 }
 .prose pre code,
 pre code.hljs {
+  display: block !important;
+  min-width: 100% !important;
+  width: max-content !important;
+  box-sizing: border-box !important;
   overflow-x: visible !important;
   white-space: pre !important;
   word-break: normal !important;
+  background-color: #282c34 !important;
+  padding: 1rem 1.25rem !important;
+}
+.prose pre::-webkit-scrollbar {
+  height: 6px;
+}
+.prose pre::-webkit-scrollbar-track {
+  background: #1e2227;
+  border-bottom-left-radius: 0.875rem;
+  border-bottom-right-radius: 0.875rem;
+}
+.prose pre::-webkit-scrollbar-thumb {
+  background: #4b5263;
+  border-radius: 9999px;
+}
+.prose pre::-webkit-scrollbar-thumb:hover {
+  background: #5c6370;
 }
 .hljs-comment,
 .hljs-quote {
