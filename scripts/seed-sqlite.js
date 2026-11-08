@@ -628,9 +628,9 @@ A production gateway must never become a brick during over-the-air (OTA) updates
 \`\`\`bash
 # U-Boot Environment Script for Fail-Safe A/B Booting
 setenv bootcmd '
-  if test ${bootcount} -gt 3; then
+  if test \${bootcount} -gt 3; then
     echo "Boot failed 3 times! Rolling back to alternate bank...";
-    if test ${active_bank} = "A"; then
+    if test \${active_bank} = "A"; then
       setenv active_bank "B";
     else
       setenv active_bank "A";
