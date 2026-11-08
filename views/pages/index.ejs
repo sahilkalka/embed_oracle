@@ -19,7 +19,7 @@
         <!-- Live Status Pill with Floating Levitation Animation (High Contrast) -->
         <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white dark:bg-brand-surface border border-slate-300 dark:border-brand-border text-slate-900 dark:text-white text-xs sm:text-sm font-black shadow-md backdrop-blur-md animate-float-slow">
           <span class="w-2.5 h-2.5 rounded-full bg-accent animate-ping"></span>
-          <span>India's End-to-End Embedded System Design &amp; Firmware Lab</span>
+          <span>Freelance Embedded Hardware, Firmware, UI/HMI &amp; Prototype Testing Collective</span>
         </div>
 
         <!-- Big Punchy Title with Animated Rotating Typewriter Text -->
@@ -32,13 +32,13 @@
           </h1>
           <!-- Animated Typewriter Display (Left Aligned & High Contrast) -->
           <div class="min-h-[2.5rem] sm:min-h-[3rem] flex flex-wrap items-center justify-start text-2xl sm:text-4xl leading-[1.2] sm:leading-[1.2] font-extrabold text-slate-900 dark:text-white font-mono">
-            <span id="typewriterTarget" class="text-brand-500 dark:text-accent font-black">High-Speed PCB Layouts</span>
+            <span id="typewriterTarget" class="text-brand-500 dark:text-accent font-black">High-Speed PCB Hardware</span>
             <span class="animate-cursor-blink text-brand-500 dark:text-accent ml-1 font-black">_</span>
           </div>
         </div>
 
         <p class="text-base sm:text-lg text-slate-700 dark:text-slate-200 max-w-2xl font-semibold leading-relaxed text-left">
-          <%= settings.hero_description || 'From early napkin architecture and high-speed PCB layouts to deterministic RTOS firmware, HIL automated testing, and volume SMT manufacturing.' %>
+          <%= settings.hero_description || 'We are a collective of freelance embedded specialists delivering end-to-end design, development, testing, and prototyping. Hardware design, deterministic RTOS firmware, TouchGFX & Qt UI/HMI, and bench verification on fixed-bid or hourly/daily billing.' %>
         </p>
 
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 pt-1">
@@ -46,66 +46,14 @@
             <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">call</span>
             <span>Request a free discovery call</span>
           </a>
-          <a href="/tools" class="w-full sm:w-auto px-7 py-3.5 bg-white dark:bg-brand-surface hover:bg-slate-100 dark:hover:bg-brand-dark text-slate-900 dark:text-white font-extrabold rounded-xl border border-slate-300 dark:border-brand-border transition shadow-sm text-center inline-flex items-center justify-center gap-2 text-sm active:scale-95">
-            <span>Explore Tools</span>
-            <span class="text-[10px] text-emerald-800 dark:text-emerald-300 font-black uppercase">38+ Tools</span>
+          <a href="/services" class="w-full sm:w-auto px-7 py-3.5 bg-white dark:bg-brand-surface hover:bg-slate-100 dark:hover:bg-brand-dark text-slate-900 dark:text-white font-extrabold rounded-xl border border-slate-300 dark:border-brand-border transition shadow-sm text-center inline-flex items-center justify-center gap-2 text-sm active:scale-95">
+            <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">memory</span>
+            <span>Explore Services</span>
           </a>
         </div>
 
-        <!-- Interactive Archetype Selector Pills (High Contrast, Left Aligned) -->
-        <div class="pt-2 text-left">
-          <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 block mb-2.5">
-            Select an engineering domain to inspect real-world architecture:
-          </span>
-          <div class="flex flex-wrap items-center justify-start gap-2 text-xs font-bold" id="archetypePills" role="group" aria-label="Engineering architecture examples">
-            <button type="button" data-type="iot" aria-pressed="true" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform hover:scale-105 archetype-btn">
-              <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">sensors</span>
-              <span>IoT &amp; Wireless</span>
-            </button>
-            <button type="button" data-type="automotive" aria-label="Automotive CAN-FD" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
-              <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">directions_car</span>
-              <span>Automotive CAN-FD</span>
-            </button>
-            <button type="button" data-type="edgeai" aria-label="TinyML Edge AI" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
-              <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">psychology</span>
-              <span>TinyML Edge AI</span>
-            </button>
-            <button type="button" data-type="hmi" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
-              <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">devices</span>
-              <span>TouchGFX / Qt HMI</span>
-            </button>
-            <button type="button" data-type="highspeed" aria-label="High-Speed PCB" aria-pressed="false" class="min-h-[44px] px-3.5 py-2.5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
-              <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">developer_board</span>
-              <span>High-Speed PCB</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Live Dynamic Architecture Preview Card (Human-Readable Contrast) -->
-        <div class="bg-slate-100 dark:bg-brand-surface rounded-2xl p-5 border border-slate-300 dark:border-brand-border shadow-md transition-all text-xs" id="archCard">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left pr-14 sm:pr-0">
-            <div>
-              <span class="text-slate-600 dark:text-slate-300 inline-block text-[11px] uppercase font-bold tracking-wider">Target Silicon</span>
-              <span id="specMcu" class="font-black text-slate-900 dark:text-white text-sm block w-fit">ESP32-S3 Dual 240MHz</span>
-            </div>
-            <div>
-              <span class="text-slate-600 dark:text-slate-300 inline-block text-[11px] uppercase font-bold tracking-wider">PCB Stackup</span>
-              <span id="specPcb" class="font-black text-slate-900 dark:text-white text-sm block w-fit">4-Layer FR-4 (1.6mm)</span>
-            </div>
-            <div>
-              <span class="text-slate-600 dark:text-slate-300 inline-block text-[11px] uppercase font-bold tracking-wider">Power Budget</span>
-              <span id="specPower" class="font-black text-brand-600 dark:text-accent text-sm block w-fit">&lt; 15µA Deep Sleep</span>
-            </div>
-            <div>
-              <span class="text-slate-600 dark:text-slate-300 inline-block text-[11px] uppercase font-bold tracking-wider">Prototype Turn</span>
-              <span id="specTurn" class="font-black text-brand-600 dark:text-accent text-sm block w-fit">3 - 4 Weeks End-to-End</span>
-            </div>
-          </div>
-        </div>
-        <p id="archetype-announcement" class="sr-only" aria-live="polite" aria-atomic="true">Showing IoT and Wireless reference architecture.</p>
-
         <!-- Animated Numerical Counter Metrics (Left Aligned) -->
-        <div class="pt-6 border-t border-slate-200 dark:border-brand-border grid grid-cols-3 gap-4 text-left">
+        <div class="pt-6 border-t border-slate-200 dark:border-brand-border grid grid-cols-3 gap-4 text-left max-w-lg">
           <div>
             <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono">
               <span class="count-up" data-target="100">0</span>+
@@ -131,46 +79,52 @@
       <!-- Right Column: Interactive Bring-Up Console (kept clear of the hero particle field) -->
       <div class="relative w-full" data-particles="off">
 
-
-        <div id="hero-console" class="relative w-full min-h-[320px] md:min-h-[420px] lg:min-h-[500px] bg-white dark:bg-brand-surface rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white flex flex-col">
-          <div class="relative z-10 flex flex-col">
-        
-        <!-- Floating Glassmorphic Status Pill (Top) -->
-        <div class="hidden sm:flex absolute -top-5 -left-4 z-20 items-center space-x-2 px-3.5 py-1.5 bg-white dark:bg-brand-surface border border-slate-300 dark:border-brand-border rounded-xl shadow-xl text-[11px] font-black text-slate-900 dark:text-white backdrop-blur-md animate-float-slow">
-          <span class="w-2.5 h-2.5 rounded-full bg-accent animate-ping"></span>
-          <span>IPC-A-610 Class 3 SMT Standards</span>
-        </div>
-
-        <div class="hero-console-panel relative mx-auto w-full max-w-md lg:max-w-none min-w-0 bg-white dark:bg-brand-dark rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white">
+        <div id="hero-console" class="relative mx-auto w-full max-w-lg md:max-w-xl lg:max-w-none min-w-0 bg-white dark:bg-brand-surface rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white flex flex-col">
           
-          <!-- Console Header & Tab Bar -->
-          <div class="hero-console-header flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-brand-border">
-            <div class="flex items-center space-x-2">
-              <div class="w-3 h-3 rounded-full bg-red-500"></div>
-              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-              <div class="w-3 h-3 rounded-full bg-green-500"></div>
+          <!-- Window Titlebar -->
+          <div class="hero-console-titlebar flex items-center justify-between pb-3 border-b border-slate-200 dark:border-brand-border">
+            <div class="flex items-center space-x-2 min-w-0">
+              <div class="w-3 h-3 rounded-full bg-red-500 shrink-0"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500 shrink-0"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500 shrink-0"></div>
+              <span class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 ml-1.5 truncate">prototype_bringup.c</span>
             </div>
-            
-            <!-- Interactive Tabs -->
-            <div class="min-w-0 flex flex-wrap items-center gap-1.5 text-[11px] font-mono" id="consoleTabs">
-              <button type="button" data-tab="code" class="min-h-[38px] shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg bg-brand-500 text-white font-black border border-brand-500 shadow-sm console-tab-btn inline-flex items-center justify-center gap-1.5 transition">
-                <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">code</span>
-                <span>firmware.c</span>
-              </button>
-              <button type="button" data-tab="scope" class="min-h-[38px] shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-950 dark:hover:text-white border border-slate-200/80 dark:border-transparent font-bold console-tab-btn inline-flex items-center justify-center gap-1.5 transition">
-                <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">show_chart</span>
-                <span>Oscilloscope</span>
-              </button>
-              <button type="button" data-tab="terminal" class="min-h-[38px] shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-950 dark:hover:text-white border border-slate-200/80 dark:border-transparent font-bold console-tab-btn inline-flex items-center justify-center gap-1.5 transition">
-                <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">terminal</span>
-                <span>Serial Monitor</span>
-              </button>
+            <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-mono font-bold tracking-wider shrink-0">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+              <span>BENCH ONLINE</span>
             </div>
           </div>
 
-          <!-- Tab Content 1: Code View -->
-          <div id="tabContentCode" class="mt-4 font-mono text-xs text-slate-700 dark:text-slate-300 leading-relaxed min-h-[220px]">
-            <pre class="whitespace-pre-wrap break-words overflow-x-hidden"><code id="liveCodeSnippet" class="text-brand-700 dark:text-accent font-semibold">// Embedded India Hardware & Firmware Core
+          <!-- Segmented Tab Navigation Bar (Full Width, Never Wraps) -->
+          <div class="mt-3.5 p-1 bg-slate-100 dark:bg-slate-900/90 rounded-xl border border-slate-200 dark:border-brand-border flex items-center w-full gap-1" id="consoleTabs" role="tablist">
+            <button type="button" data-tab="code" class="console-tab-btn flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-white dark:bg-brand-surface text-brand-600 dark:text-accent font-black text-xs shadow-xs border border-slate-200/80 dark:border-white/10 inline-flex items-center justify-center gap-1.5 transition">
+              <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">code</span>
+              <span>firmware.c</span>
+            </button>
+            <button type="button" data-tab="scope" class="console-tab-btn flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition">
+              <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">show_chart</span>
+              <span>Oscilloscope</span>
+            </button>
+            <button type="button" data-tab="terminal" class="console-tab-btn flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition">
+              <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">terminal</span>
+              <span>Serial Monitor</span>
+            </button>
+          </div>
+
+          <!-- IDE / Terminal Body (High Contrast Dark Slate Console) -->
+          <div class="relative mt-3 rounded-2xl bg-slate-950 border border-slate-800 text-slate-200 shadow-inner overflow-hidden flex flex-col min-h-[240px]">
+            <!-- Terminal Internal Status Bar -->
+            <div class="px-4 py-2 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="material-symbols-rounded text-sm text-brand-400 shrink-0">terminal</span>
+                <span id="consoleActiveFilename" class="font-bold text-slate-300 truncate">src/bringup/main.c</span>
+              </div>
+              <span class="text-[10px] text-slate-500 font-semibold shrink-0">GCC 13.2 • ARM Cortex-M</span>
+            </div>
+
+            <!-- Tab Content 1: Code View -->
+            <div id="tabContentCode" class="p-4 font-mono text-xs leading-relaxed overflow-x-auto flex-1">
+              <pre class="whitespace-pre-wrap break-words"><code id="liveCodeSnippet" class="text-emerald-400 font-semibold">// Embedded India Hardware & Firmware Core
 void init_embedded_system(void) {
     power_rail_config(RAIL_3V3, ULTRA_LOW_NOISE);
     uart_baud_init(115200, OVERSAMPLE_16);
@@ -179,62 +133,62 @@ void init_embedded_system(void) {
     start_freertos_scheduler();
 }
 // Status: Ready for Bring-up</code></pre>
-          </div>
-
-          <!-- Tab Content 2: Live HTML5 Canvas Oscilloscope with Multi-Signal Switcher -->
-          <div id="tabContentScope" class="mt-4 hidden min-h-[220px] flex flex-col justify-between">
-            <div class="text-[11px] font-mono text-slate-800 dark:text-slate-200 mb-2 font-bold">
-              <span id="scopeSignalLabel" class="block">Signal: Clock PWM (10.0 MHz)</span>
-              <!-- Signal Selectors -->
-              <div class="mt-3 flex gap-2" role="group" aria-label="Waveform">
-                <button type="button" data-wave="square" onclick="setWaveform('square')" class="waveform-btn min-h-[36px] min-w-[44px] px-2.5 py-1.5 inline-flex items-center justify-center gap-1 bg-brand-500 text-white rounded-lg text-xs font-bold border border-brand-500 shadow-sm transition">
-                  <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">graphic_eq</span>
-                  <span>Square</span>
-                </button>
-                <button type="button" data-wave="sine" onclick="setWaveform('sine')" class="waveform-btn min-h-[36px] min-w-[44px] px-2.5 py-1.5 inline-flex items-center justify-center gap-1 bg-slate-100 dark:bg-brand-surface hover:bg-brand-500 hover:text-white rounded-lg text-xs text-slate-800 dark:text-slate-200 font-bold border border-slate-300 dark:border-brand-border transition">
-                  <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">waves</span>
-                  <span>Sine</span>
-                </button>
-                <button type="button" data-wave="burst" onclick="setWaveform('burst')" class="waveform-btn min-h-[36px] min-w-[44px] px-2.5 py-1.5 inline-flex items-center justify-center gap-1 bg-slate-100 dark:bg-brand-surface hover:bg-brand-500 hover:text-white rounded-lg text-xs text-slate-800 dark:text-slate-200 font-bold border border-slate-300 dark:border-brand-border transition">
-                  <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">electric_bolt</span>
-                  <span>Burst</span>
-                </button>
-              </div>
             </div>
-            <canvas id="scopeCanvas" width="400" height="150" class="w-full h-36 bg-brand-dark rounded-xl border border-slate-300 dark:border-brand-border"></canvas>
-            <span class="text-[10px] text-slate-600 dark:text-slate-400 font-mono mt-2 text-center block font-semibold">Synthesizing live hardware frequency domain</span>
-          </div>
 
-          <!-- Tab Content 3: Serial Monitor Boot Logs -->
-          <div id="tabContentTerminal" class="mt-4 hidden font-mono text-xs min-h-[220px] bg-slate-50 dark:bg-brand-dark p-3 rounded-xl overflow-y-auto space-y-1 text-slate-800 dark:text-slate-300 border border-slate-200 dark:border-brand-border">
-            <div class="text-slate-500 dark:text-slate-400 font-bold">// Connected to /dev/ttyUSB0 (115200 8N1)</div>
-            <div id="terminalLogs">
-              <div class="text-emerald-700 dark:text-emerald-400 font-medium">[0.001s] [POWER] VDD_3V3 rail nominal: 3.302V &plusmn;0.01V... OK</div>
-              <div class="text-emerald-700 dark:text-emerald-400 font-medium">[0.015s] [CLOCK] 72MHz PLL locked, jitter &lt; 5ps... OK</div>
-              <div class="text-emerald-700 dark:text-emerald-400 font-medium">[0.045s] [FLASH] SPI NOR Winbond 16MB verified... OK</div>
-              <div class="text-emerald-700 dark:text-emerald-400 font-medium">[0.092s] [HIL] Automated CAN bus fault loopback test... PASS</div>
-              <div class="text-brand-700 dark:text-accent font-bold">[0.120s] [RTOS] FreeRTOS kernel started. 4 tasks active.</div>
+            <!-- Tab Content 2: Live HTML5 Canvas Oscilloscope with Multi-Signal Switcher -->
+            <div id="tabContentScope" class="p-4 hidden flex-1 flex flex-col justify-between">
+              <div class="text-[11px] font-mono text-slate-200 mb-2.5 font-bold flex flex-col min-[520px]:flex-row min-[520px]:items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5 text-brand-400 min-w-0">
+                  <span class="material-symbols-rounded text-sm shrink-0 text-brand-400" aria-hidden="true">insights</span>
+                  <span id="scopeSignalLabel" class="truncate">Signal: Clock PWM (10.0 MHz)</span>
+                </div>
+                <!-- Signal Selectors (Consistent Right-Aligned on Desktop/Tablet, Full Width Segmented on Mobile) -->
+                <div class="flex items-center gap-1.5 w-full min-[520px]:w-auto shrink-0 justify-end" role="group" aria-label="Waveform">
+                  <button type="button" data-wave="square" onclick="setWaveform('square')" class="waveform-btn min-h-[32px] px-2.5 py-1 flex-1 min-[520px]:flex-initial inline-flex items-center justify-center gap-1 bg-brand-500 text-white rounded-lg text-xs font-bold border border-brand-500 shadow-xs transition">
+                    <span class="material-symbols-rounded text-xs shrink-0 leading-none" aria-hidden="true">graphic_eq</span>
+                    <span>Square</span>
+                  </button>
+                  <button type="button" data-wave="sine" onclick="setWaveform('sine')" class="waveform-btn min-h-[32px] px-2.5 py-1 flex-1 min-[520px]:flex-initial inline-flex items-center justify-center gap-1 bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-bold border border-slate-700 transition">
+                    <span class="material-symbols-rounded text-xs shrink-0 leading-none" aria-hidden="true">waves</span>
+                    <span>Sine</span>
+                  </button>
+                  <button type="button" data-wave="burst" onclick="setWaveform('burst')" class="waveform-btn min-h-[32px] px-2.5 py-1 flex-1 min-[520px]:flex-initial inline-flex items-center justify-center gap-1 bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-bold border border-slate-700 transition">
+                    <span class="material-symbols-rounded text-xs shrink-0 leading-none" aria-hidden="true">electric_bolt</span>
+                    <span>Burst</span>
+                  </button>
+                </div>
+              </div>
+              <canvas id="scopeCanvas" width="400" height="130" class="w-full h-32 bg-black rounded-xl border border-slate-800"></canvas>
+              <span class="text-[10px] text-slate-500 font-mono mt-2 text-center block font-medium">Synthesizing live hardware frequency domain</span>
+            </div>
+
+            <!-- Tab Content 3: Serial Monitor Boot Logs -->
+            <div id="tabContentTerminal" class="p-4 hidden font-mono text-xs overflow-y-auto space-y-1.5 flex-1 max-h-[220px]">
+              <div class="text-slate-400 font-bold mb-2">// Connected to /dev/ttyUSB0 (115200 8N1)</div>
+              <div id="terminalLogs" class="space-y-1">
+                <div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.001s]</span> <span class="text-cyan-400 font-bold">[POWER]</span> VDD_3V3 rail nominal: 3.302V &plusmn;0.01V... <span class="text-emerald-300 font-bold">OK</span></div>
+                <div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.015s]</span> <span class="text-cyan-400 font-bold">[CLOCK]</span> 72MHz PLL locked, jitter &lt; 5ps... <span class="text-emerald-300 font-bold">OK</span></div>
+                <div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.045s]</span> <span class="text-cyan-400 font-bold">[FLASH]</span> SPI NOR Winbond 16MB verified... <span class="text-emerald-300 font-bold">OK</span></div>
+                <div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.092s]</span> <span class="text-amber-400 font-bold">[HIL]</span> Automated CAN bus fault loopback test... <span class="text-emerald-300 font-bold">PASS</span></div>
+                <div class="text-brand-400 font-bold"><span class="text-slate-500">[0.120s]</span> <span class="text-emerald-400 font-bold">[RTOS]</span> FreeRTOS kernel started. 4 tasks active.</div>
+              </div>
             </div>
           </div>
 
           <!-- Interactive Action Bar: Run Virtual Bring-up -->
-          <div class="mt-4 pt-4 border-t border-slate-200 dark:border-brand-border flex flex-wrap items-center justify-between gap-3">
-            <button type="button" id="btnRunBringUp" class="min-h-[44px] shrink-0 px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-mono text-xs font-black rounded-xl transition flex items-center space-x-2 shadow-lg shadow-brand-500/20 border border-white/20 active:scale-95">
+          <div class="mt-4 pt-3 border-t border-slate-200 dark:border-brand-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <button type="button" id="btnRunBringUp" class="min-h-[44px] w-full sm:w-auto shrink-0 px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-mono text-xs font-black rounded-xl transition flex items-center justify-center space-x-2 shadow-lg shadow-brand-500/20 border border-white/20 active:scale-95">
               <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">play_arrow</span>
               <span>Run Virtual Bring-Up</span>
             </button>
-            <span id="bringUpStatus" class="min-w-0 text-[11px] font-mono text-brand-700 dark:text-accent font-black tracking-wide">Board Status: ONLINE</span>
+            <div class="flex items-center justify-center sm:justify-end space-x-2 text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+              <span id="bringUpStatus">Board Status: ONLINE</span>
+            </div>
           </div>
 
         </div>
 
-        <div class="hidden sm:flex relative z-20 self-start items-center space-x-2 mt-3 px-3.5 py-1.5 bg-white dark:bg-brand-surface border border-slate-300 dark:border-brand-border rounded-xl shadow-xl text-[11px] font-black text-slate-900 dark:text-white backdrop-blur-md animate-float-reverse">
-          <span class="w-2.5 h-2.5 rounded-full bg-accent animate-pulse"></span>
-          <span>Live HIL Telemetry Active</span>
-        </div>
-
-      </div>
-        </div>
       </div>
 
     </div>
@@ -243,38 +197,74 @@ void init_embedded_system(void) {
 <% } %>
 <%- include('../partials/trust-bar') %>
 
-<% if (settings.section_sandbox_enabled !== "false") { %>
+<!-- Interactive Reference Architecture & Spec Inspector Section -->
+<section class="py-16 bg-slate-50 dark:bg-[#0c1613] border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="text-center max-w-3xl mx-auto mb-8">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-accent font-mono text-xs font-bold uppercase tracking-wider mb-2">
+        <span class="material-symbols-rounded text-sm" aria-hidden="true">schema</span>
+        <span>Reference Architectures</span>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+        Inspect Real-World Prototype Engineering Specs
+      </h2>
+      <p class="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium max-w-2xl mx-auto">
+        Select a real-world discipline below to examine typical microcontroller silicon, multi-layer PCB stackups, low-power sleep budgets, and fast-track turnaround schedules.
+      </p>
+    </div>
 
-<!-- Live Engineering Lab Real-Time Telemetry & Metric Ticker -->
-<% if (settings.lab_event_enabled !== 'false') { %>
-<aside aria-label="Lab Telemetry" class="py-3.5 bg-slate-100/90 dark:bg-brand-surface text-slate-900 dark:text-white border-y border-slate-200 dark:border-brand-border overflow-hidden relative shadow-inner">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-mono">
-    <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
-      <span class="flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-bold border border-emerald-500/30">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 live-radar"></span>
-        <span><%= settings.lab_event_label || 'LAB ACTIVE' %></span>
-      </span>
-      <span class="text-slate-700 dark:text-slate-300 font-semibold truncate text-[11px] sm:text-xs">
-        <%= settings.lab_status_text || 'Hyderabad Hardware Prototyping Lab: Online • SMT Lines 1-4 Active' %>
-      </span>
+    <!-- 5 Archetype Selector Pills (Centered, Clean, High Contrast) -->
+    <div class="flex flex-wrap items-center justify-center gap-2 text-xs font-bold mb-6" id="archetypePills" role="group" aria-label="Engineering architecture examples">
+      <button type="button" data-type="iot" aria-pressed="true" class="min-h-[44px] px-4 py-2.5 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 text-white font-black border border-white/20 shadow-md transition transform hover:scale-105 archetype-btn">
+        <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">sensors</span>
+        <span>IoT &amp; Wireless</span>
+      </button>
+      <button type="button" data-type="automotive" aria-label="Automotive CAN-FD" aria-pressed="false" class="min-h-[44px] px-4 py-2.5 inline-flex items-center justify-center gap-2 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+        <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">directions_car</span>
+        <span>Automotive CAN-FD</span>
+      </button>
+      <button type="button" data-type="edgeai" aria-label="TinyML Edge AI" aria-pressed="false" class="min-h-[44px] px-4 py-2.5 inline-flex items-center justify-center gap-2 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+        <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">psychology</span>
+        <span>TinyML Edge AI</span>
+      </button>
+      <button type="button" data-type="hmi" aria-pressed="false" class="min-h-[44px] px-4 py-2.5 inline-flex items-center justify-center gap-2 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+        <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">devices</span>
+        <span>TouchGFX / Qt HMI</span>
+      </button>
+      <button type="button" data-type="highspeed" aria-label="High-Speed PCB" aria-pressed="false" class="min-h-[44px] px-4 py-2.5 inline-flex items-center justify-center gap-2 rounded-xl bg-white dark:bg-brand-surface text-slate-900 dark:text-white border border-slate-300 dark:border-brand-border hover:border-brand-500 transition archetype-btn font-bold">
+        <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">developer_board</span>
+        <span>High-Speed PCB</span>
+      </button>
     </div>
-    <div class="flex items-center space-x-5 text-slate-600 dark:text-slate-400 font-semibold text-[11px] w-full md:w-auto justify-between md:justify-end">
-      <div class="flex items-center space-x-1.5">
-        <span class="text-slate-600 dark:text-slate-300">HIL Station #2:</span>
-        <span class="text-emerald-700 dark:text-emerald-400 font-bold">100% Loopback PASS</span>
-      </div>
-      <div class="flex items-center space-x-1.5">
-        <span class="text-slate-600 dark:text-slate-300">First-Pass Rate:</span>
-        <span class="text-emerald-700 dark:text-emerald-400 font-bold">99.8%</span>
-      </div>
-      <div class="hidden lg:flex items-center space-x-1.5">
-        <span class="text-slate-600 dark:text-slate-300">Avg Turnaround:</span>
-        <span class="text-slate-900 dark:text-white font-bold">3.2 Weeks</span>
+
+    <!-- Live Dynamic Architecture Preview Card -->
+    <div class="max-w-4xl mx-auto bg-white dark:bg-brand-surface rounded-2xl p-6 sm:p-8 border border-slate-300 dark:border-brand-border shadow-md transition-all" id="archCard">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+        <div>
+          <span class="text-slate-500 dark:text-slate-400 inline-block text-[11px] uppercase font-bold tracking-wider">Target Silicon</span>
+          <span id="specMcu" class="font-black text-slate-900 dark:text-white text-sm sm:text-base block mt-1">ESP32-S3 Dual 240MHz</span>
+        </div>
+        <div>
+          <span class="text-slate-500 dark:text-slate-400 inline-block text-[11px] uppercase font-bold tracking-wider">PCB Stackup</span>
+          <span id="specPcb" class="font-black text-slate-900 dark:text-white text-sm sm:text-base block mt-1">4-Layer FR-4 (1.6mm)</span>
+        </div>
+        <div>
+          <span class="text-slate-500 dark:text-slate-400 inline-block text-[11px] uppercase font-bold tracking-wider">Power Budget</span>
+          <span id="specPower" class="font-black text-brand-600 dark:text-accent text-sm sm:text-base block mt-1">&lt; 15µA Deep Sleep</span>
+        </div>
+        <div>
+          <span class="text-slate-500 dark:text-slate-400 inline-block text-[11px] uppercase font-bold tracking-wider">Prototype Turn</span>
+          <span id="specTurn" class="font-black text-brand-600 dark:text-accent text-sm sm:text-base block mt-1">3 - 4 Weeks End-to-End</span>
+        </div>
       </div>
     </div>
+    <p id="archetype-announcement" class="sr-only" aria-live="polite" aria-atomic="true">Showing IoT and Wireless reference architecture.</p>
+
   </div>
-</aside>
-<% } %>
+</section>
+
+<% if (settings.section_sandbox_enabled !== "false") { %>
 
 <!-- Interactive Mini-Engineering Sandbox (Instant Trace Calculator on Homepage) -->
 <section class="py-12 bg-white dark:bg-brand-dark border-b border-slate-200/80 dark:border-brand-border">
@@ -322,79 +312,145 @@ void init_embedded_system(void) {
 </section>
 <% } %>
 
-<!-- More Than Just Service Section (Value Proposition) -->
+<!-- More Than Just Service Section (Value Proposition & Freelance Engagement Models) -->
 <section class="py-16 bg-white dark:bg-[#0f1c18] border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
     <div class="text-center max-w-3xl mx-auto mb-12">
       <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
-        Our Value Proposition
+        Freelance Engineering Collective
       </span>
       <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-        More than just service
+        Design, Development, Testing &amp; Prototyping
       </h2>
       <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300">
-        We engineer enduring electronic product value through proactive design-for-manufacturing, silicon lifecycle sustainment, and dedicated hardware architecture.
+        We are a collective of specialized freelance embedded engineers focusing on electronic circuit design, firmware development, TouchGFX &amp; Qt UI/HMI, and prototype bench testing on fixed-bid or hourly/daily billing.
       </p>
     </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- 3 Core Freelance Value Pillars -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
       
-      <!-- Value Prop 1: Performance and Cost Optimization -->
+      <!-- Value Prop 1: Freelance Agility & Senior Direct Access -->
       <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
           <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent">
-            <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">bolt</span>
+            <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">group</span>
           </div>
-          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Performance and Cost Optimization</h3>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Senior Direct Access</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-            Strategic component selection, alternative second-sourcing, and architectural power profiling, protecting your profit margins over the product's entire lifecycle.
+            Work directly with senior freelance engineers who author your schematics, write your RTOS drivers, design your TouchGFX/Qt UIs, and bring up your prototype boards. No account managers or junior pass-offs.
           </p>
         </div>
         <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60">
-          <a href="/services" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
-            Explore hardware design &rarr;
+          <a href="/about" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center gap-1 min-h-[44px] py-2.5">
+            <span class="material-symbols-rounded text-base" aria-hidden="true">info</span>
+            <span>Meet the collective &rarr;</span>
           </a>
         </div>
       </div>
 
-      <!-- Value Prop 2: Accelerated Time-to-Market -->
+      <!-- Value Prop 2: Prototypes & Third-Party Coordination -->
       <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
           <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent">
-            <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">rocket_launch</span>
+            <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">biotech</span>
           </div>
-          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Accelerated Time-to-Market</h3>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Prototyping &amp; Testing</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-            Rapid prototyping, in-house SMT bring-up lab, and automated HIL verification compress development schedules from quarters to weeks. Start your new design experience with us.
+            We specialize in rapid prototype bring-up, signal integrity validation, and bench testing for your board revisions, delivering verified hardware and comprehensive engineering documentation.
           </p>
         </div>
         <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60">
-          <a href="/contact" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
-            Start your new design experience with us &rarr;
+          <a href="/services" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center gap-1 min-h-[44px] py-2.5">
+            <span class="material-symbols-rounded text-base" aria-hidden="true">memory</span>
+            <span>Explore prototype scope &rarr;</span>
           </a>
         </div>
       </div>
 
-      <!-- Value Prop 3: Lifecycle Engineering -->
+      <!-- Value Prop 3: Flexible Pricing Models -->
       <div class="spotlight-card bg-slate-50 dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
           <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-5 text-brand-500 dark:text-accent">
-            <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">shield</span>
+            <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">payments</span>
           </div>
-          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Lifecycle Engineering</h3>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Fixed Bid or Hourly/Daily Billing</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-            Post-launch firmware FOTA bootloaders, compliance test support (CE/FCC/BIS), and component obsolescence mitigation across 7+ year product lifespans.
+            Whether you need a defined fixed-bid project with milestone delivery or dedicated daily/hourly engineer bandwidth to debug and augment your existing engineering team, we accommodate your exact workflow.
           </p>
         </div>
         <div class="mt-6 pt-4 border-t border-slate-200 dark:border-brand-border/60">
-          <a href="/services" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
-            Engineering services &rarr;
+          <a href="/contact" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center gap-1 min-h-[44px] py-2.5">
+            <span class="material-symbols-rounded text-base" aria-hidden="true">chat</span>
+            <span>Get a flexible quote &rarr;</span>
           </a>
         </div>
       </div>
 
     </div>
+
+    <!-- Engagement Models Dual Card Section -->
+    <div class="bg-gradient-to-br from-slate-100 via-white to-slate-100 dark:from-brand-surface dark:via-brand-dark dark:to-brand-surface rounded-3xl p-6 sm:p-10 border border-slate-300 dark:border-brand-border shadow-md">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <span class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-accent">Flexible Engagement Models</span>
+        <h3 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1">Choose How You Work With Us</h3>
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2">Transparent contracts with zero lock-in and 100% intellectual property ownership upon completion.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Model 1: Fixed-Bid Projects -->
+        <div class="p-6 sm:p-8 rounded-2xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent text-xs font-black mb-3">
+              <span class="material-symbols-rounded text-sm" aria-hidden="true">assignment_turned_in</span>
+              <span>Fixed-Bid Project</span>
+            </div>
+            <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Milestone-Based Fixed Scope</h4>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+              Best for clearly defined prototype hardware layouts, specific firmware drivers, TouchGFX/Qt UI screens, or automated HIL test rigs with predictable deliverables.
+            </p>
+            <ul class="space-y-2 text-xs text-slate-700 dark:text-slate-200">
+              <li class="flex items-center gap-2"><span class="text-brand-500 font-bold">&check;</span><span>Guaranteed fixed price &amp; delivery timeline</span></li>
+              <li class="flex items-center gap-2"><span class="text-brand-500 font-bold">&check;</span><span>Clear phased milestone deliverables &amp; sign-offs</span></li>
+              <li class="flex items-center gap-2"><span class="text-brand-500 font-bold">&check;</span><span>100% IP &amp; source code handover at completion</span></li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border">
+            <a href="/contact?service=Fixed-Bid%20Project" class="btn-shimmer w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-xs transition shadow-md active:scale-95 min-h-[44px]">
+              <span class="material-symbols-rounded text-base" aria-hidden="true">request_quote</span>
+              <span>Request Fixed-Bid Proposal &rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Model 2: Dedicated Per-Hour / Per-Day Billing -->
+        <div class="p-6 sm:p-8 rounded-2xl bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/15 text-brand-700 dark:text-accent text-xs font-black mb-3">
+              <span class="material-symbols-rounded text-sm" aria-hidden="true">schedule</span>
+              <span>Hourly &amp; Daily Engineer Rates</span>
+            </div>
+            <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Per-Day / Per-Hour Engineer Billing</h4>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+              Best for agile R&amp;D, prototype bench bring-up, hardware debugging, test rig setup, or augmenting your internal engineering team with senior freelance specialists.
+            </p>
+            <ul class="space-y-2 text-xs text-slate-700 dark:text-slate-200">
+              <li class="flex items-center gap-2"><span class="text-brand-500 font-bold">&check;</span><span>Dedicated senior engineer on daily or hourly basis</span></li>
+              <li class="flex items-center gap-2"><span class="text-brand-500 font-bold">&check;</span><span>Agile scope flexibility with timesheet tracking</span></li>
+              <li class="flex items-center gap-2"><span class="text-brand-500 font-bold">&check;</span><span>Immediate start for urgent prototype debugging &amp; bring-up</span></li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border">
+            <a href="/contact?service=Hourly-Daily%20Billing" class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-900 dark:text-white font-bold rounded-xl text-xs transition border border-slate-300 dark:border-brand-border active:scale-95 min-h-[44px]">
+              <span class="material-symbols-rounded text-base" aria-hidden="true">calendar_add_on</span>
+              <span>Hire Engineer by Day / Hour &rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -478,27 +534,28 @@ void init_embedded_system(void) {
         Services we offer
       </h2>
       <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300">
-        From early architectural feasibility and rapid proof-of-concept prototypes to full-cycle manufacturing support and high-speed firmware.
+        Pure engineering services for electronic prototypes, proof-of-concept R&amp;D, and automated testing. Fixed-bid projects or hourly/daily engineer billing.
       </p>
     </div>
 
     <!-- 6 Core Service Cards with Cursor Spotlight Follow -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       
-      <!-- 1. Full-Cycle Product Realization -->
+      <!-- 1. Prototype Realization & Architecture -->
       <div class="spotlight-card bg-white dark:bg-brand-surface rounded-3xl p-8 border border-slate-200 dark:border-brand-border shadow-sm flex flex-col justify-between hover:border-brand-500 transition duration-300">
         <div>
           <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-900/60 flex items-center justify-center mb-6">
-            <img src="/assets/images/download-2.svg" alt="Full-Cycle Embedded Product Engineering Architecture" class="w-8 h-8" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
+            <img src="/assets/images/download-2.svg" alt="Prototype Engineering & System Realization" class="w-8 h-8" loading="lazy" decoding="async" onerror="this.src='/favicon.svg'">
           </div>
-          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Full-Cycle Product Realization</h3>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2.5">Prototype Realization &amp; Architecture</h3>
           <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-            Complete electronic product engineering: schematic capture, BOM optimization, thermal simulation, DFM reviews, and production handover.
+            Complete electronic design and prototyping: schematic capture, BOM optimization, thermal modeling, prototype bring-up, and rigorous bench testing.
           </p>
         </div>
         <div class="mt-6 pt-4 border-t border-slate-100 dark:border-brand-border/60">
-          <a href="/services/full-cycle-embedded-product-engineering" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center min-h-[44px] py-2.5">
-            Learn more &rarr;
+          <a href="/services/full-cycle-embedded-product-engineering" class="text-xs font-bold text-brand-600 dark:text-accent hover:underline inline-flex items-center gap-1 min-h-[44px] py-2.5">
+            <span>Learn more</span>
+            <span class="material-symbols-rounded text-base" aria-hidden="true">arrow_forward</span>
           </a>
         </div>
       </div>
@@ -676,9 +733,9 @@ void init_embedded_system(void) {
           <div class="w-20 h-20 rounded-2xl bg-slate-100 dark:bg-brand-surface border-2 border-brand-500/30 flex items-center justify-center shadow-md mb-6 flex-shrink-0">
             <span class="text-brand-500 dark:text-accent text-3xl font-black font-mono">03</span>
           </div>
-          <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">Design + Validation</h3>
+          <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">Design &amp; Prototype Bring-Up</h3>
           <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-            Iterative hardware design sprints with regular review checkpoints. Automated HIL testing and DFM reviews are built into every milestone before board spin.
+            Iterative hardware/firmware design sprints, third-party prototype fabrication coordination, followed by hands-on bench bring-up and automated HIL testing.
           </p>
           <span class="mt-4 text-[10px] font-bold text-brand-500 dark:text-accent uppercase tracking-wider">Transparent · Iterative</span>
         </div>
@@ -687,9 +744,9 @@ void init_embedded_system(void) {
           <div class="w-20 h-20 rounded-2xl bg-slate-100 dark:bg-brand-surface border-2 border-brand-500/30 flex items-center justify-center shadow-md mb-6 flex-shrink-0">
             <span class="text-brand-500 dark:text-accent text-3xl font-black font-mono">04</span>
           </div>
-          <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">IP Handover</h3>
+          <h3 class="text-base font-black text-slate-900 dark:text-white mb-2">IP &amp; EMS Handover</h3>
           <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-            You receive 100% ownership of all Gerber files, native CAD sources (Altium/KiCad), firmware repositories, BOM, and test reports. Zero vendor lock-in.
+            You receive 100% ownership of all Gerber files, native CAD sources (Altium/KiCad), firmware repositories, BOM, and test reports ready for any EMS. Zero vendor lock-in.
           </p>
           <span class="mt-4 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">100% IP Ownership · Zero Lock-in</span>
         </div>
@@ -697,8 +754,9 @@ void init_embedded_system(void) {
     </div>
 
     <div class="mt-14 text-center">
-      <a href="/contact" class="btn-shimmer inline-flex items-center space-x-2 px-8 py-4 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl shadow-lg shadow-brand-500/25 transition transform hover:-translate-y-0.5 active:scale-95 text-sm">
-        <span>Start with a Free Discovery Call →</span>
+      <a href="/contact" class="btn-shimmer inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl shadow-lg shadow-brand-500/25 transition transform hover:-translate-y-0.5 active:scale-95 text-sm">
+        <span class="material-symbols-rounded shrink-0 text-base leading-none" aria-hidden="true">call</span>
+        <span>Start with a Free Discovery Call &rarr;</span>
       </a>
     </div>
   </div>
@@ -736,8 +794,8 @@ void init_embedded_system(void) {
               <span class="text-[10px] opacity-80 font-medium block">Schematic, Layout &amp; 5 SMT boards</span>
             </button>
             <button type="button" data-val="full-cycle" aria-pressed="false" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
-              <span class="block text-sm">End-to-End Product</span>
-              <span class="text-[10px] opacity-75 block font-normal">Hardware + RTOS + Pilot Run</span>
+              <span class="block text-sm">Full Prototype R&amp;D</span>
+              <span class="text-[10px] opacity-75 block font-normal">Hardware + RTOS + 3rd Party Proto</span>
             </button>
             <button type="button" data-val="firmware" aria-pressed="false" class="est-phase-btn px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-left transition hover:border-brand-500 active:scale-95">
               <span class="block text-sm">Firmware Only</span>
@@ -799,7 +857,7 @@ void init_embedded_system(void) {
           <ul id="estDeliverablesList" class="space-y-1.5 text-xs text-slate-700 dark:text-slate-200 font-medium">
             <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>Schematic Capture &amp; Component Sourcing</span></li>
             <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>Multi-Layer Controlled Impedance Layout</span></li>
-            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>First-Pass SMT Prototypes (5 Assemblies)</span></li>
+            <li class="flex items-center space-x-2"><span class="text-emerald-500 font-bold">✓</span><span>First-Pass Prototypes (Third-Party SMT 3-5 Boards)</span></li>
           </ul>
         </div>
 
@@ -807,7 +865,7 @@ void init_embedded_system(void) {
         <div class="p-3.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl text-xs space-y-1 border border-slate-200/60 dark:border-slate-700/60">
           <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block">Dedicated Engineering Pod</span>
           <p id="estTeamOutput" class="font-bold text-slate-800 dark:text-slate-200 text-xs">
-            1 Principal Hardware Architect &bull; 1 Firmware Engineer &bull; 1 DFM Specialist
+            1 Senior Hardware Architect &bull; 1 Firmware / UI Specialist &bull; 1 Prototype Test Engineer
           </p>
         </div>
 
@@ -900,50 +958,6 @@ void init_embedded_system(void) {
 </section>
 <% } %>
 
-<!-- Recent Technical Articles Section -->
-<% if (settings.section_blogs_enabled !== 'false') { %>
-<section class="py-20 bg-slate-50 dark:bg-brand-dark border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
-      <div>
-        <span class="px-3 py-1 bg-brand-50 dark:bg-brand-900/60 text-brand-600 dark:text-accent rounded-full text-xs font-bold uppercase tracking-wider">
-          Engineering Insights
-        </span>
-        <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-          Latest Technical Articles
-        </h2>
-        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Peer-reviewed hardware guides, functional safety breakdowns, and firmware architectural patterns.
-        </p>
-      </div>
-      <a href="/blogs" class="mt-4 md:mt-0 inline-flex items-center min-h-[44px] py-2.5 text-xs font-bold text-brand-600 dark:text-accent hover:underline">
-        Read All Technical Blogs &rarr;
-      </a>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <% if (locals.recentPosts && recentPosts.length > 0) { %>
-        <% recentPosts.forEach(post => { %>
-          <a href="/blogs/<%= post.slug %>" class="bg-white dark:bg-brand-surface rounded-3xl p-6 border border-slate-200 dark:border-brand-border hover:border-brand-500 transition shadow-sm block group">
-            <span class="text-[10px] font-bold uppercase text-brand-500 dark:text-accent"><%= post.category || 'Embedded Electronics' %></span>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-brand-500 transition mt-2 mb-2 line-clamp-2">
-              <%= post.title %>
-            </h3>
-            <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
-              <%= post.summary %>
-            </p>
-          </a>
-        <% }) %>
-      <% } else { %>
-        <div class="col-span-3 text-center py-8 text-xs text-slate-400">
-          Articles loading from engineering database...
-        </div>
-      <% } %>
-    </div>
-  </div>
-</section>
-<% } %>
-
 <!-- Client Testimonials & Social Proof -->
 <% if (settings.section_testimonials_enabled !== 'false') { %>
 <section id="testimonials" class="py-20 bg-white dark:bg-[#0b1412] border-b border-slate-200/80 dark:border-brand-border/60 transition-colors">
@@ -1009,7 +1023,7 @@ void init_embedded_system(void) {
         Frequently Asked Questions
       </h2>
       <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">
-        Everything you need to know about our end-to-end hardware, firmware, and manufacturing contracts.
+        Everything you need to know about our freelance engineering collective, prototype scope, and billing options.
       </p>
     </div>
 
@@ -1036,11 +1050,31 @@ void init_embedded_system(void) {
 
       <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
         <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer list-none flex items-center justify-between">
-          <span>Can you assist with volume production and SMT manufacturing?</span>
+          <span>What is the core focus of your engineering services?</span>
           <span class="text-brand-500 dark:text-accent font-mono text-base group-open:rotate-45 transition transform">+</span>
         </summary>
         <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
-          Yes. We partner with ISO 9001 and IATF 16949 certified EMS facilities across Bangalore, Pune, and Noida for pilot runs and high-volume production with custom automated factory test jigs.
+          We focus strictly on design, development, testing, and prototyping. Our freelance specialists deliver custom hardware schematics, multi-layer PCB layout, deterministic RTOS firmware, TouchGFX and Qt UI/HMI, and prototype bench testing with complete design files and 100% IP ownership transferred to you.
+        </p>
+      </details>
+
+      <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
+        <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer list-none flex items-center justify-between">
+          <span>What are your billing and engagement models?</span>
+          <span class="text-brand-500 dark:text-accent font-mono text-base group-open:rotate-45 transition transform">+</span>
+        </summary>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
+          We offer two transparent billing options tailored to your needs: (1) <strong>Fixed-Bid Projects</strong> with defined scope, phased milestones, and delivery guarantees; and (2) <strong>Per-Hour or Per-Day Engineer Billing</strong> for dedicated engineering time, agile R&amp;D, prototype bring-up, debugging, or augmenting your internal team.
+        </p>
+      </details>
+
+      <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
+        <summary class="font-bold text-sm text-slate-900 dark:text-white cursor-pointer list-none flex items-center justify-between">
+          <span>Do you provide prototype fabrication and assembly?</span>
+          <span class="text-brand-500 dark:text-accent font-mono text-base group-open:rotate-45 transition transform">+</span>
+        </summary>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
+          Yes, we provide third-party prototype services. We coordinate PCB fabrication and SMT component assembly with trusted third-party prototype partners, then conduct complete benchtop bring-up, power profiling, and functional testing in our lab.
         </p>
       </details>
       <details class="bg-white dark:bg-brand-surface rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-sm group">
@@ -1269,8 +1303,8 @@ int ddr3_phy_training(void) {
   const tabCode = document.getElementById('tabContentCode');
   const tabScope = document.getElementById('tabContentScope');
   const tabTerm = document.getElementById('tabContentTerminal');
-  const ACTIVE_TAB_CLS = 'min-h-[38px] shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg bg-brand-500 text-white font-black border border-brand-500 shadow-sm console-tab-btn inline-flex items-center justify-center gap-1.5 transition';
-  const INACTIVE_TAB_CLS = 'min-h-[38px] shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-950 dark:hover:text-white border border-slate-200/80 dark:border-transparent font-bold console-tab-btn inline-flex items-center justify-center gap-1.5 transition';
+  const ACTIVE_TAB_CLS = 'console-tab-btn flex-1 min-h-[38px] py-1.5 px-2 rounded-lg bg-white dark:bg-brand-surface text-brand-600 dark:text-accent font-black text-xs shadow-xs border border-slate-200/80 dark:border-white/10 inline-flex items-center justify-center gap-1.5 transition';
+  const INACTIVE_TAB_CLS = 'console-tab-btn flex-1 min-h-[38px] py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 font-bold text-xs inline-flex items-center justify-center gap-1.5 transition';
 
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1284,6 +1318,13 @@ int ddr3_phy_training(void) {
       tabScope.classList.add('hidden');
       tabTerm.classList.add('hidden');
 
+      const fnEl = document.getElementById('consoleActiveFilename');
+      if (fnEl) {
+        if (target === 'code') fnEl.textContent = 'src/bringup/main.c';
+        if (target === 'scope') fnEl.textContent = 'rigol_ds1054z.ch1';
+        if (target === 'terminal') fnEl.textContent = '/dev/ttyUSB0 (115200 8N1)';
+      }
+
       if (target === 'code') tabCode.classList.remove('hidden');
       if (target === 'scope') {
         tabScope.classList.remove('hidden');
@@ -1296,15 +1337,15 @@ int ddr3_phy_training(void) {
   // 7. Multi-Waveform Live Canvas Oscilloscope
   let currentWaveform = 'square';
   let scopeAnimId = null;
-  const ACTIVE_WAVE_CLS = 'waveform-btn min-h-[36px] min-w-[44px] px-2.5 py-1.5 inline-flex items-center justify-center gap-1 bg-brand-500 text-white rounded-lg text-xs font-bold border border-brand-500 shadow-sm transition';
-  const INACTIVE_WAVE_CLS = 'waveform-btn min-h-[36px] min-w-[44px] px-2.5 py-1.5 inline-flex items-center justify-center gap-1 bg-slate-100 dark:bg-brand-surface hover:bg-brand-500 hover:text-white rounded-lg text-xs text-slate-800 dark:text-slate-200 font-bold border border-slate-300 dark:border-brand-border transition';
+  const ACTIVE_WAVE_CLS = 'waveform-btn min-h-[32px] px-2.5 py-1 flex-1 min-[520px]:flex-initial inline-flex items-center justify-center gap-1 bg-brand-500 text-white rounded-lg text-xs font-bold border border-brand-500 shadow-xs transition';
+  const INACTIVE_WAVE_CLS = 'waveform-btn min-h-[32px] px-2.5 py-1 flex-1 min-[520px]:flex-initial inline-flex items-center justify-center gap-1 bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-bold border border-slate-700 transition';
 
   function setWaveform(type) {
     currentWaveform = type;
     const label = document.getElementById('scopeSignalLabel');
     if (type === 'square') label.textContent = 'Signal: Clock PWM (10.0 MHz)';
-    if (type === 'sine') label.textContent = 'Signal: Analog Front-End Sine (1.0 kHz)';
-    if (type === 'burst') label.textContent = 'Signal: UART TX Burst (115200 Baud)';
+    if (type === 'sine') label.textContent = 'Signal: Analog Sine (1.0 kHz)';
+    if (type === 'burst') label.textContent = 'Signal: UART TX Burst (115.2k)';
     document.querySelectorAll('.waveform-btn').forEach(btn => {
       btn.className = btn.getAttribute('data-wave') === type ? ACTIVE_WAVE_CLS : INACTIVE_WAVE_CLS;
     });
@@ -1395,17 +1436,20 @@ int ddr3_phy_training(void) {
     tabScope.classList.add('hidden');
     tabTerm.classList.remove('hidden');
 
+    const fnEl = document.getElementById('consoleActiveFilename');
+    if (fnEl) fnEl.textContent = '/dev/ttyUSB0 (115200 8N1)';
+
     btnBringUp.disabled = true;
     bringUpStatus.textContent = 'Executing bring-up...';
-    bringUpStatus.className = 'text-[11px] font-mono text-amber-600 dark:text-yellow-400 font-bold animate-pulse';
-    termLogs.innerHTML = '<div class="text-slate-500 dark:text-slate-400">// Initiating automated hardware bench cycle...</div>';
+    bringUpStatus.className = 'text-amber-500 font-bold animate-pulse';
+    termLogs.innerHTML = '<div class="text-slate-400 font-bold mb-1">// Initiating automated hardware bench cycle...</div>';
 
     const steps = [
-      { t: 300, msg: '<div class="text-emerald-700 dark:text-emerald-400 font-medium">[0.001s] [POWER] LDO rails 3.3V stable (3.302V, ripple &lt; 8mV)... OK</div>' },
-      { t: 800, msg: '<div class="text-emerald-700 dark:text-emerald-400 font-medium">[0.015s] [CLOCK] 72MHz PLL locked, jitter &lt; 5ps... OK</div>' },
-      { t: 1300, msg: '<div class="text-emerald-700 dark:text-emerald-400 font-medium">[0.045s] [PERIPH] SPI Flash JEDEC ID verified (Winbond 16MB)... OK</div>' },
-      { t: 1800, msg: '<div class="text-emerald-700 dark:text-emerald-400 font-medium">[0.092s] [HIL] CAN-FD bus arbitration 5Mbps loopback test... PASS</div>' },
-      { t: 2300, msg: '<div class="text-brand-700 dark:text-accent font-bold">[0.120s] [RTOS] FreeRTOS kernel started. 4 tasks active. SYSTEM READY.</div>' }
+      { t: 300, msg: '<div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.001s]</span> <span class="text-cyan-400 font-bold">[POWER]</span> LDO rails 3.3V stable (3.302V, ripple &lt; 8mV)... <span class="text-emerald-300 font-bold">OK</span></div>' },
+      { t: 800, msg: '<div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.015s]</span> <span class="text-cyan-400 font-bold">[CLOCK]</span> 72MHz PLL locked, jitter &lt; 5ps... <span class="text-emerald-300 font-bold">OK</span></div>' },
+      { t: 1300, msg: '<div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.045s]</span> <span class="text-cyan-400 font-bold">[PERIPH]</span> SPI Flash JEDEC ID verified (Winbond 16MB)... <span class="text-emerald-300 font-bold">OK</span></div>' },
+      { t: 1800, msg: '<div class="text-emerald-400 font-medium"><span class="text-slate-500">[0.092s]</span> <span class="text-amber-400 font-bold">[HIL]</span> CAN-FD bus arbitration 5Mbps loopback test... <span class="text-emerald-300 font-bold">PASS</span></div>' },
+      { t: 2300, msg: '<div class="text-brand-400 font-bold"><span class="text-slate-500">[0.120s]</span> <span class="text-emerald-400 font-bold">[RTOS]</span> FreeRTOS kernel started. 4 tasks active. SYSTEM READY.</div>' }
     ];
 
     steps.forEach(step => {
@@ -1416,8 +1460,8 @@ int ddr3_phy_training(void) {
 
     setTimeout(() => {
       btnBringUp.disabled = false;
-      bringUpStatus.textContent = 'Board Status: 100% ONLINE';
-      bringUpStatus.className = 'text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-bold';
+      bringUpStatus.textContent = 'Board Status: ONLINE';
+      bringUpStatus.className = 'text-slate-700 dark:text-slate-300 font-bold';
     }, 2400);
   });
 

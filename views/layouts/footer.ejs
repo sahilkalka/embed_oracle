@@ -29,8 +29,12 @@
             </div>
           </a>
           <p class="text-sm leading-relaxed max-w-sm">
-            <%= settings.site_name || 'Embedded India' %> is India's premier engineering partner for full-cycle embedded system design, TouchGFX (STM32 MCU) &amp; Qt (MPU) industrial/medical HMIs, custom PCB layouts, and robust firmware solutions.
+            <%= settings.site_name || 'Embedded India' %> is a collective of senior freelance embedded engineering specialists. We focus on end-to-end design, development, testing, and prototyping: custom hardware design, deterministic RTOS firmware, TouchGFX &amp; Qt industrial/medical HMIs, and bench testing on fixed-bid and hourly/daily rates.
           </p>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-brand-surface border border-slate-200 dark:border-brand-border text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+            <span>Engineering Services &bull; Fixed Bid &bull; Hourly / Per Day</span>
+          </div>
           <div class="pt-2">
             <p class="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Engineering Headquarters &amp; Locations</p>
             <p class="text-sm font-medium text-slate-700 dark:text-slate-200 mt-1"><%= settings.contact_address || 'Hyderabad, India' %></p>
@@ -229,9 +233,9 @@
     </aside>
   <% } %>
 
-  <!-- Back-to-Top Floating Button -->
+  <!-- Back-to-Top Floating Button (Strict Geometric Circle) -->
   <% if (settings.enable_back_to_top !== 'false') { %>
-    <button id="back-to-top-btn" type="button" aria-label="Back to top"  class="hidden pointer-events-none fixed bottom-20 right-6 z-40 p-3 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition active:scale-95">
+    <button id="back-to-top-btn" type="button" aria-label="Back to top" class="hidden pointer-events-none fixed bottom-20 right-6 z-40 w-11 h-11 aspect-square rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition active:scale-95 flex items-center justify-center p-0">
       <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">arrow_upward</span>
     </button>
   <% } %>

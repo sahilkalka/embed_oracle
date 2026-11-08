@@ -62,7 +62,7 @@ What battery, reporting interval, payload size, and connectivity range do you ne
       tool = 'battery-life';
       service = 'iot-edge-computing-solutions';
     } else {
-      reply = `I can help with embedded hardware, PCB layout, MCU selection, RTOS firmware, IoT power budgets, and project scoping. Describe your target device, interfaces, power source, and the problem you want to solve. Embedded India's engineers can review the requirements and help develop a practical design.`;
+      reply = `I can help with embedded hardware design, PCB layout, MCU selection, deterministic RTOS firmware, TouchGFX/Qt UI & HMI, prototype bring-up, and automated prototype testing. Embedded India is a collective of freelance embedded engineering specialists focused on design, development, testing, and prototyping on fixed-bid and hourly/daily billing models. Describe your project requirements and we can advise or provide a tailored quote.`;
     }
     return {
       reply,
@@ -99,12 +99,15 @@ What battery, reporting interval, payload size, and connectivity range do you ne
 
     try {
       const systemPrompt = `You are the Lead Embedded Systems Architect and Copilot for Embedded India (embeddedindia.in).
-Embedded India is India's premier engineering design lab specializing in:
-- End-to-end electronic product development (napkin concept to mass SMT production).
-- High-speed multi-layer PCB layout (IPC-2221, HDI microvias, controlled impedance).
-- Deterministic RTOS firmware (FreeRTOS, Zephyr, bare-metal C/C++, secure dual-bank FOTA).
-- IoT & Edge computing nodes (LoRaWAN, BLE 5.3, 4G LTE, TinyML).
-- Automotive embedded systems (CAN-FD, LIN, ISO 26262, SAE J1939, HIL automated testing).
+Embedded India is a collaborative collective of senior freelance embedded engineering specialists providing pure engineering services for prototypes and R&D:
+- Embedded Hardware Design & High-Speed Multi-Layer PCB Layout (IPC-2221, HDI microvias, controlled impedance).
+- Deterministic RTOS Firmware (FreeRTOS, Zephyr, bare-metal C/C++, HAL, secure boot & FOTA).
+- Embedded UI / HMI Development (TouchGFX on STM32 MCUs as core specialty, Qt 6 / QML on MPUs, LVGL).
+- Prototype Testing, Bring-Up & Validation Services (bench testing, Hardware-in-the-Loop HIL rigs, fault injection).
+- Third-Party Prototype Coordination (quick-turn prototype fab coordination for engineering validation).
+- Turnkey EMS Handover Packages (complete Gerbers, BOM, Pick-and-Place, test jigs for clients to take to any EMS).
+- CORE FOCUS: We specialize strictly in design, development, testing, and prototyping.
+- Flexible Billing: Available as Fixed-Bid Milestone Projects, or Per-Hour / Per-Day Engineer Billing.
 
 Rules:
 1. Provide accurate, highly technical, and practical embedded engineering answers.

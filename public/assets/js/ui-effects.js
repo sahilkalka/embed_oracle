@@ -103,7 +103,7 @@
     if (card.dataset.tilt === 'off' || card.querySelector('form, input, textarea, select')) return;
     const rect0 = card.getBoundingClientRect();
     if (rect0.width > 720 || rect0.height > 640) return;
-    const maxTilt = Number(card.dataset.tiltMax) || (rect0.width > 420 ? 5 : 8);
+    const maxTilt = Number(card.dataset.tiltMax) || (rect0.width > 420 ? 2 : 2.5);
     const rx = new Spring(0, 140, 15), ry = new Spring(0, 140, 15), lift = new Spring(0, 160, 16), glare = new Spring(0, 120, 18);
     const gx = new Spring(50, 160, 20), gy = new Spring(50, 160, 20);
     const shine = document.createElement('span');
@@ -117,13 +117,13 @@
       update(dt) {
         let moving = false;
         for (const s of [rx, ry, lift, glare, gx, gy]) moving = s.step(dt) || moving;
-        card.style.transform = `perspective(1000px) rotateX(${rx.value.toFixed(3)}deg) rotateY(${ry.value.toFixed(3)}deg) translate3d(0, ${(-lift.value).toFixed(2)}px, 0)`;
+        card.style.transform = `perspective(1800px) rotateX(${rx.value.toFixed(3)}deg) rotateY(${ry.value.toFixed(3)}deg) translate3d(0, ${(-lift.value).toFixed(2)}px, 0)`;
         card.style.setProperty('--fx-glare-x', `${gx.value.toFixed(1)}%`);
         card.style.setProperty('--fx-glare-y', `${gy.value.toFixed(1)}%`);
         card.style.setProperty('--fx-glare-o', Math.max(0, glare.value).toFixed(3));
         for (const layer of layers) {
           const depth = Number(layer.dataset.depth) || 1;
-          layer.style.translate = `${(ry.value * 0.9 * depth).toFixed(2)}px ${(-rx.value * 0.9 * depth).toFixed(2)}px`;
+          layer.style.translate = `${(ry.value * 0.2 * depth).toFixed(2)}px ${(-rx.value * 0.2 * depth).toFixed(2)}px`;
         }
         if (!moving) {
           for (const s of [rx, ry, lift, glare, gx, gy]) s.settle();
@@ -140,7 +140,7 @@
       ry.target = (px - 0.5) * 2 * maxTilt;
       rx.target = (0.5 - py) * 2 * maxTilt;
       gx.target = px * 100; gy.target = py * 100;
-      glare.target = 1; lift.target = 6;
+      glare.target = 0.3; lift.target = 2;
       card.style.setProperty('--mouse-x', `${event.clientX - rect.left}px`);
       card.style.setProperty('--mouse-y', `${event.clientY - rect.top}px`);
       wake(body);

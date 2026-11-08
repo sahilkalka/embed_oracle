@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node app.js",
     "start:cluster": "node src/cluster.js",
-    "dev": "nodemon src/server.js",
+    "dev": "nodemon app.js",
     "build": "npm run build:css && npm run generate-lead-magnet",
     "build:css": "node ./node_modules/tailwindcss/lib/cli.js -i ./src/public/css/input.css -o ./public/css/style.css --minify",
     "watch:css": "node ./node_modules/tailwindcss/lib/cli.js -i ./src/public/css/input.css -o ./public/css/style.css --watch",
@@ -25,6 +25,7 @@
     "server:fresh": "bash server-deploy.sh fresh",
     "server:update": "bash server-deploy.sh update",
     "admin:reset": "node scripts/reset-admin.js",
+    "test": "playwright test --project=Desktop-Chrome",
     "test:improvement-plan": "node scripts/test-improvement-plan.js"
   },
   "dependencies": {

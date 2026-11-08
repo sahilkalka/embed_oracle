@@ -5,7 +5,7 @@
 /* ====================================================================
    Bulletproof Responsive Desktop & Mobile Navigation Display
    ==================================================================== */
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .public-desktop-nav,
   nav.public-desktop-nav {
     display: flex !important;
@@ -17,7 +17,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .public-desktop-nav,
   nav.public-desktop-nav {
     display: none !important;
@@ -28,7 +28,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .public-shell nav.public-desktop-nav a.nav-icon-link {
     position: relative;
   }
@@ -45,7 +45,7 @@
     transition: width 180ms ease;
   }
   .public-shell nav.public-desktop-nav a.nav-icon-link.font-black::after {
-    width: calc(100% - 1rem);
+    width: calc(100% - 0.75rem);
   }
 }
 
@@ -82,51 +82,61 @@
   font-size: 1rem;
   line-height: 1.5;
 }
-.ui-shell nav a.nav-icon-link {
+.ui-shell #mobile-menu a.nav-icon-link {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
   text-align: center;
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .public-shell nav.public-desktop-nav {
-    flex-wrap: wrap !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.35rem !important;
   }
   .public-shell nav.public-desktop-nav a.nav-icon-link {
+    display: flex !important;
     flex-direction: column !important;
-    gap: 0.125rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 0.15rem !important;
     min-width: 0 !important;
-    padding-left: 0.25rem !important;
-    padding-right: 0.25rem !important;
-    white-space: nowrap;
+    padding: 0.25rem 0.5rem !important;
+    white-space: nowrap !important;
+    border-radius: 0.5rem !important;
   }
   .public-shell nav.public-desktop-nav a.nav-icon-link > span.material-symbols-rounded {
-    font-size: 1.75rem !important;
+    font-size: 1.6rem !important;
     line-height: 1 !important;
     margin: 0 !important;
   }
   .public-shell nav.public-desktop-nav a.nav-icon-link > span:not(.material-symbols-rounded) {
+    margin: 0 !important;
     margin-top: 0.125rem !important;
-    font-size: 0.65rem !important;
-    line-height: 1.1 !important;
+    font-size: 0.72rem !important;
+    line-height: 1.15 !important;
+    font-weight: 700 !important;
   }
 }
 @media (min-width: 1280px) {
   .public-shell nav.public-desktop-nav {
-    gap: 1.3rem !important;
+    gap: 0.75rem !important;
   }
   .public-shell nav.public-desktop-nav a.nav-icon-link {
-    gap: 0.65rem !important;
-    padding-left: 0.65rem !important;
-    padding-right: 0.65rem !important;
+    gap: 0.2rem !important;
+    padding: 0.3rem 0.65rem !important;
   }
   .public-shell nav.public-desktop-nav a.nav-icon-link > span.material-symbols-rounded {
-    font-size: 2.125rem !important;
-    font-variation-settings: 'FILL' 0, 'wght' 250, 'GRAD' 0, 'opsz' 24 !important;
+    font-size: 1.85rem !important;
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24 !important;
   }
   .public-shell nav.public-desktop-nav a.nav-icon-link > span:not(.material-symbols-rounded) {
-    font-size: 0.75rem !important;
+    font-size: 0.78rem !important;
   }
 }
 .public-shell header,
@@ -225,6 +235,31 @@
 #back-to-top-btn {
   bottom: 5.5rem !important;
   right: 1.5rem !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  max-width: 44px !important;
+  max-height: 44px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 9999px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+#adminHeaderActiveSection {
+  max-width: 80px;
+}
+@media (min-width: 360px) {
+  #adminHeaderActiveSection {
+    max-width: 110px;
+  }
+}
+@media (min-width: 640px) {
+  #adminHeaderActiveSection {
+    max-width: 260px;
+  }
 }
 #back-to-top-btn.hidden {
   display: none !important;
@@ -802,13 +837,18 @@ html.dark .ui-shell :is(.bg-slate-900, .bg-slate-950, .bg-slate-800, .bg-brand-9
   max-width: 100% !important;
   height: auto !important;
 }
-.prose pre code {
+.prose pre code,
+pre code.hljs {
+  overflow-x: visible !important;
   white-space: pre !important;
   word-break: normal !important;
 }
 .hljs-comment,
 .hljs-quote {
   color: #94a3b8 !important;
+}
+.hljs-subst {
+  color: #ea8089 !important;
 }
 
 .tool-ad-sidebar { display: none; }
@@ -1359,7 +1399,7 @@ html.dark .public-shell { --fx-glare-color: rgb(255 255 255 / 0.14); }
   transition: opacity 0.7s var(--fx-ease) var(--fx-reveal-delay, 0ms), translate 0.9s var(--fx-spring) var(--fx-reveal-delay, 0ms), scale 0.9s var(--fx-spring) var(--fx-reveal-delay, 0ms), box-shadow 0.35s ease, border-color 0.25s ease, background-color 0.25s ease;
 }
 .fx-motion .fx-tilt:not(.absolute):not(.fixed):not(.sticky) { position: relative; }
-.fx-motion .fx-tilt:hover { box-shadow: 0 26px 48px -20px var(--glow-color, rgb(0 127 95 / 0.3)), 0 10px 20px -12px rgb(15 23 42 / 0.25); }
+.fx-motion .fx-tilt:hover { box-shadow: 0 12px 24px -10px var(--glow-color, rgb(0 127 95 / 0.18)), 0 4px 8px -4px rgb(15 23 42 / 0.12); }
 .fx-glare {
   position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none;
   opacity: var(--fx-glare-o, 0);

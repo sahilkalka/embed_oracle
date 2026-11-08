@@ -200,7 +200,7 @@
   </script>
   <%- include('../partials/palette-boot') %>
 </head>
-<body class="ui-shell public-shell bg-white dark:bg-brand-dark text-slate-900 dark:text-slate-100 font-sans transition-colors duration-300 antialiased min-h-screen flex flex-col overflow-x-clip max-w-full pb-16 md:pb-0">
+<body class="ui-shell public-shell bg-white dark:bg-brand-dark text-slate-900 dark:text-slate-100 font-sans transition-colors duration-300 antialiased min-h-screen flex flex-col overflow-x-clip max-w-full pb-16 lg:pb-0">
 
   <!-- Skip to main content link for accessibility -->
   <a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-500 focus:text-white focus:rounded-lg focus:font-bold focus:text-sm">Skip to main content</a>
@@ -219,22 +219,25 @@
     </aside>
   <% } %>
 
-  <% if (settings.lab_event_enabled !== 'false') { %>
-  <!-- Bangalore Lab Dismissible Top Notice Bar (Above Sticky Header) -->
-  <aside id="lab-event-notice" aria-label="Hyderabad Lab Status" class="w-full bg-brand-surface text-white text-xs border-b border-brand-border py-1.5 px-3 sm:px-6 transition-all duration-300">
+  <% if (settings.lab_event_enabled === 'true') { %>
+  <!-- Lab Status Top Notice Bar (Above Sticky Header) -->
+  <aside id="lab-event-notice" aria-label="Engineering Availability Status" class="w-full bg-brand-surface text-white text-xs border-b border-brand-border py-1.5 px-3 sm:px-6 transition-all duration-300">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3" style="max-width: 80rem; margin: 0 auto; width: 100%;">
       <div class="flex items-center space-x-2.5 min-w-0">
-        <a href="<%= settings.lab_event_url || '/about#lab' %>" title="<%= settings.lab_status_text || 'Hyderabad Lab: Online • 4 Active SMT Lines • HIL Station #2 Active' %>" class="inline-flex min-h-[44px] items-center space-x-2 px-2.5 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-full text-[11px] font-bold text-emerald-400 transition group flex-shrink-0">
+        <a href="<%= settings.lab_event_url || '/about#lab' %>" title="<%= settings.lab_status_text || 'Freelance Engineering Pods Active • Prototype Bring-up Lab • Fixed-Bid & Hourly/Daily Rates' %>" class="inline-flex min-h-[44px] items-center space-x-2 px-2.5 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-full text-[11px] font-bold text-emerald-400 transition group flex-shrink-0">
           <span class="w-2 h-2 rounded-full bg-emerald-400 live-radar flex-shrink-0"></span>
-          <span><%= settings.lab_event_label || 'Hyderabad Lab Active' %></span>
+          <span><%= settings.lab_event_label || 'Freelance Pods Active' %></span>
         </a>
         <span class="hidden md:inline text-[11px] text-slate-300 font-medium truncate">
-          <%= settings.lab_status_text || '4 Active SMT Lines • HIL Station #2 Active' %>
+          <%= settings.lab_status_text || 'Prototype Bring-Up & Testing Lab • Fixed-Bid & Hourly/Daily Rates' %>
         </span>
       </div>
       <div class="flex items-center space-x-3 text-[11px] text-slate-300 flex-shrink-0">
-        <span class="hidden sm:inline text-slate-400">ISO 9001:2015 Verified Lab</span>
-        <a href="/contact" class="font-bold text-emerald-400 hover:text-emerald-300 hover:underline">Schedule Lab Visit &rarr;</a>
+        <span class="hidden sm:inline text-slate-400">Design, Development, Testing &amp; Prototyping</span>
+        <a href="/contact" class="font-bold text-emerald-400 hover:text-emerald-300 hover:underline inline-flex items-center gap-1">
+          <span class="material-symbols-rounded text-sm" aria-hidden="true">chat</span>
+          <span>Discuss Scope &rarr;</span>
+        </a>
         <!-- Dismiss Button (Minimum 32x32px Tap Target) -->
         <button type="button" id="dismiss-lab-notice-btn" aria-label="Dismiss Lab Notice" title="Dismiss notice" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition cursor-pointer flex-shrink-0">
           <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">close</span>
@@ -264,7 +267,7 @@
     <div class="public-header-inner max-w-[1280px] mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between flex-nowrap gap-1 min-[360px]:gap-2 sm:gap-4 box-border w-full">
       
       <!-- Brand Logo (Vector Icon + Semantic HTML Typography) -->
-      <a href="/" class="flex items-center min-h-[44px] py-1.5 space-x-2 sm:space-x-3 group min-w-0 shrink">
+      <a href="/" class="flex items-center min-h-[44px] py-1.5 space-x-2 sm:space-x-3 group min-w-0 shrink-0">
         <% if (settings.site_logo) { %>
           <img src="<%= settings.site_logo %>" alt="<%= settings.site_name || 'Embedded India' %>" class="h-8 sm:h-10 w-auto object-contain flex-shrink-0">
         <% } else { %>
@@ -285,70 +288,70 @@
               <span class="text-brand-500 dark:text-accent ml-1 sm:ml-1.5 font-black truncate"><%= headerParts.slice(1).join(' ') %></span>
             <% } %>
           </div>
-          <span class="public-brand-tagline text-[8px] sm:text-[9px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-300 mt-0.5 sm:mt-1 truncate hidden min-[400px]:inline-block"><%= settings.site_tagline || 'Engineering Hub' %></span>
+          <span class="public-brand-tagline text-[8px] sm:text-[9px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-300 mt-0.5 sm:mt-1 whitespace-nowrap hidden sm:block" title="<%= settings.site_tagline || 'Freelance Engineering Collective' %>"><%= settings.site_tagline || 'Freelance Engineering Collective' %></span>
         </div>
       </a>
 
-      <!-- Desktop & Tablet Icon Navigation Menu Bar -->
-      <nav aria-label="Primary Navigation" class="public-desktop-nav hidden md:flex md:flex-wrap items-center justify-center gap-0.5 md:gap-1 lg:gap-2 xl:gap-1 xl:flex-wrap text-slate-700 dark:text-slate-200 min-w-0 flex-1 whitespace-nowrap [&>a]:shrink-0">
+      <!-- Desktop & Tablet Icon Navigation Menu Bar (Large Icons on Top, Text Below) -->
+      <nav aria-label="Primary Navigation" class="public-desktop-nav hidden lg:flex flex-nowrap items-center justify-center gap-1 xl:gap-2.5 text-slate-700 dark:text-slate-200 min-w-0 flex-1 whitespace-nowrap [&>a]:shrink-0">
         
         <!-- Home -->
-        <a href="/" aria-label="Home" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">home</span>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Home</span>
+        <a href="/" aria-label="Home" class="nav-icon-link group flex flex-col items-center justify-center py-1 px-2 xl:px-2.5 rounded-xl transition duration-200 <%= currentPath === '/' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl xl:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">home</span>
+          <span class="text-[11px] xl:text-xs font-bold tracking-tight whitespace-nowrap leading-tight mt-0.5">Home</span>
         </a>
 
         <!-- Services -->
-        <a href="/services" aria-label="Services" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/services') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">memory</span>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Services</span>
+        <a href="/services" aria-label="Services" class="nav-icon-link group flex flex-col items-center justify-center py-1 px-2 xl:px-2.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/services') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl xl:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">memory</span>
+          <span class="text-[11px] xl:text-xs font-bold tracking-tight whitespace-nowrap leading-tight mt-0.5">Services</span>
         </a>
 
         <!-- Projects -->
-        <a href="/projects" aria-label="Projects" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/projects') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">inventory_2</span>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Projects</span>
+        <a href="/projects" aria-label="Projects" class="nav-icon-link group flex flex-col items-center justify-center py-1 px-2 xl:px-2.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/projects') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl xl:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">inventory_2</span>
+          <span class="text-[11px] xl:text-xs font-bold tracking-tight whitespace-nowrap leading-tight mt-0.5">Projects</span>
         </a>
 
         <!-- Tools -->
-        <a href="/tools" aria-label="Tools" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 relative <%= currentPath.startsWith('/tools') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">calculate</span>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Tools</span>
+        <a href="/tools" aria-label="Tools" class="nav-icon-link group flex flex-col items-center justify-center py-1 px-2 xl:px-2.5 rounded-xl transition duration-200 relative <%= currentPath.startsWith('/tools') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl xl:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">calculate</span>
+          <span class="text-[11px] xl:text-xs font-bold tracking-tight whitespace-nowrap leading-tight mt-0.5">Tools</span>
         </a>
 
         <!-- Blogs -->
-        <a href="/blogs" aria-label="Blogs" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath.startsWith('/blogs') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">article</span>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Blogs</span>
+        <a href="/blogs" aria-label="Blogs" class="nav-icon-link group flex flex-col items-center justify-center py-1 px-2 xl:px-2.5 rounded-xl transition duration-200 <%= currentPath.startsWith('/blogs') ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl xl:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">article</span>
+          <span class="text-[11px] xl:text-xs font-bold tracking-tight whitespace-nowrap leading-tight mt-0.5">Blogs</span>
         </a>
 
         <!-- About -->
-        <a href="/about" aria-label="About" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/about' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">info</span>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">About</span>
+        <a href="/about" aria-label="About" class="nav-icon-link group flex flex-col items-center justify-center py-1 px-2 xl:px-2.5 rounded-xl transition duration-200 <%= currentPath === '/about' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl xl:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">info</span>
+          <span class="text-[11px] xl:text-xs font-bold tracking-tight whitespace-nowrap leading-tight mt-0.5">About</span>
         </a>
 
         <!-- Connect -->
-        <a href="/contact" aria-label="Connect" class="nav-icon-link group flex flex-col xl:flex-row xl:gap-1.5 xl:min-w-0 items-center justify-center min-w-[48px] md:min-w-[50px] min-[840px]:min-w-[56px] lg:min-w-[64px] xl:whitespace-nowrap py-1 md:py-1.5 lg:py-2 px-1 md:px-1.5 lg:px-2 rounded-xl transition duration-200 <%= currentPath === '/contact' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
-          <span class="material-symbols-rounded text-2xl md:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">forum</span>
-          <span class="text-[11px] md:text-xs lg:text-[13px] font-bold tracking-tight mt-0.5 lg:mt-1 xl:mt-0 whitespace-nowrap leading-tight">Connect</span>
+        <a href="/contact" aria-label="Connect" class="nav-icon-link group flex flex-col items-center justify-center py-1 px-2 xl:px-2.5 rounded-xl transition duration-200 <%= currentPath === '/contact' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-800' %>">
+          <span class="material-symbols-rounded text-2xl xl:text-3xl transition-transform duration-200 group-hover:scale-110 shrink-0 leading-none" aria-hidden="true">forum</span>
+          <span class="text-[11px] xl:text-xs font-bold tracking-tight whitespace-nowrap leading-tight mt-0.5">Connect</span>
         </a>
 
       </nav>
 
       <!-- Desktop Actions & CTA / Mobile Header Controls -->
-      <div id="public-header-actions" class="flex items-center flex-nowrap gap-1 min-[360px]:gap-1.5 sm:gap-2.5 flex-shrink-0 ml-auto lg:ml-2">
+      <div id="public-header-actions" class="flex items-center flex-nowrap gap-1 min-[360px]:gap-1.5 sm:gap-2 flex-shrink-0 ml-auto lg:ml-2">
         
         <%- include('../partials/theme-button', { showSearch: true }) %>
 
         <!-- Desktop CTA -->
-        <a href="/contact" class="btn-shimmer hidden lg:inline-flex items-center gap-1.5 min-h-[42px] px-4 py-2 bg-gradient-to-r from-brand-600 via-brand-500 to-accent text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition shadow-brand-500/20 hover:shadow-brand-500/35 active:scale-95 transform hover:-translate-y-0.5 whitespace-nowrap ml-1">
+        <a href="/contact" class="btn-shimmer hidden lg:inline-flex items-center justify-center gap-1.5 min-h-[40px] px-2.5 xl:px-4 py-2 bg-gradient-to-r from-brand-600 via-brand-500 to-accent text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition shadow-brand-500/20 hover:shadow-brand-500/35 active:scale-95 transform hover:-translate-y-0.5 whitespace-nowrap ml-1" title="Book a Call">
           <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">call</span>
-          <span>Book a Call</span>
+          <span class="hidden xl:inline">Book a Call</span>
         </a>
 
-        <!-- Mobile Menu Toggle Button (Visible only on mobile phones < 768px) -->
-        <button id="mobile-menu-btn" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" class="public-mobile-btn md:hidden min-w-[38px] min-h-[38px] min-[360px]:min-w-[42px] min-[360px]:min-h-[42px] p-1.5 min-[360px]:p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-brand-surface rounded-lg border border-slate-200 dark:border-[#1e3831] active:scale-95 flex items-center justify-center">
+        <!-- Mobile Menu Toggle Button (Visible only on mobile phones & tablets < 1024px) -->
+        <button id="mobile-menu-btn" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" class="public-mobile-btn lg:hidden min-w-[38px] min-h-[38px] min-[360px]:min-w-[42px] min-[360px]:min-h-[42px] p-1.5 min-[360px]:p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-brand-surface rounded-lg border border-slate-200 dark:border-[#1e3831] active:scale-95 flex items-center justify-center">
           <span class="material-symbols-rounded text-xl min-[360px]:text-2xl leading-none" aria-hidden="true">menu</span>
         </button>
       </div>
@@ -356,8 +359,8 @@
 
     <%- include('../partials/search-dialog') %>
 
-    <!-- Mobile Dropdown Menu (Collapsed only for mobile phones < 768px) -->
-    <nav aria-label="Mobile Navigation" id="mobile-menu" aria-hidden="true" class="hidden md:hidden border-t border-slate-200 dark:border-brand-border bg-white dark:bg-[#13221f] px-4 pt-4 pb-6 space-y-3">
+    <!-- Mobile Dropdown Menu (Collapsed only for mobile phones & tablets < 1024px) -->
+    <nav aria-label="Mobile Navigation" id="mobile-menu" aria-hidden="true" class="hidden lg:hidden border-t border-slate-200 dark:border-brand-border bg-white dark:bg-[#13221f] px-4 pt-4 pb-6 space-y-3">
       <div class="grid grid-cols-4 gap-2 text-center">
         <!-- Home -->
         <a href="/" class="flex flex-col items-center justify-center p-2 rounded-xl transition <%= currentPath === '/' ? 'text-brand-600 dark:text-accent font-black' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' %>">

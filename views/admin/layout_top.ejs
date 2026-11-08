@@ -562,7 +562,7 @@
     <!-- Compact Top Global Bar (+ Attached Settings Sub-Header when on Settings Page) -->
     <header id="adminTopHeader" class="sticky top-0 z-40 bg-white dark:bg-brand-surface border-b border-slate-200 dark:border-brand-border flex flex-col shrink-0 min-w-0 w-full">
       <div class="admin-header-row min-h-[3.5rem] sm:min-h-[4rem] px-3 sm:px-5 lg:px-6 py-2 flex items-center justify-between gap-2 sm:gap-3 w-full min-w-0 box-border">
-        <div class="admin-header-context flex items-center gap-2 sm:gap-2.5 min-w-0">
+        <div class="admin-header-context flex-1 flex items-center gap-2 sm:gap-2.5 min-w-0">
           <!-- Mobile Sidebar Trigger -->
           <button type="button" id="adminHeaderMenuBtn" onclick="toggleMobileAdminSidebar(true)" aria-label="Open navigation sidebar" title="Open navigation sidebar" class="lg:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold shrink-0">
             <span class="material-symbols-rounded text-base shrink-0 leading-none" aria-hidden="true">menu</span>
@@ -571,12 +571,12 @@
 
           <% if (isSettingsPage) { %>
             <!-- Settings Dynamic Section Title & Subtitle -->
-            <div class="settings-header-title min-w-0">
-              <div class="settings-header-title-copy flex items-center gap-1 sm:gap-1.5 text-xs sm:text-base leading-tight min-w-0">
+            <div class="settings-header-title min-w-0 flex-1 overflow-hidden">
+              <div class="settings-header-title-copy flex items-center gap-1 sm:gap-1.5 text-xs sm:text-base leading-tight min-w-0 overflow-hidden">
                 <span id="adminHeaderSectionIcon" class="material-symbols-rounded text-base text-amber-400 shrink-0 hidden sm:inline-block leading-none" aria-hidden="true">lightbulb</span>
                 <span class="font-extrabold text-slate-900 dark:text-white tracking-tight shrink-0">Settings</span>
                 <span class="text-slate-400 dark:text-slate-500 font-normal shrink-0">/</span>
-                <span id="adminHeaderActiveSection" class="font-bold text-brand-600 dark:text-accent truncate text-xs sm:text-sm">AI Engine</span>
+                <span id="adminHeaderActiveSection" class="font-bold text-brand-600 dark:text-accent truncate inline-block max-w-[80px] min-[360px]:max-w-[110px] sm:max-w-[260px] text-xs sm:text-sm">AI Engine</span>
               </div>
               <p id="adminHeaderActiveDesc" class="hidden md:block text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
                 Configure model credentials, draft technical articles, and manage automated scheduled publishing.
@@ -584,7 +584,7 @@
             </div>
           <% } else { %>
             <!-- Standard Route Context Breadcrumb -->
-            <div class="admin-route-title flex items-center gap-2 text-xs min-w-0">
+            <div class="admin-route-title flex items-center gap-2 text-xs min-w-0 flex-1">
               <span class="text-slate-400 dark:text-slate-500 font-semibold hidden sm:inline">Embedded India</span>
               <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">/</span>
               <span class="font-extrabold text-slate-900 dark:text-white truncate text-sm"><%= activeRouteObj.label %></span>
@@ -597,14 +597,14 @@
           <%- include('../partials/theme-button', { showSearch: !isSettingsPage, searchLabel: 'Search admin pages and settings', wrapperId: 'admin-palette-dropdown-wrapper', btnId: 'admin-palette-dropdown-btn', menuId: 'admin-palette-dropdown-menu', chevronId: 'admin-palette-chevron', activeDotId: 'admin-active-scheme-dot', activeNameId: 'admin-active-palette-name' }) %>
 
           <% if (isSettingsPage) { %>
-            <button type="button" id="adminHeaderDiscardBtn" aria-label="Discard unsaved edits in the current settings section" title="Reset unsaved edits to the last saved values" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-semibold inline-flex items-center gap-1.5 transition cursor-pointer">
+            <button type="button" id="adminHeaderDiscardBtn" aria-label="Discard unsaved edits in the current settings section" title="Reset unsaved edits to the last saved values" class="p-1.5 sm:px-3 sm:py-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition cursor-pointer">
               <span class="material-symbols-rounded text-sm text-slate-400 shrink-0 leading-none" aria-hidden="true">restart_alt</span>
-              <span>Discard</span>
+              <span class="hidden sm:inline">Discard</span>
             </button>
-            <button type="button" id="adminHeaderSaveBtn" aria-label="Save the active settings section" title="Save the active settings section" class="px-2.5 sm:px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold inline-flex items-center gap-1.5 transition shadow-xs cursor-pointer">
+            <button type="button" id="adminHeaderSaveBtn" aria-label="Save the active settings section" title="Save the active settings section" class="px-2 sm:px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 transition shadow-xs cursor-pointer">
               <span class="material-symbols-rounded text-sm shrink-0 leading-none" aria-hidden="true">save</span>
-              <span class="sm:hidden">Save</span>
               <span class="hidden sm:inline">Save Changes</span>
+              <span class="sm:hidden">Save</span>
             </button>
           <% } else { %>
             <a href="/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border text-xs font-bold transition" title="Open live public website">

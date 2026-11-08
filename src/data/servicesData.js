@@ -4,12 +4,12 @@
 const servicesData = {
   'full-cycle-embedded-product-engineering': {
     slug: 'full-cycle-embedded-product-engineering',
-    title: 'Full-Cycle Product Realization',
-    discipline: 'System Architecture & Engineering',
-    contactCategory: 'End-to-End Product',
-    seoTitle: 'Full-Cycle Embedded Product Engineering Architecture - Embedded India',
-    seoDescription: 'End-to-end electronic product engineering from napkin architecture and high-speed simulation to volume mass manufacturing and lifecycle sustainment.',
-    description: 'Complete electronic product engineering: schematic capture, BOM optimization, thermal simulation, DFM reviews, and production handover.',
+    title: 'Prototype Engineering & System Realization',
+    discipline: 'System Architecture & Prototype Engineering',
+    contactCategory: 'End-to-End Prototype',
+    seoTitle: 'Embedded Prototype Engineering & R&D Services - Embedded India',
+    seoDescription: 'Freelance engineering collective delivering end-to-end prototype design, high-speed PCB layouts, RTOS firmware, UI/HMI, third-party prototype coordination, and bench validation. Fixed-bid & hourly/daily billing.',
+    description: 'Complete electronic engineering services: schematic design, PCB layout, RTOS firmware, UI/HMI, prototype bring-up, and bench testing.',
     features: [
       {
         title: 'System Architecture & Feasibility',
@@ -28,12 +28,12 @@ const servicesData = {
         description: 'Bare-metal C/C++, FreeRTOS, and Zephyr kernel drivers, memory partitioning, and secure cryptographic bootloaders.'
       },
       {
-        title: 'Verification & Automated HIL Testing',
-        description: 'Hardware-in-the-Loop test bench automation, fault injection modeling, and automated regression suites.'
+        title: 'Prototype Testing & Automated HIL',
+        description: 'Hands-on prototype bench bring-up, Hardware-in-the-Loop test bench automation, fault injection modeling, and automated regression suites.'
       },
       {
-        title: 'Production NPI & Technical Documentation',
-        description: 'Essential documentation includes full manufacturing data package: Gerbers, ODB++, pick-and-place centroids, panelization, and custom test jig designs.'
+        title: 'Third-Party Prototype Coordination & EMS Package',
+        description: 'Coordinating quick-turn prototype builds with trusted third-party fab houses, followed by delivering a complete, clean manufacturing data package (Gerbers, ODB++, Pick-and-Place, BOM) for your future volume EMS.'
       }
     ]
   },

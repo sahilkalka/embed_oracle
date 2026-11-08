@@ -187,11 +187,11 @@
                       <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">CAN-FD, ISO 26262, HIL</span>
                     </div>
                   </button>
-                  <button type="button" data-value="End-to-End Product" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-slate-50 dark:bg-brand-dark text-slate-800 dark:text-slate-200 border-slate-200 dark:border-brand-border hover:border-brand-500 h-full min-h-[68px] flex items-start gap-2.5">
+                  <button type="button" data-value="End-to-End Prototype" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-slate-50 dark:bg-brand-dark text-slate-800 dark:text-slate-200 border-slate-200 dark:border-brand-border hover:border-brand-500 h-full min-h-[68px] flex items-start gap-2.5">
                     <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                     <div class="min-w-0">
-                      <span class="block font-bold text-xs sm:text-sm leading-tight">End-to-End Product</span>
-                      <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">Concept to manufacturing</span>
+                      <span class="block font-bold text-xs sm:text-sm leading-tight">End-to-End Prototype</span>
+                      <span class="block text-[10px] sm:text-[11px] opacity-80 mt-0.5 leading-tight">Architecture to validated board</span>
                     </div>
                   </button>
                   <button type="button" data-value="Obsolescence" class="rfq-type-btn p-3 sm:p-4 rounded-xl text-left border transition bg-slate-50 dark:bg-brand-dark text-slate-800 dark:text-slate-200 border-slate-200 dark:border-brand-border hover:border-brand-500 h-full min-h-[68px] flex items-start gap-2.5">
@@ -252,19 +252,40 @@
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
+                  <label for="spec-billing-model" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Engagement &amp; Billing Model
+                  </label>
+                  <select 
+                    id="spec-billing-model"
+                    name="spec_billing_model"
+                    class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
+                  >
+                    <option value="Fixed-Bid Milestone Project">Fixed-Bid Milestone Project</option>
+                    <option value="Dedicated Per-Day Engineer Billing">Dedicated Per-Day Engineer Billing</option>
+                    <option value="Dedicated Per-Hour Engineer Billing">Dedicated Per-Hour Engineer Billing</option>
+                    <option value="Consulting / Architecture Review">Consulting / Architecture Review</option>
+                    <option value="Not decided yet / Need advice">Not decided yet / Need advice</option>
+                  </select>
+                </div>
+                <div>
                   <label for="spec-qty" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                    Estimated Production Quantity
+                    Prototype Scope &amp; Units
                   </label>
                   <select 
                     id="spec-qty"
                     name="spec_qty"
                     class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
                   >
-                    <option value="Prototype (1-10 units)">Prototype (1-10 units)</option>
-                    <option value="Pilot Batch (50-250 units)">Pilot Batch (50-250 units)</option>
-                    <option value="Volume Mass Production (1k+ units)">Volume Mass Production (1k+ units)</option>
+                    <option value="Prototype (1-5 units via 3rd-party fab)">Prototype (1-5 units via 3rd-party fab)</option>
+                    <option value="Engineering Proof-of-Concept (PoC)">Engineering Proof-of-Concept (PoC)</option>
+                    <option value="Prototype Testing & Bring-Up Only">Prototype Testing &amp; Bring-Up Only</option>
+                    <option value="Firmware / UI / HMI Only (No HW Needed)">Firmware / UI / HMI Only (No HW Needed)</option>
+                    <option value="Architecture Review / Design Audit">Architecture Review / Design Audit</option>
                   </select>
                 </div>
+              </div>
+
+              <div class="grid grid-cols-1 gap-4">
                 <div>
                   <label for="contact-subject" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                     Project Subject <span class="text-red-500">*</span>
@@ -274,7 +295,7 @@
                     id="contact-subject"
                     name="subject"
                     required
-                    placeholder="e.g. STM32U5 TouchGFX Medical Monitor HMI"
+                    placeholder="e.g. STM32U5 TouchGFX Medical Monitor HMI Prototype"
                     class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm transition"
                   >
                 </div>

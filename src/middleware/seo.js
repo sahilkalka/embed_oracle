@@ -92,10 +92,10 @@ async function seoMiddleware(req, res, next) {
   const theme = isAdminRoute ? derivatives.adminTheme : derivatives.publicTheme;
 
   // Default SEO meta object
-  const defaultTitle = settings.site_title_default || 'Embedded System Design & Development Services in India';
+  const defaultTitle = settings.site_title_default || 'Freelance Embedded Hardware, Firmware, UI/HMI & Prototype Testing Services';
   const siteName = settings.site_name || 'Embedded India';
-  const siteDescription = settings.site_description_default || 'Embedded System Design & Development Services in India, from concept to production. Specializing in IoT, microcontrollers, and hardware/firmware solutions.';
-  const defaultKeywords = settings.site_keywords_default || 'embedded systems india, PCB design hyderabad, firmware development, IoT edge computing, microcontroller programming, hardware engineering';
+  const siteDescription = settings.site_description_default || 'A collective of freelance embedded engineering specialists providing design, development, testing, and prototyping: hardware design, deterministic RTOS firmware, TouchGFX & Qt UI/HMI, and bench testing on fixed bid and hourly/daily rates.';
+  const defaultKeywords = settings.site_keywords_default || 'freelance embedded engineer, embedded hardware design, firmware development, TouchGFX STM32, Qt QML embedded, prototype testing, HIL verification, fixed bid embedded, per hour engineer billing, per day engineer rate';
 
   res.locals.seo = {
     robots: isAdminRoute ? 'noindex, nofollow' : 'index, follow',
