@@ -463,7 +463,7 @@ app.use((err, req, res, next) => {
 // Start Server & Background Cron
 if (process.env.NODE_ENV !== 'test') {
   const isPrimaryWorker = !process.env.NODE_APP_INSTANCE || process.env.NODE_APP_INSTANCE === '0';
-  const server = app.listen(PORT, () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     if (isPrimaryWorker) {
       console.log(`\n========================================================`);
       console.log(`🚀 Embedded India Web Portal is running at http://localhost:${PORT}`);

@@ -37,9 +37,16 @@ logs/
 reports/
 /ADMIN_REPORT.md
 /AGENT_REPORT.md
+tests/AGENT_*.md
+tests/agent_*.json
+tests/agent_action_items.json
 test-results/
 playwright-report/
 .playwright/
+audit-screenshots/
+tests/audit-screenshots/
+backstop_data/
+tests/backstop_data/
 coverage/
 .cache/
 .pm2/
