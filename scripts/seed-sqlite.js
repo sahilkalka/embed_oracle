@@ -885,42 +885,68 @@ Prior to factory shipping, production automated test equipment (ATE) must blow t
     }
   ];
 
-  const upsertPost = db.prepare(`
+  const findExisting = db.prepare(`
+    SELECT id, slug FROM Post 
+    WHERE slug = ? OR lower(trim(title)) = lower(trim(?))
+    LIMIT 1
+  `);
+
+  const insertPost = db.prepare(`
     INSERT INTO Post (id, title, slug, category, tags, summary, contentMarkdown, contentHtml, author, status, readingTime, publishedAt, createdAt, updatedAt)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ON CONFLICT(slug) DO UPDATE SET
-      title = excluded.title,
-      category = excluded.category,
-      tags = excluded.tags,
-      summary = excluded.summary,
-      contentMarkdown = excluded.contentMarkdown,
-      contentHtml = excluded.contentHtml,
-      author = excluded.author,
-      readingTime = excluded.readingTime,
-      updatedAt = excluded.updatedAt
+  `);
+
+  const updatePost = db.prepare(`
+    UPDATE Post SET
+      title = ?,
+      category = ?,
+      tags = ?,
+      summary = ?,
+      contentMarkdown = ?,
+      contentHtml = ?,
+      author = ?,
+      readingTime = ?,
+      updatedAt = ?
+    WHERE id = ?
   `);
 
   for (const post of posts) {
     const compiledHtml = post.contentHtml || renderMarkdown(post.contentMarkdown);
-    upsertPost.run(
-      crypto.randomUUID(),
-      post.title,
-      post.slug,
-      post.category,
-      post.tags,
-      post.summary,
-      post.contentMarkdown,
-      compiledHtml,
-      post.author,
-      post.status,
-      post.readingTime,
-      post.publishedAt,
-      now,
-      now
-    );
+    const existing = findExisting.get(post.slug, post.title);
+
+    if (existing) {
+      updatePost.run(
+        post.title,
+        post.category,
+        post.tags,
+        post.summary,
+        post.contentMarkdown,
+        compiledHtml,
+        post.author,
+        post.readingTime,
+        now,
+        existing.id
+      );
+    } else {
+      insertPost.run(
+        crypto.randomUUID(),
+        post.title,
+        post.slug,
+        post.category,
+        post.tags,
+        post.summary,
+        post.contentMarkdown,
+        compiledHtml,
+        post.author,
+        post.status,
+        post.readingTime,
+        post.publishedAt,
+        now,
+        now
+      );
+    }
   }
   console.log(`[SEED] Blog articles initialized (${posts.length} in-depth pillar guides)`);
-  console.log('[SEED] Blog articles initialized');
 
   // 4. Showcase Engineering Projects
   const projects = [
