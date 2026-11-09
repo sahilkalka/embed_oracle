@@ -44,7 +44,10 @@ echo "==> [2/7] Setting up ${MAIL_DIR} directory and Mailcow repository..."
 mkdir -p "${MAIL_DIR}"
 if [ ! -d "${MAIL_DIR}/.git" ]; then
   echo "Cloning Mailcow Dockerized into ${MAIL_DIR}..."
-  git clone https://github.com/mailcow/mailcow-dockerized.git "${MAIL_DIR}"
+  rm -rf /tmp/mailcow-clone-tmp
+  git clone --depth 1 https://github.com/mailcow/mailcow-dockerized.git /tmp/mailcow-clone-tmp
+  cp -a /tmp/mailcow-clone-tmp/. "${MAIL_DIR}/"
+  rm -rf /tmp/mailcow-clone-tmp
 else
   echo "Mailcow directory already exists. Pulling latest updates..."
   git -C "${MAIL_DIR}" pull || true

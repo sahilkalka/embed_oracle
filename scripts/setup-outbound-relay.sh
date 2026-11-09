@@ -52,9 +52,13 @@ case "$CHOICE" in
     ;;
   5)
     echo "Removing relay configuration for direct Port 25 send..."
+    mkdir -p "$(dirname "${POSTFIX_CUSTOM}")"
     sed -i '/relayhost =/d' "${POSTFIX_CUSTOM}" 2>/dev/null || true
-    echo "Direct send restored. Restarting Postfix..."
-    cd "${MAIL_DIR}" && docker compose restart postfix-mailcow
+    echo "Direct send restored."
+    if [ -d "${MAIL_DIR}" ] && docker compose -f "${MAIL_DIR}/docker-compose.yml" ps --services 2>/dev/null | grep -q 'postfix-mailcow'; then
+      echo "Restarting Postfix..."
+      cd "${MAIL_DIR}" && docker compose restart postfix-mailcow
+    fi
     echo "Done!"
     exit 0
     ;;
@@ -63,6 +67,9 @@ case "$CHOICE" in
     exit 1
     ;;
 esac
+
+# Ensure target directory exists in /embed_mail
+mkdir -p "${MAIL_DIR}/data/conf/postfix"
 
 # Create Postfix sasl_passwd inside data/conf/postfix
 SASL_FILE="${MAIL_DIR}/data/conf/postfix/sasl_passwd"
@@ -81,6 +88,12 @@ smtp_tls_security_level = encrypt
 smtp_tls_note_starttls_offer = yes
 EOF
 
-echo "Relay configured successfully! Restarting Postfix container..."
-cd "${MAIL_DIR}" && docker compose restart postfix-mailcow
-echo "Postfix restarted. Outbound mail will now route through [${RELAY_HOST}]:${PORT}."
+echo "Relay configured successfully!"
+if [ -d "${MAIL_DIR}" ] && docker compose -f "${MAIL_DIR}/docker-compose.yml" ps --services 2>/dev/null | grep -q 'postfix-mailcow'; then
+  echo "Restarting Postfix container..."
+  cd "${MAIL_DIR}" && docker compose restart postfix-mailcow
+  echo "Postfix restarted. Outbound mail will now route through [${RELAY_HOST}]:${PORT}."
+else
+  echo "Note: Mailcow containers are not currently running."
+  echo "Once you run 'sudo bash /var/www/embeddedindia/scripts/deploy-email-server.sh', Postfix will boot with this relay."
+fi
