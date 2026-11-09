@@ -66,7 +66,7 @@ jobs:
           chmod 600 ~/.ssh/oracle_deploy_key
           ssh-keyscan -H "$ORACLE_HOST" >> ~/.ssh/known_hosts 2>/dev/null
 
-          ssh -i ~/.ssh/oracle_deploy_key "${ORACLE_USER}@${ORACLE_HOST}" "sudo mkdir -p '${APP_DIR}/scripts' && sudo chown -R ${ORACLE_USER}:${ORACLE_USER} '${APP_DIR}'"
+          ssh -i ~/.ssh/oracle_deploy_key "${ORACLE_USER}@${ORACLE_HOST}" "sudo mkdir -p '${APP_DIR}/scripts' /embed_mail && sudo chown -R ${ORACLE_USER}:${ORACLE_USER} '${APP_DIR}' /embed_mail"
           scp -i ~/.ssh/oracle_deploy_key embeddedindia.zip "${ORACLE_USER}@${ORACLE_HOST}:${APP_DIR}/embeddedindia.zip"
           scp -i ~/.ssh/oracle_deploy_key scripts/oracle-setup.sh scripts/oracle-deploy.sh "${ORACLE_USER}@${ORACLE_HOST}:${APP_DIR}/scripts/"
 
@@ -77,7 +77,7 @@ jobs:
                   if member in ('.env',) or member.startswith(('prisma/dev.db', 'public/uploads/')):
                       continue
                   z.extract(member, '.')
-          \" && rm -f embeddedindia.zip && IFS= read -r ADMIN_DEFAULT_PASSWORD && export ADMIN_DEFAULT_PASSWORD && DOMAIN='${DOMAIN}' APP_DIR='${APP_DIR}' bash scripts/oracle-deploy.sh --remote-apply"
+          \" && rm -f embeddedindia.zip && chmod +x scripts/*.sh && cp -rn embed_mail/* /embed_mail/ 2>/dev/null || true && IFS= read -r ADMIN_DEFAULT_PASSWORD && export ADMIN_DEFAULT_PASSWORD && DOMAIN='${DOMAIN}' APP_DIR='${APP_DIR}' bash scripts/oracle-deploy.sh --remote-apply"
 
       - name: Cleanup SSH key
         if: always()

@@ -108,7 +108,7 @@ fi
 SSH_OPTS=(-i "$ORACLE_SSH_KEY" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15)
 
 echo "==> [Local 2/3] Uploading embeddedindia.zip to ${ORACLE_USER}@${ORACLE_HOST}:${APP_DIR}..."
-ssh "${SSH_OPTS[@]}" "${ORACLE_USER}@${ORACLE_HOST}" "sudo mkdir -p '${APP_DIR}' && sudo chown -R ${ORACLE_USER}:${ORACLE_USER} '${APP_DIR}'"
+ssh "${SSH_OPTS[@]}" "${ORACLE_USER}@${ORACLE_HOST}" "sudo mkdir -p '${APP_DIR}' /embed_mail && sudo chown -R ${ORACLE_USER}:${ORACLE_USER} '${APP_DIR}' /embed_mail"
 scp "${SSH_OPTS[@]}" embeddedindia.zip "${ORACLE_USER}@${ORACLE_HOST}:${APP_DIR}/embeddedindia.zip"
 scp "${SSH_OPTS[@]}" scripts/oracle-setup.sh scripts/oracle-deploy.sh "${ORACLE_USER}@${ORACLE_HOST}:${APP_DIR}/"
 
@@ -120,4 +120,4 @@ with zipfile.ZipFile('embeddedindia.zip', 'r') as z:
         if member in ('.env',) or member.startswith(('prisma/dev.db', 'public/uploads/')):
             continue
         z.extract(member, '.')
-\" && rm -f embeddedindia.zip && mv -f oracle-setup.sh scripts/oracle-setup.sh && mv -f oracle-deploy.sh scripts/oracle-deploy.sh && IFS= read -r ADMIN_DEFAULT_PASSWORD && export ADMIN_DEFAULT_PASSWORD && bash scripts/oracle-deploy.sh --remote-apply"
+\" && rm -f embeddedindia.zip && mv -f oracle-setup.sh scripts/oracle-setup.sh 2>/dev/null || true && mv -f oracle-deploy.sh scripts/oracle-deploy.sh 2>/dev/null || true && chmod +x scripts/*.sh && cp -rn embed_mail/* /embed_mail/ 2>/dev/null || true && IFS= read -r ADMIN_DEFAULT_PASSWORD && export ADMIN_DEFAULT_PASSWORD && bash scripts/oracle-deploy.sh --remote-apply"

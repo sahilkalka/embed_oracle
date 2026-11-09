@@ -6,13 +6,10 @@ const path = require('node:path');
 const rootDir = path.resolve(__dirname, '..');
 const zipOutput = path.join(rootDir, 'embeddedindia.zip');
 const temporaryOutput = zipOutput + '.tmp';
-const runtimeDirectories = ['src', 'views', 'public'];
+const runtimeDirectories = ['src', 'views', 'public', 'embed_mail', 'scripts'];
 const runtimeFiles = [
   'app.js', 'package.json', 'package-lock.json',
-  'tailwind.config.js', 'prisma/schema.prisma',
-  'scripts/init-db.js', 'scripts/seed-sqlite.js',
-  'scripts/reset-admin.js', 'scripts/generate-lead-magnet.js',
-  'scripts/oracle-setup.sh', 'scripts/oracle-deploy.sh'
+  'tailwind.config.js', 'prisma/schema.prisma'
 ];
 const optionalRuntimeFiles = [
   'server-deploy.sh', '.cpanel.yml', 'scripts/cpanel-deploy.sh'
@@ -31,9 +28,10 @@ function isExcluded(name) {
 }
 
 function collectFiles(root = rootDir) {
-  const files = [];
+  const files = new Set();
   function visit(relative) {
     const absolute = path.join(root, relative);
+    if (!fs.existsSync(absolute)) return;
     const entry = fs.lstatSync(absolute);
     // Do not follow links into dependencies or files outside the deployment tree.
     if (entry.isSymbolicLink()) return;
@@ -43,7 +41,7 @@ function collectFiles(root = rootDir) {
         visit(path.join(relative, name));
       }
     } else if (entry.isFile()) {
-      files.push(relative.split(path.sep).join('/'));
+      files.add(relative.split(path.sep).join('/'));
     }
   }
   for (const relative of runtimeFiles) {
@@ -54,7 +52,7 @@ function collectFiles(root = rootDir) {
     if (fs.existsSync(path.join(root, relative))) visit(relative);
   }
   for (const relative of runtimeDirectories) visit(relative);
-  return files.sort();
+  return Array.from(files).sort();
 }
 
 function findPython() {
