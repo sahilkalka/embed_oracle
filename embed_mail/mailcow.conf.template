@@ -11,7 +11,7 @@ MAILCOW_HOSTNAME=mail.embeddedindia.in
 TZ=Asia/Kolkata
 
 # Web Binding & Ports (Loopback only - Host Nginx terminates public HTTPS)
-HTTP_PORT=8080
+HTTP_PORT=8088
 HTTP_BIND=127.0.0.1
 HTTPS_PORT=8443
 HTTPS_BIND=127.0.0.1
@@ -42,6 +42,7 @@ DBNAME=mailcow
 DBUSER=mailcow
 DBPASS=ChangeMeMailcowDBPass2026!
 DBROOT=ChangeMeMailcowRootPass2026!
+REDISPASS=ChangeMeMailcowRedisPass2026!
 
 # Admin Console Session & Security
 MAILCOW_PASS_SCHEME=BLF-CRYPT

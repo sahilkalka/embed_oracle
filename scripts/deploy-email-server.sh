@@ -59,11 +59,20 @@ if [ ! -f "${MAIL_DIR}/mailcow.conf" ]; then
   echo "Generating initial mailcow.conf from template..."
   cp "${ROOT_DIR}/embed_mail/mailcow.conf.template" "${MAIL_DIR}/mailcow.conf"
   
-  # Generate unique random passwords for DB
+  # Generate unique random passwords for DB and Redis
   DB_PASS=$(openssl rand -hex 16)
   DB_ROOT_PASS=$(openssl rand -hex 16)
+  REDIS_PASS=$(openssl rand -hex 16)
   sed -i "s/ChangeMeMailcowDBPass2026!/${DB_PASS}/g" "${MAIL_DIR}/mailcow.conf"
   sed -i "s/ChangeMeMailcowRootPass2026!/${DB_ROOT_PASS}/g" "${MAIL_DIR}/mailcow.conf"
+  sed -i "s/ChangeMeMailcowRedisPass2026!/${REDIS_PASS}/g" "${MAIL_DIR}/mailcow.conf"
+else
+  # Ensure HTTP_PORT is 8088 to avoid port collisions
+  sed -i "s/^HTTP_PORT=.*/HTTP_PORT=8088/" "${MAIL_DIR}/mailcow.conf"
+  if ! grep -q "^REDISPASS=" "${MAIL_DIR}/mailcow.conf"; then
+    REDIS_PASS=$(openssl rand -hex 16)
+    echo "REDISPASS=${REDIS_PASS}" >> "${MAIL_DIR}/mailcow.conf"
+  fi
 fi
 
 # Install Docker Compose override (binds web to 127.0.0.1:8080/8443)
