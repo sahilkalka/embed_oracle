@@ -37,6 +37,11 @@ Run the automated deployment script on the Oracle server:
 sudo bash scripts/deploy-email-server.sh
 ```
 
+If you ever need to repair file permissions, synchronize database schema, or recover from a blank page on the UI:
+```bash
+sudo bash scripts/fix-embed-mail.sh
+```
+
 ### 3. Configure Outbound Mail (Least Cost & Maximum Reliability)
 Follow instructions in [`docs/OUTBOUND_RELAY_AND_PORT25.md`](docs/OUTBOUND_RELAY_AND_PORT25.md) or run:
 ```bash

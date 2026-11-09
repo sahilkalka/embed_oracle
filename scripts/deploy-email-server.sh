@@ -59,19 +59,25 @@ if [ ! -f "${MAIL_DIR}/mailcow.conf" ]; then
   echo "Generating initial mailcow.conf from template..."
   cp "${ROOT_DIR}/embed_mail/mailcow.conf.template" "${MAIL_DIR}/mailcow.conf"
   
-  # Generate unique random passwords for DB and Redis
+  # Generate unique random passwords for DB, Redis, and SOGo
   DB_PASS=$(openssl rand -hex 16)
   DB_ROOT_PASS=$(openssl rand -hex 16)
   REDIS_PASS=$(openssl rand -hex 16)
+  SOGO_KEY=$(LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom 2>/dev/null | head -c 16 || openssl rand -hex 8)
   sed -i "s/ChangeMeMailcowDBPass2026!/${DB_PASS}/g" "${MAIL_DIR}/mailcow.conf"
   sed -i "s/ChangeMeMailcowRootPass2026!/${DB_ROOT_PASS}/g" "${MAIL_DIR}/mailcow.conf"
   sed -i "s/ChangeMeMailcowRedisPass2026!/${REDIS_PASS}/g" "${MAIL_DIR}/mailcow.conf"
+  sed -i "s/ChangeMeSogoEncKey16!/${SOGO_KEY}/g" "${MAIL_DIR}/mailcow.conf"
 else
   # Ensure HTTP_PORT is 8088 to avoid port collisions
   sed -i "s/^HTTP_PORT=.*/HTTP_PORT=8088/" "${MAIL_DIR}/mailcow.conf"
   if ! grep -q "^REDISPASS=" "${MAIL_DIR}/mailcow.conf"; then
     REDIS_PASS=$(openssl rand -hex 16)
     echo "REDISPASS=${REDIS_PASS}" >> "${MAIL_DIR}/mailcow.conf"
+  fi
+  if ! grep -q "^SOGO_URL_ENCRYPTION_KEY=" "${MAIL_DIR}/mailcow.conf"; then
+    SOGO_KEY=$(LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom 2>/dev/null | head -c 16 || openssl rand -hex 8)
+    echo "SOGO_URL_ENCRYPTION_KEY=${SOGO_KEY}" >> "${MAIL_DIR}/mailcow.conf"
   fi
 fi
 
@@ -84,6 +90,29 @@ cp "${ROOT_DIR}/embed_mail/docker-compose.override.yml" "${MAIL_DIR}/docker-comp
 # Install custom SOGo configuration for ActiveSync & Webmail
 mkdir -p "${MAIL_DIR}/data/conf/sogo"
 cp "${ROOT_DIR}/embed_mail/sogo/sogo-custom.conf" "${MAIL_DIR}/data/conf/sogo/custom-sogo.conf"
+
+# Fix permissions on Twig template cache and asset directories for PHP-FPM (UID 82:82)
+mkdir -p "${MAIL_DIR}/data/web/templates/cache"
+chown -R 82:82 "${MAIL_DIR}/data/web/templates/cache" 2>/dev/null || chmod -R 777 "${MAIL_DIR}/data/web/templates/cache"
+chmod -R 775 "${MAIL_DIR}/data/web/templates/cache"
+
+# Generate app_info.inc.php if missing
+if [ ! -f "${MAIL_DIR}/data/web/inc/app_info.inc.php" ]; then
+  cat <<'EOF' > "${MAIL_DIR}/data/web/inc/app_info.inc.php"
+<?php
+  $MAILCOW_GIT_VERSION="master";
+  $MAILCOW_LAST_GIT_VERSION="";
+  $MAILCOW_GIT_OWNER="mailcow";
+  $MAILCOW_GIT_REPO="mailcow-dockerized";
+  $MAILCOW_GIT_URL="https://github.com/mailcow/mailcow-dockerized";
+  $MAILCOW_GIT_COMMIT="master";
+  $MAILCOW_GIT_COMMIT_DATE=date("c");
+  $MAILCOW_BRANCH="master";
+  $MAILCOW_UPDATEDAT=time();
+?>
+EOF
+  chown 82:82 "${MAIL_DIR}/data/web/inc/app_info.inc.php" 2>/dev/null || true
+fi
 
 # Ensure Mailcow internal SSL certificate exists for nginx-mailcow
 mkdir -p "${MAIL_DIR}/data/assets/ssl"
@@ -137,6 +166,19 @@ echo "==> [6/7] Pulling and starting Mailcow containers in ${MAIL_DIR}..."
 cd "${MAIL_DIR}"
 docker compose pull
 docker compose up -d
+
+# Wait for MariaDB container and execute initial database schema sync
+echo "Waiting for MariaDB to initialize..."
+for i in {1..30}; do
+  if docker compose exec -T mysql-mailcow mariadb-admin ping --silent 2>/dev/null; then
+    break
+  fi
+  sleep 2
+done
+
+echo "Running initial database schema migration and API sync..."
+docker compose exec -T php-fpm-mailcow php -c /usr/local/etc/php -f /web/inc/init_db.inc.php || true
+docker compose restart php-fpm-mailcow nginx-mailcow
 
 # 7. Final Instructions & Status Summary
 echo "=================================================================="

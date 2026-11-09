@@ -15,6 +15,10 @@ HTTP_PORT=8088
 HTTP_BIND=127.0.0.1
 HTTPS_PORT=8443
 HTTPS_BIND=127.0.0.1
+HTTP_REDIRECT=n
+TRUSTED_PROXIES=127.0.0.1 172.22.1.1
+NGINX_MAX_BODY_SIZE=128m
+COMPOSE_PROJECT_NAME=mailcowdockerized
 
 # Direct Mail Ports (Exposed directly to host interfaces)
 SMTP_PORT=25
@@ -52,10 +56,19 @@ API_ALLOW_FROM=127.0.0.1
 
 # Additional Subject Alternative Names
 ADDITIONAL_SAN=autodiscover.embeddedindia.in,autoconfig.embeddedindia.in
+AUTODISCOVER_SAN=y
 
 # SOGo ActiveSync Options
 SOGO_EAS_MAX_ENTRIES=2000
 SOGO_EXPIRE_SESSION=480
+SOGO_URL_ENCRYPTION_KEY=ChangeMeSogoEncKey16!
+
+# System & Stack Flags
+MASTER=y
+DEV_MODE=n
+ACL_ANYONE=disallow
+MAILDIR_GC_TIME=7200
+ENABLE_IPV6=false
 
 # Subnet configuration for internal docker network
 IPV4_NETWORK=172.22.1
