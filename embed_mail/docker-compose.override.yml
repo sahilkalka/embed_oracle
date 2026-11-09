@@ -1,10 +1,13 @@
 # ==============================================================================
 # Mailcow Docker Compose Override for /embed_mail
-# Binds Web/Proxy containers to 127.0.0.1 so Host Nginx can reverse proxy
-# mail.embeddedindia.in alongside the existing website.
+# Binds Web/Proxy containers to 127.0.0.1:8088 so Host Nginx can reverse proxy
+# mail.embeddedindia.in alongside the existing website without port collisions.
 # ==============================================================================
 services:
   nginx-mailcow:
+    ports:
+      - "127.0.0.1:8088:80"
+      - "127.0.0.1:8443:443"
     restart: always
 
   sogo-mailcow:
