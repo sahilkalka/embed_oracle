@@ -6,7 +6,8 @@ Welcome to the **Embedded India Mail Infrastructure**. This guide outlines how t
 
 ## 🌐 Server Access Endpoints
 
-- **Webmail & Admin Console**: [`https://mail.embeddedindia.in/`](https://mail.embeddedindia.in/)
+- **Mailcow Admin Control Panel**: [`https://mail.embeddedindia.in/admin`](https://mail.embeddedindia.in/admin) (Domain & user provisioning)
+- **SOGo Webmail Interface**: [`https://mail.embeddedindia.in/SOGo/`](https://mail.embeddedindia.in/SOGo/) (User mail, calendar, and contacts)
 - **Microsoft Exchange ActiveSync (EAS)**: `https://mail.embeddedindia.in/Microsoft-Server-ActiveSync`
 - **IMAP over SSL**: `mail.embeddedindia.in:993` (SSL/TLS)
 - **SMTP Submission**: `mail.embeddedindia.in:587` (STARTTLS) or `465` (SSL/TLS)
@@ -17,10 +18,11 @@ Welcome to the **Embedded India Mail Infrastructure**. This guide outlines how t
 ## 🛠️ Admin Dashboard Operations
 
 ### 1. First-Time Administrator Login
-1. Open [`https://mail.embeddedindia.in/`](https://mail.embeddedindia.in/) in your browser.
+1. Open [`https://mail.embeddedindia.in/admin`](https://mail.embeddedindia.in/admin) in your browser.
+   > **Note**: Superadmin credentials authenticate exclusively at the `/admin` path. The root `/` or `/SOGo/` path is reserved for individual user email accounts (`user@embeddedindia.in`).
 2. Log in using default credentials:
    - **Username**: `admin`
-   - **Password**: `moohoo`
+   - **Password**: `moohoo` (or your custom `$ADMIN_PASSWORD`)
 3. Click <kbd>👤 Profile</kbd> in the top navigation bar.
 4. Click <kbd>🔑 Change Password</kbd> to set a strong master administrative password.
 5. *(Recommended)* Enable Two-Factor Authentication:

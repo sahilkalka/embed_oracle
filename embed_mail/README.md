@@ -51,6 +51,8 @@ sudo bash scripts/setup-outbound-relay.sh
 - **Path B ($0/mo direct)**: Submit OCI ticket to unlock outbound Port 25.
 
 ### 4. Access Admin Console & Webmail
-Open [`https://mail.embeddedindia.in/`](https://mail.embeddedindia.in/):
-- **Superadmin**: Log in with `admin` / `moohoo` (change password immediately).
-- Create mailboxes, edit quotas, and reset passwords using the guide in [`docs/ADMIN_GUIDE.md`](docs/ADMIN_GUIDE.md).
+- **Superadmin Control Panel**: [`https://mail.embeddedindia.in/admin`](https://mail.embeddedindia.in/admin)
+  - Log in with `admin` / `moohoo` (or custom `$ADMIN_PASSWORD`).
+  - Create mailboxes, edit quotas, and manage domains using [`docs/ADMIN_GUIDE.md`](docs/ADMIN_GUIDE.md).
+- **Webmail Interface (SOGo)**: [`https://mail.embeddedindia.in/SOGo/`](https://mail.embeddedindia.in/SOGo/)
+  - Log in with individual mailbox credentials (e.g. `sahil@embeddedindia.in`).

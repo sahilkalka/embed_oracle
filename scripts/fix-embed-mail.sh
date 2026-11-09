@@ -115,12 +115,102 @@ if [ -f "${ROOT_DIR}/embed_mail/sogo/sogo-custom.conf" ]; then
   cp "${ROOT_DIR}/embed_mail/sogo/sogo-custom.conf" "${MAIL_DIR}/data/conf/sogo/custom-sogo.conf"
 fi
 
-# 4. Synchronize Host Nginx configuration
-echo "==> [4/6] Updating Host Nginx configuration..."
+# 4. Synchronize Host Nginx configuration & Repair Let's Encrypt SSL Certificate
+echo "==> [4/6] Updating Host Nginx configuration & verifying SSL certificate..."
+mkdir -p /var/www/certbot /etc/nginx/sites-available /etc/nginx/sites-enabled
+chown -R www-data:www-data /var/www/certbot 2>/dev/null || chmod -R 755 /var/www/certbot
+
+if ! command -v certbot >/dev/null 2>&1; then
+  echo "Installing certbot and python3-certbot-nginx..."
+  apt-get update -y
+  apt-get install -y certbot python3-certbot-nginx
+fi
+
 if [ -f "${ROOT_DIR}/embed_mail/nginx/mail.embeddedindia.in.conf" ]; then
   cp "${ROOT_DIR}/embed_mail/nginx/mail.embeddedindia.in.conf" "/etc/nginx/sites-available/${MAIL_HOST}.conf"
   ln -sf "/etc/nginx/sites-available/${MAIL_HOST}.conf" "/etc/nginx/sites-enabled/${MAIL_HOST}.conf"
-  nginx -t && systemctl reload nginx
+fi
+
+# Ensure placeholder cert exists so Nginx can validate config if no cert exists
+mkdir -p "/etc/letsencrypt/live/${MAIL_HOST}"
+if [ ! -f "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem" ]; then
+  if [ -f "/etc/ssl/embeddedindia/origin.crt" ]; then
+    ln -sf /etc/ssl/embeddedindia/origin.crt "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem"
+    ln -sf /etc/ssl/embeddedindia/origin.key "/etc/letsencrypt/live/${MAIL_HOST}/privkey.pem"
+  else
+    openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
+      -keyout "/etc/letsencrypt/live/${MAIL_HOST}/privkey.pem" \
+      -out "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem" \
+      -subj "/CN=${MAIL_HOST}" 2>/dev/null
+  fi
+fi
+
+nginx -t
+systemctl reload nginx
+
+# Check if current certificate is self-signed or a symlink to Cloudflare origin CA
+NEEDS_LE_CERT=false
+if [ -L "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem" ]; then
+  TARGET=$(readlink -f "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem" || true)
+  if [[ "$TARGET" == *"/etc/ssl/embeddedindia/"* ]]; then
+    NEEDS_LE_CERT=true
+    echo "  ! Detected self-signed origin fallback certificate in /etc/letsencrypt/live/${MAIL_HOST}/."
+  fi
+fi
+
+if [ -f "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem" ]; then
+  CURRENT_ISSUER=$(openssl x509 -in "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem" -noout -issuer 2>/dev/null || echo "")
+  if echo "$CURRENT_ISSUER" | grep -qi "CN=embeddedindia.in"; then
+    NEEDS_LE_CERT=true
+    echo "  ! Current certificate issuer is self-signed ($CURRENT_ISSUER). Replacing with Let's Encrypt..."
+  fi
+else
+  NEEDS_LE_CERT=true
+fi
+
+if [ "$NEEDS_LE_CERT" = "true" ]; then
+  echo "Obtaining trusted Let's Encrypt certificate for ${MAIL_HOST} via ACME webroot..."
+  
+  MY_IP=$(curl -4s --max-time 3 https://ifconfig.me 2>/dev/null || curl -4s --max-time 3 https://icanhazip.com 2>/dev/null || echo "129.225.79.183")
+  CERT_DOMAINS=("-d" "${MAIL_HOST}")
+  
+  # Only append autodiscover / autoconfig if DNS points to this server IP
+  AUTODISC_IP=$(getent ahostsv4 "autodiscover.${DOMAIN}" 2>/dev/null | awk '{print $1; exit}' || echo "")
+  if [ -n "$AUTODISC_IP" ] && [ "$AUTODISC_IP" = "$MY_IP" ]; then
+    CERT_DOMAINS+=("-d" "autodiscover.${DOMAIN}")
+  else
+    echo "  Notice: autodiscover.${DOMAIN} does not point to this server (${MY_IP}) - omitting from cert request."
+  fi
+  
+  AUTOCONF_IP=$(getent ahostsv4 "autoconfig.${DOMAIN}" 2>/dev/null | awk '{print $1; exit}' || echo "")
+  if [ -n "$AUTOCONF_IP" ] && [ "$AUTOCONF_IP" = "$MY_IP" ]; then
+    CERT_DOMAINS+=("-d" "autoconfig.${DOMAIN}")
+  else
+    echo "  Notice: autoconfig.${DOMAIN} does not point to this server (${MY_IP}) - omitting from cert request."
+  fi
+
+  # Clear symlink so certbot can create the actual live certificate directory
+  if [ -L "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem" ]; then
+    rm -f "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem" "/etc/letsencrypt/live/${MAIL_HOST}/privkey.pem"
+    rmdir "/etc/letsencrypt/live/${MAIL_HOST}" 2>/dev/null || true
+  fi
+
+  certbot certonly --webroot -w /var/www/certbot "${CERT_DOMAINS[@]}" \
+    --non-interactive --agree-tos -m "admin@${DOMAIN}" --keep-until-expiring || {
+      echo "Warning: Certbot run failed. Restoring origin fallback temporarily..."
+      mkdir -p "/etc/letsencrypt/live/${MAIL_HOST}"
+      ln -sf /etc/ssl/embeddedindia/origin.crt "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem"
+      ln -sf /etc/ssl/embeddedindia/origin.key "/etc/letsencrypt/live/${MAIL_HOST}/privkey.pem"
+    }
+  
+  nginx -t
+  systemctl reload nginx
+fi
+
+# Print confirmed certificate issuer
+if [ -f "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem" ]; then
+  ACTIVE_ISSUER=$(openssl x509 -in "/etc/letsencrypt/live/${MAIL_HOST}/fullchain.pem" -noout -issuer 2>/dev/null || echo "Unknown")
+  echo "  + Active SSL Issuer: ${ACTIVE_ISSUER}"
 fi
 
 # 5. Recreate Docker Containers & Run Database Schema Sync
@@ -170,14 +260,23 @@ echo "Provisioning master admin credentials for 'admin'..."
 source "${MAIL_DIR}/mailcow.conf" 2>/dev/null || true
 ADMIN_HASH=$(docker compose exec -T dovecot-mailcow doveadm pw -s SSHA256 -p "${TARGET_ADMIN_PASS}" 2>/dev/null | tr -d '\r\n')
 
-if [ -n "${ADMIN_HASH}" ]; then
-  docker compose exec -T mysql-mailcow mariadb -u"${DBUSER}" -p"${DBPASS}" "${DBNAME}" -e "
+if [ -n "${ADMIN_HASH}" ] && [ -n "${DBPASS:-}" ]; then
+  docker compose exec -T mysql-mailcow sh -c "mysql -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -e \"
     DELETE FROM admin WHERE username='admin';
     DELETE FROM domain_admins WHERE username='admin';
     INSERT INTO admin (username, password, superadmin, active) VALUES ('admin', '${ADMIN_HASH}', 1, 1);
     DELETE FROM tfa WHERE username='admin';
-  " 2>/dev/null || true
-  echo "  + Master admin account provisioned."
+  \" 2>/dev/null || mariadb -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -e \"
+    DELETE FROM admin WHERE username='admin';
+    DELETE FROM domain_admins WHERE username='admin';
+    INSERT INTO admin (username, password, superadmin, active) VALUES ('admin', '${ADMIN_HASH}', 1, 1);
+    DELETE FROM tfa WHERE username='admin';
+  \"" 2>/dev/null || true
+
+  ADMIN_CHECK=$(docker compose exec -T mysql-mailcow sh -c "mysql -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -N -e \"SELECT username FROM admin WHERE username='admin';\" 2>/dev/null || mariadb -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -N -e \"SELECT username FROM admin WHERE username='admin';\" 2>/dev/null" | tr -d '\r\n' || true)
+  if [ "${ADMIN_CHECK}" = "admin" ]; then
+    echo "  + Master admin account successfully provisioned and verified in database."
+  fi
 else
   # Fallback to built-in helper script if doveadm was not yet responsive
   if [ -f "${MAIL_DIR}/helper-scripts/mailcow-reset-admin.sh" ]; then
@@ -207,7 +306,8 @@ else
 fi
 echo "=================================================================="
 echo "Superadmin Login Credentials:"
-echo "  - URL:      https://${MAIL_HOST}/"
-echo "  - Username: admin"
-echo "  - Password: ${TARGET_ADMIN_PASS}"
+echo "  - Mailcow Control Panel: https://${MAIL_HOST}/admin"
+echo "  - SOGo Webmail:          https://${MAIL_HOST}/SOGo/ (or https://${MAIL_HOST}/)"
+echo "  - Admin Username:        admin"
+echo "  - Admin Password:        ${TARGET_ADMIN_PASS}"
 echo "=================================================================="
