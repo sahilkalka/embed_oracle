@@ -120,6 +120,17 @@ echo "==> [4/6] Updating Host Nginx configuration & verifying SSL certificate...
 mkdir -p /var/www/certbot /etc/nginx/sites-available /etc/nginx/sites-enabled
 chown -R www-data:www-data /var/www/certbot 2>/dev/null || chmod -R 755 /var/www/certbot
 
+# Ensure Inbound Mail Ports are open in Host iptables
+echo "==> Ensuring host iptables firewall allows mail protocol ports..."
+MAIL_PORTS=(25 465 587 993 995 4190)
+for PORT in "${MAIL_PORTS[@]}"; do
+  if ! iptables -C INPUT -p tcp --dport "${PORT}" -j ACCEPT 2>/dev/null; then
+    iptables -I INPUT 1 -p tcp --dport "${PORT}" -m state --state NEW -j ACCEPT
+    echo "  + Opened TCP port ${PORT} in host iptables"
+  fi
+done
+netfilter-persistent save 2>/dev/null || true
+
 if ! command -v certbot >/dev/null 2>&1; then
   echo "Installing certbot and python3-certbot-nginx..."
   apt-get update -y
