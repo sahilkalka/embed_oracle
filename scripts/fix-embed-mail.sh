@@ -124,8 +124,21 @@ if [ -f "${ROOT_DIR}/embed_mail/nginx/mail.embeddedindia.in.conf" ]; then
 fi
 
 # 5. Recreate Docker Containers & Run Database Schema Sync
-echo "==> [5/6] Starting containers and running schema synchronization..."
+echo "==> [5/6] Recreating containers and cleaning conflicting networks..."
 cd "${MAIL_DIR}"
+
+# Tear down existing containers to prevent network pool overlap
+docker compose down --remove-orphans 2>/dev/null || true
+
+# Check for and clean any orphaned networks using subnet 172.22.1.0/24
+echo "Cleaning any stale networks on subnet 172.22.1..."
+for net in $(docker network ls -q 2>/dev/null); do
+  if docker network inspect "$net" 2>/dev/null | grep -q "172.22.1."; then
+    docker network rm "$net" 2>/dev/null || true
+  fi
+done
+
+# Start containers with a clean network pool
 docker compose up -d
 
 # Wait for MariaDB to accept connections
@@ -142,6 +155,37 @@ done
 echo "Running schema migration and API sync in php-fpm-mailcow..."
 docker compose exec -T php-fpm-mailcow php -c /usr/local/etc/php -f /web/inc/init_db.inc.php || true
 
+# Wait for Dovecot for password hashing
+echo "Waiting for Dovecot service for password encryption..."
+for i in {1..20}; do
+  if docker compose exec -T dovecot-mailcow doveadm whoami 2>/dev/null; then
+    break
+  fi
+  sleep 1
+done
+
+# Reset / Provision the admin account credentials
+TARGET_ADMIN_PASS="${ADMIN_PASSWORD:-moohoo}"
+echo "Provisioning master admin credentials for 'admin'..."
+source "${MAIL_DIR}/mailcow.conf" 2>/dev/null || true
+ADMIN_HASH=$(docker compose exec -T dovecot-mailcow doveadm pw -s SSHA256 -p "${TARGET_ADMIN_PASS}" 2>/dev/null | tr -d '\r\n')
+
+if [ -n "${ADMIN_HASH}" ]; then
+  docker compose exec -T mysql-mailcow mariadb -u"${DBUSER}" -p"${DBPASS}" "${DBNAME}" -e "
+    DELETE FROM admin WHERE username='admin';
+    DELETE FROM domain_admins WHERE username='admin';
+    INSERT INTO admin (username, password, superadmin, active) VALUES ('admin', '${ADMIN_HASH}', 1, 1);
+    DELETE FROM tfa WHERE username='admin';
+  " 2>/dev/null || true
+  echo "  + Master admin account provisioned."
+else
+  # Fallback to built-in helper script if doveadm was not yet responsive
+  if [ -f "${MAIL_DIR}/helper-scripts/mailcow-reset-admin.sh" ]; then
+    echo "Running helper-scripts/mailcow-reset-admin.sh..."
+    bash "${MAIL_DIR}/helper-scripts/mailcow-reset-admin.sh" -y || true
+  fi
+fi
+
 # Restart php-fpm-mailcow and nginx-mailcow to pick up fresh configuration and cleared cache
 echo "Restarting php-fpm-mailcow and nginx-mailcow..."
 docker compose restart php-fpm-mailcow nginx-mailcow
@@ -157,8 +201,13 @@ echo "Health Check Result:"
 echo "  - Local Port 8088 HTTP Code: ${LOCAL_HTTP_CODE}"
 echo "  - Local Port 8088 Body Size: ${LOCAL_BODY_SIZE} bytes"
 if [ "${LOCAL_BODY_SIZE}" -gt 500 ]; then
-  echo "  ==> SUCCESS: Mailcow web UI is returning content!"
+  echo "  ==> SUCCESS: Mailcow web UI is live and returning content!"
 else
   echo "  ==> Note: Check 'docker compose logs --tail=50 php-fpm-mailcow' if body remains empty."
 fi
+echo "=================================================================="
+echo "Superadmin Login Credentials:"
+echo "  - URL:      https://${MAIL_HOST}/"
+echo "  - Username: admin"
+echo "  - Password: ${TARGET_ADMIN_PASS}"
 echo "=================================================================="
