@@ -121,7 +121,7 @@ EOF
   chown 82:82 "${MAIL_DIR}/data/web/inc/app_info.inc.php" 2>/dev/null || true
 fi
 
-# Ensure Mailcow internal SSL certificate exists for nginx-mailcow
+# Ensure Mailcow internal SSL certificate and dhparams exist for nginx-mailcow and dovecot-mailcow
 mkdir -p "${MAIL_DIR}/data/assets/ssl"
 if [ ! -f "${MAIL_DIR}/data/assets/ssl/cert.pem" ] || [ ! -f "${MAIL_DIR}/data/assets/ssl/key.pem" ]; then
   echo "Generating internal SSL certificate for Mailcow Nginx..."
@@ -130,6 +130,12 @@ if [ ! -f "${MAIL_DIR}/data/assets/ssl/cert.pem" ] || [ ! -f "${MAIL_DIR}/data/a
     -out "${MAIL_DIR}/data/assets/ssl/cert.pem" \
     -subj "/CN=${MAIL_HOST}"
   chmod 600 "${MAIL_DIR}/data/assets/ssl/key.pem"
+fi
+
+if [ ! -f "${MAIL_DIR}/data/assets/ssl/dhparams.pem" ]; then
+  echo "Generating Diffie-Hellman parameters (dhparams.pem) for Dovecot..."
+  openssl dhparam -out "${MAIL_DIR}/data/assets/ssl/dhparams.pem" 2048
+  chmod 644 "${MAIL_DIR}/data/assets/ssl/dhparams.pem"
 fi
 
 # 4. Open Inbound Mail Ports in Host iptables

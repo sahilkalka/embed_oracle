@@ -56,7 +56,7 @@ set_conf_var "HTTP_BIND" "127.0.0.1"
 set_conf_var "HTTPS_PORT" "8443"
 set_conf_var "HTTPS_BIND" "127.0.0.1"
 set_conf_var "HTTP_REDIRECT" "n"
-set_conf_var "TRUSTED_PROXIES" "127.0.0.1 172.22.1.1"
+set_conf_var "TRUSTED_PROXIES" "127.0.0.1,172.22.1.1"
 set_conf_var "COMPOSE_PROJECT_NAME" "mailcowdockerized"
 set_conf_var "MASTER" "y"
 set_conf_var "DEV_MODE" "n"
@@ -90,6 +90,13 @@ find "${MAIL_DIR}/data/web/templates/cache" -mindepth 1 -not -name '.gitkeep' -d
 # Grant www-data (UID 82) write access to templates cache and runtime dirs
 chown -R 82:82 "${MAIL_DIR}/data/web/templates/cache" 2>/dev/null || chmod -R 777 "${MAIL_DIR}/data/web/templates/cache"
 chmod -R 775 "${MAIL_DIR}/data/web/templates/cache"
+
+# Ensure dhparams.pem exists for Dovecot
+if [ ! -f "${MAIL_DIR}/data/assets/ssl/dhparams.pem" ]; then
+  echo "Generating dhparams.pem for Dovecot SSL..."
+  openssl dhparam -out "${MAIL_DIR}/data/assets/ssl/dhparams.pem" 2048
+  chmod 644 "${MAIL_DIR}/data/assets/ssl/dhparams.pem"
+fi
 
 # Ensure app_info.inc.php exists
 if [ ! -f "${MAIL_DIR}/data/web/inc/app_info.inc.php" ]; then
