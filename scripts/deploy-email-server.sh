@@ -85,6 +85,17 @@ cp "${ROOT_DIR}/embed_mail/docker-compose.override.yml" "${MAIL_DIR}/docker-comp
 mkdir -p "${MAIL_DIR}/data/conf/sogo"
 cp "${ROOT_DIR}/embed_mail/sogo/sogo-custom.conf" "${MAIL_DIR}/data/conf/sogo/custom-sogo.conf"
 
+# Ensure Mailcow internal SSL certificate exists for nginx-mailcow
+mkdir -p "${MAIL_DIR}/data/assets/ssl"
+if [ ! -f "${MAIL_DIR}/data/assets/ssl/cert.pem" ] || [ ! -f "${MAIL_DIR}/data/assets/ssl/key.pem" ]; then
+  echo "Generating internal SSL certificate for Mailcow Nginx..."
+  openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+    -keyout "${MAIL_DIR}/data/assets/ssl/key.pem" \
+    -out "${MAIL_DIR}/data/assets/ssl/cert.pem" \
+    -subj "/CN=${MAIL_HOST}"
+  chmod 600 "${MAIL_DIR}/data/assets/ssl/key.pem"
+fi
+
 # 4. Open Inbound Mail Ports in Host iptables
 echo "==> [4/7] Configuring host iptables firewall for email protocols..."
 MAIL_PORTS=(25 465 587 993 995 4190)
