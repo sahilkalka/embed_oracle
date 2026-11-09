@@ -75,7 +75,10 @@ else
   fi
 fi
 
-# Install Docker Compose override (binds web to 127.0.0.1:8080/8443)
+# Ensure .env symlink points to mailcow.conf (Docker Compose requires .env)
+ln -snf mailcow.conf "${MAIL_DIR}/.env"
+
+# Install Docker Compose override
 cp "${ROOT_DIR}/embed_mail/docker-compose.override.yml" "${MAIL_DIR}/docker-compose.override.yml"
 
 # Install custom SOGo configuration for ActiveSync & Webmail
