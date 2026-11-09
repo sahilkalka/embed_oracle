@@ -1,0 +1,61 @@
+# ==============================================================================
+# Mailcow Configuration for Embedded India (/embed_mail)
+# Target Server: Oracle Cloud VM.Standard.A1.Flex (Ubuntu 24.04/26.04 ARM64)
+# Reverse Proxy: Host Nginx on 80/443 -> Mailcow on 127.0.0.1:8080/8443
+# ==============================================================================
+
+# Fully Qualified Domain Name of your mail server
+MAILCOW_HOSTNAME=mail.embeddedindia.in
+
+# Default timezone for containers
+TZ=Asia/Kolkata
+
+# Web Binding & Ports (Loopback only - Host Nginx terminates public HTTPS)
+HTTP_PORT=8080
+HTTP_BIND=127.0.0.1
+HTTPS_PORT=8443
+HTTPS_BIND=127.0.0.1
+
+# Direct Mail Ports (Exposed directly to host interfaces)
+SMTP_PORT=25
+SMTPS_PORT=465
+SUBMISSION_PORT=587
+IMAP_PORT=143
+IMAPS_PORT=993
+POP_PORT=110
+POPS_PORT=995
+SIEVE_PORT=4190
+
+# Host Nginx handles SSL reverse proxy termination for mail.embeddedindia.in
+SKIP_LETS_ENCRYPT=y
+ENABLE_STANDALONE_ACME=n
+
+# Mail Services Configuration
+SKIP_SOGO=n
+SKIP_CLAMD=n
+SKIP_SOLR=n
+USE_WATCHDOG=y
+WATCHDOG_NOTIFY_EMAIL=admin@embeddedindia.in
+
+# Database Settings (Will be randomly generated or filled during deployment)
+DBNAME=mailcow
+DBUSER=mailcow
+DBPASS=ChangeMeMailcowDBPass2026!
+DBROOT=ChangeMeMailcowRootPass2026!
+
+# Admin Console Session & Security
+MAILCOW_PASS_SCHEME=BLF-CRYPT
+API_KEY=
+API_KEY_READ_ONLY=
+API_ALLOW_FROM=127.0.0.1
+
+# Additional Subject Alternative Names
+ADDITIONAL_SAN=autodiscover.embeddedindia.in,autoconfig.embeddedindia.in
+
+# SOGo ActiveSync Options
+SOGO_EAS_MAX_ENTRIES=2000
+SOGO_EXPIRE_SESSION=480
+
+# Subnet configuration for internal docker network
+IPV4_NETWORK=172.22.1
+IPV6_NETWORK=fd4d:6169:6c63::/64
