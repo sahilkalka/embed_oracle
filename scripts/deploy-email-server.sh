@@ -223,8 +223,30 @@ fi
 # 6. Pull and Launch Mailcow Docker Services
 echo "==> [6/7] Pulling and starting Mailcow containers in ${MAIL_DIR}..."
 cd "${MAIL_DIR}"
+
+# Ensure docker-compose.override.yml is synced
+if [ -f "${ROOT_DIR}/embed_mail/docker-compose.override.yml" ]; then
+  cp "${ROOT_DIR}/embed_mail/docker-compose.override.yml" "${MAIL_DIR}/docker-compose.override.yml"
+fi
+
+# Clean any existing or stuck containers and networks
+docker compose down --remove-orphans 2>/dev/null || true
+for cid in $(docker ps -a --filter "name=mailcow" -q 2>/dev/null); do
+  docker rm -f "$cid" 2>/dev/null || true
+done
+docker network prune -f 2>/dev/null || true
+for net in $(docker network ls --format '{{.ID}} {{.Name}}' 2>/dev/null | grep -iE 'mailcow' | awk '{print $1}'); do
+  docker network rm "$net" 2>/dev/null || true
+done
+
 docker compose pull
-docker compose up -d
+docker compose up -d || {
+  echo "Retrying after Docker service restart..."
+  systemctl restart docker
+  sleep 3
+  cd "${MAIL_DIR}"
+  docker compose up -d
+}
 
 # Wait for MariaDB container and execute initial database schema sync
 echo "Waiting for MariaDB to initialize..."

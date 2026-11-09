@@ -22,3 +22,7 @@ services:
 
   rspamd-mailcow:
     restart: always
+
+networks:
+  mailcow-network:
+    enable_ipv6: false

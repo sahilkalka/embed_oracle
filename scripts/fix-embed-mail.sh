@@ -228,19 +228,51 @@ fi
 echo "==> [5/6] Recreating containers and cleaning conflicting networks..."
 cd "${MAIL_DIR}"
 
-# Tear down existing containers to prevent network pool overlap
-docker compose down --remove-orphans 2>/dev/null || true
+# Ensure docker-compose.override.yml is synced
+if [ -f "${ROOT_DIR}/embed_mail/docker-compose.override.yml" ]; then
+  cp "${ROOT_DIR}/embed_mail/docker-compose.override.yml" "${MAIL_DIR}/docker-compose.override.yml"
+fi
 
-# Check for and clean any orphaned networks using subnet 172.22.1.0/24
+# Stop and force-remove any lingering mailcow containers to disconnect endpoints
+echo "Stopping and disconnecting any existing mailcow containers..."
+docker compose down --remove-orphans 2>/dev/null || true
+for cid in $(docker ps -a --filter "name=mailcow" -q 2>/dev/null); do
+  docker rm -f "$cid" 2>/dev/null || true
+done
+
+# Clean up conflicting networks and stale IPAM pools
 echo "Cleaning any stale networks on subnet 172.22.1..."
-for net in $(docker network ls -q 2>/dev/null); do
-  if docker network inspect "$net" 2>/dev/null | grep -q "172.22.1."; then
-    docker network rm "$net" 2>/dev/null || true
+docker network prune -f 2>/dev/null || true
+for net in $(docker network ls --format '{{.ID}} {{.Name}}' 2>/dev/null | grep -iE 'mailcow' | awk '{print $1}'); do
+  docker network rm "$net" 2>/dev/null || true
+done
+
+# Check if any network still holds 172.22.1
+STALE_NET=""
+for nid in $(docker network ls -q 2>/dev/null); do
+  if docker network inspect "$nid" 2>/dev/null | grep -q "172.22.1."; then
+    STALE_NET="$nid"
+    docker network rm -f "$nid" 2>/dev/null || true
   fi
 done
 
+# If an overlapping IPAM network was locked by Docker daemon, restart daemon to clear in-memory IPAM tables
+if [ -n "$STALE_NET" ] || docker network ls | grep -qi "mailcow"; then
+  echo "Restarting Docker service to flush stuck IPAM address pools..."
+  systemctl restart docker
+  sleep 3
+fi
+
 # Start containers with a clean network pool
-docker compose up -d
+echo "Starting Mailcow containers..."
+cd "${MAIL_DIR}"
+docker compose up -d || {
+  echo "Retrying after Docker service restart..."
+  systemctl restart docker
+  sleep 3
+  cd "${MAIL_DIR}"
+  docker compose up -d
+}
 
 # Wait for MariaDB to accept connections
 echo "Waiting for MariaDB container to be ready..."
