@@ -87,9 +87,15 @@ mkdir -p "${MAIL_DIR}/data/conf/sogo"
 # Clear any stale or broken cached templates
 find "${MAIL_DIR}/data/web/templates/cache" -mindepth 1 -not -name '.gitkeep' -delete 2>/dev/null || true
 
-# Grant www-data (UID 82) write access to templates cache and runtime dirs
-chown -R 82:82 "${MAIL_DIR}/data/web/templates/cache" 2>/dev/null || chmod -R 777 "${MAIL_DIR}/data/web/templates/cache"
-chmod -R 775 "${MAIL_DIR}/data/web/templates/cache"
+# Grant www-data (UID 82) full write access to templates cache and runtime dirs
+chown -R 82:82 "${MAIL_DIR}/data/web/templates/cache" 2>/dev/null || true
+chmod -R 777 "${MAIL_DIR}/data/web/templates/cache"
+
+# Fix permissions on Dovecot SQL dict configuration files for dovecot process (UID 401)
+if [ -d "${MAIL_DIR}/data/conf/dovecot/sql" ]; then
+  chmod 755 "${MAIL_DIR}/data/conf/dovecot/sql"
+  chmod 644 "${MAIL_DIR}/data/conf/dovecot/sql"/*.conf 2>/dev/null || true
+fi
 
 # Ensure dhparams.pem exists for Dovecot
 if [ ! -f "${MAIL_DIR}/data/assets/ssl/dhparams.pem" ]; then

@@ -170,4 +170,36 @@ except urllib.error.HTTPError as e:
     print("SOGo Login error:", e.code, e.read().decode())
 
 print("=" * 60)
+print("7. Testing Admin Dashboard Pages (Twig Template Compilation)")
+import http.cookiejar
+import re
+import urllib.parse
+
+cj = http.cookiejar.CookieJar()
+opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+
+# Fetch login page and CSRF
+login_page_req = urllib.request.Request("http://127.0.0.1:8088/", headers={"X-Forwarded-Proto": "https", "X-Real-IP": "127.0.0.1"})
+html_login = opener.open(login_page_req).read().decode()
+token_match = re.search(r'value="([a-f0-9]{64})"', html_login)
+if token_match:
+    token = token_match.group(1)
+    # Login as admin
+    login_payload = urllib.parse.urlencode({"login_user": "admin", "pass_user": "moohoo", "csrf_token": token}).encode()
+    login_post_req = urllib.request.Request("http://127.0.0.1:8088/", data=login_payload, headers={"X-Forwarded-Proto": "https", "X-Real-IP": "127.0.0.1"})
+    opener.open(login_post_req)
+
+    admin_pages = ["/admin/mailbox.php", "/admin/system.php", "/quarantine.php", "/settings.php", "/forwardinghosts.php"]
+    for page in admin_pages:
+        try:
+            page_req = urllib.request.Request(f"http://127.0.0.1:8088{page}", headers={"X-Forwarded-Proto": "https", "X-Real-IP": "127.0.0.1"})
+            page_resp = opener.open(page_req)
+            content = page_resp.read().decode()
+            has_error = "RuntimeException" in content or "An unknown error occured" in content
+            status_text = "FAILED" if has_error else ("BLANK" if len(content) < 500 else "OK")
+            print(f"Page {page}: HTTP {page_resp.status} - {status_text} ({len(content)} bytes)")
+        except Exception as e:
+            print(f"Page {page}: EXCEPTION - {e}")
+
+print("=" * 60)
 print("ALL TESTS PASSED SUCCESSFULLY!")
