@@ -390,9 +390,10 @@ else
   echo "  ==> Note: Check 'docker compose logs --tail=50 php-fpm-mailcow' if body remains empty."
 fi
 echo "=================================================================="
-echo "Superadmin Login Credentials:"
-echo "  - Email Admin Dashboard:       https://${MAIL_HOST}/admin (Embedded India Website Admin Theme)"
-echo "  - User Webmail (Outlook Web):  https://${MAIL_HOST}/mail (or https://${MAIL_HOST}/)"
+echo "Superadmin Access URLs:"
+echo "  - Email Admin Dashboard:       https://${DOMAIN}/admin/email"
+echo "  - User Webmail (Outlook Web):  https://${DOMAIN}/webmail (or https://${MAIL_HOST})"
+echo "  - Raw Mail Engine Backend:     https://${MAIL_HOST}/admin"
 echo "  - Admin Username:              admin"
 echo "  - Admin Password:              ${TARGET_ADMIN_PASS}"
 echo "=================================================================="
