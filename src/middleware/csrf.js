@@ -20,8 +20,8 @@ function generateToken() {
  * Validates token on state-changing methods (POST, PUT, PATCH, DELETE)
  */
 function csrfProtection(req, res, next) {
-  // Skip CSRF for excluded paths (public API endpoints)
-  if (EXCLUDED_PATHS.includes(req.path)) {
+  // Skip CSRF for excluded paths (public API endpoints & webmail actions)
+  if (EXCLUDED_PATHS.includes(req.path) || req.path.startsWith('/webmail/api') || req.path === '/webmail/login') {
     res.locals.csrfToken = generateToken();
     return next();
   }

@@ -15,11 +15,12 @@ class MailboxService {
   /**
    * Helper to instantiate an ImapFlow client
    */
-  getImapClient(email, password) {
+  getImapClient(email, password, port = IMAP_PORT) {
+    const isSsl = port === 993;
     return new ImapFlow({
       host: IMAP_HOST,
-      port: IMAP_PORT,
-      secure: IMAP_PORT === 993,
+      port: port,
+      secure: isSsl,
       auth: {
         user: email,
         pass: password
@@ -27,6 +28,9 @@ class MailboxService {
       tls: {
         rejectUnauthorized: false // Allow internal/loopback SSL certificates
       },
+      connectionTimeout: 8000,
+      greetingTimeout: 8000,
+      socketTimeout: 30000,
       logger: false
     });
   }
@@ -45,21 +49,33 @@ class MailboxService {
       },
       tls: {
         rejectUnauthorized: false
-      }
+      },
+      connectionTimeout: 8000,
+      greetingTimeout: 8000
     });
   }
 
   /**
-   * Authenticate mailbox credentials against Dovecot IMAP
+   * Authenticate mailbox credentials against Dovecot IMAP (trying 993 then 143 fallback)
    */
   async authenticate(email, password) {
-    const client = this.getImapClient(email, password);
+    let client = this.getImapClient(email, password, IMAP_PORT);
     try {
       await client.connect();
       await client.logout();
       return { success: true };
-    } catch (err) {
-      return { success: false, error: err.message || 'Authentication failed' };
+    } catch (err993) {
+      if (IMAP_PORT === 993 && (err993.code === 'ECONNREFUSED' || err993.code === 'ETIMEDOUT')) {
+        try {
+          client = this.getImapClient(email, password, 143);
+          await client.connect();
+          await client.logout();
+          return { success: true, fallbackPort: 143 };
+        } catch (err143) {
+          return { success: false, error: err143.message || 'Authentication failed' };
+        }
+      }
+      return { success: false, error: err993.message || 'Authentication failed' };
     }
   }
 
@@ -226,7 +242,7 @@ class MailboxService {
     try {
       const client = this.getImapClient(email, password);
       await client.connect();
-      
+
       const rawMessage = Buffer.from(
         `From: ${email}\r\nTo: ${to}\r\nSubject: ${subject}\r\nDate: ${new Date().toUTCString()}\r\nContent-Type: text/html; charset=utf-8\r\n\r\n${html || text}`
       );

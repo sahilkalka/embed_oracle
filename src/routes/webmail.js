@@ -1,21 +1,36 @@
 // src/routes/webmail.js
 // Native Microsoft Outlook Web Webmail Client Routes with Live Dovecot IMAP/SMTP Integration
+// Uses signed JWT HTTP-only cookies for cluster-resilient session authentication
 
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const mailboxService = require('../services/mailboxService');
+
+const JWT_SECRET = process.env.ADMIN_JWT_SECRET || 'embeddedindia_mailbox_jwt_secret_999';
+const COOKIE_NAME = 'webmail_auth';
 
 router.use((req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   next();
 });
 
+// Helper to extract authenticated mailbox user from JWT cookie
+function getMailboxUser(req) {
+  const token = req.cookies && req.cookies[COOKIE_NAME];
+  if (!token) return null;
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (err) {
+    return null;
+  }
+}
+
 // GET /webmail - Main Webmail View or Outlook Login Page
 router.get('/', (req, res) => {
-  if (req.session && req.session.mailbox) {
-    return res.render('webmail/index', {
-      user: req.session.mailbox
-    });
+  const user = getMailboxUser(req);
+  if (user) {
+    return res.render('webmail/index', { user });
   }
   return res.render('webmail/login', {
     error: req.query.error || null,
@@ -31,12 +46,22 @@ router.post('/login', async (req, res) => {
     const isDemo = req.body.demo === 'true';
 
     if (isDemo) {
-      req.session.mailbox = {
-        email: 'sahil@embeddedindia.in',
-        name: 'Sahil Kalka',
-        avatar: 'SK',
-        isDemo: true
-      };
+      const demoToken = jwt.sign(
+        {
+          email: 'sahil@embeddedindia.in',
+          name: 'Sahil Kalka',
+          avatar: 'SK',
+          isDemo: true
+        },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      res.cookie(COOKIE_NAME, demoToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      });
       if (req.xhr || req.headers.accept?.includes('json')) {
         return res.json({ success: true, redirect: '/webmail' });
       }
@@ -66,13 +91,24 @@ router.post('/login', async (req, res) => {
     const displayName = usernamePart.charAt(0).toUpperCase() + usernamePart.slice(1);
     const initials = (usernamePart.slice(0, 2)).toUpperCase();
 
-    req.session.mailbox = {
-      email,
-      password,
-      name: displayName,
-      avatar: initials,
-      isDemo: false
-    };
+    const authToken = jwt.sign(
+      {
+        email,
+        password,
+        name: displayName,
+        avatar: initials,
+        isDemo: false
+      },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.cookie(COOKIE_NAME, authToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
 
     if (req.xhr || req.headers.accept?.includes('json')) {
       return res.json({ success: true, redirect: '/webmail' });
@@ -90,23 +126,23 @@ router.post('/login', async (req, res) => {
 
 // GET & POST /webmail/logout
 router.all('/logout', (req, res) => {
-  if (req.session) {
-    delete req.session.mailbox;
-  }
+  res.clearCookie(COOKIE_NAME);
   res.redirect('/webmail');
 });
 
 // Middleware to protect API routes
 function requireMailbox(req, res, next) {
-  if (!req.session || !req.session.mailbox) {
+  const user = getMailboxUser(req);
+  if (!user) {
     return res.status(401).json({ error: 'Unauthorized: Mailbox session required' });
   }
+  req.mailbox = user;
   next();
 }
 
 // GET /webmail/api/folders - List Folders
 router.get('/api/folders', requireMailbox, async (req, res) => {
-  const mb = req.session.mailbox;
+  const mb = req.mailbox;
   if (mb.isDemo) {
     return res.json([
       { name: 'Inbox', path: 'INBOX', unread: 3 },
@@ -129,7 +165,7 @@ router.get('/api/folders', requireMailbox, async (req, res) => {
 
 // GET /webmail/api/messages - Fetch Messages
 router.get('/api/messages', requireMailbox, async (req, res) => {
-  const mb = req.session.mailbox;
+  const mb = req.mailbox;
   const folder = req.query.folder || 'INBOX';
 
   if (mb.isDemo) {
@@ -184,7 +220,7 @@ router.get('/api/messages', requireMailbox, async (req, res) => {
 
 // GET /webmail/api/message/:uid - Full Message Body
 router.get('/api/message/:uid', requireMailbox, async (req, res) => {
-  const mb = req.session.mailbox;
+  const mb = req.mailbox;
   const folder = req.query.folder || 'INBOX';
   const uid = req.params.uid;
 
@@ -251,7 +287,7 @@ router.get('/api/message/:uid', requireMailbox, async (req, res) => {
 
 // POST /webmail/api/send - Send Email via SMTP
 router.post('/api/send', requireMailbox, async (req, res) => {
-  const mb = req.session.mailbox;
+  const mb = req.mailbox;
   const { to, subject, html, text } = req.body;
 
   if (!to || !subject) {
@@ -273,7 +309,7 @@ router.post('/api/send', requireMailbox, async (req, res) => {
 
 // POST /webmail/api/delete - Delete or Move to Trash
 router.post('/api/delete', requireMailbox, async (req, res) => {
-  const mb = req.session.mailbox;
+  const mb = req.mailbox;
   const { folder = 'INBOX', uid } = req.body;
 
   if (mb.isDemo) {

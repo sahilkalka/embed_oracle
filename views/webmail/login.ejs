@@ -73,6 +73,7 @@
 
       <!-- Authentication Form -->
       <form action="/webmail/login" method="POST" class="space-y-4" id="webmailLoginForm">
+        <%- typeof csrfField !== 'undefined' ? csrfField : '' %>
         <div>
           <label for="mbEmail" class="block text-xs font-bold text-slate-700 mb-1.5">Email address</label>
           <div class="relative">
@@ -130,6 +131,7 @@
 
       <!-- Demo Mailbox Sandbox Button (for local/offline testing) -->
       <form action="/webmail/login" method="POST">
+        <%- typeof csrfField !== 'undefined' ? csrfField : '' %>
         <input type="hidden" name="demo" value="true">
         <button type="submit"
                 class="w-full inline-flex items-center justify-center gap-2 py-2 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition cursor-pointer border border-slate-200/80"
