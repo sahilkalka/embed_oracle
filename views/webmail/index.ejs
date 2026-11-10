@@ -741,19 +741,22 @@
 
     <!-- Right Utility Icon Buttons -->
     <div class="ms-header-right">
+      <% if (typeof user !== 'undefined' && user && user.isDemo) { %>
+        <span style="font-size:10px; font-weight:700; background-color:#fef3c7; color:#92400e; padding:2px 7px; border-radius:10px; margin-right:4px;" title="Sandbox Demo Mode">Sandbox</span>
+      <% } %>
       <a href="/admin/email" class="ms-icon-btn" title="Email Admin Dashboard" aria-label="Email Admin Dashboard">
         <span class="material-symbols-rounded" style="font-size:20px;">admin_panel_settings</span>
       </a>
       <button type="button" class="ms-icon-btn ms-header-btn-extra" title="Quick Settings" aria-label="Quick Settings">
         <span class="material-symbols-rounded" style="font-size:20px;">settings</span>
       </button>
-      <button type="button" class="ms-icon-btn ms-header-btn-extra" title="Help and Support" aria-label="Help and Support">
-        <span class="material-symbols-rounded" style="font-size:20px;">help</span>
-      </button>
+      <a href="/webmail/logout" class="ms-icon-btn" title="Sign out (<%= typeof user !== 'undefined' && user ? user.email : '' %>)" aria-label="Sign out">
+        <span class="material-symbols-rounded" style="font-size:20px;">logout</span>
+      </a>
 
       <!-- User Profile Avatar Pill -->
-      <div class="ms-avatar-btn" title="Sahil Kalka (sahil@embeddedindia.in)">
-        SK
+      <div class="ms-avatar-btn" title="<%= typeof user !== 'undefined' && user ? (user.name + ' (' + user.email + ')') : 'Mailbox User' %>">
+        <%= typeof user !== 'undefined' && user ? user.avatar : 'SK' %>
       </div>
     </div>
   </header>
@@ -849,58 +852,10 @@
       </div>
 
       <div id="messagesContainer">
-        <!-- Message 1 -->
-        <article class="ms-mail-item unread selected" onclick="loadMessage(0, this)">
-          <div class="ms-mail-header">
-            <span class="ms-mail-sender">Rajesh Kumar &bull; Tata Elxsi</span>
-            <span class="ms-mail-time">10:42 AM</span>
-          </div>
-          <div class="ms-mail-subject">RFQ: STM32MP157 SOM Custom Board Design &amp; BSP</div>
-          <div class="ms-mail-snippet">Hi Sahil, we reviewed your Embedded India case studies on Yocto Linux BSP development...</div>
-          <div class="ms-mail-badges">
-            <span class="ms-badge-tag"><span class="material-symbols-rounded" style="font-size:12px;">attach_file</span> BOM.xlsx</span>
-            <span class="ms-badge-tag" style="color:#b91c1c; background-color:#fee2e2;">High Priority</span>
-          </div>
-        </article>
-
-        <!-- Message 2 -->
-        <article class="ms-mail-item unread" onclick="loadMessage(1, this)">
-          <div class="ms-mail-header">
-            <span class="ms-mail-sender">Ananya Sharma &bull; IoT Edge Systems</span>
-            <span class="ms-mail-time">9:15 AM</span>
-          </div>
-          <div class="ms-mail-subject">Consultation: Embedded Linux Qt6 HMI Gateway</div>
-          <div class="ms-mail-snippet">Thanks for the quick response on our RFQ. Can we schedule a 30-minute technical review...</div>
-          <div class="ms-mail-badges">
-            <span class="ms-badge-tag"><span class="material-symbols-rounded" style="font-size:12px;">schedule</span> Meeting Request</span>
-          </div>
-        </article>
-
-        <!-- Message 3 -->
-        <article class="ms-mail-item unread" onclick="loadMessage(2, this)">
-          <div class="ms-mail-header">
-            <span class="ms-mail-sender">Embedded India Postmaster</span>
-            <span class="ms-mail-time">Yesterday</span>
-          </div>
-          <div class="ms-mail-subject">DKIM &amp; ARC Cryptographic Signing Verified</div>
-          <div class="ms-mail-snippet">Automatic security alert: 2048-bit DKIM selector (dkim._domainkey.embeddedindia.in) is active...</div>
-          <div class="ms-mail-badges">
-            <span class="ms-badge-tag" style="color:#047857; background-color:#d1fae5;"><span class="material-symbols-rounded" style="font-size:12px;">verified_user</span> Security 10/10</span>
-          </div>
-        </article>
-
-        <!-- Message 4 -->
-        <article class="ms-mail-item" onclick="loadMessage(3, this)">
-          <div class="ms-mail-header">
-            <span class="ms-mail-sender">Vikram Mehta &bull; BHEL Industrial</span>
-            <span class="ms-mail-time">Nov 8</span>
-          </div>
-          <div class="ms-mail-subject">PO Confirmation: Modbus RS-485 DAQ Modules</div>
-          <div class="ms-mail-snippet">Please find the formal purchase order for the RS-485 DAQ controllers attached for dispatch...</div>
-          <div class="ms-mail-badges">
-            <span class="ms-badge-tag"><span class="material-symbols-rounded" style="font-size:12px;">attach_file</span> PO_49201.pdf</span>
-          </div>
-        </article>
+        <div style="padding:32px 16px; text-align:center; color:#605e5c;">
+          <span class="material-symbols-rounded animate-spin" style="font-size:24px; color:#0078d4;">progress_activity</span>
+          <p style="margin-top:8px; font-size:12px; font-weight:600;">Connecting to IMAP &amp; syncing mail...</p>
+        </div>
       </div>
     </section>
 
@@ -949,40 +904,20 @@
       <!-- Active Message Content View -->
       <div class="ms-email-view" id="activeEmailContent">
         <div class="ms-email-view-header">
-          <h1 class="ms-email-title" id="viewSubject">RFQ: STM32MP157 SOM Custom Board Design &amp; BSP</h1>
+          <h1 class="ms-email-title" id="viewSubject">Select an email</h1>
           <div class="ms-sender-row">
             <div class="ms-sender-info">
-              <div class="ms-sender-avatar" id="viewAvatar">RK</div>
+              <div class="ms-sender-avatar" id="viewAvatar">--</div>
               <div class="ms-sender-details">
-                <h3 id="viewSender">Rajesh Kumar &lt;rajesh.kumar@tataelxsi.com&gt;</h3>
-                <p id="viewMeta">To: sahil@embeddedindia.in &bull; Today at 10:42 AM</p>
+                <h3 id="viewSender">--</h3>
+                <p id="viewMeta">--</p>
               </div>
             </div>
           </div>
         </div>
 
         <div class="ms-email-body" id="viewBody">
-          <p>Hi Sahil,</p>
-          <p>We reviewed your recent Embedded India case studies on high-reliability <strong>STM32MP157</strong> hardware development and Linux Board Support Package (BSP) bring-up.</p>
-          <p>Our engineering division is building an industrial edge telematics controller requiring:</p>
-          <ul style="margin: 0 0 16px 24px; list-style-type: disc;">
-            <li>Custom 6-layer impedance-controlled carrier board for STM32MP157C dual Cortex-A7 + Cortex-M4.</li>
-            <li>Dual Gigabit Ethernet with IEEE 1588 PTP, CAN FD, and isolated RS-485 interfaces.</li>
-            <li>Custom Yocto Scarthgap Linux BSP with hardware-accelerated TouchGFX / Qt6 framebuffers.</li>
-          </ul>
-          <p>We would like to request an engineering proposal and timeline for Phase 1 (Schematic review &amp; initial BSP port). Please find our initial pin-mapping requirements attached.</p>
-          <div class="ms-attachment-card">
-            <span class="material-symbols-rounded" style="font-size:24px; color:#10b981;">table_chart</span>
-            <div>
-              <div style="font-size:13px; font-weight:700;">STM32MP157_Pinmux_Spec_v1.2.xlsx</div>
-              <div style="font-size:11px; color:#605e5c;">245 KB &bull; Microsoft Excel Spreadsheet</div>
-            </div>
-            <button type="button" class="ms-icon-btn" style="color:#0078d4; margin-left:12px;" title="Download file" aria-label="Download file">
-              <span class="material-symbols-rounded" style="font-size:20px;">download</span>
-            </button>
-          </div>
-          <p style="margin-top:20px;">Looking forward to your feedback.</p>
-          <p>Best regards,<br><strong>Rajesh Kumar</strong><br>Senior Technical Lead | Automotive &amp; Industrial Systems<br>Tata Elxsi Ltd.</p>
+          <p style="color:#605e5c;">Select an email from the list to read its content.</p>
         </div>
       </div>
     </main>
@@ -1006,7 +941,7 @@
       <textarea class="ms-compose-textarea" id="composeText" placeholder="Type your message here..." aria-label="Message Body"></textarea>
     </div>
     <div class="ms-compose-footer">
-      <button type="button" class="ms-new-mail-btn" style="width:auto; padding:0 20px;" onclick="sendDummyMessage()">
+      <button type="button" class="ms-new-mail-btn" id="sendMailBtn" style="width:auto; padding:0 20px;" onclick="sendMessage()">
         <span class="material-symbols-rounded" style="font-size:16px;">send</span>
         <span>Send</span>
       </button>
@@ -1025,91 +960,158 @@
   </div>
 
   <script>
-    // Dummy Message Database for Realistic Local Testing
-    const DUMMY_MESSAGES = [
-      {
-        id: 0,
-        sender: 'Rajesh Kumar <rajesh.kumar@tataelxsi.com>',
-        avatar: 'RK',
-        subject: 'RFQ: STM32MP157 SOM Custom Board Design & BSP',
-        time: 'Today at 10:42 AM',
-        meta: 'To: sahil@embeddedindia.in',
-        body: `<p>Hi Sahil,</p>
-               <p>We reviewed your recent Embedded India case studies on high-reliability <strong>STM32MP157</strong> hardware development and Linux Board Support Package (BSP) bring-up.</p>
-               <p>Our engineering division is building an industrial edge telematics controller requiring:</p>
-               <ul style="margin: 0 0 16px 24px; list-style-type: disc;">
-                 <li>Custom 6-layer impedance-controlled carrier board for STM32MP157C dual Cortex-A7 + Cortex-M4.</li>
-                 <li>Dual Gigabit Ethernet with IEEE 1588 PTP, CAN FD, and isolated RS-485 interfaces.</li>
-                 <li>Custom Yocto Scarthgap Linux BSP with hardware-accelerated TouchGFX / Qt6 framebuffers.</li>
-               </ul>
-               <p>We would like to request an engineering proposal and timeline for Phase 1. Please find our initial pin-mapping requirements attached.</p>`
-      },
-      {
-        id: 1,
-        sender: 'Ananya Sharma <ananya.sharma@iot-edge.io>',
-        avatar: 'AS',
-        subject: 'Consultation: Embedded Linux Qt6 HMI Gateway',
-        time: 'Today at 9:15 AM',
-        meta: 'To: sahil@embeddedindia.in',
-        body: `<p>Dear Sahil,</p>
-               <p>Thanks for the quick response on our RFQ. Can we schedule a 30-minute technical review call tomorrow at 3:00 PM IST?</p>
-               <p>We want to align on our hardware requirements for the NXP i.MX8M Plus application processor, specifically relating to secure boot authentication and high-refresh touchscreen display drivers.</p>
-               <p>Please let me know if this slot works for your calendar.</p>`
-      },
-      {
-        id: 2,
-        sender: 'Embedded India Postmaster <postmaster@embeddedindia.in>',
-        avatar: 'EI',
-        subject: 'DKIM & ARC Cryptographic Signing Verified',
-        time: 'Yesterday at 6:30 PM',
-        meta: 'To: admin@embeddedindia.in',
-        body: `<p>Hello Administrator,</p>
-               <p>The automated cryptographic signing check for domain <strong>embeddedindia.in</strong> has passed all security validations:</p>
-               <ul style="margin: 0 0 16px 24px; list-style-type: disc;">
-                 <li><strong>DKIM:</strong> 2048-bit RSA key valid on selector <code>dkim._domainkey.embeddedindia.in</code></li>
-                 <li><strong>SPF:</strong> <code>v=spf1 mx a:mail.embeddedindia.in ~all</code> validated</li>
-                 <li><strong>DMARC:</strong> Alignment status PASS with policy <code>p=quarantine</code></li>
-               </ul>
-               <p>Deliverability score to Outlook, Gmail, and Yahoo is currently rated <strong>10/10</strong>.</p>`
-      },
-      {
-        id: 3,
-        sender: 'Vikram Mehta <vikram.mehta@bhel.in>',
-        avatar: 'VM',
-        subject: 'PO Confirmation: Modbus RS-485 DAQ Modules',
-        time: 'Nov 8 at 2:10 PM',
-        meta: 'To: sahil@embeddedindia.in',
-        body: `<p>Dear Sahil,</p>
-               <p>Please find attached our formal Purchase Order <strong>#PO-49201</strong> for the 25 units of industrial isolated RS-485 DAQ interface controllers.</p>
-               <p>Kindly verify the delivery schedule against our purchase agreement and send across the dispatch tracking once shipped.</p>`
+    let currentFolder = 'INBOX';
+    let currentMessageUid = null;
+    let messageList = [];
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    async function loadFolders() {
+      try {
+        const res = await fetch('/webmail/api/folders');
+        if (!res.ok) return;
+        const folders = await res.json();
+        const inbox = folders.find(f => f.path === 'INBOX');
+        if (inbox) {
+          const pill = document.querySelector('.ms-folder-item.active .ms-unread-pill');
+          if (pill) {
+            pill.textContent = inbox.unread || 0;
+            pill.style.display = inbox.unread > 0 ? 'inline-block' : 'none';
+          }
+        }
+      } catch (err) {
+        console.warn('Folder status check:', err);
       }
-    ];
+    }
 
-    let currentMessageId = 0;
+    async function fetchFolderMessages(folder = 'INBOX') {
+      currentFolder = folder;
+      const container = document.getElementById('messagesContainer');
+      container.innerHTML = `
+        <div style="padding:32px 16px; text-align:center; color:#605e5c;">
+          <span class="material-symbols-rounded animate-spin" style="font-size:24px; color:#0078d4;">progress_activity</span>
+          <p style="margin-top:8px; font-size:12px; font-weight:600;">Connecting to IMAP &amp; syncing mail...</p>
+        </div>
+      `;
 
-    function loadMessage(index, element) {
-      currentMessageId = index;
-      const msg = DUMMY_MESSAGES[index];
-      if (!msg) return;
+      try {
+        const res = await fetch('/webmail/api/messages?folder=' + encodeURIComponent(folder));
+        if (!res.ok) throw new Error('Could not retrieve messages');
+        messageList = await res.json();
 
-      document.getElementById('viewSubject').innerHTML = msg.subject;
-      document.getElementById('viewSender').textContent = msg.sender;
-      document.getElementById('viewAvatar').textContent = msg.avatar;
-      document.getElementById('viewMeta').textContent = msg.meta + ' • ' + msg.time;
-      document.getElementById('viewBody').innerHTML = msg.body;
+        if (messageList.length === 0) {
+          container.innerHTML = `
+            <div style="padding:48px 16px; text-align:center; color:#605e5c;">
+              <span class="material-symbols-rounded" style="font-size:40px; color:#94a3b8;">inbox</span>
+              <p style="margin-top:10px; font-weight:700; font-size:13.5px; color:#201f1e;">No messages in this folder</p>
+              <p style="font-size:11.5px; color:#605e5c; margin-top:2px;">Your mailbox is up to date.</p>
+            </div>
+          `;
+          document.getElementById('viewSubject').textContent = 'No message selected';
+          document.getElementById('viewSender').textContent = '';
+          document.getElementById('viewMeta').textContent = '';
+          document.getElementById('viewAvatar').textContent = '--';
+          document.getElementById('viewBody').innerHTML = '<p style="color:#605e5c;">Select an email from the list to view its contents.</p>';
+          return;
+        }
 
+        renderMessageList(messageList);
+        // Load first message
+        loadMessageByUid(messageList[0].uid);
+      } catch (err) {
+        container.innerHTML = `
+          <div style="padding:32px 16px; text-align:center; color:#dc2626; font-size:12px;">
+            <span class="material-symbols-rounded" style="font-size:28px;">error</span>
+            <p style="margin-top:6px; font-weight:600;">Failed to load messages from server</p>
+            <p style="font-size:11px; color:#605e5c; margin-top:2px;">${escapeHtml(err.message)}</p>
+            <button type="button" class="ms-ribbon-btn" onclick="fetchFolderMessages('${folder}')" style="margin-top:10px; margin-inline:auto; display:inline-flex;">
+              <span class="material-symbols-rounded" style="font-size:16px;">refresh</span>
+              <span>Try Again</span>
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function renderMessageList(items) {
+      const container = document.getElementById('messagesContainer');
+      container.innerHTML = '';
+      items.forEach((msg, idx) => {
+        const art = document.createElement('article');
+        art.className = 'ms-mail-item' + (msg.unread ? ' unread' : '') + (idx === 0 ? ' selected' : '');
+        art.id = 'msg-item-' + msg.uid;
+        art.onclick = () => loadMessageByUid(msg.uid, art);
+
+        const dateObj = msg.date ? new Date(msg.date) : new Date();
+        const dateStr = dateObj.toLocaleDateString([], { month: 'short', day: 'numeric' });
+
+        art.innerHTML = `
+          <div class="ms-mail-header">
+            <span class="ms-mail-sender">${escapeHtml(msg.sender || msg.senderEmail || 'Unknown')}</span>
+            <span class="ms-mail-time">${dateStr}</span>
+          </div>
+          <div class="ms-mail-subject">${escapeHtml(msg.subject || '(No subject)')}</div>
+          <div class="ms-mail-snippet">${escapeHtml(msg.snippet || '')}</div>
+        `;
+        container.appendChild(art);
+      });
+    }
+
+    async function loadMessageByUid(uid, element) {
+      currentMessageUid = uid;
       document.querySelectorAll('.ms-mail-item').forEach(el => el.classList.remove('selected'));
       if (element) {
         element.classList.add('selected');
         element.classList.remove('unread');
+      } else {
+        const item = document.getElementById('msg-item-' + uid);
+        if (item) {
+          item.classList.add('selected');
+          item.classList.remove('unread');
+        }
       }
 
-      // Switch view on mobile: open mail in the same full-width container
+      // Single-view reading mode on mobile
       const ws = document.getElementById('msWorkspace');
       if (ws) {
         ws.classList.add('reading-active');
         const view = document.getElementById('activeEmailContent');
         if (view) view.scrollTop = 0;
+      }
+
+      document.getElementById('viewSubject').innerHTML = '<span class="material-symbols-rounded animate-spin" style="font-size:18px;">progress_activity</span> Loading email...';
+
+      try {
+        const res = await fetch('/webmail/api/message/' + encodeURIComponent(uid) + '?folder=' + encodeURIComponent(currentFolder));
+        if (!res.ok) throw new Error('Could not download email content');
+        const data = await res.json();
+
+        document.getElementById('viewSubject').textContent = data.subject || '(No subject)';
+        document.getElementById('viewSender').textContent = data.from || 'Unknown Sender';
+        document.getElementById('viewAvatar').textContent = ((data.from || 'EM').slice(0, 2)).toUpperCase();
+        document.getElementById('viewMeta').textContent = 'To: ' + (data.to || 'Me') + ' • ' + (data.date ? new Date(data.date).toLocaleString() : '');
+        document.getElementById('viewBody').innerHTML = data.html || `<div style="white-space: pre-wrap;">${escapeHtml(data.text)}</div>` || '<p>(No content)</p>';
+
+        // Render attachments if present
+        if (data.attachments && data.attachments.length > 0) {
+          let attHtml = '<div style="margin-top:20px; border-top:1px solid #edebe9; padding-top:14px;"><div style="font-size:12px; font-weight:700; color:#201f1e; margin-bottom:8px;">Attachments (' + data.attachments.length + ')</div><div style="display:flex; flex-wrap:wrap; gap:8px;">';
+          data.attachments.forEach(att => {
+            attHtml += `<div class="ms-attachment-card"><span class="material-symbols-rounded" style="color:#0078d4;">attach_file</span><div><div style="font-size:12px; font-weight:600;">${escapeHtml(att.filename)}</div><div style="font-size:10px; color:#605e5c;">${Math.round((att.size || 0)/1024)} KB</div></div></div>`;
+          });
+          attHtml += '</div></div>';
+          document.getElementById('viewBody').insertAdjacentHTML('beforeend', attHtml);
+        }
+      } catch (err) {
+        document.getElementById('viewSubject').textContent = 'Error opening message';
+        document.getElementById('viewBody').innerHTML = '<p style="color:#dc2626;">' + escapeHtml(err.message) + '</p>';
       }
     }
 
@@ -1120,13 +1122,11 @@
 
     function filterMessages(query) {
       const q = (query || '').toLowerCase().trim();
-      const items = document.querySelectorAll('.ms-mail-item');
-      items.forEach((item, idx) => {
-        const msg = DUMMY_MESSAGES[idx];
-        if (!msg) return;
-        const match = msg.sender.toLowerCase().includes(q) || msg.subject.toLowerCase().includes(q);
-        item.style.display = match ? 'block' : 'none';
-      });
+      const filtered = messageList.filter(m =>
+        (m.sender || '').toLowerCase().includes(q) ||
+        (m.subject || '').toLowerCase().includes(q)
+      );
+      renderMessageList(filtered);
     }
 
     function selectFolder(folder, element) {
@@ -1135,6 +1135,7 @@
       closeReadingPane();
       const fp = document.querySelector('.ms-folders-pane');
       if (fp) fp.classList.remove('open');
+      fetchFolderMessages(folder);
     }
 
     function openComposeModal() {
@@ -1147,42 +1148,81 @@
     }
 
     function replyCurrent() {
-      const msg = DUMMY_MESSAGES[currentMessageId];
-      if (!msg) return;
+      const from = document.getElementById('viewSender').textContent;
+      const subj = document.getElementById('viewSubject').textContent;
       openComposeModal();
-      document.getElementById('composeTo').value = msg.sender;
-      document.getElementById('composeSubject').value = 'Re: ' + msg.subject;
+      document.getElementById('composeTo').value = from;
+      document.getElementById('composeSubject').value = subj.startsWith('Re:') ? subj : ('Re: ' + subj);
     }
 
-    function deleteCurrent() {
-      const activeEl = document.querySelector('.ms-mail-item.selected');
-      if (activeEl) {
-        activeEl.style.transition = 'all 0.2s ease';
-        activeEl.style.opacity = '0';
-        setTimeout(() => {
-          activeEl.remove();
-          closeReadingPane();
-          const remaining = document.querySelector('.ms-mail-item');
-          if (remaining) {
-            remaining.click();
-            if (window.innerWidth <= 820) {
-              closeReadingPane();
-            }
-          }
-        }, 200);
+    async function deleteCurrent() {
+      if (!currentMessageUid && currentMessageUid !== 0) return;
+      if (!confirm('Are you sure you want to delete this email?')) return;
+
+      try {
+        const res = await fetch('/webmail/api/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folder: currentFolder, uid: currentMessageUid })
+        });
+        if (!res.ok) throw new Error('Delete failed');
+
+        closeReadingPane();
+        fetchFolderMessages(currentFolder);
+      } catch (err) {
+        alert('Could not delete message: ' + err.message);
       }
     }
 
-    function sendDummyMessage() {
-      const to = document.getElementById('composeTo').value;
-      const subject = document.getElementById('composeSubject').value;
+    async function sendMessage() {
+      const to = document.getElementById('composeTo').value.trim();
+      const subject = document.getElementById('composeSubject').value.trim();
+      const body = document.getElementById('composeText').value;
+
       if (!to || !subject) {
         alert('Please specify recipient and subject.');
         return;
       }
-      alert('✓ Message sent via Outlook Web to ' + to);
-      closeComposeModal();
+
+      const sendBtn = document.getElementById('sendMailBtn');
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<span class="material-symbols-rounded animate-spin" style="font-size:16px;">progress_activity</span><span>Sending...</span>';
+
+      try {
+        const res = await fetch('/webmail/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to,
+            subject,
+            text: body,
+            html: `<div style="font-family:'Segoe UI',-apple-system,sans-serif; font-size:14px; color:#201f1e; line-height:1.5;">${escapeHtml(body).replace(/\n/g, '<br>')}</div>`
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to send message');
+
+        alert('✓ Email successfully dispatched via SMTP!');
+        closeComposeModal();
+        document.getElementById('composeTo').value = '';
+        document.getElementById('composeSubject').value = '';
+        document.getElementById('composeText').value = '';
+        if (currentFolder === 'Sent' || currentFolder === 'INBOX') {
+          fetchFolderMessages(currentFolder);
+        }
+      } catch (err) {
+        alert('Failed to send email: ' + err.message);
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<span class="material-symbols-rounded" style="font-size:16px;">send</span><span>Send</span>';
+      }
     }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadFolders();
+      fetchFolderMessages('INBOX');
+    });
   </script>
 </body>
 </html>
