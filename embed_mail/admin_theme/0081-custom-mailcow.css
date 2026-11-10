@@ -1,0 +1,313 @@
+/* ==============================================================================
+   Embedded India - Mailcow Admin Dashboard Override (0081-custom-mailcow.css)
+   Automatically loaded by Mailcow UI across all pages.
+   Matches the Embedded India Website Admin Dashboard styling.
+   ============================================================================== */
+
+/* --- 1. Font & Core Tokens --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Suppress Mailcow Mascot & External Promotion */
+.mailcow-logo,
+.navbar-brand img[src*="mailcow"],
+#footer a[href*="mailcow"],
+#footer a[href*="servercow"],
+a[href*="t.me/mailcow"],
+a[href*="github.com/mailcow/mailcow-dockerized/issues"],
+.donate-btn {
+  display: none !important;
+}
+
+/* --- 2. Top Navigation Bar (Website Admin Header Match) --- */
+.navbar,
+header.navbar {
+  background-color: #13221e !important;
+  border-bottom: 1px solid #1e3831 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+  padding: 0.75rem 1.25rem !important;
+  min-height: 64px !important;
+}
+
+.navbar-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 1.1rem !important;
+  letter-spacing: -0.02em !important;
+}
+
+.navbar-brand::before {
+  content: "EI" !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  font-weight: 900 !important;
+  font-size: 0.85rem !important;
+}
+
+.navbar-brand::after {
+  content: "MAIL ADMIN" !important;
+  font-size: 0.65rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #94a3b8 !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin-left: 4px !important;
+}
+
+/* Nav Links */
+.navbar-nav .nav-link {
+  color: #cbd5e1 !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  padding: 0.5rem 0.85rem !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.15s ease !important;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+  color: #ffffff !important;
+  background-color: rgba(16, 185, 129, 0.12) !important;
+}
+
+.navbar-nav .nav-item.active .nav-link,
+.navbar-nav .nav-link.active {
+  color: #10b981 !important;
+  background-color: rgba(16, 185, 129, 0.16) !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+}
+
+/* --- 3. Cards & Panels (Website Admin rounded-2xl Match) --- */
+.card,
+.panel {
+  background-color: #13221e !important;
+  border: 1px solid #1e3831 !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  margin-bottom: 1.5rem !important;
+  overflow: hidden !important;
+}
+
+.card-header,
+.panel-heading {
+  background-color: #182c27 !important;
+  border-bottom: 1px solid #1e3831 !important;
+  padding: 1rem 1.25rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  font-size: 0.95rem !important;
+}
+
+/* --- 4. Icon Buttons Enforcement (Always Have Icon Buttons) --- */
+.btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  font-weight: 600 !important;
+  font-size: 0.825rem !important;
+  border-radius: 0.65rem !important;
+  padding: 0.45rem 1rem !important;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Primary Button (Emerald) */
+.btn-primary,
+.btn-success {
+  background-color: #10b981 !important;
+  border-color: #10b981 !important;
+  color: #0b1412 !important;
+  font-weight: 700 !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-success:hover,
+.btn-success:focus {
+  background-color: #059669 !important;
+  border-color: #059669 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Secondary & Outline Buttons */
+.btn-secondary,
+.btn-default {
+  background-color: #182c27 !important;
+  border-color: #1e3831 !important;
+  color: #cbd5e1 !important;
+}
+
+.btn-secondary:hover,
+.btn-default:hover {
+  background-color: #1e3831 !important;
+  border-color: #27443d !important;
+  color: #ffffff !important;
+}
+
+/* Danger Button (Rose) */
+.btn-danger {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  border-color: rgba(244, 63, 94, 0.35) !important;
+  color: #fda4af !important;
+}
+
+.btn-danger:hover {
+  background-color: #e11d48 !important;
+  border-color: #e11d48 !important;
+  color: #ffffff !important;
+}
+
+/* Small Table Row Action Buttons */
+.btn-sm,
+.btn-group-sm > .btn {
+  padding: 0.3rem 0.65rem !important;
+  font-size: 0.75rem !important;
+  border-radius: 0.5rem !important;
+}
+
+/* --- 5. Data Tables (Website Admin Dark Table Style) --- */
+.table {
+  color: #cbd5e1 !important;
+  border-color: #1e3831 !important;
+  margin-bottom: 0 !important;
+}
+
+.table > thead > tr > th {
+  background-color: #182c27 !important;
+  color: #94a3b8 !important;
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 1px solid #1e3831 !important;
+  padding: 0.75rem 1rem !important;
+}
+
+.table > tbody > tr > td {
+  padding: 0.85rem 1rem !important;
+  border-bottom: 1px solid #1e3831 !important;
+  vertical-align: middle !important;
+}
+
+.table > tbody > tr:hover {
+  background-color: rgba(16, 185, 129, 0.06) !important;
+}
+
+/* --- 6. Form Inputs & Selects --- */
+.form-control,
+.form-select {
+  background-color: #0d1715 !important;
+  border: 1px solid #27443d !important;
+  color: #f8fafc !important;
+  border-radius: 0.65rem !important;
+  padding: 0.55rem 0.85rem !important;
+  font-size: 0.875rem !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25) !important;
+  background-color: #0d1715 !important;
+  color: #ffffff !important;
+}
+
+/* --- 7. Status Badges --- */
+.badge {
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  padding: 0.3em 0.7em !important;
+  border-radius: 9999px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+.badge.bg-success,
+.badge-success {
+  background-color: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+.badge.bg-warning,
+.badge-warning {
+  background-color: rgba(245, 158, 11, 0.16) !important;
+  color: #fbbf24 !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+}
+
+.badge.bg-danger,
+.badge-danger {
+  background-color: rgba(244, 63, 94, 0.16) !important;
+  color: #fda4af !important;
+  border: 1px solid rgba(244, 63, 94, 0.3) !important;
+}
+
+/* --- 8. Modal Windows --- */
+.modal-content {
+  background-color: #13221e !important;
+  border: 1px solid #1e3831 !important;
+  border-radius: 1.25rem !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid #1e3831 !important;
+  padding: 1.25rem 1.5rem !important;
+}
+
+.modal-footer {
+  border-top: 1px solid #1e3831 !important;
+  padding: 1rem 1.5rem !important;
+}
+
+/* --- 9. Thin Theme Scrollbar --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b1412;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e3831;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+/* --- 10. Responsive Tweaks --- */
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 0.95rem !important;
+  }
+  .card-header {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    align-items: flex-start !important;
+  }
+  .table-responsive {
+    border: none !important;
+  }
+}

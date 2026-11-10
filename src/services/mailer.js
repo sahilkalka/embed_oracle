@@ -454,6 +454,96 @@ const mailer = {
       console.error('[MAILER ERROR] Failed to send lead magnet email:', err.message);
       return { success: false, error: err.message };
     }
+  },
+
+  // 6. Share user mailbox credentials & client setup guidelines via email
+  async sendMailboxCredentials({ recipientEmail, mailboxEmail, password, displayName, webmailUrl, activeSyncUrl, imapHost, smtpHost }) {
+    try {
+      const t = await getTransporter();
+      if (!t) return { success: false, error: 'SMTP transporter unavailable' };
+
+      const smtpSender = process.env.SMTP_USER || 'admin@embeddedindia.in';
+      const webUrl = webmailUrl || 'https://mail.embeddedindia.in/mail';
+      const easUrl = activeSyncUrl || 'https://mail.embeddedindia.in/Microsoft-Server-ActiveSync';
+      const imap = imapHost || 'mail.embeddedindia.in:993 (SSL/TLS)';
+      const smtp = smtpHost || 'mail.embeddedindia.in:587 (STARTTLS)';
+
+      const mailOptions = {
+        from: `"Embedded India IT Support" <${smtpSender}>`,
+        to: recipientEmail,
+        subject: `Your Embedded India Email Account & Setup Guidelines (${mailboxEmail})`,
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 640px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #ffffff;">
+            <div style="background-color: #0078d4; padding: 24px 28px; color: #ffffff;">
+              <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.85;">Embedded India IT</div>
+              <h1 style="margin: 6px 0 0; font-size: 22px; font-weight: 700;">Your Outlook Webmail Account Is Ready</h1>
+            </div>
+            
+            <div style="padding: 28px; color: #1e293b; line-height: 1.6;">
+              <p style="margin-top: 0;">Hello <strong>${displayName || 'Team Member'}</strong>,</p>
+              <p>Your enterprise email mailbox has been provisioned on the Embedded India mail server. Below are your login credentials and client setup guidelines:</p>
+              
+              <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin: 20px 0;">
+                <div style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">Login Credentials</div>
+                <div style="font-size: 14px; margin-bottom: 6px;"><strong>Email Address:</strong> <code style="font-family: monospace; color: #0078d4; font-size: 15px;">${mailboxEmail}</code></div>
+                <div style="font-size: 14px;"><strong>Password:</strong> <code style="font-family: monospace; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-size: 14px;">${password}</code></div>
+              </div>
+
+              <div style="text-align: center; margin: 24px 0;">
+                <a href="${webUrl}" style="background-color: #0078d4; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 600; font-size: 14px; display: inline-block;">
+                  Launch Outlook Webmail &rarr;
+                </a>
+              </div>
+
+              <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 24px 0 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
+                Email Client Setup Guidelines
+              </h3>
+
+              <div style="margin-bottom: 16px;">
+                <h4 style="margin: 0 0 4px; font-size: 14px; color: #0078d4;">💻 Microsoft Outlook (Windows &amp; macOS)</h4>
+                <p style="margin: 0 0 6px; font-size: 13px; color: #475569;">
+                  Open Outlook &rarr; <em>Add Account</em> &rarr; <em>Manual Setup</em> &rarr; <strong>Exchange ActiveSync</strong>.<br>
+                  Server: <code style="background: #f1f5f9; padding: 1px 4px;">mail.embeddedindia.in</code> &bull; ActiveSync URL: <code style="background: #f1f5f9; padding: 1px 4px;">${easUrl}</code>
+                </p>
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <h4 style="margin: 0 0 4px; font-size: 14px; color: #0078d4;">📱 Apple iOS (iPhone &amp; iPad)</h4>
+                <p style="margin: 0 0 6px; font-size: 13px; color: #475569;">
+                  Go to <em>Settings &rarr; Mail &rarr; Accounts &rarr; Add Account &rarr; <strong>Microsoft Exchange</strong></em>.<br>
+                  Enter your email address and password, then tap <em>Configure Manually</em> with server <code style="background: #f1f5f9; padding: 1px 4px;">mail.embeddedindia.in</code>.
+                </p>
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <h4 style="margin: 0 0 4px; font-size: 14px; color: #0078d4;">🤖 Android (Outlook / Gmail)</h4>
+                <p style="margin: 0 0 6px; font-size: 13px; color: #475569;">
+                  Open <em>Accounts &rarr; Add Account &rarr; <strong>Exchange / Corporate</strong></em>.<br>
+                  Server: <code style="background: #f1f5f9; padding: 1px 4px;">mail.embeddedindia.in</code> &bull; Security: <code style="background: #f1f5f9; padding: 1px 4px;">SSL/TLS</code> &bull; Port: <code style="background: #f1f5f9; padding: 1px 4px;">443</code>
+                </p>
+              </div>
+
+              <div style="background-color: #f1f5f9; border-radius: 8px; padding: 14px; margin-top: 20px; font-size: 12px; color: #475569;">
+                <strong>Manual IMAP / SMTP Settings:</strong><br>
+                &bull; Incoming IMAP: <code style="font-family: monospace;">${imap}</code><br>
+                &bull; Outgoing SMTP: <code style="font-family: monospace;">${smtp}</code>
+              </div>
+            </div>
+
+            <div style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 16px 28px; font-size: 11px; color: #94a3b8; text-align: center;">
+              Embedded India Enterprise Mail Infrastructure &bull; Need help? Contact admin@embeddedindia.in
+            </div>
+          </div>
+        `,
+        text: `Your Embedded India Email Account (${mailboxEmail})\n\nPassword: ${password}\nWebmail: ${webUrl}\n\nOutlook ActiveSync Server: mail.embeddedindia.in\nIMAP: ${imap}\nSMTP: ${smtp}`
+      };
+
+      const res = await t.sendMail(mailOptions);
+      return { success: true, messageId: res.messageId };
+    } catch (err) {
+      console.error('[MAILER ERROR] Failed to send credentials email:', err.message);
+      return { success: false, error: err.message };
+    }
   }
 };
 

@@ -1,13 +1,14 @@
 # Embedded India Mail Server - Administrator & Client Guide
 
-Welcome to the **Embedded India Mail Infrastructure**. This guide outlines how to manage domains, create/edit/delete mailboxes, reset passwords, access Webmail, and connect Microsoft Outlook and mobile devices using Exchange ActiveSync (EAS).
+Welcome to the **Embedded India Mail Infrastructure**. This guide outlines how to manage domains, create/edit/delete mailboxes, reset passwords, access the **Outlook Web Client**, and connect Microsoft Outlook and mobile devices using Exchange ActiveSync (EAS).
 
 ---
 
 ## 🌐 Server Access Endpoints
 
-- **Mailcow Admin Control Panel**: [`https://mail.embeddedindia.in/admin`](https://mail.embeddedindia.in/admin) (Domain & user provisioning)
-- **SOGo Webmail Interface**: [`https://mail.embeddedindia.in/SOGo/`](https://mail.embeddedindia.in/SOGo/) (User mail, calendar, and contacts)
+- **Email Admin Dashboard**: [`https://mail.embeddedindia.in/admin`](https://mail.embeddedindia.in/admin) (Domain & user provisioning, styled to match Website Admin Dashboard)
+- **User Webmail (Outlook Web)**: [`https://mail.embeddedindia.in/mail`](https://mail.embeddedindia.in/mail) or [`https://mail.embeddedindia.in/`](https://mail.embeddedindia.in/) (Outlook Web interface for mail, calendar, and contacts)
+- **Website Admin Email Hub**: [`https://embeddedindia.in/admin/email`](https://embeddedindia.in/admin/email) (Quick launch and server telemetry)
 - **Microsoft Exchange ActiveSync (EAS)**: `https://mail.embeddedindia.in/Microsoft-Server-ActiveSync`
 - **IMAP over SSL**: `mail.embeddedindia.in:993` (SSL/TLS)
 - **SMTP Submission**: `mail.embeddedindia.in:587` (STARTTLS) or `465` (SSL/TLS)
@@ -19,13 +20,14 @@ Welcome to the **Embedded India Mail Infrastructure**. This guide outlines how t
 
 ### 1. First-Time Administrator Login
 1. Open [`https://mail.embeddedindia.in/admin`](https://mail.embeddedindia.in/admin) in your browser.
-   > **Note**: Superadmin credentials authenticate exclusively at the `/admin` path. The root `/` or `/SOGo/` path is reserved for individual user email accounts (`user@embeddedindia.in`).
+   > **Note**: Superadmin credentials authenticate exclusively at the `/admin` path. The root `/` or `/mail` path is reserved for individual user email accounts (`user@embeddedindia.in`).
 2. Log in using default credentials:
    - **Username**: `admin`
    - **Password**: `moohoo` (or your custom `$ADMIN_PASSWORD`)
-3. Click <kbd>👤 Profile</kbd> in the top navigation bar.
-4. Click <kbd>🔑 Change Password</kbd> to set a strong master administrative password.
-5. *(Recommended)* Enable Two-Factor Authentication:
+3. The dashboard features the **Embedded India dark emerald theme** (`#0b1412`, `#10b981`), matching the main website admin dashboard with responsive cards and icon buttons.
+4. Click <kbd>👤 Profile</kbd> in the top navigation bar.
+5. Click <kbd>🔑 Change Password</kbd> to set a strong master administrative password.
+6. *(Recommended)* Enable Two-Factor Authentication:
    - Click <kbd>🛡️ Enable 2FA / WebAuthn</kbd> and scan the QR code with Google Authenticator or an enterprise TOTP app.
 
 ---
@@ -86,22 +88,24 @@ All mailbox operations are performed under **Configuration** -> **Mail Setup** -
 
 ---
 
-## 📱 SOGo Webmail & Outlook ActiveSync Client Setup
+## 📱 User Webmail (Outlook Web) & Client Setup
 
-### 📨 Accessing SOGo Webmail
-1. Visit [`https://mail.embeddedindia.in/`](https://mail.embeddedindia.in/).
-2. Enter your full email address (e.g. `sahil@embeddedindia.in`) and password.
-3. SOGo features a modern, responsive layout optimized for desktop, tablet, and mobile browsers with:
-   - <kbd>✉️ Compose</kbd> icon button with rich HTML formatting and attachments.
-   - <kbd>📅 Calendar</kbd> with event reminders and meeting invitations.
-   - <kbd>📇 Address Book</kbd> for contacts and distribution groups.
-   - <kbd>⚙️ Settings</kbd> for autoresponders, signatures, and vacation notices.
+### 📨 Accessing Outlook Webmail
+1. Visit [`https://mail.embeddedindia.in/mail`](https://mail.embeddedindia.in/mail) or [`https://mail.embeddedindia.in/`](https://mail.embeddedindia.in/).
+2. You will see the **Microsoft 365 / Outlook Web** login interface with Embedded India branding.
+3. Enter your full email address (e.g. `sahil@embeddedindia.in`) and password.
+4. Click <kbd>➡️ Sign in</kbd> icon button.
+5. The webmail interface provides a genuine **Microsoft Outlook Web** experience:
+   - **Top Ribbon**: Outlook Blue `#0078d4` header with 9-dot waffle app launcher icon button, central search input `(Ctrl+E)`, and user profile avatar.
+   - **Left Icon Rail**: Narrow vertical bar with icon buttons for <kbd>✉️ Mail</kbd>, <kbd>📅 Calendar</kbd>, <kbd>👥 People/Contacts</kbd>, and <kbd>☑️ To-Do/Tasks</kbd>.
+   - **Folders Pane**: Prominent rounded pill <kbd>➕ New mail</kbd> icon button, Favorites, and full folder tree with unread count badges.
+   - **Message & Reading Panes**: 3-pane responsive layout with message snippet cards, blue unread dot indicators, and Outlook action ribbon (<kbd>↩️ Reply</kbd>, <kbd>🗑️ Delete</kbd>, <kbd>📦 Archive</kbd>, <kbd>🚫 Junk</kbd>, <kbd>📁 Move</kbd>).
 
 ---
 
-### 💻 Microsoft Outlook Setup (Exchange ActiveSync)
+### 💻 Microsoft Outlook Desktop Setup (Exchange ActiveSync)
 
-SOGo includes native Microsoft Exchange ActiveSync (EAS). Setting up Outlook provides instant push notifications, auto-syncing emails, calendars, and address books.
+The mail server natively supports Microsoft Exchange ActiveSync (EAS). Setting up Outlook provides instant push notifications, auto-syncing emails, calendars, and address books.
 
 #### In Outlook for Windows / macOS:
 1. Open Outlook and click **File** -> <kbd>➕ Add Account</kbd>.
@@ -134,7 +138,7 @@ SOGo includes native Microsoft Exchange ActiveSync (EAS). Setting up Outlook pro
    - **Password**: Your Password
 6. Tap <kbd>💾 Save</kbd>. Enable Mail, Contacts, and Calendars.
 
-#### Android (Gmail or Samsung Email):
+#### Android (Gmail or Outlook App):
 1. Open **Settings** -> **Accounts** -> <kbd>➕ Add Account</kbd> -> **Exchange / Corporate**.
 2. Enter `user@embeddedindia.in` and password.
 3. Server: `mail.embeddedindia.in`, Security Type: `SSL/TLS (accept all certificates)`.

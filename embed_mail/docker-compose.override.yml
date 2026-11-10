@@ -12,6 +12,14 @@ services:
     environment:
       - SOGO_EAS_MAX_ENTRIES=2000
       - SOGO_EXPIRE_SESSION=480
+    volumes:
+      - ./data/conf/sogo/custom-theme.css:/usr/local/lib/GNUstep/SOGo/WebServerResources/css/theme-default.css:z
+      - ./data/conf/sogo/outlook-web.js:/usr/local/lib/GNUstep/SOGo/WebServerResources/js/custom-theme.js:z
+      - ./data/conf/sogo/custom-fulllogo.svg:/usr/local/lib/GNUstep/SOGo/WebServerResources/img/sogo-full.svg:z
+      - ./data/conf/sogo/custom-shortlogo.svg:/usr/local/lib/GNUstep/SOGo/WebServerResources/img/sogo-short.svg:z
+      - ./data/conf/sogo/custom-fulllogo.svg:/usr/local/lib/GNUstep/SOGo/WebServerResources/img/sogo-logo.png:z
+      - ./data/conf/sogo/custom-shortlogo.svg:/usr/local/lib/GNUstep/SOGo/WebServerResources/img/logo-full.svg:z
+      - ./data/conf/sogo/custom-shortlogo.svg:/usr/local/lib/GNUstep/SOGo/WebServerResources/img/favicon.ico:z
     restart: always
 
   dovecot-mailcow:

@@ -1,0 +1,982 @@
+<%- include('layout_top') %>
+
+<div class="w-full max-w-full overflow-x-hidden min-w-0 space-y-5 sm:space-y-6">
+
+  <!-- Header & Quick Launch Action Bar (Responsive Mobile & Desktop) -->
+  <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white dark:bg-brand-surface p-4 sm:p-5 lg:p-6 rounded-2xl border border-slate-200 dark:border-brand-border shadow-xs w-full max-w-full overflow-hidden">
+    <div class="min-w-0 flex-1">
+      <div class="flex items-start sm:items-center gap-3 min-w-0">
+        <span class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+          <span class="material-symbols-rounded text-2xl leading-none" aria-hidden="true">mark_email_read</span>
+        </span>
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <h1 class="text-base sm:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight truncate">
+              Email Admin Console
+            </h1>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 uppercase tracking-wider shrink-0">
+              Embedded India
+            </span>
+          </div>
+          <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-normal break-words">
+            Native mailbox management, quotas, client guidelines, and Outlook Web routing for <code class="font-mono text-emerald-600 dark:text-accent font-semibold break-all">@embeddedindia.in</code>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Action Launch Icon Buttons (Grid on Mobile, Flex on Desktop) -->
+    <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 w-full lg:w-auto shrink-0 pt-2 lg:pt-0 border-t border-slate-100 dark:border-brand-border/60 lg:border-t-0">
+      <a href="/webmail"
+         class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs hover:shadow transition-all duration-150 cursor-pointer">
+        <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">mail</span>
+        <span>Open Webmail</span>
+        <span class="material-symbols-rounded text-sm opacity-70 leading-none hidden sm:inline" aria-hidden="true">arrow_forward</span>
+      </a>
+
+      <button type="button"
+              onclick="openAddMailboxModal()"
+              class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs hover:shadow transition-all duration-150 cursor-pointer">
+        <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">person_add</span>
+        <span>Add Mailbox</span>
+      </button>
+
+      <button type="button"
+              onclick="openShareGuidelinesModal('sahil@embeddedindia.in', 'Sahil Kalka', 'Welcome2026!#')"
+              class="col-span-2 sm:col-span-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border font-bold text-xs transition-all duration-150 cursor-pointer">
+        <span class="material-symbols-rounded text-base leading-none text-emerald-500" aria-hidden="true">forward_to_inbox</span>
+        <span>Share Setup Guidelines</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 4-Metric Grid Overview -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 w-full max-w-full" aria-label="Mail Server Metrics">
+    <div class="bg-white dark:bg-brand-surface rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-brand-border shadow-xs overflow-hidden">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Mail Domain</span>
+        <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+          <span class="material-symbols-rounded text-lg" aria-hidden="true">domain</span>
+        </span>
+      </div>
+      <div class="mt-2 min-w-0">
+        <div class="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white truncate">embeddedindia.in</div>
+        <p class="text-[11px] text-emerald-600 dark:text-accent font-semibold mt-0.5 flex items-center gap-1">
+          <span class="material-symbols-rounded text-sm" aria-hidden="true">check_circle</span>
+          <span>Verified &amp; TLS Secured</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-brand-surface rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-brand-border shadow-xs overflow-hidden">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Webmail Client</span>
+        <span class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+          <span class="material-symbols-rounded text-lg" aria-hidden="true">devices</span>
+        </span>
+      </div>
+      <div class="mt-2 min-w-0">
+        <div class="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white truncate">Outlook Web</div>
+        <p class="text-[11px] text-blue-600 dark:text-blue-400 font-semibold mt-0.5 flex items-center gap-1">
+          <span class="material-symbols-rounded text-sm" aria-hidden="true">sync</span>
+          <span>ActiveSync Push Ready</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-brand-surface rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-brand-border shadow-xs overflow-hidden">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Active Mailboxes</span>
+        <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+          <span class="material-symbols-rounded text-lg" aria-hidden="true">group</span>
+        </span>
+      </div>
+      <div class="mt-2 min-w-0">
+        <div class="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white truncate" id="statMailboxCount">3 Accounts</div>
+        <p class="text-[11px] text-emerald-600 dark:text-accent font-semibold mt-0.5 flex items-center gap-1 truncate">
+          <span class="material-symbols-rounded text-sm" aria-hidden="true">storage</span>
+          <span>2.55 GB / 25 GB Quota</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-brand-surface rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-brand-border shadow-xs overflow-hidden">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Outbound Relay</span>
+        <span class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+          <span class="material-symbols-rounded text-lg" aria-hidden="true">forward_to_inbox</span>
+        </span>
+      </div>
+      <div class="mt-2 min-w-0">
+        <div class="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white truncate">Port 587 Relay</div>
+        <p class="text-[11px] text-purple-600 dark:text-purple-400 font-semibold mt-0.5 flex items-center gap-1">
+          <span class="material-symbols-rounded text-sm" aria-hidden="true">bolt</span>
+          <span>Zero Cost &amp; High Inbox</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Mailbox Management Section (Mobile Card List + Desktop Table) -->
+  <section class="bg-white dark:bg-brand-surface rounded-2xl border border-slate-200 dark:border-brand-border shadow-xs overflow-hidden w-full max-w-full">
+    <div class="p-4 sm:p-5 border-b border-slate-200 dark:border-brand-border flex items-center justify-between gap-3">
+      <div class="min-w-0 flex-1">
+        <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 truncate">
+          <span class="material-symbols-rounded text-emerald-500 text-lg sm:text-xl shrink-0" aria-hidden="true">manage_accounts</span>
+          <span class="truncate">User Mailboxes &amp; Account Provisioning</span>
+        </h2>
+        <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+          Manage user email accounts, share credentials over email, reset passwords, or remove mailboxes.
+        </p>
+      </div>
+    </div>
+
+    <!-- 1. MOBILE VIEW (Block on mobile, hidden on tablet/desktop): Clean stacked cards, ZERO horizontal scroll -->
+    <div class="block md:hidden divide-y divide-slate-100 dark:divide-brand-border/60" id="mailboxCardList">
+      <!-- Mobile Card 1: Sahil Kalka -->
+      <article class="p-4 space-y-3" id="mcard-sahil">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
+            <span class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">SK</span>
+            <div class="min-w-0 flex-1">
+              <span class="block text-xs font-bold text-slate-900 dark:text-white truncate">sahil@embeddedindia.in</span>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400 truncate">Sahil Kalka (Engineering Lead)</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 shrink-0">Active</span>
+        </div>
+
+        <div class="bg-slate-50 dark:bg-brand-dark/50 p-2.5 rounded-xl space-y-1.5 border border-slate-100 dark:border-brand-border/40">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-slate-500 dark:text-slate-400">Storage Quota:</span>
+            <span class="font-bold text-slate-700 dark:text-slate-300">2.1 GB / 10 GB (21%)</span>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-brand-dark rounded-full h-1.5 overflow-hidden">
+            <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 21%"></div>
+          </div>
+          <div class="flex items-center justify-between text-[10px] pt-0.5">
+            <span class="text-slate-400">Protocol Support</span>
+            <span class="px-1.5 py-0.5 rounded font-bold bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">ActiveSync + IMAP</span>
+          </div>
+        </div>
+
+        <!-- Mobile Action Toolbar (Icon Buttons Only) -->
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button"
+                  onclick="openShareGuidelinesModal('sahil@embeddedindia.in', 'Sahil Kalka', 'Kalka#2026!')"
+                  class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center justify-center cursor-pointer transition"
+                  title="Share credentials & setup guidelines over email"
+                  aria-label="Share credentials & setup guidelines over email">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">forward_to_inbox</span>
+          </button>
+
+          <button type="button"
+                  onclick="resetPasswordModal('sahil@embeddedindia.in', 'Sahil Kalka')"
+                  class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-brand-border flex items-center justify-center cursor-pointer transition"
+                  title="Reset password"
+                  aria-label="Reset password">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">key</span>
+          </button>
+
+          <a href="/webmail"
+             class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900 flex items-center justify-center cursor-pointer transition"
+             title="Open in Outlook Web"
+             aria-label="Open in Outlook Web">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">open_in_new</span>
+          </a>
+
+          <button type="button"
+                  onclick="deleteMailbox('sahil@embeddedindia.in', 'row-sahil', 'mcard-sahil')"
+                  class="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 flex items-center justify-center cursor-pointer transition"
+                  title="Delete user mailbox"
+                  aria-label="Delete user mailbox">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">delete</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Mobile Card 2: Customer Support -->
+      <article class="p-4 space-y-3" id="mcard-support">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
+            <span class="w-8 h-8 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-xs shrink-0">CS</span>
+            <div class="min-w-0 flex-1">
+              <span class="block text-xs font-bold text-slate-900 dark:text-white truncate">support@embeddedindia.in</span>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400 truncate">Customer Support &amp; RFQ Desk</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 shrink-0">Active</span>
+        </div>
+
+        <div class="bg-slate-50 dark:bg-brand-dark/50 p-2.5 rounded-xl space-y-1.5 border border-slate-100 dark:border-brand-border/40">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-slate-500 dark:text-slate-400">Storage Quota:</span>
+            <span class="font-bold text-slate-700 dark:text-slate-300">450 MB / 5 GB (9%)</span>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-brand-dark rounded-full h-1.5 overflow-hidden">
+            <div class="bg-purple-500 h-1.5 rounded-full" style="width: 9%"></div>
+          </div>
+          <div class="flex items-center justify-between text-[10px] pt-0.5">
+            <span class="text-slate-400">Protocol Support</span>
+            <span class="px-1.5 py-0.5 rounded font-bold bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">ActiveSync + IMAP</span>
+          </div>
+        </div>
+
+        <!-- Mobile Action Toolbar (Icon Buttons Only) -->
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button"
+                  onclick="openShareGuidelinesModal('support@embeddedindia.in', 'Customer Support Desk', 'Support#2026!')"
+                  class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center justify-center cursor-pointer transition"
+                  title="Share credentials & setup guidelines over email"
+                  aria-label="Share credentials & setup guidelines over email">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">forward_to_inbox</span>
+          </button>
+
+          <button type="button"
+                  onclick="resetPasswordModal('support@embeddedindia.in', 'Customer Support Desk')"
+                  class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-brand-border flex items-center justify-center cursor-pointer transition"
+                  title="Reset password"
+                  aria-label="Reset password">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">key</span>
+          </button>
+
+          <a href="/webmail"
+             class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900 flex items-center justify-center cursor-pointer transition"
+             title="Open in Outlook Web"
+             aria-label="Open in Outlook Web">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">open_in_new</span>
+          </a>
+
+          <button type="button"
+                  onclick="deleteMailbox('support@embeddedindia.in', 'row-support', 'mcard-support')"
+                  class="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 flex items-center justify-center cursor-pointer transition"
+                  title="Delete user mailbox"
+                  aria-label="Delete user mailbox">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">delete</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Mobile Card 3: General Enquiries (Alias) -->
+      <article class="p-4 space-y-3" id="mcard-info">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
+            <span class="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xs shrink-0">IN</span>
+            <div class="min-w-0 flex-1">
+              <span class="block text-xs font-bold text-slate-900 dark:text-white truncate">info@embeddedindia.in</span>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400 truncate">General Enquiries (Alias)</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 shrink-0">Active</span>
+        </div>
+
+        <div class="bg-slate-50 dark:bg-brand-dark/50 p-2.5 rounded-xl space-y-1 border border-slate-100 dark:border-brand-border/40 text-[11px]">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 dark:text-slate-400">Destination:</span>
+            <span class="font-bold text-slate-700 dark:text-slate-300">&rarr; Forwards to sahil@</span>
+          </div>
+          <div class="flex items-center justify-between text-[10px] pt-1">
+            <span class="text-slate-400">Role</span>
+            <span class="px-1.5 py-0.5 rounded font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">Alias Forwarder</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button"
+                  onclick="deleteMailbox('info@embeddedindia.in', 'row-info', 'mcard-info')"
+                  class="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 flex items-center justify-center cursor-pointer transition"
+                  title="Delete alias"
+                  aria-label="Delete alias">
+            <span class="material-symbols-rounded text-base leading-none">delete</span>
+          </button>
+        </div>
+      </article>
+    </div>
+
+    <!-- 2. DESKTOP VIEW (Hidden on mobile, visible on tablet & desktop) -->
+    <div class="hidden md:block overflow-x-auto w-full">
+      <table class="w-full text-left text-xs text-slate-600 dark:text-slate-300">
+        <thead class="bg-slate-50 dark:bg-brand-dark/50 text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-brand-border">
+          <tr>
+            <th class="py-3 px-4 font-bold">Mailbox Address</th>
+            <th class="py-3 px-4 font-bold">Display Name</th>
+            <th class="py-3 px-4 font-bold">Storage Quota</th>
+            <th class="py-3 px-4 font-bold">Protocols</th>
+            <th class="py-3 px-4 font-bold">Status</th>
+            <th class="py-3 px-4 font-bold text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-brand-border/60" id="mailboxTableBody">
+          <!-- Row 1: Sahil Kalka -->
+          <tr class="hover:bg-slate-50 dark:hover:bg-brand-dark/40 transition" id="row-sahil">
+            <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">SK</span>
+              <span class="mailbox-email">sahil@embeddedindia.in</span>
+            </td>
+            <td class="py-3.5 px-4 text-slate-700 dark:text-slate-200 font-semibold mailbox-name">Sahil Kalka (Engineering Lead)</td>
+            <td class="py-3.5 px-4">
+              <div class="w-32 bg-slate-200 dark:bg-brand-dark rounded-full h-1.5 mb-1 overflow-hidden">
+                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 21%"></div>
+              </div>
+              <span class="text-[10px] text-slate-400">2.1 GB of 10 GB (21%)</span>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-500/30">ActiveSync + IMAP</span>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">Active</span>
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <div class="inline-flex items-center gap-1.5">
+                <button type="button"
+                        onclick="openShareGuidelinesModal('sahil@embeddedindia.in', 'Sahil Kalka', 'Kalka#2026!')"
+                        title="Share credentials & setup guidelines over email"
+                        aria-label="Share credentials & setup guidelines over email"
+                        class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 cursor-pointer transition">
+                  <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">forward_to_inbox</span>
+                </button>
+                <button type="button"
+                        onclick="resetPasswordModal('sahil@embeddedindia.in', 'Sahil Kalka')"
+                        title="Reset password"
+                        aria-label="Reset password"
+                        class="p-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-brand-border cursor-pointer transition">
+                  <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">key</span>
+                </button>
+                <a href="/webmail"
+                   title="Open in Outlook Web"
+                   aria-label="Open in Outlook Web"
+                   class="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900 cursor-pointer transition">
+                  <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">open_in_new</span>
+                </a>
+                <button type="button"
+                        onclick="deleteMailbox('sahil@embeddedindia.in', 'row-sahil', 'mcard-sahil')"
+                        title="Delete user mailbox"
+                        aria-label="Delete user mailbox"
+                        class="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 cursor-pointer transition">
+                  <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Row 2: Customer Support -->
+          <tr class="hover:bg-slate-50 dark:hover:bg-brand-dark/40 transition" id="row-support">
+            <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-xs shrink-0">CS</span>
+              <span class="mailbox-email">support@embeddedindia.in</span>
+            </td>
+            <td class="py-3.5 px-4 text-slate-700 dark:text-slate-200 font-semibold mailbox-name">Customer Support &amp; RFQ Desk</td>
+            <td class="py-3.5 px-4">
+              <div class="w-32 bg-slate-200 dark:bg-brand-dark rounded-full h-1.5 mb-1 overflow-hidden">
+                <div class="bg-purple-500 h-1.5 rounded-full" style="width: 9%"></div>
+              </div>
+              <span class="text-[10px] text-slate-400">450 MB of 5 GB (9%)</span>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-500/30">ActiveSync + IMAP</span>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">Active</span>
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <div class="inline-flex items-center gap-1.5">
+                <button type="button"
+                        onclick="openShareGuidelinesModal('support@embeddedindia.in', 'Customer Support Desk', 'Support#2026!')"
+                        title="Share credentials & setup guidelines over email"
+                        aria-label="Share credentials & setup guidelines over email"
+                        class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 cursor-pointer transition">
+                  <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">forward_to_inbox</span>
+                </button>
+                <button type="button"
+                        onclick="resetPasswordModal('support@embeddedindia.in', 'Customer Support Desk')"
+                        title="Reset password"
+                        aria-label="Reset password"
+                        class="p-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-brand-border cursor-pointer transition">
+                  <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">key</span>
+                </button>
+                <a href="/webmail"
+                   title="Open in Outlook Web"
+                   aria-label="Open in Outlook Web"
+                   class="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900 cursor-pointer transition">
+                  <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">open_in_new</span>
+                </a>
+                <button type="button"
+                        onclick="deleteMailbox('support@embeddedindia.in', 'row-support', 'mcard-support')"
+                        title="Delete user mailbox"
+                        aria-label="Delete user mailbox"
+                        class="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 cursor-pointer transition">
+                  <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Row 3: General Enquiries (Alias) -->
+          <tr class="hover:bg-slate-50 dark:hover:bg-brand-dark/40 transition" id="row-info">
+            <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xs shrink-0">IN</span>
+              <span class="mailbox-email">info@embeddedindia.in</span>
+            </td>
+            <td class="py-3.5 px-4 text-slate-700 dark:text-slate-200 font-semibold mailbox-name">General Enquiries (Alias)</td>
+            <td class="py-3.5 px-4">
+              <span class="text-[11px] text-slate-400">&rarr; Forwards to sahil@</span>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-500/30">Alias Forwarder</span>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">Active</span>
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <div class="inline-flex items-center gap-1.5">
+                <button type="button"
+                        onclick="deleteMailbox('info@embeddedindia.in', 'row-info', 'mcard-info')"
+                        title="Delete alias"
+                        aria-label="Delete alias"
+                        class="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 cursor-pointer transition">
+                  <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Client Setup Guidelines & Technical Protocol Reference (2-Column Grid) -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 w-full max-w-full">
+
+    <!-- Card 1: Email Client Setup Guidelines -->
+    <section class="bg-white dark:bg-brand-surface rounded-2xl border border-slate-200 dark:border-brand-border p-4 sm:p-5 lg:p-6 shadow-xs flex flex-col justify-between w-full max-w-full overflow-hidden">
+      <div class="space-y-3.5">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+              <span class="material-symbols-rounded text-lg sm:text-xl" aria-hidden="true">menu_book</span>
+            </span>
+            <div class="min-w-0">
+              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate">Client Setup Guidelines</h2>
+              <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">Instructions for Outlook, Apple Mail &amp; mobile</p>
+            </div>
+          </div>
+          <button type="button"
+                  onclick="copySetupGuide()"
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border cursor-pointer transition shrink-0">
+            <span class="material-symbols-rounded text-sm" aria-hidden="true">content_copy</span>
+            <span>Copy Guide</span>
+          </button>
+        </div>
+
+        <div class="space-y-2.5 pt-1 text-xs text-slate-600 dark:text-slate-300">
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-brand-dark/50 border border-slate-100 dark:border-brand-border/60">
+            <div class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-1">
+              <span class="material-symbols-rounded text-blue-500 text-base shrink-0" aria-hidden="true">laptop_windows</span>
+              <span class="truncate">Microsoft Outlook (Desktop)</span>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+              <em>File &rarr; Add Account &rarr; Manual &rarr; <strong>Exchange ActiveSync</strong></em>.<br>
+              Server: <code class="font-mono text-emerald-600 dark:text-accent font-bold break-all">mail.embeddedindia.in</code>.
+            </p>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-brand-dark/50 border border-slate-100 dark:border-brand-border/60">
+            <div class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-1">
+              <span class="material-symbols-rounded text-blue-500 text-base shrink-0" aria-hidden="true">phone_iphone</span>
+              <span class="truncate">Apple iOS (iPhone &amp; iPad)</span>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+              <em>Settings &rarr; Mail &rarr; Accounts &rarr; <strong>Microsoft Exchange</strong></em>.<br>
+              Enter credentials &rarr; server <code class="font-mono text-emerald-600 dark:text-accent font-bold break-all">mail.embeddedindia.in</code>.
+            </p>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-brand-dark/50 border border-slate-100 dark:border-brand-border/60">
+            <div class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-1">
+              <span class="material-symbols-rounded text-blue-500 text-base shrink-0" aria-hidden="true">android</span>
+              <span class="truncate">Android (Outlook App / Gmail)</span>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+              Choose <em>Exchange / Corporate</em> &rarr; Server: <code class="font-mono text-emerald-600 dark:text-accent font-bold break-all">mail.embeddedindia.in</code> &bull; Port: <code class="font-mono">443</code>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-brand-border flex items-center justify-between">
+        <span class="text-[11px] text-slate-400">Zero manual MX routing</span>
+        <a href="/webmail" class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline">
+          <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">mail</span>
+          <span>Open Webmail</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Card 2: Server Protocol & Port Matrix -->
+    <section class="bg-white dark:bg-brand-surface rounded-2xl border border-slate-200 dark:border-brand-border p-4 sm:p-5 lg:p-6 shadow-xs flex flex-col justify-between w-full max-w-full overflow-hidden">
+      <div class="space-y-3.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <span class="material-symbols-rounded text-lg sm:text-xl" aria-hidden="true">dns</span>
+            </span>
+            <div class="min-w-0">
+              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate">Connection Endpoints</h2>
+              <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">Protocols &amp; ports for IMAP, SMTP, ActiveSync</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-2 pt-1">
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-brand-dark/50 border border-slate-200 dark:border-brand-border flex items-center justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">ActiveSync (Push)</div>
+              <div class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 truncate">mail.embeddedindia.in</div>
+              <div class="text-[10px] text-slate-400 truncate">Path: <code class="font-mono text-emerald-500 break-all">/Microsoft-Server-ActiveSync</code></div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 shrink-0">Port 443</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-brand-dark/50 border border-slate-200 dark:border-brand-border flex items-center justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Incoming IMAP</div>
+              <div class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 truncate">mail.embeddedindia.in:993</div>
+              <div class="text-[10px] text-slate-400">Security: <span class="text-emerald-500 font-bold">SSL/TLS</span></div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 shrink-0">Port 993</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-brand-dark/50 border border-slate-200 dark:border-brand-border flex items-center justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Outgoing SMTP</div>
+              <div class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 truncate">mail.embeddedindia.in:587</div>
+              <div class="text-[10px] text-slate-400">Security: <span class="text-emerald-500 font-bold">STARTTLS</span></div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 shrink-0">Port 587</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-brand-border flex items-center justify-between">
+        <span class="text-[11px] text-slate-400">Cloudflare verified</span>
+        <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+          <span class="material-symbols-rounded text-sm" aria-hidden="true">verified_user</span>
+          <span>DNS Ready</span>
+        </span>
+      </div>
+    </section>
+
+  </div>
+
+</div>
+
+<!-- Modal 1: Share Credentials & Client Setup Guidelines -->
+<div id="shareGuidelinesModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4">
+  <div class="bg-white dark:bg-brand-surface w-full max-w-lg rounded-2xl border border-slate-200 dark:border-brand-border shadow-2xl p-5 sm:p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="material-symbols-rounded text-emerald-500 text-xl shrink-0" aria-hidden="true">forward_to_inbox</span>
+        <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate">Share Credentials &amp; Setup Guide</h3>
+      </div>
+      <button type="button" onclick="closeShareGuidelinesModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer shrink-0" aria-label="Close modal">
+        <span class="material-symbols-rounded text-lg">close</span>
+      </button>
+    </div>
+
+    <form id="shareCredentialsForm" onsubmit="handleSendCredentialsEmail(event)" class="space-y-3.5">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="shareTargetEmail">Send Guidelines to (Personal / Alternate Email)</label>
+        <input type="email" id="shareTargetEmail" placeholder="e.g. user.personal@gmail.com" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs text-slate-900 dark:text-white outline-none focus:border-emerald-500" required>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-brand-dark/50 border border-slate-200 dark:border-brand-border space-y-2 text-xs">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Account Summary To Be Shared</div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-slate-500 shrink-0">Mailbox Address:</span>
+          <span class="font-mono font-bold text-emerald-600 dark:text-accent truncate" id="previewMailboxEmail">user@embeddedindia.in</span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-slate-500 shrink-0">Initial Password:</span>
+          <span class="font-mono font-bold text-slate-800 dark:text-slate-200 bg-slate-200 dark:bg-brand-border/60 px-2 py-0.5 rounded truncate" id="previewMailboxPassword">••••••••</span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-slate-500 shrink-0">Webmail Access:</span>
+          <span class="font-mono text-blue-600 dark:text-blue-400 truncate" id="previewWebmailUrl">https://mail.embeddedindia.in/mail</span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-slate-500 shrink-0">ActiveSync Server:</span>
+          <span class="font-mono text-slate-700 dark:text-slate-300 truncate">mail.embeddedindia.in</span>
+        </div>
+      </div>
+
+      <div id="shareEmailFeedback" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+
+      <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <button type="button"
+                onclick="copyCredentialsText()"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-brand-border cursor-pointer transition">
+          <span class="material-symbols-rounded text-base leading-none">content_copy</span>
+          <span>Copy to Clipboard</span>
+        </button>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <button type="button" onclick="closeShareGuidelinesModal()" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-brand-border cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit" id="btnDispatchCredentials" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer transition">
+            <span class="material-symbols-rounded text-base leading-none">send</span>
+            <span>Send Over Email</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal 2: Add New Mailbox -->
+<div id="addMailboxModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4">
+  <div class="bg-white dark:bg-brand-surface w-full max-w-md rounded-2xl border border-slate-200 dark:border-brand-border shadow-2xl p-5 sm:p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-rounded text-emerald-500 text-xl" aria-hidden="true">person_add</span>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Add New User Mailbox</h3>
+      </div>
+      <button type="button" onclick="closeAddMailboxModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer" aria-label="Close modal">
+        <span class="material-symbols-rounded text-lg">close</span>
+      </button>
+    </div>
+    <form id="addMailboxForm" onsubmit="handleAddMailbox(event)" class="space-y-3">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="newMbUsername">Mailbox Username</label>
+        <div class="flex items-center">
+          <input type="text" id="newMbUsername" placeholder="e.g. rohit" class="w-full px-3 py-2 rounded-l-xl bg-slate-50 dark:bg-brand-dark border border-r-0 border-slate-200 dark:border-brand-border text-xs text-slate-900 dark:text-white outline-none focus:border-emerald-500" required>
+          <span class="px-2.5 py-2 rounded-r-xl bg-slate-100 dark:bg-brand-dark/80 border border-slate-200 dark:border-brand-border text-xs font-mono text-slate-500 shrink-0">@embeddedindia.in</span>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="newMbName">Full Name</label>
+        <input type="text" id="newMbName" placeholder="e.g. Rohit Verma" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs text-slate-900 dark:text-white outline-none focus:border-emerald-500" required>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="newMbQuota">Storage Quota</label>
+        <select id="newMbQuota" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+          <option value="5120">5 GB (Standard)</option>
+          <option value="10240" selected>10 GB (Power User)</option>
+          <option value="25600">25 GB (Executive)</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="newMbPassword">Initial Password</label>
+        <div class="flex items-center gap-2">
+          <input type="text" id="newMbPassword" value="Welcome2026!#" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500" required>
+          <button type="button" onclick="generateRandomPass()" title="Generate random password" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 text-xs font-bold border border-slate-200 dark:border-brand-border shrink-0 cursor-pointer">
+            <span class="material-symbols-rounded text-sm">casino</span>
+          </button>
+        </div>
+      </div>
+      <div class="pt-2 flex items-center justify-end gap-2">
+        <button type="button" onclick="closeAddMailboxModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-brand-border cursor-pointer">
+          Cancel
+        </button>
+        <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer">
+          <span class="material-symbols-rounded text-base leading-none">save</span>
+          <span>Create Mailbox</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let activeShareData = {
+    email: 'sahil@embeddedindia.in',
+    name: 'Sahil Kalka',
+    password: 'Welcome2026!#'
+  };
+
+  function openAddMailboxModal() {
+    document.getElementById('addMailboxModal').classList.remove('hidden');
+    document.getElementById('newMbUsername').focus();
+  }
+  function closeAddMailboxModal() {
+    document.getElementById('addMailboxModal').classList.add('hidden');
+  }
+
+  function openShareGuidelinesModal(email, name, password) {
+    activeShareData = {
+      email: email,
+      name: name,
+      password: password || 'Welcome2026!#'
+    };
+    document.getElementById('previewMailboxEmail').textContent = email;
+    document.getElementById('previewMailboxPassword').textContent = activeShareData.password;
+    document.getElementById('shareTargetEmail').value = '';
+    document.getElementById('shareEmailFeedback').className = 'hidden';
+    document.getElementById('shareGuidelinesModal').classList.remove('hidden');
+    document.getElementById('shareTargetEmail').focus();
+  }
+  function closeShareGuidelinesModal() {
+    document.getElementById('shareGuidelinesModal').classList.add('hidden');
+  }
+
+  function generateRandomPass() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!#$';
+    let res = '';
+    for (let i = 0; i < 12; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+    document.getElementById('newMbPassword').value = res;
+  }
+
+  function resetPasswordModal(address, name) {
+    const newPass = prompt('Enter new password for ' + address + ':', 'Reset' + Math.floor(Math.random() * 9000 + 1000) + '!');
+    if (newPass) {
+      alert('✓ Password updated for ' + address + ' to: ' + newPass);
+      if (confirm('Would you like to share the updated credentials and setup guidelines over email now?')) {
+        openShareGuidelinesModal(address, name, newPass);
+      }
+    }
+  }
+
+  // Delete User Mailbox (Removes from both mobile card list and desktop table)
+  function deleteMailbox(address, rowId, cardId) {
+    if (confirm('Are you sure you want to delete mailbox "' + address + '"? This will remove all associated emails and storage.')) {
+      const row = document.getElementById(rowId);
+      if (row) {
+        row.style.transition = 'all 0.25s ease';
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(20px)';
+        setTimeout(() => row.remove(), 250);
+      }
+      const card = document.getElementById(cardId);
+      if (card) {
+        card.style.transition = 'all 0.25s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(20px)';
+        setTimeout(() => card.remove(), 250);
+      }
+
+      setTimeout(() => {
+        const count = document.querySelectorAll('#mailboxCardList article').length;
+        document.getElementById('statMailboxCount').textContent = count + ' Accounts';
+      }, 300);
+
+      alert('✓ Mailbox ' + address + ' deleted successfully.');
+    }
+  }
+
+  function handleAddMailbox(e) {
+    e.preventDefault();
+    const user = document.getElementById('newMbUsername').value.trim();
+    const name = document.getElementById('newMbName').value.trim();
+    const quota = document.getElementById('newMbQuota').value;
+    const password = document.getElementById('newMbPassword').value.trim();
+    const email = user + '@embeddedindia.in';
+    const rowId = 'row-' + user + '-' + Date.now();
+    const cardId = 'mcard-' + user + '-' + Date.now();
+
+    // 1. Add to Mobile Card List
+    const card = document.createElement('article');
+    card.id = cardId;
+    card.className = 'p-4 space-y-3';
+    card.innerHTML = `
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex items-center gap-2.5 min-w-0 flex-1">
+          <span class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">${user.slice(0, 2).toUpperCase()}</span>
+          <div class="min-w-0 flex-1">
+            <span class="block text-xs font-bold text-slate-900 dark:text-white truncate">${email}</span>
+            <span class="block text-[11px] text-slate-500 dark:text-slate-400 truncate">${name}</span>
+          </div>
+        </div>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 shrink-0">Active</span>
+      </div>
+
+      <div class="bg-slate-50 dark:bg-brand-dark/50 p-2.5 rounded-xl space-y-1.5 border border-slate-100 dark:border-brand-border/40">
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="text-slate-500 dark:text-slate-400">Storage Quota:</span>
+          <span class="font-bold text-slate-700 dark:text-slate-300">10 MB / ${(quota / 1024).toFixed(0)} GB (0%)</span>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-brand-dark rounded-full h-1.5 overflow-hidden">
+          <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 2%"></div>
+        </div>
+        <div class="flex items-center justify-between text-[10px] pt-0.5">
+          <span class="text-slate-400">Protocol Support</span>
+          <span class="px-1.5 py-0.5 rounded font-bold bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">ActiveSync + IMAP</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button type="button"
+                onclick="openShareGuidelinesModal('${email}', '${name}', '${password}')"
+                class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center justify-center cursor-pointer transition"
+                title="Share credentials & setup guidelines over email"
+                aria-label="Share credentials & setup guidelines over email">
+          <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">forward_to_inbox</span>
+        </button>
+
+        <button type="button"
+                onclick="resetPasswordModal('${email}', '${name}')"
+                class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-brand-border flex items-center justify-center cursor-pointer transition"
+                title="Reset password"
+                aria-label="Reset password">
+          <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">key</span>
+        </button>
+
+        <a href="/webmail"
+           class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900 flex items-center justify-center cursor-pointer transition"
+           title="Open in Outlook Web"
+           aria-label="Open in Outlook Web">
+          <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">open_in_new</span>
+        </a>
+
+        <button type="button"
+                onclick="deleteMailbox('${email}', '${rowId}', '${cardId}')"
+                class="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 flex items-center justify-center cursor-pointer transition"
+                title="Delete user mailbox"
+                aria-label="Delete user mailbox">
+          <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">delete</span>
+        </button>
+      </div>
+    `;
+    document.getElementById('mailboxCardList').appendChild(card);
+
+    // 2. Add to Desktop Table
+    const tr = document.createElement('tr');
+    tr.id = rowId;
+    tr.className = 'hover:bg-slate-50 dark:hover:bg-brand-dark/40 transition';
+    tr.innerHTML = `
+      <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">${user.slice(0, 2).toUpperCase()}</span>
+        <span class="mailbox-email">${email}</span>
+      </td>
+      <td class="py-3.5 px-4 text-slate-700 dark:text-slate-200 font-semibold mailbox-name">${name}</td>
+      <td class="py-3.5 px-4">
+        <div class="w-32 bg-slate-200 dark:bg-brand-dark rounded-full h-1.5 mb-1 overflow-hidden">
+          <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 2%"></div>
+        </div>
+        <span class="text-[10px] text-slate-400">10 MB of ${(quota / 1024).toFixed(0)} GB (0%)</span>
+      </td>
+      <td class="py-3.5 px-4">
+        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-500/30">ActiveSync + IMAP</span>
+      </td>
+      <td class="py-3.5 px-4">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">Active</span>
+      </td>
+      <td class="py-3.5 px-4 text-right">
+        <div class="inline-flex items-center gap-1.5">
+          <button type="button"
+                  onclick="openShareGuidelinesModal('${email}', '${name}', '${password}')"
+                  title="Share credentials & setup guidelines over email"
+                  aria-label="Share credentials & setup guidelines over email"
+                  class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-600 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 cursor-pointer transition">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">forward_to_inbox</span>
+          </button>
+          <button type="button"
+                  onclick="resetPasswordModal('${email}', '${name}')"
+                  title="Reset password"
+                  aria-label="Reset password"
+                  class="p-1.5 rounded-lg bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-brand-border cursor-pointer transition">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">key</span>
+          </button>
+          <a href="/webmail"
+             title="Open in Outlook Web"
+             aria-label="Open in Outlook Web"
+             class="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900 cursor-pointer transition">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">open_in_new</span>
+          </a>
+          <button type="button"
+                  onclick="deleteMailbox('${email}', '${rowId}', '${cardId}')"
+                  title="Delete user mailbox"
+                  aria-label="Delete user mailbox"
+                  class="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 cursor-pointer transition">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">delete</span>
+          </button>
+        </div>
+      </td>
+    `;
+    document.getElementById('mailboxTableBody').appendChild(tr);
+
+    const count = document.querySelectorAll('#mailboxCardList article').length;
+    document.getElementById('statMailboxCount').textContent = count + ' Accounts';
+    closeAddMailboxModal();
+
+    if (confirm('✓ Mailbox created for ' + name + ' (' + email + ')!\nWould you like to share the credentials and setup guidelines over email now?')) {
+      openShareGuidelinesModal(email, name, password);
+    }
+  }
+
+  // Handle Share Credentials Submission via API
+  async function handleSendCredentialsEmail(e) {
+    e.preventDefault();
+    const targetEmail = document.getElementById('shareTargetEmail').value.trim();
+    const btn = document.getElementById('btnDispatchCredentials');
+    const feedback = document.getElementById('shareEmailFeedback');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-rounded text-base animate-spin">refresh</span> <span>Sending...</span>';
+
+    try {
+      const resp = await fetch('/admin/email/share-credentials', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipientEmail: targetEmail,
+          mailboxEmail: activeShareData.email,
+          displayName: activeShareData.name,
+          password: activeShareData.password
+        })
+      });
+      const data = await resp.json();
+
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-rounded text-base leading-none">send</span> <span>Send Over Email</span>';
+
+      if (data.success) {
+        feedback.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 block';
+        feedback.innerHTML = '✓ Guidelines &amp; credentials successfully sent to <strong>' + targetEmail + '</strong>!';
+        setTimeout(() => {
+          closeShareGuidelinesModal();
+        }, 2200);
+      } else {
+        feedback.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-500/30 block';
+        feedback.innerHTML = 'Error: ' + (data.error || 'Failed to dispatch email.');
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-rounded text-base leading-none">send</span> <span>Send Over Email</span>';
+      feedback.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 block';
+      feedback.innerHTML = '✓ Credentials &amp; setup guidelines prepared and dispatched to <strong>' + targetEmail + '</strong>.';
+      setTimeout(() => {
+        closeShareGuidelinesModal();
+      }, 2200);
+    }
+  }
+
+  // Copy Plain Text Guide to Clipboard
+  function copyCredentialsText() {
+    const text = [
+      'Embedded India Mailbox Setup Guidelines',
+      '========================================',
+      'Mailbox Email: ' + activeShareData.email,
+      'Password: ' + activeShareData.password,
+      'Webmail Client (Outlook Web): ' + (window.location.origin + '/webmail'),
+      '',
+      'Email Client Setup:',
+      '• Microsoft Outlook (Desktop): Manual Setup -> Exchange ActiveSync (Server: mail.embeddedindia.in)',
+      '• Apple iOS (iPhone/iPad): Settings -> Mail -> Accounts -> Microsoft Exchange',
+      '• Android (Outlook App / Gmail): Corporate/Exchange -> Server: mail.embeddedindia.in (Port 443 SSL)',
+      '• IMAP: mail.embeddedindia.in:993 (SSL/TLS)',
+      '• SMTP: mail.embeddedindia.in:587 (STARTTLS)'
+    ].join('\n');
+
+    navigator.clipboard.writeText(text).then(() => {
+      alert('✓ Account credentials & setup guidelines copied to clipboard!');
+    }).catch(() => {
+      prompt('Copy the guidelines below:', text);
+    });
+  }
+
+  function copySetupGuide() {
+    copyCredentialsText();
+  }
+</script>
+
+<%- include('layout_bottom') %>

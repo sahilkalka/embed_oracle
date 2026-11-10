@@ -28,6 +28,7 @@ const toolsRoutes = require('./routes/tools');
 const blogsRoutes = require('./routes/blogs');
 const projectsRoutes = require('./routes/projects');
 const adminRoutes = require('./routes/admin');
+const webmailRoutes = require('./routes/webmail');
 const servicesData = require('./data/servicesData');
 
 const app = express();
@@ -284,6 +285,10 @@ app.use('/blogs', blogsRoutes);
 
 // Mount Admin Management Dashboard
 app.use('/admin', adminRoutes);
+
+// Mount User Webmail (Microsoft Outlook Web Client - Local & Dev Preview)
+app.use('/webmail', webmailRoutes);
+app.use('/mail', webmailRoutes);
 
 // Core Website Pages (Replicating Embedded India design & content)
 

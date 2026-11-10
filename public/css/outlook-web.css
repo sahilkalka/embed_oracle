@@ -1,0 +1,548 @@
+/* ==============================================================================
+   Embedded India - Outlook Web Theme for Webmail
+   Transforms Webmail into Microsoft Outlook Web (Fluent UI)
+   Completely removes all SOGo instances, logos, watermarks, and metadata.
+   ============================================================================== */
+
+/* --- 1. SOGo Branding Annihilation --- */
+img[src*="sogo"],
+img[src*="logo"],
+.sogo-logo,
+.sg-logo,
+[aria-label*="SOGo" i],
+[title*="SOGo" i],
+a[href*="sogo.nu"],
+a[href*="inverse.ca"],
+#aboutDialog,
+.menu-about,
+md-dialog:has([href*="sogo"]),
+md-dialog:has([href*="inverse"]),
+.md-toolbar-tools img[src*="svg"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* --- 2. Typography & Core Design System (Microsoft Fluent) --- */
+:root {
+  --outlook-blue: #0078d4;
+  --outlook-blue-hover: #106ebe;
+  --outlook-blue-pressed: #005a9e;
+  --outlook-blue-light: #eff6fc;
+  --outlook-blue-subtle: #deecf9;
+  --outlook-header-bg: #0078d4;
+  --outlook-header-fg: #ffffff;
+  --outlook-rail-bg: #f3f2f1;
+  --outlook-rail-border: #edebe9;
+  --outlook-rail-active: #ffffff;
+  --outlook-folder-bg: #f8f9fa;
+  --outlook-border: #e1dfdd;
+  --outlook-text-primary: #201f1e;
+  --outlook-text-secondary: #605e5c;
+  --outlook-bg-card: #ffffff;
+  --outlook-unread-dot: #0078d4;
+  --outlook-font: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --outlook-radius: 6px;
+  --outlook-radius-pill: 9999px;
+  --emerald-accent: #10b981;
+}
+
+html, body {
+  font-family: var(--outlook-font) !important;
+  color: var(--outlook-text-primary) !important;
+  background-color: #f3f2f1 !important;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- 3. Outlook Top Header Bar --- */
+md-toolbar.sg-toolbar,
+.sg-toolbar,
+header.sg-header {
+  background-color: var(--outlook-header-bg) !important;
+  color: var(--outlook-header-fg) !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  padding: 0 12px !important;
+}
+
+/* Outlook Waffle App Launcher Button (9 dots) */
+.sg-toolbar .sg-waffle-btn,
+.sg-toolbar .md-button.sg-nav-toggle {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  border-radius: 4px !important;
+  color: #ffffff !important;
+  background: transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: 8px !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.sg-toolbar .sg-waffle-btn:hover,
+.sg-toolbar .md-button.sg-nav-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Brand Text: Outlook | Embedded India */
+.sg-toolbar .sg-brand-title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-right: 24px !important;
+  white-space: nowrap !important;
+}
+
+.sg-toolbar .sg-brand-title::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 24px !important;
+  height: 24px !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Crect width='64' height='64' rx='14' fill='%23005A9E'/%3E%3Crect x='10' y='18' width='44' height='30' rx='4' fill='%2328A8EA' fill-opacity='0.95'/%3E%3Cpath d='M10 22 L32 38 L54 22' stroke='%23FFFFFF' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='52' cy='18' r='7' fill='%2310B981'/%3E%3C/svg%3E") no-repeat center/contain !important;
+}
+
+/* Outlook Central Search Box */
+.sg-toolbar .sg-search-wrap,
+md-toolbar md-autocomplete,
+.md-toolbar-tools input[type="search"] {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  height: 34px !important;
+  max-width: 520px !important;
+  width: 100% !important;
+  padding: 0 12px 0 36px !important;
+  font-size: 13px !important;
+  transition: all 0.2s ease !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: 10px center !important;
+  background-size: 18px !important;
+}
+
+.sg-toolbar .sg-search-wrap:focus-within,
+.md-toolbar-tools input[type="search"]:focus {
+  background-color: #ffffff !important;
+  color: #201f1e !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
+  border-color: #ffffff !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23605E5C'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E") !important;
+}
+
+/* Outlook Header Right Icon Buttons */
+.sg-toolbar .md-button,
+.sg-toolbar button {
+  color: #ffffff !important;
+  border-radius: 4px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 8px !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.sg-toolbar .md-button:hover,
+.sg-toolbar button:hover {
+  background-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* --- 4. Outlook Left Navigation Rail (Icon Bar) --- */
+.sg-left-rail,
+md-sidenav.sg-navigation-drawer-icons,
+.sg-app-rail {
+  width: 48px !important;
+  min-width: 48px !important;
+  background-color: var(--outlook-rail-bg) !important;
+  border-right: 1px solid var(--outlook-rail-border) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding: 8px 0 !important;
+  gap: 4px !important;
+  z-index: 20 !important;
+}
+
+/* Left Rail Icon Buttons */
+.sg-left-rail .rail-btn,
+.sg-app-rail button,
+.sg-app-rail a {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--outlook-text-secondary) !important;
+  background: transparent !important;
+  transition: all 0.15s ease !important;
+  text-decoration: none !important;
+  position: relative !important;
+}
+
+.sg-left-rail .rail-btn:hover,
+.sg-app-rail button:hover,
+.sg-app-rail a:hover {
+  background-color: #edebe9 !important;
+  color: var(--outlook-blue) !important;
+}
+
+.sg-left-rail .rail-btn.active,
+.sg-app-rail button.active,
+.sg-app-rail a.active {
+  background-color: #ffffff !important;
+  color: var(--outlook-blue) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.sg-left-rail .rail-btn.active::before,
+.sg-app-rail a.active::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 8px !important;
+  bottom: 8px !important;
+  width: 3px !important;
+  background-color: var(--outlook-blue) !important;
+  border-radius: 0 2px 2px 0 !important;
+}
+
+/* --- 5. Outlook "+ New mail" Pill Icon Button --- */
+.sg-compose-btn,
+.sg-new-mail-btn,
+button[aria-label*="Compose" i],
+button[aria-label*="New message" i],
+.md-button.md-primary.md-raised:has(md-icon[md-svg-icon*="email"]) {
+  background-color: var(--outlook-blue) !important;
+  color: #ffffff !important;
+  border-radius: var(--outlook-radius-pill) !important;
+  height: 36px !important;
+  padding: 0 18px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-shadow: 0 2px 4px rgba(0, 120, 212, 0.25) !important;
+  transition: all 0.15s ease !important;
+  border: none !important;
+  cursor: pointer !important;
+}
+
+.sg-compose-btn:hover,
+.sg-new-mail-btn:hover,
+button[aria-label*="Compose" i]:hover,
+button[aria-label*="New message" i]:hover {
+  background-color: var(--outlook-blue-hover) !important;
+  box-shadow: 0 3px 8px rgba(0, 120, 212, 0.35) !important;
+}
+
+/* --- 6. Folder Tree (Navigation Pane) --- */
+md-sidenav.sg-folder-tree,
+.sg-folders-pane,
+.md-sidenav-left {
+  background-color: var(--outlook-folder-bg) !important;
+  border-right: 1px solid var(--outlook-border) !important;
+  width: 240px !important;
+}
+
+.sg-folders-pane .folder-item,
+md-list-item.sg-folder-item {
+  border-radius: 4px !important;
+  margin: 1px 8px !important;
+  height: 34px !important;
+  font-size: 13px !important;
+  color: var(--outlook-text-primary) !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.sg-folders-pane .folder-item:hover,
+md-list-item.sg-folder-item:hover {
+  background-color: #edebe9 !important;
+}
+
+.sg-folders-pane .folder-item.active,
+md-list-item.sg-folder-item.selected {
+  background-color: var(--outlook-blue-light) !important;
+  color: var(--outlook-blue) !important;
+  font-weight: 600 !important;
+}
+
+/* Unread Badge */
+.sg-badge-unread,
+.folder-unread-count {
+  background-color: var(--outlook-blue) !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 1px 6px !important;
+  border-radius: 10px !important;
+  margin-left: auto !important;
+}
+
+/* --- 7. Message List Pane & Cards --- */
+.sg-message-list,
+.sg-cards-pane {
+  background-color: #ffffff !important;
+  border-right: 1px solid var(--outlook-border) !important;
+}
+
+.sg-message-card,
+md-list-item.sg-mail-row {
+  border-bottom: 1px solid #f3f2f1 !important;
+  padding: 10px 14px !important;
+  transition: background-color 0.12s ease !important;
+  position: relative !important;
+}
+
+.sg-message-card:hover,
+md-list-item.sg-mail-row:hover {
+  background-color: #f8f9fa !important;
+}
+
+.sg-message-card.selected,
+md-list-item.sg-mail-row.selected {
+  background-color: var(--outlook-blue-light) !important;
+  border-left: 3px solid var(--outlook-blue) !important;
+}
+
+/* Unread Indicator Dot */
+.sg-message-card.unread::before,
+md-list-item.sg-mail-row.unread::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 6px !important;
+  top: 18px !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background-color: var(--outlook-unread-dot) !important;
+}
+
+.sg-message-card .sender-name {
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  color: var(--outlook-text-primary) !important;
+}
+
+.sg-message-card .subject-line {
+  font-size: 12.5px !important;
+  color: #323130 !important;
+  margin-top: 2px !important;
+}
+
+.sg-message-card .snippet-preview {
+  font-size: 12px !important;
+  color: var(--outlook-text-secondary) !important;
+  margin-top: 2px !important;
+}
+
+/* --- 8. Reading Pane (Outlook View) --- */
+.sg-reading-pane {
+  background-color: #ffffff !important;
+}
+
+/* Outlook Command Bar / Action Ribbon */
+.sg-action-ribbon,
+.sg-reading-pane .md-toolbar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid var(--outlook-border) !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* Outlook Action Icon Buttons */
+.sg-action-ribbon .md-button,
+.sg-action-ribbon button,
+.sg-reading-pane button {
+  height: 32px !important;
+  padding: 0 10px !important;
+  border-radius: 4px !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  color: var(--outlook-text-primary) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: transparent !important;
+  transition: all 0.15s ease !important;
+  border: 1px solid transparent !important;
+}
+
+.sg-action-ribbon .md-button:hover,
+.sg-action-ribbon button:hover,
+.sg-reading-pane button:hover {
+  background-color: #edebe9 !important;
+}
+
+/* Sender Avatar Circle */
+.sg-sender-avatar {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #0078d4, #10b981) !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* --- 9. Microsoft 365 Style Login Screen --- */
+body.sg-login-page,
+.sg-login-wrapper,
+#loginWrapper {
+  background: linear-gradient(135deg, #f3f2f1 0%, #e1dfdd 100%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 16px !important;
+}
+
+.sg-login-box,
+md-card.sg-login-card,
+form[name="loginForm"] {
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+  padding: 40px !important;
+  max-width: 440px !important;
+  width: 100% !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Custom Header inside Login Box */
+.sg-login-header {
+  margin-bottom: 24px !important;
+}
+
+.sg-login-header .outlook-brand-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-bottom: 16px !important;
+}
+
+.sg-login-header h1,
+.sg-login-header .login-title {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #1b1a19 !important;
+  margin: 0 0 6px 0 !important;
+}
+
+.sg-login-header p,
+.sg-login-header .login-subtitle {
+  font-size: 13.5px !important;
+  color: #605e5c !important;
+  margin: 0 !important;
+}
+
+/* Login Inputs */
+.sg-login-box input,
+form[name="loginForm"] input {
+  height: 40px !important;
+  border: 1px solid #8a8886 !important;
+  border-radius: 4px !important;
+  padding: 0 12px !important;
+  font-size: 14px !important;
+  color: #201f1e !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.sg-login-box input:focus,
+form[name="loginForm"] input:focus {
+  border-color: var(--outlook-blue) !important;
+  outline: 2px solid rgba(0, 120, 212, 0.25) !important;
+}
+
+/* Sign In Button */
+.sg-login-box button[type="submit"],
+form[name="loginForm"] button[type="submit"] {
+  background-color: var(--outlook-blue) !important;
+  color: #ffffff !important;
+  border-radius: 4px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  transition: background-color 0.15s ease !important;
+  margin-top: 16px !important;
+}
+
+.sg-login-box button[type="submit"]:hover,
+form[name="loginForm"] button[type="submit"]:hover {
+  background-color: var(--outlook-blue-hover) !important;
+}
+
+/* Responsive Rules */
+@media (max-width: 900px) {
+  .sg-left-rail {
+    display: none !important;
+  }
+  .sg-folders-pane {
+    width: 200px !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .sg-folders-pane {
+    position: fixed !important;
+    left: 0 !important;
+    top: 48px !important;
+    bottom: 0 !important;
+    z-index: 50 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.25s ease !important;
+  }
+  .sg-folders-pane.open {
+    transform: translateX(0) !important;
+  }
+  .sg-toolbar .sg-brand-title span.ms-badge,
+  .sg-toolbar .sg-brand-badge,
+  .ms-brand-badge {
+    display: none !important;
+  }
+  .sg-toolbar .sg-brand-title {
+    margin-right: 8px !important;
+    font-size: 13.5px !important;
+  }
+  .sg-toolbar .sg-search-wrap,
+  md-toolbar md-autocomplete,
+  .md-toolbar-tools input[type="search"] {
+    max-width: 110px !important;
+    font-size: 11.5px !important;
+    padding-left: 28px !important;
+  }
+}

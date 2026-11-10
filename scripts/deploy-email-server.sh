@@ -94,9 +94,38 @@ ln -snf mailcow.conf "${MAIL_DIR}/.env"
 # Install Docker Compose override
 cp "${ROOT_DIR}/embed_mail/docker-compose.override.yml" "${MAIL_DIR}/docker-compose.override.yml"
 
-# Install custom SOGo configuration for ActiveSync & Webmail
+# Install custom Outlook Webmail theme, assets, and SOGo ActiveSync config
 mkdir -p "${MAIL_DIR}/data/conf/sogo"
 cp "${ROOT_DIR}/embed_mail/sogo/sogo-custom.conf" "${MAIL_DIR}/data/conf/sogo/custom-sogo.conf"
+if [ -f "${ROOT_DIR}/embed_mail/webmail/outlook-web.css" ]; then
+  cp "${ROOT_DIR}/embed_mail/webmail/outlook-web.css" "${MAIL_DIR}/data/conf/sogo/custom-theme.css"
+fi
+if [ -f "${ROOT_DIR}/embed_mail/webmail/outlook-web.js" ]; then
+  cp "${ROOT_DIR}/embed_mail/webmail/outlook-web.js" "${MAIL_DIR}/data/conf/sogo/outlook-web.js"
+fi
+if [ -d "${ROOT_DIR}/embed_mail/webmail/assets" ]; then
+  cp "${ROOT_DIR}/embed_mail/webmail/assets"/* "${MAIL_DIR}/data/conf/sogo/" 2>/dev/null || true
+fi
+
+# Install Embedded India Theme for Email Admin Dashboard (Matching Website Admin Dashboard)
+mkdir -p "${MAIL_DIR}/data/web/css/themes/embeddedindia"
+mkdir -p "${MAIL_DIR}/data/web/css/build"
+mkdir -p "${MAIL_DIR}/data/web/inc"
+if [ -f "${ROOT_DIR}/embed_mail/admin_theme/theme.json" ]; then
+  cp "${ROOT_DIR}/embed_mail/admin_theme/theme.json" "${MAIL_DIR}/data/web/css/themes/embeddedindia/"
+fi
+if [ -f "${ROOT_DIR}/embed_mail/admin_theme/theme.css" ]; then
+  cp "${ROOT_DIR}/embed_mail/admin_theme/theme.css" "${MAIL_DIR}/data/web/css/themes/embeddedindia/"
+fi
+if [ -f "${ROOT_DIR}/embed_mail/admin_theme/dark.css" ]; then
+  cp "${ROOT_DIR}/embed_mail/admin_theme/dark.css" "${MAIL_DIR}/data/web/css/themes/embeddedindia/"
+fi
+if [ -f "${ROOT_DIR}/embed_mail/admin_theme/0081-custom-mailcow.css" ]; then
+  cp "${ROOT_DIR}/embed_mail/admin_theme/0081-custom-mailcow.css" "${MAIL_DIR}/data/web/css/build/0081-custom-mailcow.css"
+fi
+if [ -f "${ROOT_DIR}/embed_mail/admin_theme/vars.local.inc.php" ]; then
+  cp "${ROOT_DIR}/embed_mail/admin_theme/vars.local.inc.php" "${MAIL_DIR}/data/web/inc/vars.local.inc.php"
+fi
 
 # Fix permissions on Twig template cache and asset directories for PHP-FPM (UID 82:82)
 mkdir -p "${MAIL_DIR}/data/web/templates/cache"
@@ -318,9 +347,10 @@ echo "=================================================================="
 echo "==> EMAIL SERVER DEPLOYMENT COMPLETE!"
 echo "=================================================================="
 echo "Access Points:"
-echo "  - Mailcow Admin Control Panel: https://${MAIL_HOST}/admin"
-echo "  - Webmail (SOGo):              https://${MAIL_HOST}/SOGo/ (or https://${MAIL_HOST}/)"
-echo "  - Outlook ActiveSync URL:      https://${MAIL_HOST}/Microsoft-Server-ActiveSync"
+echo "  - Email Admin Dashboard:       https://${MAIL_HOST}/admin (Embedded India Website Admin Theme)"
+echo "  - User Webmail (Outlook Web):  https://${MAIL_HOST}/mail (or https://${MAIL_HOST}/)"
+echo "  - Microsoft ActiveSync URL:    https://${MAIL_HOST}/Microsoft-Server-ActiveSync"
+echo "  - Website Admin Email Hub:     https://${DOMAIN}/admin/email"
 echo ""
 echo "Master Admin Login (Log in at https://${MAIL_HOST}/admin):"
 echo "  - Username: admin"

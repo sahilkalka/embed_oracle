@@ -1039,6 +1039,63 @@ router.get('/settings', async (req, res, next) => {
   }
 });
 
+// GET /admin/email - Enterprise Mail Infrastructure & Webmail Hub
+router.get('/email', async (req, res, next) => {
+  try {
+    const settings = await prisma.setting.findMany();
+    const settingsMap = settings.reduce((acc, curr) => {
+      acc[curr.key] = curr.value;
+      return acc;
+    }, {});
+
+    res.render('admin/email', {
+      title: 'Email & Webmail Infrastructure - Embedded India',
+      currentPath: '/admin/email',
+      settings: settingsMap,
+      currentUser: req.user
+    });
+  } catch (err) {
+    console.error('[ADMIN EMAIL LOAD ERROR]', err);
+    next(err);
+  }
+});
+
+// POST /admin/email/share-credentials - Dispatch setup guidelines and credentials
+router.post('/email/share-credentials', async (req, res) => {
+  try {
+    const { recipientEmail, mailboxEmail, password, displayName } = req.body;
+    if (!recipientEmail || !mailboxEmail) {
+      return res.status(400).json({ success: false, error: 'Recipient and mailbox email are required.' });
+    }
+
+    const hostHeader = req.get('host') || 'localhost:3000';
+    const isLocal = hostHeader.includes('localhost') || hostHeader.includes('127.0.0.1');
+    const proto = req.protocol || 'http';
+    const localWebmailUrl = `${proto}://${hostHeader}/webmail`;
+    const webmailUrl = isLocal ? localWebmailUrl : 'https://mail.embeddedindia.in/mail';
+
+    const result = await mailer.sendMailboxCredentials({
+      recipientEmail,
+      mailboxEmail,
+      password: password || '(Existing mailbox password)',
+      displayName: displayName || mailboxEmail.split('@')[0],
+      webmailUrl,
+      activeSyncUrl: 'https://mail.embeddedindia.in/Microsoft-Server-ActiveSync',
+      imapHost: 'mail.embeddedindia.in:993 (SSL/TLS)',
+      smtpHost: 'mail.embeddedindia.in:587 (STARTTLS)'
+    });
+
+    if (result.success) {
+      return res.json({ success: true, message: `Guidelines and credentials sent to ${recipientEmail}!` });
+    } else {
+      return res.status(500).json({ success: false, error: result.error || 'Failed to dispatch email' });
+    }
+  } catch (err) {
+    console.error('[ADMIN SHARE CREDENTIALS ERROR]', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // POST /admin/settings - Update Site Settings (Supports independent module AJAX saves)
 router.post('/settings', async (req, res) => {
   try {

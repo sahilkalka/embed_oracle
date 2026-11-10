@@ -141,7 +141,7 @@ res_read = subprocess.run(read_cmd, capture_output=True, text=True)
 print("Header excerpt:", "\n".join(res_read.stdout.splitlines()[:15]))
 
 print("=" * 60)
-print("6. Testing SOGo Webmail & IMAP Authentication")
+print("6. Testing Webmail (Outlook Web) & IMAP Authentication")
 import imaplib
 
 # Test IMAP Authentication
@@ -153,7 +153,7 @@ try:
 except Exception as e:
     print("IMAP Login failed:", e)
 
-# Test SOGo HTTP Login
+# Test Webmail HTTP Login
 sogo_url = "http://127.0.0.1:8088/SOGo/connect"
 sogo_data = json.dumps({"userName": DUMMY_EMAIL, "password": DUMMY_PASS}).encode()
 sogo_req = urllib.request.Request(sogo_url, data=sogo_data, headers={
@@ -163,11 +163,11 @@ sogo_req = urllib.request.Request(sogo_url, data=sogo_data, headers={
 })
 try:
     with urllib.request.urlopen(sogo_req) as sogo_resp:
-        print("SOGo Webmail login status:", sogo_resp.status)
+        print("Webmail login status:", sogo_resp.status)
         cookie = sogo_resp.headers.get("Set-Cookie")
-        print("SOGo Session Cookie received:", bool(cookie))
+        print("Webmail Session Cookie received:", bool(cookie))
 except urllib.error.HTTPError as e:
-    print("SOGo Login error:", e.code, e.read().decode())
+    print("Webmail Login error:", e.code, e.read().decode())
 
 print("=" * 60)
 print("7. Testing Admin Dashboard Pages (Twig Template Compilation)")

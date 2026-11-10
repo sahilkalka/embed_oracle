@@ -1,0 +1,37 @@
+/* ==============================================================================
+   Embedded India - Mailcow Admin Light Theme
+   Matches Embedded India Website Admin Dashboard Light Palette
+   ============================================================================== */
+
+:root {
+  --mc-font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mc-body-bg: #f8fafc;
+  --mc-body-color: #0f172a;
+  --mc-primary: #007f5f;
+  --mc-primary-hover: #00664c;
+  --mc-primary-border: #007f5f;
+  --mc-primary-text: #ffffff;
+  --mc-card-bg: #ffffff;
+  --mc-card-border: #e2e8f0;
+  --mc-card-header-bg: #f1f5f9;
+  --mc-table-bg: #ffffff;
+  --mc-table-border: #e2e8f0;
+  --mc-table-hover-bg: #f8fafc;
+  --mc-input-bg: #ffffff;
+  --mc-input-border: #cbd5e1;
+  --mc-input-focus-border: #10b981;
+  --mc-navbar-bg: #ffffff;
+  --mc-navbar-border: #e2e8f0;
+  --mc-navbar-color: #334155;
+  --mc-navbar-active: #007f5f;
+  --mc-badge-bg: rgba(16, 185, 129, 0.12);
+  --mc-badge-color: #047857;
+  --mc-border-radius: 0.75rem;
+  --mc-border-radius-sm: 0.5rem;
+}
+
+body {
+  font-family: var(--mc-font-family) !important;
+  background-color: var(--mc-body-bg) !important;
+  color: var(--mc-body-color) !important;
+}

@@ -1,0 +1,38 @@
+/* ==============================================================================
+   Embedded India - Mailcow Admin Dark Emerald Theme
+   Matches Embedded India Website Admin Dashboard Dark Mode Palette (#0b1412)
+   ============================================================================== */
+
+:root,
+[data-bs-theme="dark"] {
+  --mc-font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mc-body-bg: #0b1412;
+  --mc-body-color: #f8fafc;
+  --mc-primary: #10b981;
+  --mc-primary-hover: #059669;
+  --mc-primary-border: #10b981;
+  --mc-primary-text: #0b1412;
+  --mc-card-bg: #13221e;
+  --mc-card-border: #1e3831;
+  --mc-card-header-bg: #182c27;
+  --mc-table-bg: #13221e;
+  --mc-table-border: #1e3831;
+  --mc-table-hover-bg: rgba(16, 185, 129, 0.08);
+  --mc-input-bg: #0d1715;
+  --mc-input-border: #27443d;
+  --mc-input-focus-border: #10b981;
+  --mc-navbar-bg: #13221e;
+  --mc-navbar-border: #1e3831;
+  --mc-navbar-color: #cbd5e1;
+  --mc-navbar-active: #10b981;
+  --mc-badge-bg: rgba(16, 185, 129, 0.16);
+  --mc-badge-color: #34d399;
+  --mc-border-radius: 0.75rem;
+  --mc-border-radius-sm: 0.5rem;
+}
+
+body[data-bs-theme="dark"],
+.dark {
+  background-color: #0b1412 !important;
+  color: #f8fafc !important;
+}

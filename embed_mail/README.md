@@ -9,11 +9,20 @@ This directory contains the production email infrastructure configurations and s
 ```
 embed_mail/
 ├── mailcow.conf.template         # Main Mailcow environment & port configuration
-├── docker-compose.override.yml   # Docker compose override (binds web to 127.0.0.1:8080/8443)
+├── docker-compose.override.yml   # Docker compose override (mounts Outlook Web & theme overrides)
 ├── nginx/
 │   └── mail.embeddedindia.in.conf# Host Nginx reverse proxy & ActiveSync stream config
+├── webmail/
+│   ├── outlook-web.css           # Microsoft Outlook Web stylesheet (Fluent UI, zero SOGo graphics)
+│   ├── outlook-web.js            # Outlook title & waffle app launcher dynamic injector
+│   └── assets/                   # Outlook envelope and Webmail logos
+├── admin_theme/
+│   ├── theme.json                # Embedded India Mailcow theme definition
+│   ├── theme.css / dark.css      # Website Admin Dashboard dark emerald palette (#0b1412)
+│   ├── 0081-custom-mailcow.css   # Mailcow topbar, rounded-2xl cards & icon buttons
+│   └── vars.local.inc.php        # Persistent branding PHP override
 ├── sogo/
-│   └── sogo-custom.conf          # SOGo Exchange ActiveSync & responsive Webmail tuning
+│   └── sogo-custom.conf          # Exchange ActiveSync & Webmail configuration
 └── docs/
     ├── ADMIN_GUIDE.md            # User manual: CRUD users, reset passwords, quotas, Outlook setup
     └── OUTBOUND_RELAY_AND_PORT25.md # Server instructions for Path A (Relay) vs Path B (Direct Send)
@@ -51,8 +60,12 @@ sudo bash scripts/setup-outbound-relay.sh
 - **Path B ($0/mo direct)**: Submit OCI ticket to unlock outbound Port 25.
 
 ### 4. Access Admin Console & Webmail
-- **Superadmin Control Panel**: [`https://mail.embeddedindia.in/admin`](https://mail.embeddedindia.in/admin)
+- **Email Admin Dashboard**: [`https://mail.embeddedindia.in/admin`](https://mail.embeddedindia.in/admin)
+  - Styled with the Embedded India website admin dashboard theme (Dark Emerald `#0b1412`, `#10b981`).
   - Log in with `admin` / `moohoo` (or custom `$ADMIN_PASSWORD`).
   - Create mailboxes, edit quotas, and manage domains using [`docs/ADMIN_GUIDE.md`](docs/ADMIN_GUIDE.md).
-- **Webmail Interface (SOGo)**: [`https://mail.embeddedindia.in/SOGo/`](https://mail.embeddedindia.in/SOGo/)
+- **User Webmail (Outlook Web)**: [`https://mail.embeddedindia.in/mail`](https://mail.embeddedindia.in/mail) (or [`https://mail.embeddedindia.in/`](https://mail.embeddedindia.in/))
+  - Full Microsoft Outlook Web styling with app launcher waffle, "+ New mail" pill icon button, and 3-pane layout.
   - Log in with individual mailbox credentials (e.g. `sahil@embeddedindia.in`).
+- **Website Admin Email Hub**: [`https://embeddedindia.in/admin/email`](https://embeddedindia.in/admin/email)
+  - Single pane of glass for email server health and quick launches.
