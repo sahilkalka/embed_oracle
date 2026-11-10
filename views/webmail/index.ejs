@@ -625,8 +625,18 @@
         font-weight: 700 !important;
         color: #0078d4 !important;
       }
+      .ms-ribbon-btn .ms-btn-text {
+        display: none !important;
+      }
+      .ms-ribbon-btn {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        padding: 0 !important;
+        justify-content: center !important;
+      }
       .ms-command-bar {
-        padding: 0 8px !important;
+        padding: 0 6px !important;
         overflow-x: auto !important;
       }
       .ms-email-view {
@@ -867,36 +877,35 @@
           <!-- Mobile Back to Message List Button -->
           <button type="button" class="ms-ribbon-btn ms-back-btn" id="backToListBtn" onclick="closeReadingPane()" title="Back to messages" aria-label="Back to messages">
             <span class="material-symbols-rounded" style="font-size:18px;">arrow_back</span>
-            <span>Back</span>
           </button>
           <button type="button" class="ms-ribbon-btn primary" title="Reply to sender" aria-label="Reply" onclick="replyCurrent()">
             <span class="material-symbols-rounded" style="font-size:16px;">reply</span>
-            <span>Reply</span>
+            <span class="ms-btn-text">Reply</span>
           </button>
           <button type="button" class="ms-ribbon-btn" title="Reply to all" aria-label="Reply all">
             <span class="material-symbols-rounded" style="font-size:16px;">reply_all</span>
-            <span>Reply all</span>
+            <span class="ms-btn-text">Reply all</span>
           </button>
           <button type="button" class="ms-ribbon-btn" title="Forward email" aria-label="Forward">
             <span class="material-symbols-rounded" style="font-size:16px;">forward</span>
-            <span>Forward</span>
+            <span class="ms-btn-text">Forward</span>
           </button>
-          <div style="width:1px; height:18px; background-color:#edebe9; margin:0 4px;"></div>
+          <div style="width:1px; height:18px; background-color:#edebe9; margin:0 2px;"></div>
           <button type="button" class="ms-ribbon-btn" title="Delete message" aria-label="Delete" onclick="deleteCurrent()">
             <span class="material-symbols-rounded" style="font-size:16px;">delete</span>
-            <span>Delete</span>
+            <span class="ms-btn-text">Delete</span>
           </button>
           <button type="button" class="ms-ribbon-btn" title="Archive message" aria-label="Archive">
             <span class="material-symbols-rounded" style="font-size:16px;">archive</span>
-            <span>Archive</span>
+            <span class="ms-btn-text">Archive</span>
           </button>
           <button type="button" class="ms-ribbon-btn" title="Report as junk" aria-label="Junk">
             <span class="material-symbols-rounded" style="font-size:16px;">report</span>
-            <span>Junk</span>
+            <span class="ms-btn-text">Junk</span>
           </button>
           <button type="button" class="ms-ribbon-btn" title="Move to folder" aria-label="Move to">
             <span class="material-symbols-rounded" style="font-size:16px;">drive_file_move</span>
-            <span>Move to</span>
+            <span class="ms-btn-text">Move to</span>
           </button>
         </div>
       </div>
@@ -1024,8 +1033,10 @@
         }
 
         renderMessageList(messageList);
-        // Load first message
-        loadMessageByUid(messageList[0].uid);
+        // On desktop, auto-load first message; on mobile, keep list visible until user selects an email
+        if (window.innerWidth > 820) {
+          loadMessageByUid(messageList[0].uid);
+        }
       } catch (err) {
         container.innerHTML = `
           <div style="padding:32px 16px; text-align:center; color:#dc2626; font-size:12px;">
@@ -1079,10 +1090,12 @@
         }
       }
 
-      // Single-view reading mode on mobile
+      // Single-view reading mode on mobile: replace message list with reading pane
       const ws = document.getElementById('msWorkspace');
       if (ws) {
-        ws.classList.add('reading-active');
+        if (window.innerWidth <= 820) {
+          ws.classList.add('reading-active');
+        }
         const view = document.getElementById('activeEmailContent');
         if (view) view.scrollTop = 0;
       }
@@ -1217,6 +1230,14 @@
         sendBtn.innerHTML = '<span class="material-symbols-rounded" style="font-size:16px;">send</span><span>Send</span>';
       }
     }
+
+    // Responsive layout watcher
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 820) {
+        const ws = document.getElementById('msWorkspace');
+        if (ws) ws.classList.remove('reading-active');
+      }
+    });
 
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', () => {

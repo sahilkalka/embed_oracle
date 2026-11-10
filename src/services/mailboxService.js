@@ -1,6 +1,6 @@
 // src/services/mailboxService.js
 // Native IMAP & SMTP Service for Embedded India Outlook Web Client
-// Connects to Dovecot IMAP (port 993/143) and Postfix SMTP (port 587/465)
+// Connects to Dovecot IMAP (port 993 SSL / port 143 STARTTLS) and Postfix SMTP (port 587)
 
 const { ImapFlow } = require('imapflow');
 const { simpleParser } = require('mailparser');
@@ -12,10 +12,14 @@ const SMTP_HOST = process.env.MAIL_SMTP_HOST || '127.0.0.1';
 const SMTP_PORT = parseInt(process.env.MAIL_SMTP_PORT || '587', 10);
 
 class MailboxService {
+  constructor() {
+    this.preferredImapPort = IMAP_PORT;
+  }
+
   /**
    * Helper to instantiate an ImapFlow client
    */
-  getImapClient(email, password, port = IMAP_PORT) {
+  getImapClient(email, password, port = this.preferredImapPort) {
     const isSsl = port === 993;
     return new ImapFlow({
       host: IMAP_HOST,
@@ -33,6 +37,45 @@ class MailboxService {
       socketTimeout: 30000,
       logger: false
     });
+  }
+
+  /**
+   * Run an operation with an auto-connecting IMAP client (with 993 -> 143 fallback)
+   */
+  async withClient(email, password, fn) {
+    const portsToTry = this.preferredImapPort === 143 ? [143, 993] : [this.preferredImapPort, 143];
+    let lastError = null;
+
+    for (const port of portsToTry) {
+      let client = this.getImapClient(email, password, port);
+      try {
+        await client.connect();
+        this.preferredImapPort = port;
+        try {
+          return await fn(client);
+        } finally {
+          if (client.usable) {
+            try { await client.logout(); } catch { }
+          }
+        }
+      } catch (err) {
+        lastError = err;
+        try {
+          if (client.usable) await client.logout();
+        } catch { }
+        // If connection refused, timed out, or TLS handshake issue, try next port
+        const isConnErr = err.code === 'ECONNREFUSED' ||
+                          err.code === 'ETIMEDOUT' ||
+                          err.code === 'EHOSTUNREACH' ||
+                          /timeout|refused|handshake|tls/i.test(err.message || '');
+        if (!isConnErr) {
+          // Auth error or protocol error, do not retry other port
+          throw err;
+        }
+      }
+    }
+
+    throw lastError || new Error('Could not connect to IMAP server');
   }
 
   /**
@@ -56,26 +99,16 @@ class MailboxService {
   }
 
   /**
-   * Authenticate mailbox credentials against Dovecot IMAP (trying 993 then 143 fallback)
+   * Authenticate mailbox credentials against Dovecot IMAP
    */
   async authenticate(email, password) {
-    let client = this.getImapClient(email, password, IMAP_PORT);
     try {
-      await client.connect();
-      await client.logout();
+      await this.withClient(email, password, async () => {
+        return true;
+      });
       return { success: true };
-    } catch (err993) {
-      if (IMAP_PORT === 993 && (err993.code === 'ECONNREFUSED' || err993.code === 'ETIMEDOUT')) {
-        try {
-          client = this.getImapClient(email, password, 143);
-          await client.connect();
-          await client.logout();
-          return { success: true, fallbackPort: 143 };
-        } catch (err143) {
-          return { success: false, error: err143.message || 'Authentication failed' };
-        }
-      }
-      return { success: false, error: err993.message || 'Authentication failed' };
+    } catch (err) {
+      return { success: false, error: err.message || 'Authentication failed' };
     }
   }
 
@@ -83,9 +116,7 @@ class MailboxService {
    * List folders and unread counts for mailbox
    */
   async listFolders(email, password) {
-    const client = this.getImapClient(email, password);
-    try {
-      await client.connect();
+    return await this.withClient(email, password, async (client) => {
       const list = await client.list();
       const folders = [];
 
@@ -106,29 +137,21 @@ class MailboxService {
         });
       }
 
-      await client.logout();
       return folders;
-    } catch (err) {
-      if (client.usable) await client.logout();
-      throw err;
-    }
+    });
   }
 
   /**
    * Fetch recent messages from a folder
    */
   async fetchMessages(email, password, { folder = 'INBOX', limit = 30 } = {}) {
-    const client = this.getImapClient(email, password);
-    try {
-      await client.connect();
+    return await this.withClient(email, password, async (client) => {
       const lock = await client.getMailboxLock(folder);
       const messages = [];
 
       try {
         const total = client.mailbox.exists || 0;
         if (total === 0) {
-          lock.release();
-          await client.logout();
           return [];
         }
 
@@ -167,41 +190,68 @@ class MailboxService {
         lock.release();
       }
 
-      await client.logout();
       // Sort newest first
       messages.reverse();
       return messages;
-    } catch (err) {
-      if (client.usable) await client.logout();
-      throw err;
-    }
+    });
   }
 
   /**
    * Fetch and parse single message by UID
    */
   async getMessage(email, password, { folder = 'INBOX', uid }) {
-    const client = this.getImapClient(email, password);
-    try {
-      await client.connect();
+    return await this.withClient(email, password, async (client) => {
       const lock = await client.getMailboxLock(folder);
       let parsed = null;
 
       try {
-        const message = await client.download(uid, ['RFC822'], { uid: true });
-        if (message && message.content) {
-          parsed = await simpleParser(message.content);
+        const messageUid = String(uid);
+        let sourceBuffer = null;
+
+        // 1. Try fetchOne with source: true (fastest and most reliable)
+        try {
+          const fetched = await client.fetchOne(messageUid, { source: true, flags: true }, { uid: true });
+          if (fetched && fetched.source) {
+            sourceBuffer = fetched.source;
+          }
+        } catch (fetchErr) {
+          console.warn('[MailboxService] fetchOne error:', fetchErr.message);
         }
 
+        // 2. Fallback to download stream if fetchOne did not yield buffer
+        if (!sourceBuffer) {
+          try {
+            const dl = await client.download(messageUid, undefined, { uid: true });
+            if (dl && dl.content) {
+              sourceBuffer = await new Promise((resolve, reject) => {
+                const chunks = [];
+                dl.content.on('data', chunk => chunks.push(chunk));
+                dl.content.on('end', () => resolve(Buffer.concat(chunks)));
+                dl.content.on('error', reject);
+              });
+            }
+          } catch (dlErr) {
+            console.warn('[MailboxService] download error:', dlErr.message);
+          }
+        }
+
+        if (!sourceBuffer) {
+          throw new Error('Message content could not be retrieved from mail server');
+        }
+
+        parsed = await simpleParser(sourceBuffer);
+
         // Mark message as read
-        await client.messageFlagsAdd(uid, ['\\Seen'], { uid: true });
+        try {
+          await client.messageFlagsAdd(messageUid, ['\\Seen'], { uid: true });
+        } catch (flagErr) {
+          // ignore flag update warning
+        }
       } finally {
         lock.release();
       }
 
-      await client.logout();
-
-      if (!parsed) throw new Error('Message not found');
+      if (!parsed) throw new Error('Message could not be parsed');
 
       return {
         uid,
@@ -217,10 +267,7 @@ class MailboxService {
           size: att.size
         }))
       };
-    } catch (err) {
-      if (client.usable) await client.logout();
-      throw err;
-    }
+    });
   }
 
   /**
@@ -240,19 +287,17 @@ class MailboxService {
 
     // 2. Try to append to Sent items folder
     try {
-      const client = this.getImapClient(email, password);
-      await client.connect();
+      await this.withClient(email, password, async (client) => {
+        const rawMessage = Buffer.from(
+          `From: ${email}\r\nTo: ${to}\r\nSubject: ${subject}\r\nDate: ${new Date().toUTCString()}\r\nContent-Type: text/html; charset=utf-8\r\n\r\n${html || text}`
+        );
 
-      const rawMessage = Buffer.from(
-        `From: ${email}\r\nTo: ${to}\r\nSubject: ${subject}\r\nDate: ${new Date().toUTCString()}\r\nContent-Type: text/html; charset=utf-8\r\n\r\n${html || text}`
-      );
+        // Detect Sent folder name
+        const list = await client.list();
+        const sentFolder = list.find(f => f.specialUse === '\\Sent' || /^sent/i.test(f.name)) || { path: 'Sent' };
 
-      // Detect Sent folder name
-      const list = await client.list();
-      const sentFolder = list.find(f => f.specialUse === '\\Sent' || /^sent/i.test(f.name)) || { path: 'Sent' };
-
-      await client.append(sentFolder.path, rawMessage, ['\\Seen']);
-      await client.logout();
+        await client.append(sentFolder.path, rawMessage, ['\\Seen']);
+      });
     } catch (appendErr) {
       console.warn('[MailboxService] Could not append sent message to Sent folder:', appendErr.message);
     }
@@ -264,28 +309,23 @@ class MailboxService {
    * Delete message by moving to Trash or marking deleted
    */
   async deleteMessage(email, password, { folder = 'INBOX', uid }) {
-    const client = this.getImapClient(email, password);
-    try {
-      await client.connect();
+    return await this.withClient(email, password, async (client) => {
       const lock = await client.getMailboxLock(folder);
       try {
+        const messageUid = String(uid);
         const list = await client.list();
         const trash = list.find(f => f.specialUse === '\\Trash' || /^trash/i.test(f.name));
 
         if (trash && trash.path !== folder) {
-          await client.messageMove(uid, trash.path, { uid: true });
+          await client.messageMove(messageUid, trash.path, { uid: true });
         } else {
-          await client.messageFlagsAdd(uid, ['\\Deleted'], { uid: true });
+          await client.messageFlagsAdd(messageUid, ['\\Deleted'], { uid: true });
         }
+        return { success: true };
       } finally {
         lock.release();
       }
-      await client.logout();
-      return { success: true };
-    } catch (err) {
-      if (client.usable) await client.logout();
-      throw err;
-    }
+    });
   }
 }
 
