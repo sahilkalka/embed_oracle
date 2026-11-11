@@ -16,7 +16,8 @@ ok()   { echo "  [PASS] $*"; PASS=$((PASS+1)); }
 warn() { echo "  [WARN] $*"; WARN=$((WARN+1)); }
 bad()  { echo "  [FAIL] $*"; FAIL=$((FAIL+1)); }
 hdr()  { echo; echo "== $* =="; }
-dc()   { (cd "$MAIL_DIR" && docker compose "$@"); }
+# Container commands: never read the terminal (docker compose exec would hang) and always time out.
+dc()   { (cd "$MAIL_DIR" && timeout 60 docker compose "$@" </dev/null); }
 mask() { sed -E 's/(PASS|KEY|SECRET|TOKEN)([A-Z_]*)=.*/\1\2=***masked***/I'; }
 
 hdr "System"
@@ -24,7 +25,8 @@ echo "  host: $(hostname)  kernel: $(uname -r)  arch: $(uname -m)"
 echo "  uptime: $(uptime -p)"
 free -m | awk 'NR==2{printf "  memory: %s MB used / %s MB total (avail %s MB)\n",$3,$2,$7}'
 SWAP=$(free -m | awk '/Swap/{print $2}')
-[ "${SWAP:-0}" -gt 0 ] && ok "swap configured (${SWAP} MB)" || warn "no swap (ClamAV/Solr can OOM on small VMs)"
+MEM_MB=$(free -m | awk 'NR==2{print $2}')
+if [ "${SWAP:-0}" -gt 0 ]; then ok "swap configured (${SWAP} MB)"; elif [ "${MEM_MB:-0}" -ge 8000 ]; then ok "no swap, but ${MEM_MB} MB RAM is ample"; else warn "no swap on a ${MEM_MB} MB VM (ClamAV can OOM)"; fi
 df -h / "$MAIL_DIR" 2>/dev/null | awk 'NR>1{print "  disk "$6": "$5" used ("$4" free)"}' | sort -u
 ROOT_USE=$(df --output=pcent / | tail -1 | tr -dc 0-9)
 [ "${ROOT_USE:-0}" -lt 85 ] && ok "root disk below 85%" || bad "root disk ${ROOT_USE}% full"
@@ -47,7 +49,7 @@ dc ps --format '{{.Service}}\t{{.State}}\t{{.Status}}' 2>/dev/null | sed 's/^/  
 NOT_UP=$(dc ps --format '{{.Service}} {{.State}}' 2>/dev/null | awk '$2!="running"{print $1}')
 [ -z "$NOT_UP" ] && ok "all containers running" || bad "not running: $NOT_UP"
 echo "  container memory:"
-docker stats --no-stream --format '    {{.Name}}\t{{.MemUsage}}' 2>/dev/null | grep mailcow | sort -k2 -h | tail -8
+timeout 30 docker stats --no-stream --format '    {{.Name}}\t{{.MemUsage}}' 2>/dev/null | grep mailcow | sort -k2 -h | tail -8
 
 hdr "Listening ports (host)"
 ss -ltnp 2>/dev/null | awk 'NR>1{print $4}' | grep -E ':(25|80|110|143|443|465|587|993|995|4190|3000|8088|8443)$' | sort -u | sed 's/^/  /'
@@ -58,7 +60,9 @@ for p in 110 143; do
   ss -ltn | awk '{print $4}' | grep -qE "^(0\.0\.0\.0|\[::\]|\*):${p}$" && warn "plaintext port $p exposed on all interfaces" || true
 done
 echo "  host firewall (iptables INPUT accept rules for mail ports):"
-iptables -S INPUT 2>/dev/null | grep -E 'dport (25|465|587|993|995|4190|110|143)' | sed 's/^/    /'
+iptables -S INPUT 2>/dev/null | grep -E 'dport (25|465|587|993|995|4190|110|143) ' | sort | uniq -c | sed 's/^/    /'
+DUP=$(iptables -S INPUT 2>/dev/null | grep -E 'dport (25|465|587|993|995|4190) ' | sort | uniq -d | wc -l)
+[ "$DUP" -eq 0 ] && ok "no duplicate firewall rules" || warn "duplicate iptables rules for $DUP mail ports (each deploy appended them again)"
 
 hdr "TLS certificates"
 cert_check() { # host port [starttls-proto]
@@ -76,7 +80,7 @@ cert_check "$MAIL_HOST" 465
 cert_check "$MAIL_HOST" 587 smtp
 cert_check "$MAIL_HOST" 443
 echo "  certbot certificates:"
-certbot certificates 2>/dev/null | grep -E 'Certificate Name|Domains|Expiry' | sed 's/^/    /'
+timeout 30 certbot certificates 2>/dev/null </dev/null | grep -E 'Certificate Name|Domains|Expiry' | sed 's/^/    /'
 ls /etc/letsencrypt/renewal-hooks/deploy/ 2>/dev/null | sed 's/^/    deploy hook: /'
 echo "  mailcow internal cert: $(openssl x509 -in "$MAIL_DIR/data/assets/ssl/cert.pem" -noout -issuer -enddate 2>/dev/null | tr '\n' ' ')"
 
@@ -91,7 +95,7 @@ if [ -f "$MAIL_DIR/mailcow.conf" ]; then
   dc exec -T mysql-mailcow mysql -u"$DBUSER" -p"$DBPASS" "$DBNAME" -N -e "SELECT id, hostname, username, active FROM relayhosts;" 2>/dev/null | sed 's/^/    /'
   dc exec -T mysql-mailcow mysql -u"$DBUSER" -p"$DBPASS" "$DBNAME" -N -e "SELECT 'domain', domain, relayhost FROM domain;" 2>/dev/null | sed 's/^/    /'
 fi
-timeout 8 bash -c 'echo > /dev/tcp/gmail-smtp-in.l.google.com/25' 2>/dev/null && ok "outbound port 25 open (direct send possible)" || warn "outbound port 25 blocked (relay required)"
+timeout 8 bash -c 'echo > /dev/tcp/gmail-smtp-in.l.google.com/25' </dev/null 2>/dev/null && ok "outbound port 25 open (direct send possible)" || warn "outbound port 25 blocked (relay required)"
 QUEUE=$(dc exec -T postfix-mailcow postqueue -p 2>/dev/null | tail -1)
 echo "  queue: ${QUEUE}"
 echo "$QUEUE" | grep -q "empty" && ok "mail queue empty" || warn "mail queue not empty — see 'postqueue -p'"
