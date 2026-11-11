@@ -62,7 +62,7 @@ sudo bash scripts/setup-outbound-relay.sh
 ### 4. Access Admin Console & Webmail
 - **Email Admin Dashboard**: [`https://mail.embeddedindia.in/admin`](https://mail.embeddedindia.in/admin)
   - Styled with the Embedded India website admin dashboard theme (Dark Emerald `#0b1412`, `#10b981`).
-  - Log in with `admin` / `moohoo` (or custom `$ADMIN_PASSWORD`).
+  - Log in with `admin` and the password printed once by the deploy script (or your `ADMIN_PASSWORD`). There is no default password.
   - Create mailboxes, edit quotas, and manage domains using [`docs/ADMIN_GUIDE.md`](docs/ADMIN_GUIDE.md).
 - **User Webmail (Outlook Web)**: [`https://mail.embeddedindia.in/mail`](https://mail.embeddedindia.in/mail) (or [`https://mail.embeddedindia.in/`](https://mail.embeddedindia.in/))
   - Full Microsoft Outlook Web styling with app launcher waffle, "+ New mail" pill icon button, and 3-pane layout.

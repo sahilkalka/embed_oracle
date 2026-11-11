@@ -716,6 +716,7 @@
       }
     }
   </style>
+  <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
 </head>
 <body>
 
@@ -751,18 +752,18 @@
 
     <!-- Right Utility Icon Buttons -->
     <div class="ms-header-right">
-      <% if (typeof user !== 'undefined' && user && user.isDemo) { %>
-        <span style="font-size:10px; font-weight:700; background-color:#fef3c7; color:#92400e; padding:2px 7px; border-radius:10px; margin-right:4px;" title="Sandbox Demo Mode">Sandbox</span>
-      <% } %>
       <a href="/admin/email" class="ms-icon-btn" title="Email Admin Dashboard" aria-label="Email Admin Dashboard">
         <span class="material-symbols-rounded" style="font-size:20px;">admin_panel_settings</span>
       </a>
       <button type="button" class="ms-icon-btn ms-header-btn-extra" title="Quick Settings" aria-label="Quick Settings">
         <span class="material-symbols-rounded" style="font-size:20px;">settings</span>
       </button>
-      <a href="/webmail/logout" class="ms-icon-btn" title="Sign out (<%= typeof user !== 'undefined' && user ? user.email : '' %>)" aria-label="Sign out">
-        <span class="material-symbols-rounded" style="font-size:20px;">logout</span>
-      </a>
+      <form action="/webmail/logout" method="POST" style="display:inline-flex; margin:0;">
+        <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+        <button type="submit" class="ms-icon-btn" title="Sign out (<%= typeof user !== 'undefined' && user ? user.email : '' %>)" aria-label="Sign out">
+          <span class="material-symbols-rounded" style="font-size:20px;">logout</span>
+        </button>
+      </form>
 
       <!-- User Profile Avatar Pill -->
       <div class="ms-avatar-btn" title="<%= typeof user !== 'undefined' && user ? (user.name + ' (' + user.email + ')') : 'Mailbox User' %>">
@@ -973,6 +974,37 @@
     let currentMessageUid = null;
     let messageList = [];
 
+    // Attach the CSRF token to every state-changing request.
+    const CSRF_TOKEN = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = (url, opts = {}) => {
+      const method = (opts.method || 'GET').toUpperCase();
+      if (method !== 'GET' && method !== 'HEAD') {
+        opts.headers = Object.assign({}, opts.headers, { 'X-CSRF-Token': CSRF_TOKEN });
+      }
+      opts.credentials = 'same-origin';
+      return nativeFetch(url, opts);
+    };
+
+    // Render untrusted (already server-sanitized) email HTML inside a sandboxed iframe:
+    // no scripts, no same-origin access, links open in a new tab.
+    function renderEmailBody(container, html) {
+      const frame = document.createElement('iframe');
+      frame.setAttribute('sandbox', 'allow-popups allow-popups-to-escape-sandbox');
+      frame.setAttribute('referrerpolicy', 'no-referrer');
+      frame.setAttribute('title', 'Message content');
+      frame.style.cssText = 'width:100%; border:0; min-height:240px; background:#fff;';
+      frame.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8"><base target="_blank">' +
+        '<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: https: cid:; style-src 'unsafe-inline'; font-src data: https:">' +
+        '<style>body{margin:0;font-family:Segoe UI,-apple-system,Roboto,sans-serif;font-size:14px;line-height:1.5;color:#201f1e;word-wrap:break-word;}img{max-width:100%;height:auto;}</style>' +
+        '</head><body>' + html + '</body></html>';
+      frame.addEventListener('load', () => {
+        try { frame.style.height = (frame.contentDocument.documentElement.scrollHeight + 16) + 'px'; } catch (e) {}
+      });
+      container.innerHTML = '';
+      container.appendChild(frame);
+    }
+
     function escapeHtml(str) {
       if (!str) return '';
       return String(str)
@@ -1111,7 +1143,14 @@
         document.getElementById('viewSender').textContent = data.from || 'Unknown Sender';
         document.getElementById('viewAvatar').textContent = ((data.from || 'EM').slice(0, 2)).toUpperCase();
         document.getElementById('viewMeta').textContent = 'To: ' + (data.to || 'Me') + ' • ' + (data.date ? new Date(data.date).toLocaleString() : '');
-        document.getElementById('viewBody').innerHTML = data.html || `<div style="white-space: pre-wrap;">${escapeHtml(data.text)}</div>` || '<p>(No content)</p>';
+        const bodyEl = document.getElementById('viewBody');
+        if (data.html) {
+          renderEmailBody(bodyEl, data.html);
+        } else if (data.text) {
+          bodyEl.innerHTML = `<div style="white-space: pre-wrap;">${escapeHtml(data.text)}</div>`;
+        } else {
+          bodyEl.innerHTML = '<p>(No content)</p>';
+        }
 
         // Render attachments if present
         if (data.attachments && data.attachments.length > 0) {

@@ -47,6 +47,20 @@ EOF
     echo "Created initial production .env at $APP_DIR/.env"
   fi
 
+  # The app refuses to boot without a strong ADMIN_JWT_SECRET. Replace a missing, short or
+  # publicly known (previously committed) value with a fresh random secret. This signs out admins.
+  CURRENT_JWT="$(grep -E '^ADMIN_JWT_SECRET=' "$APP_DIR/.env" | tail -n1 | cut -d= -f2- | tr -d "\"'\r")"
+  case "$CURRENT_JWT" in
+    ""|embeddedindia_jwt_secret_token_key_9999|embeddedindia_jwt_secret_token_9999_xyz|embeddedindia_mailbox_jwt_secret_999) WEAK_JWT=1 ;;
+    *) if [ "${#CURRENT_JWT}" -lt 32 ]; then WEAK_JWT=1; else WEAK_JWT=0; fi ;;
+  esac
+  if [ "$WEAK_JWT" = "1" ]; then
+    sed -i '/^ADMIN_JWT_SECRET=/d' "$APP_DIR/.env"
+    echo "ADMIN_JWT_SECRET=$(openssl rand -hex 32)" >> "$APP_DIR/.env"
+    chmod 600 "$APP_DIR/.env"
+    echo "  ! ADMIN_JWT_SECRET was missing, weak or publicly known; rotated (admins must sign in again)."
+  fi
+
   echo "==> [Remote 3/6] Backing up SQLite database before update..."
   mkdir -p "$APP_DIR/backups" "$APP_DIR/prisma" "$APP_DIR/public/uploads" "$APP_DIR/public/downloads" "$APP_DIR/tmp"
   if [ -f "$APP_DIR/prisma/dev.db" ]; then

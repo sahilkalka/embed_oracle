@@ -123,25 +123,6 @@
         </button>
       </form>
 
-      <!-- Divider -->
-      <div class="relative my-6">
-        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
-        <div class="relative flex justify-center text-[10px] uppercase font-bold tracking-wider text-slate-400 bg-white px-2">or</div>
-      </div>
-
-      <!-- Demo Mailbox Sandbox Button (for local/offline testing) -->
-      <form action="/webmail/login" method="POST">
-        <%- typeof csrfField !== 'undefined' ? csrfField : '' %>
-        <input type="hidden" name="demo" value="true">
-        <button type="submit"
-                class="w-full inline-flex items-center justify-center gap-2 py-2 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition cursor-pointer border border-slate-200/80"
-                title="Preview Webmail UI in Demo Sandbox Mode"
-                aria-label="Preview in Demo Sandbox">
-          <span class="material-symbols-rounded text-base text-emerald-600">science</span>
-          <span>Explore Sandbox Demo (No Password)</span>
-        </button>
-      </form>
-
       <!-- Protocol & EAS Notice -->
       <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
         <span class="inline-flex items-center gap-1">

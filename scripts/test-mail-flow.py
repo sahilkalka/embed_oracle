@@ -6,8 +6,8 @@ import time
 import urllib.request
 from email.message import EmailMessage
 
-API_KEY = "EmbedOracleMailAPI2026"
-BASE_URL = "http://127.0.0.1:8088/api/v1"
+API_KEY = os.environ.get("MAILCOW_API_KEY") or sys.exit("Set MAILCOW_API_KEY in the environment before running this script.")
+BASE_URL = os.environ.get("MAILCOW_API_URL", "http://127.0.0.1:8088/api/v1")
 HEADERS = {
     "X-API-Key": API_KEY,
     "Content-Type": "application/json"
@@ -49,7 +49,7 @@ mailboxes = api_call("get/mailbox/all")
 print("Existing mailboxes:", list(mailboxes.keys()) if isinstance(mailboxes, dict) else mailboxes)
 
 DUMMY_EMAIL = "dummy@embeddedindia.in"
-DUMMY_PASS = "DummyPass2026!"
+DUMMY_PASS = os.environ.get("TEST_DUMMY_PASS") or sys.exit("Set TEST_DUMMY_PASS in the environment before running this script.")
 
 if DUMMY_EMAIL not in mailboxes:
     print(f"Creating mailbox {DUMMY_EMAIL}...")
@@ -68,7 +68,7 @@ else:
 
 # Also ensure info@embeddedindia.in exists
 INFO_EMAIL = "info@embeddedindia.in"
-INFO_PASS = "InfoPass2026!"
+INFO_PASS = os.environ.get("TEST_INFO_PASS") or sys.exit("Set TEST_INFO_PASS in the environment before running this script.")
 if INFO_EMAIL not in mailboxes:
     print(f"Creating mailbox {INFO_EMAIL}...")
     add_info = api_call("add/mailbox", method="POST", payload={
@@ -185,7 +185,7 @@ token_match = re.search(r'value="([a-f0-9]{64})"', html_login)
 if token_match:
     token = token_match.group(1)
     # Login as admin
-    login_payload = urllib.parse.urlencode({"login_user": "admin", "pass_user": "moohoo", "csrf_token": token}).encode()
+    login_payload = urllib.parse.urlencode({"login_user": "admin", "pass_user": os.environ.get("MAILCOW_ADMIN_PASS") or sys.exit("Set MAILCOW_ADMIN_PASS in the environment before running this script."), "csrf_token": token}).encode()
     login_post_req = urllib.request.Request("http://127.0.0.1:8088/", data=login_payload, headers={"X-Forwarded-Proto": "https", "X-Real-IP": "127.0.0.1"})
     opener.open(login_post_req)
 

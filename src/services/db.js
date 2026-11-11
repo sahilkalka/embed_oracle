@@ -656,7 +656,9 @@ try {
   if (!existingAdmin) {
     const bcrypt = require('bcryptjs');
     const adminEmail = (process.env.ADMIN_DEFAULT_EMAIL || 'admin@embeddedindia.in').trim().toLowerCase();
-    const rawPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'AdminEmbedded@2026!';
+    const generatedPassword = !process.env.ADMIN_DEFAULT_PASSWORD;
+    const rawPassword = process.env.ADMIN_DEFAULT_PASSWORD || crypto.randomBytes(18).toString('base64url');
+    if (generatedPassword) console.warn(`[ADMIN SEED] ADMIN_DEFAULT_PASSWORD not set. Generated one-time admin password: ${rawPassword} (change it after first login).`);
     const passwordHash = bcrypt.hashSync(rawPassword, 10);
     const now = new Date().toISOString();
     guardDb.prepare(`

@@ -1,132 +1,141 @@
 // src/routes/webmail.js
-// Native Microsoft Outlook Web Webmail Client Routes with Live Dovecot IMAP/SMTP Integration
-// Uses signed JWT HTTP-only cookies for cluster-resilient session authentication
+// Interim webmail client routes (live Dovecot IMAP/SMTP).
+// NOTE: This is a stop-gap. Production webmail moves to https://mail.embeddedindia.in/
+// and this router will be replaced by redirects.
+//
+// Session model: a JWT in an HttpOnly cookie, signed with a webmail-only key (never the
+// admin key), carrying the mailbox password AES-256-GCM encrypted (never plaintext).
 
+const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const { JSDOM } = require('jsdom');
+const createDOMPurify = require('dompurify');
 const mailboxService = require('../services/mailboxService');
 
-const JWT_SECRET = process.env.ADMIN_JWT_SECRET || 'embeddedindia_mailbox_jwt_secret_999';
 const COOKIE_NAME = 'webmail_auth';
+const SESSION_TTL_SECONDS = 8 * 60 * 60; // 8 hours
+
+const purify = createDOMPurify(new JSDOM('').window);
+
+// Derive independent signing and encryption keys so a webmail token can never be
+// accepted anywhere else (and vice versa).
+function deriveKeys() {
+  let base = process.env.WEBMAIL_JWT_SECRET || process.env.ADMIN_JWT_SECRET;
+  if (!base || base.length < 32) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('[WEBMAIL] WEBMAIL_JWT_SECRET (or ADMIN_JWT_SECRET) must be at least 32 characters in production.');
+    }
+    base = crypto.randomBytes(48).toString('hex');
+  }
+  const hkdf = (label) => Buffer.from(crypto.hkdfSync('sha256', base, 'embeddedindia-webmail', label, 32));
+  return { signKey: hkdf('jwt-sign'), encKey: hkdf('password-enc') };
+}
+const { signKey, encKey } = deriveKeys();
+
+function encryptSecret(plain) {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', encKey, iv);
+  const data = Buffer.concat([cipher.update(String(plain), 'utf8'), cipher.final()]);
+  return Buffer.concat([iv, cipher.getAuthTag(), data]).toString('base64url');
+}
+
+function decryptSecret(blob) {
+  const buf = Buffer.from(String(blob), 'base64url');
+  const decipher = crypto.createDecipheriv('aes-256-gcm', encKey, buf.subarray(0, 12));
+  decipher.setAuthTag(buf.subarray(12, 28));
+  return Buffer.concat([decipher.update(buf.subarray(28)), decipher.final()]).toString('utf8');
+}
+
+function cookieOptions() {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/',
+    maxAge: SESSION_TTL_SECONDS * 1000
+  };
+}
+
+function wantsJson(req) {
+  return req.xhr || req.headers.accept?.includes('json');
+}
 
 router.use((req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   next();
 });
 
-// Helper to extract authenticated mailbox user from JWT cookie
+// Returns { email, password, name, avatar } or null.
 function getMailboxUser(req) {
   const token = req.cookies && req.cookies[COOKIE_NAME];
   if (!token) return null;
   try {
-    return jwt.verify(token, JWT_SECRET);
+    const claims = jwt.verify(token, signKey, { algorithms: ['HS256'], audience: 'webmail' });
+    if (!claims.email || !claims.pw) return null;
+    return { email: claims.email, password: decryptSecret(claims.pw), name: claims.name, avatar: claims.avatar };
   } catch (err) {
     return null;
   }
 }
 
-// GET /webmail - Main Webmail View or Outlook Login Page
+// GET /webmail - Main Webmail View or Login Page
 router.get('/', (req, res) => {
   const user = getMailboxUser(req);
   if (user) {
-    return res.render('webmail/index', { user });
+    // Never expose the password to the template.
+    return res.render('webmail/index', { user: { email: user.email, name: user.name, avatar: user.avatar } });
   }
   return res.render('webmail/login', {
-    error: req.query.error || null,
-    registeredEmail: req.query.email || ''
+    error: req.query.error ? 'Please sign in again.' : null,
+    registeredEmail: typeof req.query.email === 'string' ? req.query.email : ''
   });
 });
 
 // POST /webmail/login - Authenticate with Live Mail Server
 router.post('/login', async (req, res) => {
+  const email = String(req.body.email || '').trim().toLowerCase();
+  const password = String(req.body.password || '');
+  const fail = (status, msg) => {
+    if (wantsJson(req)) return res.status(status).json({ success: false, error: msg });
+    return res.status(status).render('webmail/login', { error: msg, registeredEmail: email });
+  };
+
   try {
-    const email = (req.body.email || '').trim().toLowerCase();
-    const password = req.body.password || '';
-    const isDemo = req.body.demo === 'true';
-
-    if (isDemo) {
-      const demoToken = jwt.sign(
-        {
-          email: 'sahil@embeddedindia.in',
-          name: 'Sahil Kalka',
-          avatar: 'SK',
-          isDemo: true
-        },
-        JWT_SECRET,
-        { expiresIn: '7d' }
-      );
-      res.cookie(COOKIE_NAME, demoToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000
-      });
-      if (req.xhr || req.headers.accept?.includes('json')) {
-        return res.json({ success: true, redirect: '/webmail' });
-      }
-      return res.redirect('/webmail');
+    if (!email || !password || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return fail(400, 'Please enter your full email address and password.');
     }
 
-    if (!email || !password) {
-      const msg = 'Please enter both your email address and password.';
-      if (req.xhr || req.headers.accept?.includes('json')) {
-        return res.status(400).json({ success: false, error: msg });
-      }
-      return res.render('webmail/login', { error: msg, registeredEmail: email });
-    }
-
-    // Authenticate with live Dovecot IMAP
     const authResult = await mailboxService.authenticate(email, password);
-
     if (!authResult.success) {
-      const errorMsg = 'That account or password is not correct. Verify your credentials or reset your password via the Email Admin console.';
-      if (req.xhr || req.headers.accept?.includes('json')) {
-        return res.status(401).json({ success: false, error: errorMsg });
-      }
-      return res.render('webmail/login', { error: errorMsg, registeredEmail: email });
+      return fail(401, 'That account or password is not correct.');
     }
 
     const usernamePart = email.split('@')[0];
-    const displayName = usernamePart.charAt(0).toUpperCase() + usernamePart.slice(1);
-    const initials = (usernamePart.slice(0, 2)).toUpperCase();
-
-    const authToken = jwt.sign(
+    const token = jwt.sign(
       {
         email,
-        password,
-        name: displayName,
-        avatar: initials,
-        isDemo: false
+        pw: encryptSecret(password),
+        name: usernamePart.charAt(0).toUpperCase() + usernamePart.slice(1),
+        avatar: usernamePart.slice(0, 2).toUpperCase()
       },
-      JWT_SECRET,
-      { expiresIn: '7d' }
+      signKey,
+      { algorithm: 'HS256', audience: 'webmail', expiresIn: SESSION_TTL_SECONDS }
     );
+    res.cookie(COOKIE_NAME, token, cookieOptions());
 
-    res.cookie(COOKIE_NAME, authToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
-
-    if (req.xhr || req.headers.accept?.includes('json')) {
-      return res.json({ success: true, redirect: '/webmail' });
-    }
+    if (wantsJson(req)) return res.json({ success: true, redirect: '/webmail' });
     return res.redirect('/webmail');
   } catch (err) {
-    console.error('[Webmail Login Error]', err);
-    const msg = 'Unable to connect to the mail server. Please try again or contact your administrator.';
-    if (req.xhr || req.headers.accept?.includes('json')) {
-      return res.status(500).json({ success: false, error: msg });
-    }
-    return res.render('webmail/login', { error: msg, registeredEmail: req.body.email || '' });
+    console.error('[Webmail Login Error]', err.message);
+    return fail(500, 'Unable to connect to the mail server. Please try again or contact your administrator.');
   }
 });
 
-// GET & POST /webmail/logout
-router.all('/logout', (req, res) => {
-  res.clearCookie(COOKIE_NAME);
+// POST /webmail/logout (CSRF-protected)
+router.post('/logout', (req, res) => {
+  res.clearCookie(COOKIE_NAME, { path: '/' });
   res.redirect('/webmail');
 });
 
@@ -140,22 +149,36 @@ function requireMailbox(req, res, next) {
   next();
 }
 
+function cleanFolder(value) {
+  const folder = typeof value === 'string' && value.trim() ? value.trim() : 'INBOX';
+  if (folder.length > 200 || /[\r\n\0]/.test(folder)) return 'INBOX';
+  return folder;
+}
+
+function cleanUid(value) {
+  const uid = String(value || '');
+  return /^\d{1,12}$/.test(uid) ? uid : null;
+}
+
+// Strip header-injection characters from any user value placed into a mail header.
+function headerSafe(value, max = 998) {
+  return String(value || '').replace(/[\r\n\0]/g, ' ').trim().slice(0, max);
+}
+
+// Sanitize untrusted message HTML: no scripts, handlers, forms, frames or remote-loaded objects.
+function sanitizeEmailHtml(html) {
+  return purify.sanitize(String(html), {
+    WHOLE_DOCUMENT: false,
+    FORBID_TAGS: ['script', 'style', 'iframe', 'frame', 'frameset', 'object', 'embed', 'form', 'input', 'button', 'textarea', 'select', 'link', 'meta', 'base'],
+    FORBID_ATTR: ['srcset', 'formaction', 'action', 'ping'],
+    ALLOW_DATA_ATTR: false
+  });
+}
+
 // GET /webmail/api/folders - List Folders
 router.get('/api/folders', requireMailbox, async (req, res) => {
-  const mb = req.mailbox;
-  if (mb.isDemo) {
-    return res.json([
-      { name: 'Inbox', path: 'INBOX', unread: 3 },
-      { name: 'Sent Items', path: 'Sent', unread: 0 },
-      { name: 'Drafts', path: 'Drafts', unread: 1 },
-      { name: 'Deleted Items', path: 'Trash', unread: 0 },
-      { name: 'Junk Email', path: 'Junk', unread: 0 },
-      { name: 'Archive', path: 'Archive', unread: 0 }
-    ]);
-  }
-
   try {
-    const folders = await mailboxService.listFolders(mb.email, mb.password);
+    const folders = await mailboxService.listFolders(req.mailbox.email, req.mailbox.password);
     res.json(folders);
   } catch (err) {
     console.error('[Webmail API] listFolders error:', err.message);
@@ -165,163 +188,64 @@ router.get('/api/folders', requireMailbox, async (req, res) => {
 
 // GET /webmail/api/messages - Fetch Messages
 router.get('/api/messages', requireMailbox, async (req, res) => {
-  const mb = req.mailbox;
-  const folder = req.query.folder || 'INBOX';
-
-  if (mb.isDemo) {
-    return res.json([
-      {
-        uid: 0,
-        sender: 'Rajesh Kumar • Tata Elxsi',
-        senderEmail: 'rajesh.kumar@tataelxsi.com',
-        subject: 'RFQ: STM32MP157 SOM Custom Board Design & BSP',
-        snippet: 'Hi Sahil, we reviewed your Embedded India case studies on Yocto Linux BSP development...',
-        date: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
-        unread: true
-      },
-      {
-        uid: 1,
-        sender: 'Ananya Sharma • IoT Edge Systems',
-        senderEmail: 'ananya.sharma@iot-edge.io',
-        subject: 'Consultation: Embedded Linux Qt6 HMI Gateway',
-        snippet: 'Thanks for the quick response on our RFQ. Can we schedule a 30-minute technical review...',
-        date: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
-        unread: true
-      },
-      {
-        uid: 2,
-        sender: 'Embedded India Postmaster',
-        senderEmail: 'postmaster@embeddedindia.in',
-        subject: 'DKIM & ARC Cryptographic Signing Verified',
-        snippet: 'Automatic security alert: 2048-bit DKIM selector (dkim._domainkey.embeddedindia.in) is active...',
-        date: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-        unread: true
-      },
-      {
-        uid: 3,
-        sender: 'Vikram Mehta • BHEL Industrial',
-        senderEmail: 'vikram.mehta@bhel.in',
-        subject: 'PO Confirmation: Modbus RS-485 DAQ Modules',
-        snippet: 'Please find the formal purchase order for the RS-485 DAQ controllers attached for dispatch...',
-        date: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
-        unread: false
-      }
-    ]);
-  }
-
+  const folder = cleanFolder(req.query.folder);
   try {
-    const messages = await mailboxService.fetchMessages(mb.email, mb.password, { folder, limit: 30 });
+    const messages = await mailboxService.fetchMessages(req.mailbox.email, req.mailbox.password, { folder, limit: 30 });
     res.json(messages);
   } catch (err) {
     console.error('[Webmail API] fetchMessages error:', err.message);
-    res.status(500).json({ error: 'Failed to retrieve messages from folder ' + folder });
+    res.status(500).json({ error: 'Failed to retrieve messages from this folder' });
   }
 });
 
-// GET /webmail/api/message/:uid - Full Message Body
+// GET /webmail/api/message/:uid - Full Message Body (HTML sanitized server-side)
 router.get('/api/message/:uid', requireMailbox, async (req, res) => {
-  const mb = req.mailbox;
-  const folder = req.query.folder || 'INBOX';
-  const uid = req.params.uid;
-
-  if (mb.isDemo) {
-    const dummyBodies = {
-      '0': {
-        subject: 'RFQ: STM32MP157 SOM Custom Board Design & BSP',
-        from: 'Rajesh Kumar <rajesh.kumar@tataelxsi.com>',
-        to: 'sahil@embeddedindia.in',
-        date: new Date().toISOString(),
-        html: `<p>Hi Sahil,</p>
-               <p>We reviewed your recent Embedded India case studies on high-reliability <strong>STM32MP157</strong> hardware development and Linux Board Support Package (BSP) bring-up.</p>
-               <p>Our engineering division is building an industrial edge telematics controller requiring:</p>
-               <ul style="margin: 0 0 16px 24px; list-style-type: disc;">
-                 <li>Custom 6-layer impedance-controlled carrier board for STM32MP157C dual Cortex-A7 + Cortex-M4.</li>
-                 <li>Dual Gigabit Ethernet with IEEE 1588 PTP, CAN FD, and isolated RS-485 interfaces.</li>
-                 <li>Custom Yocto Scarthgap Linux BSP with hardware-accelerated TouchGFX / Qt6 framebuffers.</li>
-               </ul>
-               <p>We would like to request an engineering proposal and timeline for Phase 1. Please find our initial pin-mapping requirements attached.</p>`
-      },
-      '1': {
-        subject: 'Consultation: Embedded Linux Qt6 HMI Gateway',
-        from: 'Ananya Sharma <ananya.sharma@iot-edge.io>',
-        to: 'sahil@embeddedindia.in',
-        date: new Date().toISOString(),
-        html: `<p>Dear Sahil,</p>
-               <p>Thanks for the quick response on our RFQ. Can we schedule a 30-minute technical review call tomorrow at 3:00 PM IST?</p>
-               <p>We want to align on our hardware requirements for the NXP i.MX8M Plus application processor, specifically relating to secure boot authentication and high-refresh touchscreen display drivers.</p>`
-      },
-      '2': {
-        subject: 'DKIM & ARC Cryptographic Signing Verified',
-        from: 'Embedded India Postmaster <postmaster@embeddedindia.in>',
-        to: 'admin@embeddedindia.in',
-        date: new Date().toISOString(),
-        html: `<p>Hello Administrator,</p>
-               <p>The automated cryptographic signing check for domain <strong>embeddedindia.in</strong> has passed all security validations:</p>
-               <ul style="margin: 0 0 16px 24px; list-style-type: disc;">
-                 <li><strong>DKIM:</strong> 2048-bit RSA key valid on selector <code>dkim._domainkey.embeddedindia.in</code></li>
-                 <li><strong>SPF:</strong> <code>v=spf1 mx a:mail.embeddedindia.in ~all</code> validated</li>
-                 <li><strong>DMARC:</strong> Alignment status PASS with policy <code>p=quarantine</code></li>
-               </ul>`
-      },
-      '3': {
-        subject: 'PO Confirmation: Modbus RS-485 DAQ Modules',
-        from: 'Vikram Mehta <vikram.mehta@bhel.in>',
-        to: 'sahil@embeddedindia.in',
-        date: new Date().toISOString(),
-        html: `<p>Dear Sahil,</p>
-               <p>Please find attached our formal Purchase Order <strong>#PO-49201</strong> for the 25 units of industrial isolated RS-485 DAQ interface controllers.</p>
-               <p>Kindly verify the delivery schedule against our purchase agreement and send across the dispatch tracking once shipped.</p>`
-      }
-    };
-    return res.json(dummyBodies[uid] || dummyBodies['0']);
-  }
+  const folder = cleanFolder(req.query.folder);
+  const uid = cleanUid(req.params.uid);
+  if (!uid) return res.status(400).json({ error: 'Invalid message id' });
 
   try {
-    const message = await mailboxService.getMessage(mb.email, mb.password, { folder, uid });
+    const message = await mailboxService.getMessage(req.mailbox.email, req.mailbox.password, { folder, uid });
+    if (message && message.html) message.html = sanitizeEmailHtml(message.html);
     res.json(message);
   } catch (err) {
     console.error('[Webmail API] getMessage error:', err.message);
-    res.status(500).json({ error: 'Failed to retrieve message ' + uid });
+    res.status(500).json({ error: 'Failed to retrieve message' });
   }
 });
 
 // POST /webmail/api/send - Send Email via SMTP
 router.post('/api/send', requireMailbox, async (req, res) => {
-  const mb = req.mailbox;
-  const { to, subject, html, text } = req.body;
+  const to = headerSafe(req.body.to);
+  const subject = headerSafe(req.body.subject);
+  const text = typeof req.body.text === 'string' ? req.body.text : '';
+  const html = typeof req.body.html === 'string' ? sanitizeEmailHtml(req.body.html) : '';
 
   if (!to || !subject) {
     return res.status(400).json({ error: 'Recipient address and subject are required.' });
   }
 
-  if (mb.isDemo) {
-    return res.json({ success: true, messageId: 'demo-' + Date.now() });
-  }
-
   try {
-    const info = await mailboxService.sendMail(mb.email, mb.password, { to, subject, html, text });
+    const info = await mailboxService.sendMail(req.mailbox.email, req.mailbox.password, { to, subject, html, text });
     res.json({ success: true, messageId: info.messageId });
   } catch (err) {
     console.error('[Webmail API] sendMail error:', err.message);
-    res.status(500).json({ error: 'Failed to send email: ' + (err.message || 'SMTP delivery error') });
+    res.status(500).json({ error: 'Failed to send email. Please check the recipient address and try again.' });
   }
 });
 
 // POST /webmail/api/delete - Delete or Move to Trash
 router.post('/api/delete', requireMailbox, async (req, res) => {
-  const mb = req.mailbox;
-  const { folder = 'INBOX', uid } = req.body;
-
-  if (mb.isDemo) {
-    return res.json({ success: true });
-  }
+  const folder = cleanFolder(req.body.folder);
+  const uid = cleanUid(req.body.uid);
+  if (!uid) return res.status(400).json({ error: 'Invalid message id' });
 
   try {
-    await mailboxService.deleteMessage(mb.email, mb.password, { folder, uid });
+    await mailboxService.deleteMessage(req.mailbox.email, req.mailbox.password, { folder, uid });
     res.json({ success: true });
   } catch (err) {
     console.error('[Webmail API] deleteMessage error:', err.message);
-    res.status(500).json({ error: 'Failed to delete message: ' + err.message });
+    res.status(500).json({ error: 'Failed to delete message' });
   }
 });
 

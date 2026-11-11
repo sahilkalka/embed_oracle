@@ -42,7 +42,7 @@
       </button>
 
       <button type="button"
-              onclick="openShareGuidelinesModal('sahil@embeddedindia.in', 'Sahil Kalka', 'Welcome2026!#')"
+              onclick="openShareGuidelinesModal('sahil@embeddedindia.in', 'Sahil Kalka', '')"
               class="col-span-2 sm:col-span-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border font-bold text-xs transition-all duration-150 cursor-pointer">
         <span class="material-symbols-rounded text-base leading-none text-emerald-500" aria-hidden="true">forward_to_inbox</span>
         <span>Share Setup Guidelines</span>
@@ -668,7 +668,7 @@
       <div>
         <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1" for="newMbPassword">Initial Password</label>
         <div class="flex items-center gap-2">
-          <input type="text" id="newMbPassword" value="Welcome2026!#" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500" required>
+          <input type="text" id="newMbPassword" value="" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500" required>
           <button type="button" onclick="generateRandomPass()" title="Generate random password" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 text-xs font-bold border border-slate-200 dark:border-brand-border shrink-0 cursor-pointer">
             <span class="material-symbols-rounded text-sm">casino</span>
           </button>
@@ -691,7 +691,7 @@
   let activeShareData = {
     email: 'sahil@embeddedindia.in',
     name: 'Sahil Kalka',
-    password: 'Welcome2026!#'
+    password: ''
   };
 
   function openAddMailboxModal() {
@@ -706,7 +706,7 @@
     activeShareData = {
       email: email,
       name: name,
-      password: password || 'Welcome2026!#'
+      password: password || ''
     };
     document.getElementById('previewMailboxEmail').textContent = email;
     document.getElementById('previewMailboxPassword').textContent = activeShareData.password;

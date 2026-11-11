@@ -23,7 +23,7 @@ Welcome to the **Embedded India Mail Infrastructure**. This guide outlines how t
    > **Note**: Superadmin credentials authenticate exclusively at the `/admin` path. The root `/` or `/mail` path is reserved for individual user email accounts (`user@embeddedindia.in`).
 2. Log in using default credentials:
    - **Username**: `admin`
-   - **Password**: `moohoo` (or your custom `$ADMIN_PASSWORD`)
+   - **Password**: the value printed once by `deploy-email-server.sh` (or the `ADMIN_PASSWORD` you supplied). There is no default password.
 3. The dashboard features the **Embedded India dark emerald theme** (`#0b1412`, `#10b981`), matching the main website admin dashboard with responsive cards and icon buttons.
 4. Click <kbd>👤 Profile</kbd> in the top navigation bar.
 5. Click <kbd>🔑 Change Password</kbd> to set a strong master administrative password.

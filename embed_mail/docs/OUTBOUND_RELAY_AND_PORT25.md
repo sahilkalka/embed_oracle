@@ -128,6 +128,4 @@ sudo bash /var/www/embeddedindia/scripts/setup-outbound-relay.sh
 - Select Option `5` (Remove Relay / Direct Send).
 - Mailcow will now deliver directly to external mail servers worldwide!
 
-username ocid1.user.oc1..aaaaaaaacvjj47afunpav5xvr6ecidpy35743sqe6bp2pr2m346l4qnysuha@ocid1.tenancy.oc1..aaaaaaaatavk6zjegtbyp56tzx5j5otx77nrisqj5ehpz35smmgl3xj576ha.9i.com
-
-password xa#VjSR6f;iqEN&3X5Ez
+> Store relay credentials only on the server (`data/conf/postfix/sasl_passwd`, mode 600). Never commit them.

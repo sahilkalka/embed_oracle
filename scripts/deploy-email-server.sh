@@ -312,7 +312,12 @@ for i in {1..20}; do
 done
 
 # Provision / Reset superadmin account credentials
-TARGET_ADMIN_PASS="${ADMIN_PASSWORD:-moohoo}"
+# Never use a default password: generate a strong random one if ADMIN_PASSWORD is not provided.
+if [ -z "${ADMIN_PASSWORD:-}" ]; then
+  ADMIN_PASSWORD="$(openssl rand -base64 32 | tr -d '/+=' | cut -c1-24)"
+  echo "  ! ADMIN_PASSWORD not provided; generated a random mail admin password (shown once at the end)."
+fi
+TARGET_ADMIN_PASS="${ADMIN_PASSWORD}"
 echo "Provisioning master admin credentials for 'admin'..."
 source "${MAIL_DIR}/mailcow.conf" 2>/dev/null || true
 ADMIN_HASH=$(docker compose exec -T dovecot-mailcow doveadm pw -s SSHA256 -p "${TARGET_ADMIN_PASS}" 2>/dev/null | tr -d '\r\n')

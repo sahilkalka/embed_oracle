@@ -11,7 +11,9 @@ async function main() {
   const existingAdmin = await prisma.user.findFirst({ where: { role: 'admin' } });
   if (!existingAdmin) {
     const adminEmail = (process.env.ADMIN_DEFAULT_EMAIL || 'admin@embeddedindia.in').trim().toLowerCase();
-    const rawPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'AdminEmbedded@2026!';
+    const generatedPassword = !process.env.ADMIN_DEFAULT_PASSWORD;
+    const rawPassword = process.env.ADMIN_DEFAULT_PASSWORD || require('crypto').randomBytes(18).toString('base64url');
+    if (generatedPassword) console.warn(`[ADMIN SEED] ADMIN_DEFAULT_PASSWORD not set. Generated one-time admin password: ${rawPassword} (change it after first login).`);
     const passwordHash = await bcrypt.hash(rawPassword, 10);
 
     const admin = await prisma.user.create({

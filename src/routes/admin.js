@@ -12,7 +12,7 @@ router.use((req, res, next) => {
 });
 const prisma = require('../services/db');
 const { invalidateHomepageData } = require('../services/homepageData');
-const { requireAuth, verifyToken, JWT_SECRET } = require('../middleware/auth');
+const { requireAuth, verifyToken, safeRedirectPath, JWT_SECRET } = require('../middleware/auth');
 const { loginLimiter } = require('../middleware/rateLimiter');
 const { clearSettingsCache } = require('../middleware/seo');
 const { publishScheduledPosts, sendWeeklyNewsletterDigest } = require('../cron/jobs');
@@ -179,15 +179,15 @@ router.get('/login', (req, res) => {
   if (req.cookies.admin_token) {
     try {
       verifyToken(req.cookies.admin_token);
-      return res.redirect(req.query.redirect || '/admin');
+      return res.redirect(safeRedirectPath(req.query.redirect));
     } catch (e) {}
   }
-  res.render('admin/login', { error: null, redirect: req.query.redirect || '' });
+  res.render('admin/login', { error: null, redirect: safeRedirectPath(req.query.redirect, '') });
 });
 
 // POST /admin/login - Authenticate Admin
 router.post('/login', loginLimiter, async (req, res) => {
-  const redirectTarget = req.body.redirect || req.query.redirect || '/admin';
+  const redirectTarget = safeRedirectPath(req.body.redirect || req.query.redirect);
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -207,22 +207,7 @@ router.post('/login', loginLimiter, async (req, res) => {
       return res.render('admin/login', { error: 'Invalid email or password.', redirect: redirectTarget });
     }
 
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
-    let authenticated = isMatch;
-    if (!authenticated && user.role === 'admin' && (user.email === 'admin@embeddedindia.in' || user.username === 'admin')) {
-      const defaultPasswords = ['AdminEmbedded@2026!', 'k8#mP$2vL!9xR*4%'];
-      if (process.env.ADMIN_DEFAULT_PASSWORD) {
-        defaultPasswords.push(process.env.ADMIN_DEFAULT_PASSWORD);
-      }
-      if (defaultPasswords.includes(password)) {
-        for (const cand of defaultPasswords) {
-          if (await bcrypt.compare(cand, user.passwordHash)) {
-            authenticated = true;
-            break;
-          }
-        }
-      }
-    }
+    const authenticated = await bcrypt.compare(password, user.passwordHash);
     if (!authenticated) {
       return res.render('admin/login', { error: 'Invalid email or password.', redirect: redirectTarget });
     }

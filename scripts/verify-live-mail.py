@@ -24,15 +24,15 @@ import urllib.request
 import urllib.error
 from email.message import EmailMessage
 
-API_KEY = "EmbedOracleMailAPI2026"
-BASE_URL = "http://127.0.0.1:8088/api/v1"
+API_KEY = os.environ.get("MAILCOW_API_KEY") or sys.exit("Set MAILCOW_API_KEY in the environment before running this script.")
+BASE_URL = os.environ.get("MAILCOW_API_URL", "http://127.0.0.1:8088/api/v1")
 HEADERS = {"X-API-Key": API_KEY, "Content-Type": "application/json"}
 DOMAIN = "embeddedindia.in"
 
 DUMMY_EMAIL = f"dummy@{DOMAIN}"
-DUMMY_PASS = "DummyPass2026!"
+DUMMY_PASS = os.environ.get("TEST_DUMMY_PASS") or sys.exit("Set TEST_DUMMY_PASS in the environment before running this script.")
 INFO_EMAIL = f"info@{DOMAIN}"
-INFO_PASS = "InfoPass2026!"
+INFO_PASS = os.environ.get("TEST_INFO_PASS") or sys.exit("Set TEST_INFO_PASS in the environment before running this script.")
 SAHIL_EMAIL = f"sahil@{DOMAIN}"
 
 def api_call(endpoint, method="GET", payload=None):

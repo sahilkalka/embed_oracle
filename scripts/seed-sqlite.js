@@ -17,7 +17,7 @@ async function seed() {
   const existingAdmin = db.prepare("SELECT id, email FROM User WHERE role = 'admin' LIMIT 1").get();
   if (!existingAdmin) {
     const adminEmail = (process.env.ADMIN_DEFAULT_EMAIL || 'admin@embeddedindia.in').trim().toLowerCase();
-    const rawPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'AdminEmbedded@2026!';
+    const rawPassword = process.env.ADMIN_DEFAULT_PASSWORD;
     if (!rawPassword || rawPassword.length < 16) {
       throw new Error('Set ADMIN_DEFAULT_PASSWORD to at least 16 characters before creating the initial admin account.');
     }

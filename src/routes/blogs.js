@@ -206,7 +206,7 @@ router.get('/:slug', async (req, res) => {
       where: { slug: req.params.slug }
     });
 
-    if (!rawPost || (rawPost.status !== 'published' && !req.cookies.admin_token)) {
+    if (!rawPost || (rawPost.status !== 'published' && !req.user)) {
       return res.status(404).render('pages/message', {
         title: 'Article Not Found',
         heading: '404 - Article Not Found',

@@ -5,6 +5,7 @@
 const { ImapFlow } = require('imapflow');
 const { simpleParser } = require('mailparser');
 const nodemailer = require('nodemailer');
+const MailComposer = require('nodemailer/lib/mail-composer');
 
 const IMAP_HOST = process.env.MAIL_IMAP_HOST || '127.0.0.1';
 const IMAP_PORT = parseInt(process.env.MAIL_IMAP_PORT || '993', 10);
@@ -277,20 +278,22 @@ class MailboxService {
     const transporter = this.getSmtpTransporter(email, password);
 
     // 1. Send via SMTP
-    const info = await transporter.sendMail({
+    const mailOptions = {
       from: email,
       to,
       subject,
-      html: html || text,
+      html: html || undefined,
       text: text || ''
-    });
+    };
+    const info = await transporter.sendMail(mailOptions);
 
-    // 2. Try to append to Sent items folder
+    // 2. Try to append to Sent items folder. The copy is built by nodemailer's
+    //    composer so headers are encoded properly and cannot be injected.
     try {
+      const rawMessage = await new MailComposer({ ...mailOptions, messageId: info.messageId, date: new Date() })
+        .compile()
+        .build();
       await this.withClient(email, password, async (client) => {
-        const rawMessage = Buffer.from(
-          `From: ${email}\r\nTo: ${to}\r\nSubject: ${subject}\r\nDate: ${new Date().toUTCString()}\r\nContent-Type: text/html; charset=utf-8\r\n\r\n${html || text}`
-        );
 
         // Detect Sent folder name
         const list = await client.list();

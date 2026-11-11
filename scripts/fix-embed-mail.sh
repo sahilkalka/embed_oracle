@@ -339,35 +339,41 @@ for i in {1..20}; do
   sleep 1
 done
 
-# Reset / Provision the admin account credentials
-TARGET_ADMIN_PASS="${ADMIN_PASSWORD:-moohoo}"
-echo "Provisioning master admin credentials for 'admin'..."
-source "${MAIL_DIR}/mailcow.conf" 2>/dev/null || true
-ADMIN_HASH=$(docker compose exec -T dovecot-mailcow doveadm pw -s SSHA256 -p "${TARGET_ADMIN_PASS}" 2>/dev/null | tr -d '\r\n')
+# Reset the mail admin account ONLY when explicitly requested, because it also
+# removes the admin's two-factor authentication. Usage: ADMIN_PASSWORD='...' sudo -E bash scripts/fix-embed-mail.sh
+if [ -n "${ADMIN_PASSWORD:-}" ]; then
+  TARGET_ADMIN_PASS="${ADMIN_PASSWORD}"
+  echo "Provisioning master admin credentials for 'admin'..."
+  source "${MAIL_DIR}/mailcow.conf" 2>/dev/null || true
+  ADMIN_HASH=$(docker compose exec -T dovecot-mailcow doveadm pw -s SSHA256 -p "${TARGET_ADMIN_PASS}" 2>/dev/null | tr -d '\r\n')
 
-if [ -n "${ADMIN_HASH}" ] && [ -n "${DBPASS:-}" ]; then
-  docker compose exec -T mysql-mailcow sh -c "mysql -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -e \"
-    DELETE FROM admin WHERE username='admin';
-    DELETE FROM domain_admins WHERE username='admin';
-    INSERT INTO admin (username, password, superadmin, active) VALUES ('admin', '${ADMIN_HASH}', 1, 1);
-    DELETE FROM tfa WHERE username='admin';
-  \" 2>/dev/null || mariadb -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -e \"
-    DELETE FROM admin WHERE username='admin';
-    DELETE FROM domain_admins WHERE username='admin';
-    INSERT INTO admin (username, password, superadmin, active) VALUES ('admin', '${ADMIN_HASH}', 1, 1);
-    DELETE FROM tfa WHERE username='admin';
-  \"" 2>/dev/null || true
+  if [ -n "${ADMIN_HASH}" ] && [ -n "${DBPASS:-}" ]; then
+    docker compose exec -T mysql-mailcow sh -c "mysql -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -e \"
+      DELETE FROM admin WHERE username='admin';
+      DELETE FROM domain_admins WHERE username='admin';
+      INSERT INTO admin (username, password, superadmin, active) VALUES ('admin', '${ADMIN_HASH}', 1, 1);
+      DELETE FROM tfa WHERE username='admin';
+    \" 2>/dev/null || mariadb -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -e \"
+      DELETE FROM admin WHERE username='admin';
+      DELETE FROM domain_admins WHERE username='admin';
+      INSERT INTO admin (username, password, superadmin, active) VALUES ('admin', '${ADMIN_HASH}', 1, 1);
+      DELETE FROM tfa WHERE username='admin';
+    \"" 2>/dev/null || true
 
-  ADMIN_CHECK=$(docker compose exec -T mysql-mailcow sh -c "mysql -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -N -e \"SELECT username FROM admin WHERE username='admin';\" 2>/dev/null || mariadb -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -N -e \"SELECT username FROM admin WHERE username='admin';\" 2>/dev/null" | tr -d '\r\n' || true)
-  if [ "${ADMIN_CHECK}" = "admin" ]; then
-    echo "  + Master admin account successfully provisioned and verified in database."
+    ADMIN_CHECK=$(docker compose exec -T mysql-mailcow sh -c "mysql -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -N -e \"SELECT username FROM admin WHERE username='admin';\" 2>/dev/null || mariadb -u\"${DBUSER}\" -p\"${DBPASS}\" \"${DBNAME}\" -N -e \"SELECT username FROM admin WHERE username='admin';\" 2>/dev/null" | tr -d '\r\n' || true)
+    if [ "${ADMIN_CHECK}" = "admin" ]; then
+      echo "  + Master admin account successfully provisioned and verified in database."
+    fi
+  else
+    # Fallback to built-in helper script if doveadm was not yet responsive
+    if [ -f "${MAIL_DIR}/helper-scripts/mailcow-reset-admin.sh" ]; then
+      echo "Running helper-scripts/mailcow-reset-admin.sh..."
+      bash "${MAIL_DIR}/helper-scripts/mailcow-reset-admin.sh" -y || true
+    fi
   fi
 else
-  # Fallback to built-in helper script if doveadm was not yet responsive
-  if [ -f "${MAIL_DIR}/helper-scripts/mailcow-reset-admin.sh" ]; then
-    echo "Running helper-scripts/mailcow-reset-admin.sh..."
-    bash "${MAIL_DIR}/helper-scripts/mailcow-reset-admin.sh" -y || true
-  fi
+  TARGET_ADMIN_PASS="(unchanged)"
+  echo "Skipping mail admin reset (set ADMIN_PASSWORD to reset it)."
 fi
 
 # Restart php-fpm-mailcow and nginx-mailcow to pick up fresh configuration and cleared cache
