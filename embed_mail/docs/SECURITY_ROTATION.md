@@ -65,7 +65,11 @@ The code no longer accepts the old hardcoded fallback passwords. If your admin p
 (or `ADMIN_DEFAULT_PASSWORD` from the old `.env.example`), reset it:
 
 ```bash
-cd /var/www/embeddedindia && sudo -u www-data node scripts/reset-admin.js admin@embeddedindia.in "$(openssl rand -base64 24)"
+# Run as the app owner (ubuntu), not www-data, so SQLite can open prisma/dev.db
+cd /var/www/embeddedindia
+NEW_ADMIN_PASS="$(openssl rand -base64 24)"
+node scripts/reset-admin.js admin@embeddedindia.in "$NEW_ADMIN_PASS"
+echo "New admin password: $NEW_ADMIN_PASS"   # store it in your password manager
 ```
 
 ## 6. Mailboxes
