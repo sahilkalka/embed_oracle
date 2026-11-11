@@ -12,7 +12,7 @@ router.use((req, res, next) => {
 });
 const prisma = require('../services/db');
 const { invalidateHomepageData } = require('../services/homepageData');
-const { requireAuth, verifyToken, safeRedirectPath, JWT_SECRET } = require('../middleware/auth');
+const { requireAuth, requireRole, verifyToken, safeRedirectPath, JWT_SECRET } = require('../middleware/auth');
 const { loginLimiter } = require('../middleware/rateLimiter');
 const { clearSettingsCache } = require('../middleware/seo');
 const { publishScheduledPosts, sendWeeklyNewsletterDigest } = require('../cron/jobs');
@@ -1024,58 +1024,8 @@ router.get('/settings', async (req, res, next) => {
   }
 });
 
-// GET /admin/email - Enterprise Mail Infrastructure & Webmail Hub
-router.get('/email', async (req, res, next) => {
-  try {
-    const settings = await prisma.setting.findMany();
-    const settingsMap = settings.reduce((acc, curr) => {
-      acc[curr.key] = curr.value;
-      return acc;
-    }, {});
-
-    res.render('admin/email', {
-      title: 'Email & Webmail Infrastructure - Embedded India',
-      currentPath: '/admin/email',
-      settings: settingsMap,
-      currentUser: req.user
-    });
-  } catch (err) {
-    console.error('[ADMIN EMAIL LOAD ERROR]', err);
-    next(err);
-  }
-});
-
-// POST /admin/email/share-credentials - Dispatch setup guidelines and credentials
-router.post('/email/share-credentials', async (req, res) => {
-  try {
-    const { recipientEmail, mailboxEmail, password, displayName } = req.body;
-    if (!recipientEmail || !mailboxEmail) {
-      return res.status(400).json({ success: false, error: 'Recipient and mailbox email are required.' });
-    }
-
-    const webmailUrl = process.env.WEBMAIL_URL || 'https://mail.embeddedindia.in/';
-
-    const result = await mailer.sendMailboxCredentials({
-      recipientEmail,
-      mailboxEmail,
-      password: password || '(Existing mailbox password)',
-      displayName: displayName || mailboxEmail.split('@')[0],
-      webmailUrl,
-      activeSyncUrl: 'https://mail.embeddedindia.in/Microsoft-Server-ActiveSync',
-      imapHost: 'mail.embeddedindia.in:993 (SSL/TLS)',
-      smtpHost: 'mail.embeddedindia.in:587 (STARTTLS)'
-    });
-
-    if (result.success) {
-      return res.json({ success: true, message: `Guidelines and credentials sent to ${recipientEmail}!` });
-    } else {
-      return res.status(500).json({ success: false, error: result.error || 'Failed to dispatch email' });
-    }
-  } catch (err) {
-    console.error('[ADMIN SHARE CREDENTIALS ERROR]', err);
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
+// /admin/email - Mail server administration (admins only; see routes/adminEmail.js)
+router.use('/email', requireRole('admin'), require('./adminEmail'));
 
 // POST /admin/settings - Update Site Settings (Supports independent module AJAX saves)
 router.post('/settings', async (req, res) => {
