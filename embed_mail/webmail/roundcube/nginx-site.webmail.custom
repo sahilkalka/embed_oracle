@@ -1,0 +1,23 @@
+# Embedded India Mail (webmail under /rc/) — keep internals private.
+# Installed to /embed_mail/data/conf/nginx/site.webmail.custom
+location ^~ /rc/ {
+    location ~ ^/rc/(bin|config|installer|logs|SQL|temp|vendor)($|/.*) { deny all; }
+    location ~ ^/rc/(CHANGELOG\.md|composer\.json|composer\.json-dist|composer\.lock|INSTALL|jsdeps\.json|LICENSE|README\.md|SECURITY\.md|UPGRADING|index\.php-dist)$ { deny all; }
+    location ~ ^/rc/plugins/.*/(config\.inc\.php.*|composer\.json|README.*|\.git.*)$ { deny all; }
+    location ~ ^/rc/plugins/enigma/home($|/.*) { deny all; }
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php-fpm-mailcow:9002;
+        fastcgi_index index.php;
+        include /etc/nginx/fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_param REMOTE_ADDR $mailcow_client_ip;
+        fastcgi_param HTTPS on;
+        fastcgi_read_timeout 300;
+        client_max_body_size 30m;
+    }
+    client_max_body_size 30m;
+    try_files $uri $uri/ /rc/index.php?$args;
+}
