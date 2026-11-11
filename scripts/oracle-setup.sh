@@ -44,10 +44,10 @@ EOF
 sudo sysctl --system >/dev/null
 
 echo "==> [4/7] Opening HTTP (80) & HTTPS (443) in Oracle Ubuntu iptables..."
-if ! sudo iptables -C INPUT -p tcp --dport 80 -j ACCEPT 2>/dev/null; then
+if ! sudo iptables -C INPUT -p tcp -m tcp --dport 80 -m state --state NEW -j ACCEPT 2>/dev/null; then
   sudo iptables -I INPUT 1 -p tcp --dport 80 -m state --state NEW -j ACCEPT
 fi
-if ! sudo iptables -C INPUT -p tcp --dport 443 -j ACCEPT 2>/dev/null; then
+if ! sudo iptables -C INPUT -p tcp -m tcp --dport 443 -m state --state NEW -j ACCEPT 2>/dev/null; then
   sudo iptables -I INPUT 1 -p tcp --dport 443 -m state --state NEW -j ACCEPT
 fi
 sudo netfilter-persistent save || true

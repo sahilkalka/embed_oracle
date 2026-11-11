@@ -166,7 +166,7 @@ chown -R www-data:www-data /var/www/certbot 2>/dev/null || chmod -R 755 /var/www
 echo "==> Ensuring host iptables firewall allows mail protocol ports..."
 MAIL_PORTS=(25 465 587 993 995 4190)
 for PORT in "${MAIL_PORTS[@]}"; do
-  if ! iptables -C INPUT -p tcp --dport "${PORT}" -j ACCEPT 2>/dev/null; then
+  if ! iptables -C INPUT -p tcp -m tcp --dport "${PORT}" -m state --state NEW -j ACCEPT 2>/dev/null; then
     iptables -I INPUT 1 -p tcp --dport "${PORT}" -m state --state NEW -j ACCEPT
     echo "  + Opened TCP port ${PORT} in host iptables"
   fi
