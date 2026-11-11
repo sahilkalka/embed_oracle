@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Embedded India Mail: automatic setup for Thunderbird and other mail apps.
+     Only encrypted, publicly reachable ports are listed. Served by the host nginx. -->
+<clientConfig version="1.1">
+  <emailProvider id="embeddedindia.in">
+    <domain>embeddedindia.in</domain>
+    <displayName>Embedded India Mail</displayName>
+    <displayShortName>Embedded India</displayShortName>
+
+    <incomingServer type="imap">
+      <hostname>mail.embeddedindia.in</hostname>
+      <port>993</port>
+      <socketType>SSL</socketType>
+      <username>%EMAILADDRESS%</username>
+      <authentication>password-cleartext</authentication>
+    </incomingServer>
+    <incomingServer type="pop3">
+      <hostname>mail.embeddedindia.in</hostname>
+      <port>995</port>
+      <socketType>SSL</socketType>
+      <username>%EMAILADDRESS%</username>
+      <authentication>password-cleartext</authentication>
+    </incomingServer>
+
+    <outgoingServer type="smtp">
+      <hostname>mail.embeddedindia.in</hostname>
+      <port>465</port>
+      <socketType>SSL</socketType>
+      <username>%EMAILADDRESS%</username>
+      <authentication>password-cleartext</authentication>
+    </outgoingServer>
+    <outgoingServer type="smtp">
+      <hostname>mail.embeddedindia.in</hostname>
+      <port>587</port>
+      <socketType>STARTTLS</socketType>
+      <username>%EMAILADDRESS%</username>
+      <authentication>password-cleartext</authentication>
+    </outgoingServer>
+
+    <documentation url="https://mail.embeddedindia.in/">
+      <descr lang="en">Embedded India Mail webmail</descr>
+    </documentation>
+  </emailProvider>
+
+  <addressBook type="carddav">
+    <username>%EMAILADDRESS%</username>
+    <authentication>http-basic</authentication>
+    <serverURL>https://mail.embeddedindia.in/dav/</serverURL>
+  </addressBook>
+  <calendar type="caldav">
+    <username>%EMAILADDRESS%</username>
+    <authentication>http-basic</authentication>
+    <serverURL>https://mail.embeddedindia.in/dav/</serverURL>
+  </calendar>
+
+  <webMail>
+    <loginPage url="https://mail.embeddedindia.in/" />
+  </webMail>
+</clientConfig>
