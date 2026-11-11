@@ -25,13 +25,38 @@ v=DKIM1;k=rsa;t=s;s=email;p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAplcn8juh
 
 ## 2. Change now
 
-| # | Type | Name | Current | Change to | Proxy |
-|---|------|------|---------|-----------|-------|
-| 5 | A → **CNAME** | `autodiscover` | A `104.21.36.252` / `172.67.201.159` (proxied) | Delete the A record(s), then add CNAME `autodiscover` → `mail.embeddedindia.in` | **DNS only** |
-| 6 | A → **CNAME** | `autoconfig` | A `104.21.36.252` / `172.67.201.159` (proxied) | Delete the A record(s), then add CNAME `autoconfig` → `mail.embeddedindia.in` | **DNS only** |
-| 7 | TXT | `_dmarc` | `v=DMARC1; p=quarantine; rua=mailto:sahil.kalka@gmail.com` | `v=DMARC1; p=quarantine; rua=mailto:dmarc@embeddedindia.in; adkim=r; aspf=r` | DNS only |
+### 5 and 6: `autodiscover` and `autoconfig`
 
-About record 7: receivers usually drop DMARC reports addressed to another domain such as gmail.com, because that domain hasn't authorised them. The `dmarc@` alias already exists and forwards to `info@embeddedindia.in`.
+**Where `104.21.36.252` and `172.67.201.159` come from.** These are Cloudflare's own proxy addresses, not your server.
+- Any record with the orange cloud (Proxied) resolves to Cloudflare's addresses instead of the address you typed.
+- There is no wildcard record, so your DNS list must contain explicit `autodiscover` and `autoconfig` entries with the orange cloud on.
+- Through the proxy, mail apps reach Cloudflare instead of the mail server, so auto-setup fails with error 525.
+
+Do this for each of the two names:
+
+1. In the DNS list, find the row whose **Name** is `autodiscover` (it may be type A, AAAA or CNAME, with the orange cloud).
+2. Click **Edit**:
+   - **Type:** `CNAME`. If the type can't be changed, delete the row and click **Add record**.
+   - **Name:** `autodiscover`
+   - **Target:**
+     ```
+     mail.embeddedindia.in
+     ```
+   - **Proxy status:** click the orange cloud so it turns **grey (DNS only)**.
+3. Save. If there was also an AAAA row with the same name, delete it.
+4. Repeat for `autoconfig`.
+
+### 7: `_dmarc` (currently broken, fix first)
+
+The live value contains backticks and both the old and new text, so receivers can't parse it reliably:
+```
+v=DMARC1; p=quarantine; rua=mailto:sahil.kalka@gmail.com` | `v=DMARC1; p=quarantine; ...
+```
+Edit the `_dmarc` TXT record and replace the **entire** content with exactly this line. Copy it from the box, without any backticks or `|` characters:
+```
+v=DMARC1; p=quarantine; rua=mailto:dmarc@embeddedindia.in; adkim=r; aspf=r
+```
+Why send reports to `dmarc@`: receivers usually drop DMARC reports addressed to another domain such as gmail.com, because that domain hasn't authorised them. The `dmarc@` alias already exists and forwards to `info@embeddedindia.in`.
 
 ## 3. Optional, helps mail apps set themselves up
 
@@ -42,7 +67,7 @@ About record 7: receivers usually drop DMARC reports addressed to another domain
 | SRV | `_submissions._tcp` | 0 | 1 | 465 | `mail.embeddedindia.in` | DNS only |
 | SRV | `_submission._tcp` | 0 | 1 | 587 | `mail.embeddedindia.in` | DNS only |
 
-## 4. Later: once you have stopped using Hostinger mail
+## 4. Hostinger removal (done 2026-11-11: MX now only `2 mail.embeddedindia.in`, SPF updated)
 
 | # | Type | Name | Action |
 |---|------|------|--------|

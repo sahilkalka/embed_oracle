@@ -50,6 +50,8 @@ set -euo pipefail
 LIVE="${LIVE}"
 SSL_DIR="${SSL_DIR}"
 if [ -n "\${RENEWED_LINEAGE:-}" ] && [ "\${RENEWED_LINEAGE}" != "\${LIVE}" ]; then exit 0; fi
+# The host nginx (webmail, MTA-STS, autodiscover on 443) serves this certificate too.
+systemctl reload nginx 2>/dev/null || true
 if cmp -s "\${LIVE}/fullchain.pem" "\${SSL_DIR}/cert.pem" && cmp -s "\${LIVE}/privkey.pem" "\${SSL_DIR}/key.pem"; then
   echo "mailcow certificate already current"; exit 0
 fi
