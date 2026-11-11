@@ -1,0 +1,51 @@
+/* Embedded India Mail — brand layer over the responsive base skin.
+   Primary #007f5f (website brand), hover #007255, dark #0d1715. */
+:root { --ei-primary:#007f5f; --ei-primary-hover:#007255; --ei-dark:#0d1715; --ei-soft:#e6f0ee; }
+
+/* Left icon rail */
+#layout-menu, .layout-menu { background-color: var(--ei-dark) !important; }
+#layout-menu .popover-header, #layout-menu #logo { background-color: var(--ei-dark) !important; }
+#layout-menu a.selected, #layout-menu a:hover, #layout-menu a:focus { color:#fff !important; background-color: rgba(16,185,129,.18) !important; }
+#layout-menu .special-buttons a, #layout-menu a { border-radius: 10px; }
+#logo { max-height: 44px; }
+
+/* Primary actions, links, focus */
+.btn-primary, .btn.btn-primary, button.btn-primary, input.btn-primary,
+.formbuttons .btn.mainaction, .mainaction, .compose.button, a.compose {
+  background-color: var(--ei-primary) !important; border-color: var(--ei-primary) !important; color:#fff !important;
+}
+.btn-primary:hover, .btn-primary:focus, .mainaction:hover, a.compose:hover { background-color: var(--ei-primary-hover) !important; border-color: var(--ei-primary-hover) !important; }
+a, a:visited, .link, .listing li a.name { color: var(--ei-primary); }
+.form-control:focus, input:focus, textarea:focus, select:focus { border-color: var(--ei-primary) !important; box-shadow: 0 0 0 .2rem rgba(0,127,95,.2) !important; }
+.custom-control-input:checked ~ .custom-control-label::before, .custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+  background-color: var(--ei-primary) !important; border-color: var(--ei-primary) !important;
+}
+
+/* Lists: selection, unread, focus */
+.listing li.selected, table.records-table tr.selected td, .listing li.selected > a,
+table.records-table tr.selected { background-color: var(--ei-soft) !important; }
+table.messagelist tr.selected td { background-color: var(--ei-soft) !important; }
+table.messagelist tr.unread td.subject span.subject a, table.messagelist tr.unread .fromto { color: var(--ei-dark); }
+.listing li.selected, table.messagelist tr.selected td:first-child { border-left-color: var(--ei-primary) !important; }
+#folderlist-content li.selected > a, #folderlist-content li.selected > div a { color: var(--ei-primary) !important; }
+.unreadcount, .badge, span.unreadcount { background-color: var(--ei-primary) !important; color:#fff !important; }
+.header .toolbar a.selected, .toolbar a.button.selected { color: var(--ei-primary) !important; }
+.popupmenu li a.active:hover, .popover .listing li a:hover { color: var(--ei-primary); }
+
+/* Login page */
+body.task-login { background: radial-gradient(circle at top right, #e6f0ee 0%, #f5f7f6 60%) !important; }
+body.task-login #layout-content { background: transparent !important; }
+#login-form { background:#fff; border-radius:16px; box-shadow: 0 10px 30px rgba(13,23,21,.08); padding: 28px 28px 20px !important; }
+#login-form #logo { max-height: 64px; margin-bottom: 8px; }
+#login-footer, #login-footer a { color: #4b5d58 !important; }
+
+/* Dark mode */
+html.dark-mode #layout-menu, html.dark-mode .layout-menu { background-color: #08100e !important; }
+html.dark-mode .listing li.selected, html.dark-mode table.messagelist tr.selected td,
+html.dark-mode table.records-table tr.selected td { background-color: rgba(16,185,129,.16) !important; }
+html.dark-mode a, html.dark-mode .link { color: #34d399; }
+html.dark-mode body.task-login { background: #0d1715 !important; }
+html.dark-mode #login-form { background:#13211e; box-shadow:none; }
+
+/* Hide upstream "About" entries wherever the base skin places them */
+a.about, li.about, #settings-menu .about, #rcmrowabout { display: none !important; }

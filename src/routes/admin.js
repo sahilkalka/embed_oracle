@@ -1053,11 +1053,7 @@ router.post('/email/share-credentials', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Recipient and mailbox email are required.' });
     }
 
-    const hostHeader = req.get('host') || 'localhost:3000';
-    const isLocal = hostHeader.includes('localhost') || hostHeader.includes('127.0.0.1');
-    const proto = req.protocol || 'http';
-    const localWebmailUrl = `${proto}://${hostHeader}/webmail`;
-    const webmailUrl = isLocal ? localWebmailUrl : 'https://mail.embeddedindia.in/mail';
+    const webmailUrl = process.env.WEBMAIL_URL || 'https://mail.embeddedindia.in/';
 
     const result = await mailer.sendMailboxCredentials({
       recipientEmail,

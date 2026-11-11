@@ -1,0 +1,118 @@
+<?php
+/* Embedded India Mail — webmail configuration.
+ * Installed by scripts/install-webmail.sh into /embed_mail/data/web/rc/config/config.inc.php.
+ * __PLACEHOLDERS__ are filled in at install time; never commit real values. */
+
+$config = [];
+
+// --- Database (own database inside the mail server's MariaDB) -----------------------
+$config['db_dsnw'] = 'mysql://roundcube:__DB_PASS__@mysql/roundcubemail';
+
+// --- Mail server (internal container network) ---------------------------------------
+$config['imap_host'] = 'tls://dovecot:143';
+$config['smtp_host'] = 'postfix:588';
+$config['smtp_user'] = '%u';
+$config['smtp_pass'] = '%p';
+$config['imap_conn_options'] = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false]];
+$config['smtp_conn_options'] = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false]];
+$config['username_domain'] = 'embeddedindia.in';   // "sahil" logs in as sahil@embeddedindia.in
+$config['login_lc'] = 2;
+$config['imap_cache'] = 'db';
+$config['messages_cache'] = 'db';
+
+// Special folders (mailcow defaults)
+$config['drafts_mbox'] = 'Drafts';
+$config['junk_mbox'] = 'Junk';
+$config['sent_mbox'] = 'Sent';
+$config['trash_mbox'] = 'Trash';
+$config['archive_mbox'] = 'Archive';
+$config['create_default_folders'] = true;
+
+// --- Branding: nothing user-visible names the underlying software ------------------
+$config['product_name'] = 'Embedded India Mail';
+$config['display_product_info'] = 0;
+$config['useragent'] = 'Embedded India Mail';
+$config['support_url'] = 'https://embeddedindia.in/contact';
+$config['skin'] = 'elastic';
+$config['skin_logo'] = [
+    'elastic:*'          => 'plugins/embedded_branding/assets/logo.svg',
+    'elastic:login'      => 'plugins/embedded_branding/assets/logo-login.svg',
+    'elastic:*[small]'   => 'plugins/embedded_branding/assets/logo-mark.svg',
+    'elastic:*[favicon]' => 'plugins/embedded_branding/assets/favicon.svg',
+];
+$config['session_name'] = 'ei_mail';
+$config['session_auth_name'] = 'ei_mail_auth';
+$config['session_path'] = '/';
+$config['language'] = 'en_GB';
+$config['timezone'] = 'Asia/Kolkata';
+$config['date_format'] = 'd M Y';
+
+// --- Served at https://mail.embeddedindia.in/ through the host reverse proxy --------
+$config['request_path'] = '/';
+$config['use_https'] = true;
+$config['force_https'] = false;                     // TLS terminates at the host proxy
+$config['proxy_whitelist'] = ['172.22.1.0/24', '127.0.0.1'];
+
+// --- Security ----------------------------------------------------------------------
+$config['des_key'] = '__DES_KEY__';
+$config['cipher_method'] = 'AES-256-CBC';
+$config['ip_check'] = true;
+$config['session_lifetime'] = 60;                   // minutes of inactivity
+$config['session_samesite'] = 'Strict';
+$config['x_frame_options'] = 'sameorigin';   // matches the mail server's own header
+$config['login_rate_limit'] = 5;                    // failed logins per minute per IP
+$config['password_charset'] = 'UTF-8';
+$config['enable_installer'] = false;
+$config['log_driver'] = 'file';
+$config['log_logins'] = true;
+$config['log_session'] = false;
+$config['show_images'] = 0;                         // remote images: ask first (privacy)
+$config['htmleditor'] = 4;                          // HTML compose except replying to plain text
+$config['mime_param_folding'] = 0;
+$config['max_message_size'] = '25M';
+
+// --- Usability defaults -------------------------------------------------------------
+$config['draft_autosave'] = 60;
+$config['preview_pane'] = true;
+$config['layout'] = 'widescreen';
+$config['message_show_email'] = true;
+$config['reply_mode'] = 1;                          // reply above the quote
+$config['default_list_mode'] = 'threads';
+$config['autoexpand_threads'] = 2;
+$config['refresh_interval'] = 60;
+$config['mail_pagesize'] = 50;
+$config['addressbook_pagesize'] = 50;
+// The default spellchecker sends drafts to an external service; use the browser's own instead.
+$config['enable_spellcheck'] = false;
+$config['undo_timeout'] = 10;
+$config['dont_override'] = ['skin'];
+$config['skins_allowed'] = ['elastic'];
+$config['autocomplete_addressbooks'] = ['sql'];
+
+// --- Plugins ------------------------------------------------------------------------
+$config['plugins'] = [
+    'embedded_branding',       // logos, colours, removes product references
+    'archive',
+    'zipdownload',
+    'managesieve',             // filters, vacation reply, forwarding
+    'markasjunk',              // moving to Junk trains the spam filter
+    'newmail_notifier',
+    'attachment_reminder',
+    'emoticons',
+    'identity_select',
+    'password',                // change password from Settings
+    'carddav',                 // contacts synced with phones / Outlook
+    'twofactor_gauthenticator',
+    'contextmenu',
+];
+
+// archive
+$config['archive_type'] = 'year';
+// markasjunk
+$config['markasjunk_learning_driver'] = null;      // the mail server learns from folder moves
+$config['markasjunk_read_spam'] = true;
+$config['markasjunk_move_spam'] = true;
+$config['markasjunk_move_ham'] = true;
+// newmail_notifier
+$config['newmail_notifier_basic'] = true;
+$config['newmail_notifier_desktop'] = true;
