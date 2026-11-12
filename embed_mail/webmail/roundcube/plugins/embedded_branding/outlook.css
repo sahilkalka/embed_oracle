@@ -312,12 +312,12 @@ html.ei-skin-outlook #layout-menu a.selected::after,
 html.ei-skin-outlook #layout-menu a.active::after {
   content: "";
   position: absolute;
-  left: -6px;
+  left: 0;
   top: 50%;
   transform: translateY(-50%);
   height: 24px;
-  width: 3px;
-  border-radius: 999px;
+  width: 3.5px;
+  border-radius: 0 999px 999px 0;
   background: var(--ol-blue);
 }
 
