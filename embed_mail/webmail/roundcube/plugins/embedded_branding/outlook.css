@@ -528,13 +528,15 @@ html.ei-skin-outlook .custom-switch .custom-control-input:checked ~ .custom-cont
 
 /* --- Sleek Fluent Command Bar & Pane Headers ------------------------------ */
 html.ei-skin-outlook #layout > div > .header {
-  height: 46px !important;
-  min-height: 46px !important;
-  line-height: 46px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  line-height: 48px !important;
   background-color: var(--ol-surface) !important;
   border-bottom: 1px solid var(--ol-border) !important;
   color: var(--ol-text) !important;
   padding: 0 10px !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 html.ei-skin-outlook #layout-sidebar > .header {
@@ -548,10 +550,55 @@ html.ei-skin-outlook #layout-sidebar > .header {
     padding: 0 12px !important;
   }
 
+  html.ei-skin-outlook #layout > div > .header .menu.toolbar {
+    display: flex !important;
+    align-items: center !important;
+    height: 46px !important;
+  }
+
+  html.ei-skin-outlook #layout > div > .header .menu.toolbar li {
+    display: inline-flex !important;
+    align-items: center !important;
+    height: 46px !important;
+  }
+
   html.ei-skin-outlook #layout > div > .header a.button,
+  html.ei-skin-outlook #layout > div > .header a.toolbar-button,
   html.ei-skin-outlook #layout > div > .header .toolbar a {
-    height: 44px;
-    line-height: 44px;
+    display: inline-flex !important;
+    flex-direction: column;
+    align-items: center !important;
+    justify-content: center !important;
+    float: none !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    line-height: 1.1 !important;
+    padding: 2px 8px !important;
+    margin: 0 2px !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+  }
+
+  html.ei-skin-outlook #layout > div > .header a.button::before,
+  html.ei-skin-outlook #layout > div > .header a.toolbar-button::before,
+  html.ei-skin-outlook #layout > div > .header .toolbar a::before {
+    float: none !important;
+    height: auto !important;
+    width: auto !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    font-size: 1.25rem !important;
+  }
+
+  html.ei-skin-outlook #layout > div > .header .menu.toolbar .dropbutton {
+    display: inline-flex !important;
+    align-items: center !important;
+    height: 42px !important;
+  }
+
+  html.ei-skin-outlook #layout > div > .header .menu.toolbar .dropbutton a.dropdown {
+    min-width: 18px !important;
+    padding: 0 4px !important;
   }
 }
 
@@ -876,6 +923,40 @@ html.ei-skin-outlook.dark-mode .headers-table {
   background-color: #1f1f1f !important;
   border-color: #2d2c2b !important;
   color: #f3f2f1 !important;
+}
+
+html.ei-skin-outlook.dark-mode .message-htmlpart,
+html.ei-skin-outlook.dark-mode .message-part,
+html.ei-skin-outlook.dark-mode .message-htmlpart > div.rcmBody,
+html.ei-skin-outlook.dark-mode #messagebody {
+  background-color: #1f1f1f !important;
+  color: #e8e6e3 !important;
+  border-color: #2d2c2b !important;
+}
+
+html.ei-skin-outlook.dark-mode .message-htmlpart a,
+html.ei-skin-outlook.dark-mode .message-part a {
+  color: #7cc4fa !important;
+}
+
+html.ei-skin-outlook.dark-mode .message-partheaders {
+  background-color: #252423 !important;
+  border-color: #2d2c2b !important;
+  color: #e1dfdd !important;
+}
+
+html.ei-skin-outlook.dark-mode .message-partheaders table.headers-table,
+html.ei-skin-outlook.dark-mode .message-partheaders table.headers-table * {
+  color: #e1dfdd !important;
+}
+
+html.ei-skin-outlook.dark-mode textarea#composebody,
+html.ei-skin-outlook.dark-mode div.tox.tox-tinymce,
+html.ei-skin-outlook.dark-mode div.tox .tox-edit-area,
+html.ei-skin-outlook.dark-mode div.tox .tox-edit-area__iframe {
+  background-color: #1f1f1f !important;
+  color: #f3f2f1 !important;
+  border-color: #3b3a39 !important;
 }
 
 html.ei-skin-outlook.dark-mode a,

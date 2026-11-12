@@ -98,6 +98,25 @@ html:not(.ei-skin-outlook) #layout-menu a.compose:not(.selected):not(:hover):not
   max-height: 44px;
 }
 
+/* Dark mode message reading pane & compose editor body fallback (both skins) */
+html.dark-mode .message-htmlpart,
+html.dark-mode .message-part,
+html.dark-mode .message-htmlpart > div.rcmBody {
+  background-color: #111b18 !important;
+  color: #e8e6e3 !important;
+  border-color: #263832 !important;
+}
+html.dark-mode .message-partheaders {
+  background-color: #182622 !important;
+  border-color: #263832 !important;
+  color: #e2ebe9 !important;
+}
+html.dark-mode textarea#composebody,
+html.dark-mode div.tox .tox-edit-area__iframe {
+  background-color: #111b18 !important;
+  color: #f1f5f9 !important;
+}
+
 /* Primary form/modal actions (excluding the left rail Compose link) */
 .btn-primary,
 .btn.btn-primary,
