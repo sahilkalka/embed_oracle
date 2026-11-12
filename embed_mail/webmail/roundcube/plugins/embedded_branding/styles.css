@@ -10,59 +10,120 @@
   --ei-soft-border: #007f5f;
 }
 
-/* Left icon rail (#layout-menu) */
-#layout-menu,
-.layout-menu,
-#layout-menu .popover-header,
-#layout-menu .special-buttons,
-#taskmenu .special-buttons,
-#layout-menu #logo {
-  background-color: var(--ei-dark) !important;
-  color: #e2ebe9 !important;
+/* Left icon rail (#layout-menu) — light Fluent-style rail with Emerald accent */
+html:not(.ei-skin-outlook) #layout-menu,
+html:not(.ei-skin-outlook) .layout-menu,
+html:not(.ei-skin-outlook) #layout-menu .popover-header,
+html:not(.ei-skin-outlook) #layout-menu .special-buttons,
+html:not(.ei-skin-outlook) #taskmenu .special-buttons,
+html:not(.ei-skin-outlook) #layout-menu #logo {
+  background-color: #f3f2f1 !important;
+  color: #424242 !important;
 }
-html.dark-mode #layout-menu,
-html.dark-mode .layout-menu,
-html.dark-mode #layout-menu .popover-header,
-html.dark-mode #layout-menu .special-buttons,
-html.dark-mode #taskmenu .special-buttons,
-html.dark-mode #layout-menu #logo {
-  background-color: #08100e !important;
+html:not(.ei-skin-outlook) #layout-menu {
+  border-right: 1px solid #e1dfdd !important;
 }
-#taskmenu .special-buttons {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+html:not(.ei-skin-outlook) #taskmenu .special-buttons {
+  border-top: 1px solid #e1dfdd !important;
 }
-#layout-menu .special-buttons a,
-#layout-menu a {
-  border-radius: 10px;
-  color: #e2ebe9 !important;
+html:not(.ei-skin-outlook) #layout-menu #taskmenu a,
+html:not(.ei-skin-outlook) #layout-menu #taskmenu a:visited,
+html:not(.ei-skin-outlook) #layout-menu .special-buttons a,
+html:not(.ei-skin-outlook) #layout-menu .special-buttons a:not(:focus),
+html:not(.ei-skin-outlook) #layout-menu a {
+  border-radius: 8px !important;
+  color: #424242 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-bottom: 0 !important;
+  position: relative;
+}
+html:not(.ei-skin-outlook) #layout-menu .popover-header a,
+html:not(.ei-skin-outlook) #layout-menu .popover-header .button {
+  color: #424242 !important;
+}
+html:not(.ei-skin-outlook) #layout-menu a:hover,
+html:not(.ei-skin-outlook) #layout-menu a:focus,
+html:not(.ei-skin-outlook) #layout-menu .special-buttons a:hover,
+html:not(.ei-skin-outlook) #layout-menu .special-buttons a:focus {
+  color: var(--ei-primary-hover) !important;
+  background-color: rgba(0, 127, 95, 0.08) !important;
+}
+html:not(.ei-skin-outlook) #layout-menu a.selected,
+html:not(.ei-skin-outlook) #layout-menu a.active {
+  color: var(--ei-primary-hover) !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  font-weight: 600;
+}
+html:not(.ei-skin-outlook) #layout-menu a.selected:hover,
+html:not(.ei-skin-outlook) #layout-menu a.active:hover {
+  background-color: rgba(0, 127, 95, 0.08) !important;
+}
+html:not(.ei-skin-outlook) #layout-menu a.selected::after,
+html:not(.ei-skin-outlook) #layout-menu a.active::after {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 24px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--ei-primary);
+}
+html:not(.ei-skin-outlook) #layout-menu #taskmenu a.logout,
+html:not(.ei-skin-outlook) #layout-menu #taskmenu a.logout:visited,
+html:not(.ei-skin-outlook) #layout-menu #taskmenu a.logout:not(:focus) {
+  color: #b91c1c !important;
   background-color: transparent !important;
 }
-#layout-menu #taskmenu a.logout {
+html:not(.ei-skin-outlook) #layout-menu #taskmenu a.logout:hover,
+html:not(.ei-skin-outlook) #layout-menu #taskmenu a.logout:focus {
+  color: #991b1b !important;
+  background-color: rgba(220, 38, 38, 0.1) !important;
+}
+
+/* Dark mode left rail for Default Emerald skin */
+html.dark-mode:not(.ei-skin-outlook) #layout-menu,
+html.dark-mode:not(.ei-skin-outlook) .layout-menu,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu .popover-header,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu .special-buttons,
+html.dark-mode:not(.ei-skin-outlook) #taskmenu .special-buttons,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu #logo {
+  background-color: #16201d !important;
+  color: #e2ebe9 !important;
+  border-color: #263832 !important;
+}
+html.dark-mode:not(.ei-skin-outlook) #layout-menu #taskmenu a,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu .special-buttons a,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu a,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu .popover-header a,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu .popover-header .button {
+  color: #cbd5e1 !important;
+}
+html.dark-mode:not(.ei-skin-outlook) #layout-menu a:hover,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu a:focus {
+  color: #ffffff !important;
+  background-color: rgba(110, 231, 183, 0.12) !important;
+}
+html.dark-mode:not(.ei-skin-outlook) #layout-menu a.selected,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu a.active {
+  color: var(--ei-primary-light) !important;
+  background-color: transparent !important;
+}
+html.dark-mode:not(.ei-skin-outlook) #layout-menu a.selected::after,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu a.active::after {
+  background: var(--ei-primary-light);
+}
+html.dark-mode:not(.ei-skin-outlook) #layout-menu #taskmenu a.logout,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu #taskmenu a.logout:visited {
   color: #fca5a5 !important;
 }
-#layout-menu #taskmenu a.logout:hover,
-#layout-menu #taskmenu a.logout:focus {
+html.dark-mode:not(.ei-skin-outlook) #layout-menu #taskmenu a.logout:hover,
+html.dark-mode:not(.ei-skin-outlook) #layout-menu #taskmenu a.logout:focus {
   color: #ffffff !important;
   background-color: rgba(239, 68, 68, 0.28) !important;
-}
-#layout-menu .popover-header a,
-#layout-menu .popover-header .button {
-  color: #e2ebe9 !important;
-}
-#layout-menu a:hover,
-#layout-menu a:focus {
-  color: #ffffff !important;
-  background-color: rgba(16, 185, 129, 0.22) !important;
-}
-#layout-menu a.selected,
-#layout-menu a.active {
-  color: #ffffff !important;
-  background-color: var(--ei-primary) !important;
-}
-/* Keep Compose ("New mail") legible in Default Emerald skin without affecting Outlook skin */
-html:not(.ei-skin-outlook) #layout-menu a.compose:not(.selected):not(:hover):not(:focus) {
-  background-color: rgba(16, 185, 129, 0.14) !important;
-  color: #e2ebe9 !important;
 }
 /* Center Default Emerald rail buttons cleanly inside Elastic's 42px tablet rail */
 @media screen and (min-width: 481px) and (max-width: 1024px) {
