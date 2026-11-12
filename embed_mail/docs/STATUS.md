@@ -70,34 +70,26 @@ Tools added:
 
 | # | Action | Where |
 |---|--------|-------|
-| A1 | Add every mailbox that must send outside the domain as an **Approved Sender**. Start with `fahim.ahmad@embeddedindia.in`, which had 3 bounced messages. | OCI Console → Developer Services → Email Delivery → Approved Senders |
-| A2 | After A1, send one message to Gmail and share its "Show original" SPF/DKIM/DMARC lines. | Gmail |
-| A3 | Choose how to handle approved senders long term: automate through the OCI API in Phase 3 (needs an OCI API key), or switch the relay to Brevo or SES (whole domain at once). | Decision |
+| A1 | Verify domain `embeddedindia.in` in **Amazon SES** (DKIM + SPF `include:amazonses.com` + production access if in sandbox) and generate IAM SMTP credentials. | AWS SES Console |
+| A2 | Configure Postfix outbound relay on the Oracle VM (`sudo bash scripts/setup-outbound-relay.sh`, Option 3: Amazon SES), then test external email delivery & Gmail "Show original" SPF/DKIM/DMARC. | Oracle VM (`129.225.79.183`) |
+| A3 | Provide SSH private key path (`ORACLE_SSH_KEY_PATH`) if remote inspection/deployment over SSH is requested from this workstation. | Local workstation |
 | A4 | Optional: after about 2 weeks of clean TLS reports, change MTA-STS `mode: testing` to `enforce`. | `embed_mail/nginx/mail.embeddedindia.in.conf` |
 
 ## 3. Pending: development work
 
-### Phase 3: Native mail admin at `/admin/email` (IN PROGRESS, not deployed)
+### Phase 3: Native mail admin at `/admin/email` (CODE COMPLETE LOCALLY, not yet deployed)
 
-Already written locally, not wired up or committed yet:
-- `src/services/mailcowApi.js`: server-side mail API client. Write-call formats checked against mailcow's source.
-- `src/services/mailDnsCheck.js`: live DNS and TLS health checks.
-- `src/services/mailAudit.js`: audit trail, table `MailAuditLog` in SQLite.
-- `src/routes/adminEmail.js`: JSON API covering:
-  - overview, DNS
-  - mailboxes: create, edit, password reset, delete
-  - aliases, queue, quarantine, fail2ban unban, logs, activity, share setup guide
+Completed locally:
+- `src/services/mailcowApi.js`, `src/services/mailDnsCheck.js`, `src/services/mailAudit.js`, `src/routes/adminEmail.js` (mounted in `src/routes/admin.js` behind `requireRole('admin')`).
+- `views/admin/email.ejs`: rewritten as a responsive 9-tab console (Overview, Mailboxes, Aliases, DNS & Certificates, Queue, Quarantine, Security, Logs, Activity) with icon buttons, mobile cards / desktop tables, and HTML-escaped rendering.
+- `src/services/mailer.js`, `src/cron/jobs.js`, `views/admin/partials/settings/smtp-settings.ejs`, `public/js/admin-settings.js`: rebranded `sendMailboxCredentials` to Embedded India Mail (optional password, HTML-escaped), fixed `await mailer.getTransporter()` in newsletter cron, fixed envelope-sender vs SMTP username handling (for SES/OCID logins), added Amazon SES & Local Mailcow presets.
+- `embed_mail/webmail/roundcube/plugins/embedded_branding/styles.css`: fixed light/dark mode contrast and removed the permanently highlighted state on the left-rail Compose ("New mail") button.
+- `scripts/setup-outbound-relay.sh`: made Postfix relay block replacement idempotent when switching from OCI Email Delivery to Amazon SES.
 
-Still to do:
-1. Mount the router in `src/routes/admin.js`: `router.use('/email', requireRole('admin'), require('./adminEmail'))`. Remove the old `GET /email` and `POST /email/share-credentials` handlers.
-2. Rewrite `views/admin/email.ejs`. It is still the old mock with hardcoded rows. New page:
-   - tabs: Overview, Mailboxes, Aliases, DNS & Certificates, Queue, Quarantine, Security, Logs, Activity
-   - icon buttons; responsive (cards on mobile, tables on desktop)
-   - all output escaped
-3. Rebrand `src/services/mailer.js` → `sendMailboxCredentials`. It still says "Outlook Webmail" and builds HTML from user input without escaping. Make the password optional.
-4. Verify the `protocol_access` edit format against the mailcow API before enabling protocol toggles.
-5. Optional (A3): OCI approved-sender automation when a mailbox is created or deleted.
-6. Run the checks: `node --check` on the new files, the webmail check, and a manual click-through of every tab at 375, 768 and 1440 px.
+Still to do before marking Phase 3 live:
+1. Deploy updated code + webmail CSS (`scripts/install-webmail.sh` or plugin CSS update) to Oracle VM `129.225.79.183` and verify `protocol_access` edit format against the live mailcow API before enabling protocol toggles.
+2. Apply Amazon SES relay (`scripts/setup-outbound-relay.sh`) and run `scripts/mail-audit.sh`, `scripts/webmail-check.py`, and an end-to-end external send/receive test.
+3. Manual click-through of `/admin/email` tabs at 375, 768 and 1440 px.
 
 ### Phase 4: Documentation
 

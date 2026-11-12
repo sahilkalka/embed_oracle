@@ -341,7 +341,15 @@
   }
 
   function setSmtpPreset(type) {
-    if (type === 'gmail') {
+    if (type === 'ses') {
+      document.getElementById('smtp_host').value = 'email-smtp.ap-south-1.amazonaws.com';
+      document.getElementById('smtp_port').value = '587';
+      document.getElementById('smtp_secure').value = 'false';
+    } else if (type === 'mailcow') {
+      document.getElementById('smtp_host').value = '127.0.0.1';
+      document.getElementById('smtp_port').value = '587';
+      document.getElementById('smtp_secure').value = 'false';
+    } else if (type === 'gmail') {
       document.getElementById('smtp_host').value = 'smtp.gmail.com';
       document.getElementById('smtp_port').value = '587';
       document.getElementById('smtp_secure').value = 'false';
@@ -577,6 +585,8 @@
           secure: document.getElementById('smtp_secure')?.value === 'true',
           user: document.getElementById('smtp_user')?.value,
           pass: document.getElementById('smtp_pass')?.value,
+          fromName: document.getElementById('smtp_from_name')?.value,
+          fromEmail: document.getElementById('smtp_from_email')?.value,
           toEmail: document.getElementById('smtpTestRecipient')?.value
         };
 

@@ -62,6 +62,13 @@ class embedded_branding extends rcube_plugin
             self::BRAND,
             $args['content']
         );
+        // Roundcube's framed submit handler (app.js) verifies this hidden meta tag; rewriting
+        // it causes a false "Connection Error (Failed to reach the server)!" after sending.
+        $args['content'] = preg_replace(
+            '/(<meta\b[^>]*\bname=[\'"]generator[\'"][^>]*\bcontent=[\'"])' . preg_quote(self::BRAND, '/') . '([\'"])/i',
+            '$1Roundcube$2',
+            $args['content']
+        );
         return $args;
     }
 }

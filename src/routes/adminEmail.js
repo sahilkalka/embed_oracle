@@ -168,7 +168,7 @@ router.post('/api/mailboxes', writeLimiter, asyncRoute(async (req, res) => {
   }
   audit.record(req, 'mailbox.create', username, { name, quotaMb, forcePasswordChange });
   // The password is returned once so the admin can hand it over; it is never stored here.
-  ok(res, { username, password, generated, relayNote: 'Add this address to Oracle Email Delivery approved senders so it can send outside the domain.' });
+  ok(res, { username, password, generated, relayNote: 'Verify your outbound relay configuration so this mailbox can send outside the domain.' });
 }));
 
 router.patch('/api/mailboxes/:username', writeLimiter, asyncRoute(async (req, res) => {

@@ -101,6 +101,12 @@ async function sendWeeklyNewsletterDigest() {
     `).join('');
 
 
+    const transporter = await mailer.getTransporter();
+    if (!transporter || (transporter.isMock && process.env.NODE_ENV === 'production')) {
+      console.warn('[CRON] Weekly newsletter skipped: live SMTP is not configured.');
+      return;
+    }
+
     const fromName = map.smtp_from_name || map.site_name || 'Embedded India';
     const fromEmail = map.smtp_from_email || map.contact_email || 'info@embeddedindia.in';
     const sender = `"${fromName}" <${fromEmail}>`;
@@ -110,6 +116,10 @@ async function sendWeeklyNewsletterDigest() {
       const mailOptions = {
         from: sender,
         to: sub.email,
+        envelope: {
+          from: fromEmail,
+          to: sub.email
+        },
         subject: map.newsletter_topic ? `[${map.newsletter_topic}] ${recentPosts[0].title}` : `Embedded India Engineering Digest: ${recentPosts[0].title}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
@@ -137,7 +147,7 @@ async function sendWeeklyNewsletterDigest() {
       };
       // Send mail in try-catch to not block loop
       try {
-        await mailer.getTransporter().sendMail(mailOptions);
+        await transporter.sendMail(mailOptions);
       } catch (err) {
         console.warn(`[NEWSLETTER WARN] Failed to send to ${sub.email}:`, err.message);
       }
