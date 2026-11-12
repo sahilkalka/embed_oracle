@@ -7,27 +7,32 @@
   <style>
     :root {
       --wm-bg: #faf9f8;
-      --wm-card: rgba(255, 255, 255, 0.72);
-      --wm-border: rgba(0, 120, 212, 0.14);
-      --wm-text: #605e5c;
-      --wm-sub: #8a8886;
+      --wm-card: rgba(255, 255, 255, 0.85);
+      --wm-border: rgba(0, 120, 212, 0.16);
+      --wm-text: #201f1e;
+      --wm-sub: #605e5c;
       --wm-accent: #0078d4;
+      --wm-badge-bg: linear-gradient(135deg, #0078d4 0%, #28a8ea 100%);
+      --wm-badge-shadow: 0 14px 32px rgba(0, 120, 212, 0.24);
     }
     html.skin-default {
       --wm-bg: #f8faf9;
-      --wm-border: rgba(0, 127, 95, 0.16);
+      --wm-border: rgba(0, 127, 95, 0.18);
       --wm-accent: #007f5f;
+      --wm-badge-bg: linear-gradient(135deg, #007f5f 0%, #10b981 100%);
+      --wm-badge-shadow: 0 14px 32px rgba(0, 127, 95, 0.22);
     }
     html.dark-mode {
-      --wm-bg: #1b1a19;
-      --wm-card: rgba(37, 36, 35, 0.75);
-      --wm-border: rgba(255, 255, 255, 0.08);
-      --wm-text: #c8c6c4;
-      --wm-sub: #a19f9d;
+      --wm-bg: #1f1f1f;
+      --wm-card: rgba(37, 36, 35, 0.88);
+      --wm-border: rgba(255, 255, 255, 0.1);
+      --wm-text: #f3f2f1;
+      --wm-sub: #c8c6c4;
+      --wm-badge-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
     }
     html.skin-default.dark-mode {
       --wm-bg: #111917;
-      --wm-card: rgba(20, 31, 28, 0.8);
+      --wm-card: rgba(20, 31, 28, 0.88);
     }
     * { box-sizing: border-box; }
     html, body {
@@ -49,48 +54,82 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 14px;
-      padding: 28px 36px;
-      border-radius: 16px;
+      gap: 16px;
+      padding: 44px 48px;
+      border-radius: 22px;
       background: var(--wm-card);
       border: 1px solid var(--wm-border);
-      max-width: 340px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+      width: min(440px, calc(100% - 32px));
       margin: 16px;
     }
+    .wm-badge {
+      width: 96px;
+      height: 96px;
+      border-radius: 24px;
+      background: var(--wm-badge-bg);
+      box-shadow: var(--wm-badge-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
     .wm-logo {
-      width: 64px;
-      height: 64px;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
-      opacity: 0.92;
-      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.08));
+      display: block;
     }
     .wm-title {
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       color: var(--wm-text);
       margin: 0;
     }
+    .wm-brand-sub {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--wm-accent);
+      margin: -8px 0 0;
+    }
+    html.dark-mode .wm-brand-sub {
+      color: #7cc4fa;
+    }
+    html.skin-default.dark-mode .wm-brand-sub {
+      color: #34d399;
+    }
     .wm-hint {
-      font-size: 12.5px;
-      line-height: 1.5;
+      font-size: 14px;
+      line-height: 1.55;
       color: var(--wm-sub);
       margin: 0;
+      max-width: 300px;
     }
     .wm-bar {
-      width: 36px;
-      height: 3px;
+      width: 48px;
+      height: 4px;
       border-radius: 999px;
       background: var(--wm-accent);
-      opacity: 0.65;
+      opacity: 0.8;
+    }
+    @media (max-width: 420px) {
+      .wm-wrap { padding: 32px 24px; }
+      .wm-badge { width: 80px; height: 80px; border-radius: 20px; }
+      .wm-title { font-size: 18px; }
     }
   </style>
 </head>
 <body>
   <div class="wm-wrap" role="presentation">
-    <img id="wmLogo" class="wm-logo" src="assets/outlook-logo-login.svg" alt="Embedded India Mail">
-    <div class="wm-bar"></div>
+    <div class="wm-badge">
+      <img id="wmLogo" class="wm-logo" src="assets/outlook-logo.svg" alt="Embedded India Mail">
+    </div>
     <p class="wm-title">Embedded India Mail</p>
+    <p id="wmSkinSub" class="wm-brand-sub">Outlook Webmail</p>
+    <div class="wm-bar"></div>
     <p class="wm-hint">Select a message from the list to read it here.</p>
   </div>
   <script>
@@ -98,9 +137,11 @@
       var params = new URLSearchParams(window.location.search || '');
       var html = document.documentElement;
       var logo = document.getElementById('wmLogo');
+      var sub = document.getElementById('wmSkinSub');
 
       function syncTheme() {
-        var skin = params.get('skin');
+        var rawSkin = params.get('skin') || '';
+        var skin = rawSkin.split('?')[0];
         var isDark = false;
         try {
           if (window.parent && window.parent !== window && window.parent.document) {
@@ -119,10 +160,12 @@
 
         if (skin === 'default') {
           html.classList.add('skin-default');
-          if (logo) logo.src = 'assets/logo-login.svg';
+          if (logo) logo.src = 'assets/logo-mark.svg';
+          if (sub) sub.textContent = 'Webmail';
         } else {
           html.classList.remove('skin-default');
-          if (logo) logo.src = 'assets/outlook-logo-login.svg';
+          if (logo) logo.src = 'assets/outlook-logo.svg';
+          if (sub) sub.textContent = 'Outlook Webmail';
         }
 
         html.classList.toggle('dark-mode', !!isDark);

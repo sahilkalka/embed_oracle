@@ -124,15 +124,14 @@ class embedded_branding extends rcube_plugin
         $fallback_logo = $this->active_skin === 'outlook'
             ? 'plugins/embedded_branding/assets/outlook-logo-login.svg'
             : 'plugins/embedded_branding/assets/logo-login.svg';
+        $args['content'] = preg_replace(
+            '/skins\/elastic\/watermark\.html(?:\?[^"\'\s<]*)?/i',
+            $watermark,
+            $args['content']
+        );
         $args['content'] = str_replace(
-            [
-                'skins/elastic/watermark.html',
-                'skins/elastic/images/logo.svg',
-            ],
-            [
-                $watermark,
-                $fallback_logo,
-            ],
+            'skins/elastic/images/logo.svg',
+            $fallback_logo,
             $args['content']
         );
         if ($this->active_skin === 'outlook') {
