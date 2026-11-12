@@ -168,30 +168,33 @@ body.task-login #logo {
   box-shadow: 0 14px 36px rgba(13, 23, 21, 0.08);
   padding: 32px 28px 24px !important;
 }
-#login-form table,
-#login-form tbody,
-#login-form tr {
-  display: block;
+#login-form tr.form-group.row {
+  margin: 0 0 14px;
   width: 100%;
 }
-#login-form td.input {
-  display: block;
+#login-form td.input.input-group {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
   width: 100%;
-  padding-bottom: 12px;
+  padding: 0;
 }
-#login-form .input-group-text {
+#login-form .input-group-prepend .input-group-text {
   background-color: #f8fafc;
   border-color: #cbd5e1;
   color: #475569;
-  min-width: 44px;
+  min-width: 46px;
+  min-height: 46px;
   justify-content: center;
+  border-radius: 10px 0 0 10px;
 }
 #login-form input.form-control {
-  min-height: 44px;
+  min-height: 46px;
   background-color: #f8fafc;
   border-color: #cbd5e1;
   color: #0d1715;
   font-size: 0.9375rem;
+  border-radius: 0 10px 10px 0;
 }
 #login-form input.form-control:-webkit-autofill,
 #login-form input.form-control:-webkit-autofill:hover,
