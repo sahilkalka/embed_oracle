@@ -196,6 +196,56 @@ body.task-login #logo {
   font-size: 0.9375rem;
   border-radius: 0 10px 10px 0;
 }
+#login-form input.form-control:not(:last-child) {
+  border-radius: 0 !important;
+  border-right: 0;
+}
+#login-form .input-group-append,
+.ei-pass-wrap .input-group-append {
+  display: flex;
+}
+#login-form .input-group-append .ei-pass-toggle {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 0;
+  color: #475569;
+  min-width: 46px;
+  min-height: 46px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 10px 10px 0;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+#login-form .input-group-append .ei-pass-toggle:hover,
+.ei-pass-wrap .ei-pass-toggle:hover {
+  color: var(--ei-primary);
+}
+#login-form .input-group-append .ei-pass-toggle:focus-visible,
+.ei-pass-wrap .ei-pass-toggle:focus-visible {
+  outline: 2px solid var(--ei-primary);
+  outline-offset: -2px;
+}
+.ei-pass-wrap {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+}
+.ei-pass-wrap > input.form-control {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.ei-pass-wrap .ei-pass-toggle {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  padding: 0 10px;
+}
 #login-form input.form-control:-webkit-autofill,
 #login-form input.form-control:-webkit-autofill:hover,
 #login-form input.form-control:-webkit-autofill:focus {
@@ -330,6 +380,16 @@ html.dark-mode #login-form input.form-control {
   background: #0d1715;
   color: #f8fafc;
   border-color: #2d4a43;
+}
+html.dark-mode #login-form .input-group-append .ei-pass-toggle,
+html.dark-mode .ei-pass-wrap .ei-pass-toggle {
+  background: #0d1715;
+  border-color: #2d4a43;
+  color: #a7c0ba;
+}
+html.dark-mode #login-form .input-group-append .ei-pass-toggle:hover,
+html.dark-mode .ei-pass-wrap .ei-pass-toggle:hover {
+  color: var(--ei-primary-light);
 }
 html.dark-mode #login-form input.form-control:-webkit-autofill,
 html.dark-mode #login-form input.form-control:-webkit-autofill:hover,

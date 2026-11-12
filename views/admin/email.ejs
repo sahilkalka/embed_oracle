@@ -4,7 +4,8 @@
      id="mailConsoleRoot"
      data-domain="<%= mailDomain %>"
      data-host="<%= mailHost %>"
-     data-webmail="<%= webmailUrl %>">
+     data-webmail="<%= webmailUrl %>"
+     data-webmail-skin="<%= typeof webmailSkin !== 'undefined' ? webmailSkin : 'outlook' %>">
 
   <!-- Toast Banner -->
   <div id="mailToast" class="hidden fixed bottom-4 right-4 z-50 max-w-sm px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold flex items-center gap-2" role="status" aria-live="polite">
@@ -121,6 +122,10 @@
         <span>Aliases</span>
         <span id="badgeAliases" class="hidden px-1.5 py-0.5 rounded-full text-[10px] bg-slate-200 dark:bg-brand-dark"></span>
       </button>
+      <button type="button" role="tab" data-tab="import" class="mail-tab-btn inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap">
+        <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">cloud_download</span>
+        <span>Import</span>
+      </button>
       <button type="button" role="tab" data-tab="dns" class="mail-tab-btn inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap">
         <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">verified_user</span>
         <span>DNS &amp; Certificates</span>
@@ -229,6 +234,62 @@
         <div id="ovRecentActivity" class="space-y-2 text-xs text-slate-500 dark:text-slate-400">Loading…</div>
       </div>
     </div>
+
+    <!-- Webmail Skin Switcher -->
+    <div class="bg-white dark:bg-brand-surface rounded-2xl border border-slate-200 dark:border-brand-border p-4 sm:p-5 shadow-xs space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="min-w-0">
+          <h2 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="material-symbols-rounded text-emerald-500 text-lg" aria-hidden="true">palette</span>
+            <span>Webmail Skin</span>
+            <span id="webmailSkinActiveBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 uppercase tracking-wider">Outlook</span>
+          </h2>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+            Switch <code class="font-mono"><%= webmailUrl %></code> between the responsive Outlook Fluent Blue skin and the Default Embedded India Emerald skin.
+          </p>
+        </div>
+        <a href="<%= webmailUrl %>" target="_blank" rel="noopener"
+           class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border font-bold text-xs shrink-0 transition cursor-pointer">
+          <span class="material-symbols-rounded text-base leading-none text-sky-500" aria-hidden="true">open_in_new</span>
+          <span>Preview Webmail</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Webmail skin selection">
+        <button type="button" id="btnSkinOutlook" data-skin="outlook" role="radio" aria-checked="true"
+                class="flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition cursor-pointer border-sky-500 bg-sky-50/70 dark:bg-sky-950/30">
+          <span class="w-10 h-10 rounded-xl bg-[#0078d4] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">mail</span>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="flex items-center justify-between gap-2">
+              <span class="text-xs font-extrabold text-slate-900 dark:text-white">Outlook Skin</span>
+              <span class="skin-check-pill px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0078d4] text-white">Active</span>
+            </span>
+            <span class="block text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">
+              Outlook default blue (#0078d4), Fluent top bar, waffle launcher, responsive &amp; bouncy across all resolutions.
+            </span>
+          </span>
+        </button>
+
+        <button type="button" id="btnSkinDefault" data-skin="default" role="radio" aria-checked="false"
+                class="flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition cursor-pointer border-slate-200 dark:border-brand-border bg-slate-50/70 dark:bg-brand-dark/50 hover:border-emerald-400">
+          <span class="w-10 h-10 rounded-xl bg-[#007f5f] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">eco</span>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="flex items-center justify-between gap-2">
+              <span class="text-xs font-extrabold text-slate-900 dark:text-white">Default Skin</span>
+              <span class="skin-check-pill hidden px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white">Active</span>
+            </span>
+            <span class="block text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">
+              Classic Embedded India Emerald (#007f5f) theme over the standard Elastic webmail layout.
+            </span>
+          </span>
+        </button>
+      </div>
+      <div id="webmailSkinStatus" class="hidden text-[11px] text-amber-600 dark:text-amber-300"></div>
+    </div>
   </section>
 
   <!-- TAB 2: MAILBOXES -->
@@ -299,6 +360,110 @@
         </thead>
         <tbody id="aliasTableBody" class="divide-y divide-slate-100 dark:divide-brand-border/60"></tbody>
       </table>
+    </div>
+  </section>
+
+  <!-- TAB 3B: IMPORT / SYNC MAIL -->
+  <section id="panel-import" class="mail-tab-panel hidden space-y-5">
+    <div class="bg-white dark:bg-brand-surface rounded-2xl border border-slate-200 dark:border-brand-border shadow-xs p-4 sm:p-5 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-brand-border pb-3">
+        <div class="min-w-0">
+          <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="material-symbols-rounded text-emerald-500 text-lg shrink-0" aria-hidden="true">cloud_download</span>
+            <span>Import Emails from Hostinger or External IMAP</span>
+          </h2>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Copies Inbox, Sent, Drafts, Trash, Spam, and custom folders safely without deleting messages on the old server.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <button type="button" data-import-preset="hostinger" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-bold cursor-pointer">
+            <span class="material-symbols-rounded text-sm leading-none" aria-hidden="true">bolt</span>
+            <span>Hostinger Preset</span>
+          </button>
+          <button type="button" data-import-preset="custom" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-slate-700 dark:text-slate-200 text-xs font-bold cursor-pointer">
+            <span class="material-symbols-rounded text-sm leading-none" aria-hidden="true">settings</span>
+            <span>Custom IMAP</span>
+          </button>
+        </div>
+      </div>
+
+      <form id="formImportMail" class="space-y-4 text-xs">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1" for="importDestMailbox">Destination Mailbox (Here)</label>
+            <select id="importDestMailbox" required class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500"></select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1" for="importSourceEmail">Source Email Address</label>
+            <input type="email" id="importSourceEmail" required placeholder="info@embeddedindia.in" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1" for="importSourcePass">Source Mailbox Password</label>
+            <div class="relative flex items-center">
+              <input type="password" id="importSourcePass" required autocomplete="off" placeholder="••••••••••••" class="w-full pl-3 pr-10 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+              <%- include('partials/password-toggle-btn', { targetId: 'importSourcePass' }) %>
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1" for="importSourceHost">Source IMAP Server</label>
+            <input type="text" id="importSourceHost" required value="imap.hostinger.com" placeholder="imap.hostinger.com" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1" for="importSourcePort">IMAP Port</label>
+            <input type="number" id="importSourcePort" required min="1" max="65535" value="993" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1" for="importSourceEnc">Security Mode</label>
+            <select id="importSourceEnc" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border font-semibold text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+              <option value="SSL" selected>SSL / TLS (Port 993)</option>
+              <option value="TLS">STARTTLS (Port 143)</option>
+              <option value="PLAIN">Unencrypted (Not recommended)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+          <label class="inline-flex items-start gap-2 cursor-pointer text-slate-700 dark:text-slate-200">
+            <input type="checkbox" id="importAutomap" checked class="mt-0.5 rounded border-slate-300">
+            <span>Auto-map all folders (Inbox, <strong>Sent</strong>, Drafts, Trash, Spam &amp; custom folders) and skip duplicates</span>
+          </label>
+          <button type="submit" id="btnStartImport" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xs cursor-pointer shrink-0">
+            <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">cloud_download</span>
+            <span>Start Import</span>
+          </button>
+        </div>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">Tip: Once a migration job finishes cleanly, click its delete icon so your old Hostinger password does not remain saved on the mail server.</p>
+      </form>
+    </div>
+
+    <div class="bg-white dark:bg-brand-surface rounded-2xl border border-slate-200 dark:border-brand-border shadow-xs overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-slate-200 dark:border-brand-border flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="material-symbols-rounded text-emerald-500 text-lg shrink-0" aria-hidden="true">sync</span>
+            <span>Import &amp; Sync Jobs</span>
+          </h3>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">Monitor progress, re-run incremental sync, or inspect folder transfer logs.</p>
+        </div>
+        <button type="button" id="btnRefreshSyncJobs" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-brand-border text-xs font-bold text-slate-700 dark:text-slate-200 cursor-pointer shrink-0">
+          <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">refresh</span>
+          <span class="hidden sm:inline">Refresh</span>
+        </button>
+      </div>
+      <div id="syncJobCards" class="block md:hidden divide-y divide-slate-100 dark:divide-brand-border/60"></div>
+      <div class="hidden md:block overflow-x-auto w-full">
+        <table class="w-full text-left text-xs text-slate-600 dark:text-slate-300">
+          <thead class="bg-slate-50 dark:bg-brand-dark/50 text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-brand-border">
+            <tr>
+              <th class="py-3 px-4 font-bold">Source &rarr; Destination</th>
+              <th class="py-3 px-4 font-bold">IMAP Server</th>
+              <th class="py-3 px-4 font-bold">Last Run</th>
+              <th class="py-3 px-4 font-bold">Status</th>
+              <th class="py-3 px-4 font-bold text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="syncJobTableBody" class="divide-y divide-slate-100 dark:divide-brand-border/60"></tbody>
+        </table>
+      </div>
     </div>
   </section>
 
@@ -492,7 +657,10 @@
       <div>
         <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1" for="createMbPass">Password (leave blank to auto-generate)</label>
         <div class="flex items-center gap-2">
-          <input type="text" id="createMbPass" autocomplete="new-password" placeholder="Auto-generate strong password" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+          <div class="relative flex-1 min-w-0 flex items-center">
+            <input type="password" id="createMbPass" autocomplete="new-password" placeholder="Auto-generate strong password" class="w-full pl-3 pr-10 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+            <%- include('partials/password-toggle-btn', { targetId: 'createMbPass' }) %>
+          </div>
           <button type="button" data-gen-pass="createMbPass" title="Generate password" aria-label="Generate password" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 border border-slate-200 dark:border-brand-border cursor-pointer shrink-0">
             <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">casino</span>
           </button>
@@ -604,7 +772,10 @@
       <div>
         <label class="block font-bold text-slate-700 dark:text-slate-200 mb-1" for="resetPassInput">New Password (leave blank to auto-generate)</label>
         <div class="flex items-center gap-2">
-          <input type="text" id="resetPassInput" autocomplete="new-password" placeholder="Auto-generate strong password" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+          <div class="relative flex-1 min-w-0 flex items-center">
+            <input type="password" id="resetPassInput" autocomplete="new-password" placeholder="Auto-generate strong password" class="w-full pl-3 pr-10 py-2 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+            <%- include('partials/password-toggle-btn', { targetId: 'resetPassInput' }) %>
+          </div>
           <button type="button" data-gen-pass="resetPassInput" title="Generate password" aria-label="Generate password" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark hover:bg-slate-200 border border-slate-200 dark:border-brand-border cursor-pointer shrink-0">
             <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">casino</span>
           </button>
@@ -751,11 +922,35 @@
   </div>
 </div>
 
+<!-- MODAL: Sync Job Log -->
+<div id="modalSyncLog" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="modalSyncLogTitle">
+  <div class="bg-white dark:bg-brand-surface w-full max-w-3xl rounded-2xl border border-slate-200 dark:border-brand-border shadow-2xl p-5 sm:p-6 space-y-3 max-h-[90vh] flex flex-col">
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-brand-border pb-3 shrink-0">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="material-symbols-rounded text-emerald-500 text-xl shrink-0" aria-hidden="true">article</span>
+        <h3 id="modalSyncLogTitle" class="text-base font-bold text-slate-900 dark:text-white truncate">Import Job Log</h3>
+      </div>
+      <button type="button" data-close-modal="modalSyncLog" aria-label="Close modal" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer">
+        <span class="material-symbols-rounded text-lg" aria-hidden="true">close</span>
+      </button>
+    </div>
+    <div id="syncLogMeta" class="text-[11px] font-mono text-slate-500 dark:text-slate-400 shrink-0"></div>
+    <pre id="syncLogContent" class="flex-1 min-h-[240px] max-h-[60vh] overflow-auto p-3.5 rounded-xl bg-slate-950 text-slate-100 font-mono text-[11px] whitespace-pre-wrap break-words"></pre>
+    <div class="flex justify-end shrink-0 pt-1">
+      <button type="button" data-close-modal="modalSyncLog" class="inline-flex items-center gap-1 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-brand-border cursor-pointer">
+        <span class="material-symbols-rounded text-base leading-none" aria-hidden="true">close</span>
+        <span>Close</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function () {
   const root = document.getElementById('mailConsoleRoot');
   const MAIL_HOST = root.dataset.host;
   const WEBMAIL_URL = root.dataset.webmail;
+  let currentWebmailSkin = root.dataset.webmailSkin === 'default' ? 'default' : 'outlook';
   const loadedTabs = new Set();
   let activeTab = 'overview';
   let cachedMailboxes = [];
@@ -874,6 +1069,7 @@
       if (tab === 'overview') await loadOverview();
       else if (tab === 'mailboxes') await loadMailboxes();
       else if (tab === 'aliases') await loadAliases();
+      else if (tab === 'import') await loadImport();
       else if (tab === 'dns') await loadDns(!!(extra && extra.fresh));
       else if (tab === 'queue') await loadQueue();
       else if (tab === 'quarantine') await loadQuarantine();
@@ -886,9 +1082,82 @@
     }
   }
 
+  // ---- Webmail Skin Toggle ----
+  function renderWebmailSkin(skin, syncNote) {
+    currentWebmailSkin = skin === 'default' ? 'default' : 'outlook';
+    const isOutlook = currentWebmailSkin === 'outlook';
+    const badge = document.getElementById('webmailSkinActiveBadge');
+    const btnOl = document.getElementById('btnSkinOutlook');
+    const btnDef = document.getElementById('btnSkinDefault');
+    const status = document.getElementById('webmailSkinStatus');
+
+    if (badge) {
+      badge.textContent = isOutlook ? 'Outlook' : 'Default';
+      badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ' +
+        (isOutlook
+          ? 'bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300'
+          : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300');
+    }
+    if (btnOl) {
+      btnOl.setAttribute('aria-checked', isOutlook ? 'true' : 'false');
+      btnOl.className = 'flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition cursor-pointer ' +
+        (isOutlook
+          ? 'border-sky-500 bg-sky-50/70 dark:bg-sky-950/30'
+          : 'border-slate-200 dark:border-brand-border bg-slate-50/70 dark:bg-brand-dark/50 hover:border-sky-400');
+      const pill = btnOl.querySelector('.skin-check-pill');
+      if (pill) pill.classList.toggle('hidden', !isOutlook);
+    }
+    if (btnDef) {
+      btnDef.setAttribute('aria-checked', !isOutlook ? 'true' : 'false');
+      btnDef.className = 'flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition cursor-pointer ' +
+        (!isOutlook
+          ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/30'
+          : 'border-slate-200 dark:border-brand-border bg-slate-50/70 dark:bg-brand-dark/50 hover:border-emerald-400');
+      const pill = btnDef.querySelector('.skin-check-pill');
+      if (pill) pill.classList.toggle('hidden', isOutlook);
+    }
+    if (status) {
+      if (syncNote) {
+        status.textContent = syncNote;
+        status.classList.remove('hidden');
+      } else {
+        status.textContent = '';
+        status.classList.add('hidden');
+      }
+    }
+  }
+
+  async function selectWebmailSkin(skin) {
+    const btnOl = document.getElementById('btnSkinOutlook');
+    const btnDef = document.getElementById('btnSkinDefault');
+    if (btnOl) btnOl.disabled = true;
+    if (btnDef) btnDef.disabled = true;
+    try {
+      const d = await api('webmail-skin', { method: 'POST', body: { skin } });
+      renderWebmailSkin(d.skin, d.synced ? '' : d.syncNote);
+      toast(d.message || 'Webmail skin updated.');
+      loadedTabs.delete('activity');
+    } catch (err) {
+      toast(err.message, true);
+    } finally {
+      if (btnOl) btnOl.disabled = false;
+      if (btnDef) btnDef.disabled = false;
+    }
+  }
+
+  document.getElementById('btnSkinOutlook')?.addEventListener('click', () => selectWebmailSkin('outlook'));
+  document.getElementById('btnSkinDefault')?.addEventListener('click', () => selectWebmailSkin('default'));
+  renderWebmailSkin(currentWebmailSkin);
+
   // ---- Overview ----
   async function loadOverview() {
-    const d = await api('overview');
+    const [d, skinData] = await Promise.all([
+      api('overview'),
+      api('webmail-skin').catch(() => null)
+    ]);
+    if (skinData && skinData.skin) {
+      renderWebmailSkin(skinData.skin, skinData.synced === false && skinData.fileSkin ? ('Live file currently: ' + skinData.fileSkin) : '');
+    }
     const svc = d.services || {};
     document.getElementById('ovServices').textContent = (svc.running || 0) + ' / ' + (svc.total || 0) + ' running';
     document.getElementById('ovVersion').textContent = (d.version ? 'Version ' + d.version : 'Mail server') + (svc.down && svc.down.length ? ' · Down: ' + svc.down.join(', ') : '');
@@ -1208,6 +1477,92 @@
     `).join('');
   }
 
+  // ---- Import / Sync Jobs ----
+  function populateImportMailboxes() {
+    const sel = document.getElementById('importDestMailbox');
+    const prev = sel.value;
+    if (!cachedMailboxes.length) {
+      sel.innerHTML = '<option value="">No mailboxes found</option>';
+      return;
+    }
+    sel.innerHTML = cachedMailboxes.map(m => `<option value="${esc(m.username)}">${esc(m.username)}</option>`).join('');
+    const preferred = cachedMailboxes.find(m => m.username === prev)?.username
+      || cachedMailboxes.find(m => m.username === 'info@' + '<%= mailDomain %>')?.username
+      || cachedMailboxes[0].username;
+    sel.value = preferred;
+    const srcEmail = document.getElementById('importSourceEmail');
+    if (!srcEmail.value.trim()) srcEmail.value = preferred;
+  }
+
+  function syncStatusBadge(j) {
+    if (j.isRunning) {
+      return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300">Running</span>';
+    }
+    if (!j.active) {
+      return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Paused</span>';
+    }
+    if (j.success === true) {
+      return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">Completed</span>';
+    }
+    if (j.success === false) {
+      return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300">' + esc(j.exitStatus || 'Error') + '</span>';
+    }
+    return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">Queued</span>';
+  }
+
+  function syncJobButtons(j) {
+    return `
+      <button type="button" data-sync-action="run" data-id="${j.id}" title="Run now" aria-label="Run sync job now" class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 inline-flex items-center justify-center cursor-pointer"><span class="material-symbols-rounded text-base">play_arrow</span></button>
+      <button type="button" data-sync-action="toggle" data-id="${j.id}" data-active="${j.active ? '1' : '0'}" title="${j.active ? 'Pause schedule' : 'Resume schedule'}" aria-label="${j.active ? 'Pause sync job' : 'Resume sync job'}" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border inline-flex items-center justify-center cursor-pointer"><span class="material-symbols-rounded text-base">${j.active ? 'pause' : 'play_circle'}</span></button>
+      <button type="button" data-sync-action="log" data-id="${j.id}" title="View transfer log" aria-label="View import log" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-brand-dark text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-brand-border inline-flex items-center justify-center cursor-pointer"><span class="material-symbols-rounded text-base">article</span></button>
+      <button type="button" data-sync-action="delete" data-id="${j.id}" title="Delete job &amp; stored credential" aria-label="Delete sync job" class="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 inline-flex items-center justify-center cursor-pointer"><span class="material-symbols-rounded text-base">delete</span></button>
+    `;
+  }
+
+  async function loadImport() {
+    if (!cachedMailboxes.length) {
+      const mData = await api('mailboxes');
+      cachedMailboxes = mData.mailboxes || [];
+    }
+    populateImportMailboxes();
+    const d = await api('syncjobs');
+    const jobs = d.jobs || [];
+    const cards = document.getElementById('syncJobCards');
+    const tbody = document.getElementById('syncJobTableBody');
+    if (!jobs.length) {
+      cards.innerHTML = '<div class="p-6 text-center text-xs text-slate-400">No import jobs configured yet.</div>';
+      tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-xs text-slate-400">No import jobs configured yet.</td></tr>';
+      return;
+    }
+    cards.innerHTML = jobs.map(j => `
+      <article class="p-4 space-y-2.5 text-xs">
+        <div class="flex items-start justify-between gap-2">
+          <div class="min-w-0">
+            <div class="font-mono font-bold text-slate-900 dark:text-white break-all">${esc(j.sourceEmail)} &rarr; ${esc(j.mailbox)}</div>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">${esc(j.sourceHost)}:${esc(j.sourcePort)} (${esc(j.sourceEnc)})</div>
+          </div>
+          ${syncStatusBadge(j)}
+        </div>
+        <div class="flex items-center justify-between gap-2 text-[11px] text-slate-400">
+          <span>Last run: ${esc(j.lastRun ? fmtDate(j.lastRun) : 'Pending')}</span>
+          <div class="flex items-center gap-1.5">${syncJobButtons(j)}</div>
+        </div>
+      </article>
+    `).join('');
+    tbody.innerHTML = jobs.map(j => `
+      <tr class="hover:bg-slate-50 dark:hover:bg-brand-dark/40 transition">
+        <td class="py-3 px-4 font-mono">
+          <div class="font-bold text-slate-900 dark:text-white">${esc(j.sourceEmail)}</div>
+          <div class="text-[11px] text-slate-500 dark:text-slate-400">&rarr; ${esc(j.mailbox)}${j.automap ? ' · automap' : ''}</div>
+        </td>
+        <td class="py-3 px-4 font-mono text-[11px]">${esc(j.sourceHost)}:${esc(j.sourcePort)} <span class="text-slate-400">(${esc(j.sourceEnc)})</span></td>
+        <td class="py-3 px-4 text-[11px] text-slate-500 dark:text-slate-400">${esc(j.lastRun ? fmtDate(j.lastRun) : 'Pending')}</td>
+        <td class="py-3 px-4">${syncStatusBadge(j)}</td>
+        <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">${syncJobButtons(j)}</td>
+      </tr>
+    `).join('');
+  }
+
   // ---- Event Listeners ----
   document.getElementById('mailTabBar').addEventListener('click', e => {
     const btn = e.target.closest('[data-tab]');
@@ -1283,6 +1638,50 @@
           loadedTabs.delete('overview');
         } catch (err) { toast(err.message, true); }
       }
+      return;
+    }
+
+    const presetBtn = e.target.closest('[data-import-preset]');
+    if (presetBtn) {
+      if (presetBtn.dataset.importPreset === 'hostinger') {
+        document.getElementById('importSourceHost').value = 'imap.hostinger.com';
+        document.getElementById('importSourcePort').value = '993';
+        document.getElementById('importSourceEnc').value = 'SSL';
+      } else {
+        document.getElementById('importSourceHost').value = '';
+        document.getElementById('importSourceHost').focus();
+      }
+      return;
+    }
+
+    const syncBtn = e.target.closest('[data-sync-action]');
+    if (syncBtn) {
+      const id = Number(syncBtn.dataset.id);
+      const act = syncBtn.dataset.syncAction;
+      try {
+        if (act === 'run') {
+          const d = await api('syncjobs/' + id + '/run', { method: 'POST' });
+          toast(d.message || 'Queued to run next.');
+          await loadImport();
+        } else if (act === 'toggle') {
+          const nextActive = syncBtn.dataset.active !== '1';
+          await api('syncjobs/' + id, { method: 'PATCH', body: { active: nextActive } });
+          toast(nextActive ? 'Sync job resumed.' : 'Sync job paused.');
+          await loadImport();
+        } else if (act === 'log') {
+          const d = await api('syncjobs/' + id + '/log');
+          const j = d.job || {};
+          document.getElementById('syncLogMeta').textContent =
+            `${j.sourceEmail || ''} → ${j.mailbox || ''} · Status: ${j.isRunning ? 'Running' : (j.exitStatus || (j.success ? 'OK' : 'Pending'))}`;
+          document.getElementById('syncLogContent').textContent = d.log || 'No transfer log output yet. Mailcow runs queued sync jobs automatically every minute.';
+          openModal('modalSyncLog');
+        } else if (act === 'delete') {
+          if (!confirm('Delete this import job and remove the saved source password?')) return;
+          await api('syncjobs/' + id, { method: 'DELETE' });
+          toast('Import job deleted.');
+          await loadImport();
+        }
+      } catch (err) { toast(err.message, true); }
       return;
     }
 
@@ -1522,9 +1921,51 @@
       .catch(() => toast('Copy failed; please copy manually.', true));
   });
 
+  document.getElementById('importDestMailbox').addEventListener('change', e => {
+    const src = document.getElementById('importSourceEmail');
+    if (src && (!src.dataset.edited || !src.value.trim())) {
+      src.value = e.target.value;
+    }
+  });
+  document.getElementById('importSourceEmail').addEventListener('input', e => {
+    e.target.dataset.edited = e.target.value.trim() ? '1' : '';
+  });
+  document.getElementById('importSourceEnc').addEventListener('change', e => {
+    const port = document.getElementById('importSourcePort');
+    if (e.target.value === 'SSL') port.value = '993';
+    else if (e.target.value === 'TLS' || e.target.value === 'PLAIN') port.value = '143';
+  });
+  document.getElementById('btnRefreshSyncJobs').addEventListener('click', () => loadImport().catch(err => toast(err.message, true)));
+  document.getElementById('formImportMail').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('btnStartImport');
+    btn.disabled = true;
+    try {
+      const d = await api('import', {
+        method: 'POST',
+        body: {
+          mailbox: document.getElementById('importDestMailbox').value,
+          sourceEmail: document.getElementById('importSourceEmail').value.trim(),
+          sourcePassword: document.getElementById('importSourcePass').value,
+          sourceHost: document.getElementById('importSourceHost').value.trim(),
+          sourcePort: Number(document.getElementById('importSourcePort').value) || 993,
+          sourceEnc: document.getElementById('importSourceEnc').value,
+          automap: document.getElementById('importAutomap').checked
+        }
+      });
+      document.getElementById('importSourcePass').value = '';
+      toast(d.message || 'Import job created and queued.');
+      await loadImport();
+    } catch (err) {
+      toast(err.message, true);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-      ['modalCreateMailbox', 'modalEditMailbox', 'modalResetPass', 'modalDeleteMailbox', 'modalAlias', 'modalShareSetup'].forEach(closeModal);
+      ['modalCreateMailbox', 'modalEditMailbox', 'modalResetPass', 'modalDeleteMailbox', 'modalAlias', 'modalShareSetup', 'modalSyncLog'].forEach(closeModal);
     }
   });
 

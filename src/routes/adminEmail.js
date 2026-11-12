@@ -4,8 +4,11 @@
 // All mail server calls happen server-side through services/mailcowApi.
 
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
+const prisma = require('../services/db');
 const mail = require('../services/mailcowApi');
 const dnsCheck = require('../services/mailDnsCheck');
 const audit = require('../services/mailAudit');
@@ -13,6 +16,8 @@ const mailer = require('../services/mailer');
 
 const router = express.Router();
 const WEBMAIL_URL = process.env.WEBMAIL_URL || 'https://mail.embeddedindia.in/';
+const WEBMAIL_SKIN_FILE = process.env.WEBMAIL_SKIN_FILE || '/embed_mail/data/web/rc/config/ei-skin.json';
+const VALID_WEBMAIL_SKINS = new Set(['default', 'outlook']);
 const DOMAIN = dnsCheck.DOMAIN;
 
 const writeLimiter = rateLimit({
@@ -69,6 +74,53 @@ const asyncRoute = fn => (req, res) => fn(req, res).catch(err => {
 
 const ok = (res, data = {}) => res.json({ success: true, ...data });
 
+function readWebmailSkinFile() {
+  try {
+    if (!fs.existsSync(WEBMAIL_SKIN_FILE)) return null;
+    const raw = fs.readFileSync(WEBMAIL_SKIN_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    const skin = String(parsed && parsed.skin || '').trim().toLowerCase();
+    return VALID_WEBMAIL_SKINS.has(skin) ? skin : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function writeWebmailSkinFile(skin, actor) {
+  const payload = JSON.stringify({
+    skin,
+    updatedAt: new Date().toISOString(),
+    updatedBy: actor || 'admin'
+  }) + '\n';
+  try {
+    const dir = path.dirname(WEBMAIL_SKIN_FILE);
+    if (!fs.existsSync(dir)) {
+      return { synced: false, reason: 'Webmail directory not present on this host.' };
+    }
+    const tmp = `${WEBMAIL_SKIN_FILE}.tmp.${process.pid}`;
+    try {
+      fs.writeFileSync(tmp, payload, { encoding: 'utf8', mode: 0o664 });
+      fs.renameSync(tmp, WEBMAIL_SKIN_FILE);
+    } catch (renameErr) {
+      try { if (fs.existsSync(tmp)) fs.unlinkSync(tmp); } catch (_) {}
+      // Fallback to direct overwrite if directory isn't writable by app user but file is
+      fs.writeFileSync(WEBMAIL_SKIN_FILE, payload, { encoding: 'utf8' });
+    }
+    return { synced: true };
+  } catch (err) {
+    return { synced: false, reason: err.code === 'EACCES' ? 'Permission denied writing webmail skin file (run install-webmail.sh).' : err.message };
+  }
+}
+
+async function getWebmailSkin() {
+  try {
+    const row = await prisma.setting.findUnique({ where: { key: 'webmail_skin' } });
+    const val = row && String(row.value || '').trim().toLowerCase();
+    if (VALID_WEBMAIL_SKINS.has(val)) return val;
+  } catch (_) {}
+  return readWebmailSkinFile() || 'outlook';
+}
+
 function mapMailbox(m) {
   const a = m.attributes || {};
   return {
@@ -96,17 +148,74 @@ function mapAlias(a) {
   };
 }
 
+function mapSyncJob(j) {
+  return {
+    id: Number(j.id),
+    mailbox: j.user2 || '',
+    sourceEmail: j.user1 || '',
+    sourceName: j.source_name || '',
+    sourceHost: j.source_host || '',
+    sourcePort: Number(j.source_port) || 993,
+    sourceEnc: j.source_enc || 'SSL',
+    automap: Number(j.automap) === 1,
+    subscribeAll: Number(j.subscribeall) === 1,
+    skipCrossDuplicates: Number(j.skipcrossduplicates) === 1,
+    active: Number(j.active) === 1,
+    isRunning: Number(j.is_running) === 1,
+    lastRun: j.last_run || null,
+    success: j.success === null || j.success === undefined ? null : Number(j.success) === 1,
+    exitStatus: j.exit_status || '',
+    minsInterval: Number(j.mins_interval) || 60
+  };
+}
+
 // ---------------------------------------------------------------- page
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+  const webmailSkin = await getWebmailSkin();
   res.render('admin/email', {
     title: 'Email Administration - Embedded India',
     currentPath: '/admin/email',
     currentUser: req.user,
     mailDomain: DOMAIN,
     mailHost: dnsCheck.MAIL_HOST,
-    webmailUrl: WEBMAIL_URL
+    webmailUrl: WEBMAIL_URL,
+    webmailSkin
   });
 });
+
+// ---------------------------------------------------------------- webmail skin
+router.get('/api/webmail-skin', asyncRoute(async (req, res) => {
+  const skin = await getWebmailSkin();
+  const fileSkin = readWebmailSkinFile();
+  ok(res, {
+    skin,
+    fileSkin,
+    synced: fileSkin === skin
+  });
+}));
+
+router.post('/api/webmail-skin', writeLimiter, asyncRoute(async (req, res) => {
+  const skin = String(req.body.skin || '').trim().toLowerCase();
+  if (!VALID_WEBMAIL_SKINS.has(skin)) {
+    throw new BadRequest('Skin must be "default" or "outlook".');
+  }
+  await prisma.setting.upsert({
+    where: { key: 'webmail_skin' },
+    update: { value: skin },
+    create: { key: 'webmail_skin', value: skin }
+  });
+  const actor = (req.user && (req.user.email || req.user.username)) || 'admin';
+  const sync = writeWebmailSkinFile(skin, actor);
+  audit.record(req, 'webmail.skin', skin, { synced: sync.synced });
+  ok(res, {
+    skin,
+    synced: sync.synced,
+    syncNote: sync.reason || null,
+    message: sync.synced
+      ? `Webmail skin switched to ${skin === 'outlook' ? 'Outlook (Default Blue)' : 'Default (Emerald)'}.`
+      : `Saved ${skin} preference. ${sync.reason}`
+  });
+}));
 
 // ---------------------------------------------------------------- overview
 router.get('/api/overview', asyncRoute(async (req, res) => {
@@ -358,6 +467,142 @@ router.post('/api/share-setup', writeLimiter, asyncRoute(async (req, res) => {
   audit.record(req, 'mailbox.share_setup', mailboxEmail, { recipientEmail, includedPassword: !!password }, !!result.success);
   if (!result.success) throw Object.assign(new Error(result.error || 'Could not send the email.'), { status: 502 });
   ok(res, { message: `Setup guide sent to ${recipientEmail}.` });
+}));
+
+// ---------------------------------------------------------------- import / imapsync
+router.get('/api/syncjobs', asyncRoute(async (req, res) => {
+  const rows = await mail.listSyncJobs({ withLog: false });
+  const jobs = Array.isArray(rows) ? rows.map(mapSyncJob) : [];
+  ok(res, { jobs });
+}));
+
+router.get('/api/syncjobs/:id/log', asyncRoute(async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id < 1) throw new BadRequest('Invalid sync job.');
+  const rows = await mail.listSyncJobs({ withLog: true });
+  const job = Array.isArray(rows) ? rows.find(r => Number(r.id) === id) : null;
+  if (!job) throw Object.assign(new Error('Sync job not found.'), { status: 404 });
+  ok(res, { job: mapSyncJob(job), log: String(job.log || '').slice(-32000) });
+}));
+
+router.post('/api/import', writeLimiter, asyncRoute(async (req, res) => {
+  const mailbox = ownMailbox(req.body.mailbox);
+  const sourceEmail = cleanEmail(req.body.sourceEmail || mailbox, 'Source email');
+  const sourceHost = String(req.body.sourceHost || 'imap.hostinger.com').trim().toLowerCase();
+  if (!/^[a-z0-9.-]{1,253}$/.test(sourceHost) || !sourceHost.includes('.')) {
+    throw new BadRequest('Source IMAP hostname is not valid.');
+  }
+  const sourcePort = Number(req.body.sourcePort || 993);
+  if (!Number.isInteger(sourcePort) || sourcePort < 1 || sourcePort > 65535) {
+    throw new BadRequest('Source IMAP port must be between 1 and 65535.');
+  }
+  const sourceEnc = String(req.body.sourceEnc || 'SSL').toUpperCase();
+  if (!['SSL', 'TLS', 'PLAIN'].includes(sourceEnc)) {
+    throw new BadRequest('Encryption must be SSL, TLS, or PLAIN.');
+  }
+  const sourcePassword = typeof req.body.sourcePassword === 'string' ? req.body.sourcePassword : '';
+  if (!sourcePassword || sourcePassword.length > 256) {
+    throw new BadRequest('Enter the source mailbox password (max 256 characters).');
+  }
+  const automap = req.body.automap !== false;
+  const minsInterval = Math.min(Math.max(Number(req.body.minsInterval) || 1440, 10), 43800);
+
+  const mailboxes = await mail.listMailboxes() || [];
+  if (!mailboxes.some(m => String(m.username || '').toLowerCase() === mailbox)) {
+    throw new BadRequest(`Destination mailbox '${mailbox}' does not exist on this server.`);
+  }
+
+  let sources = await mail.listSyncSources() || [];
+  let source = (Array.isArray(sources) ? sources : []).find(s =>
+    String(s.host || '').toLowerCase() === sourceHost &&
+    Number(s.port) === sourcePort &&
+    String(s.enc || '').toUpperCase() === sourceEnc &&
+    (s.auth_type || 'PLAIN') === 'PLAIN' &&
+    Number(s.active ?? 1) === 1
+  );
+
+  if (!source) {
+    const baseName = sourceHost === 'imap.hostinger.com'
+      ? `Hostinger IMAP (${sourcePort} ${sourceEnc})`
+      : `${sourceHost} (${sourcePort} ${sourceEnc})`;
+    await mail.addSyncSource({
+      name: baseName.slice(0, 100),
+      description: 'Managed via Embedded India Email Hub',
+      host1: sourceHost,
+      port1: sourcePort,
+      enc1: sourceEnc,
+      verify_cert: 1,
+      auth_type: 'PLAIN',
+      active: 1,
+      scope: 'all'
+    });
+    sources = await mail.listSyncSources() || [];
+    source = (Array.isArray(sources) ? sources : []).find(s =>
+      String(s.host || '').toLowerCase() === sourceHost &&
+      Number(s.port) === sourcePort &&
+      String(s.enc || '').toUpperCase() === sourceEnc
+    );
+    if (!source || !source.id) {
+      throw new Error('Could not resolve created IMAP source.');
+    }
+  }
+
+  await mail.addSyncJob({
+    username: mailbox,
+    source_id: Number(source.id),
+    user1: sourceEmail,
+    password1: sourcePassword,
+    automap: automap ? '1' : '0',
+    subscribeall: '1',
+    skipcrossduplicates: '1',
+    delete2duplicates: '0',
+    delete1: '0',
+    delete2: '0',
+    mins_interval: minsInterval,
+    active: '1'
+  });
+
+  const jobs = await mail.listSyncJobs({ withLog: false }) || [];
+  const created = (Array.isArray(jobs) ? jobs : []).find(j =>
+    String(j.user2 || '').toLowerCase() === mailbox &&
+    String(j.user1 || '').toLowerCase() === sourceEmail &&
+    Number(j.source_id) === Number(source.id)
+  );
+  if (created && created.id) {
+    await mail.runSyncJobNow(created.id).catch(() => {});
+  }
+
+  audit.record(req, 'mailbox.import', mailbox, { sourceHost, sourcePort, sourceEnc, sourceEmail, automap });
+  ok(res, {
+    message: `Import job queued for ${mailbox} from ${sourceEmail}. Sent, Inbox, and all folders will sync shortly.`,
+    job: created ? mapSyncJob(created) : null
+  });
+}));
+
+router.post('/api/syncjobs/:id/run', writeLimiter, asyncRoute(async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id < 1) throw new BadRequest('Invalid sync job.');
+  await mail.runSyncJobNow(id);
+  audit.record(req, 'syncjob.run', String(id));
+  ok(res, { message: 'Sync job moved to the front of the queue.' });
+}));
+
+router.patch('/api/syncjobs/:id', writeLimiter, asyncRoute(async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id < 1) throw new BadRequest('Invalid sync job.');
+  if (req.body.active === undefined) throw new BadRequest('Nothing to change.');
+  const active = !!req.body.active;
+  await mail.editSyncJob(id, { active: active ? '1' : '0' });
+  audit.record(req, 'syncjob.update', String(id), { active });
+  ok(res);
+}));
+
+router.delete('/api/syncjobs/:id', writeLimiter, asyncRoute(async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id < 1) throw new BadRequest('Invalid sync job.');
+  await mail.deleteSyncJob(id);
+  audit.record(req, 'syncjob.delete', String(id));
+  ok(res);
 }));
 
 module.exports = router;

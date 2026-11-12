@@ -13,10 +13,35 @@ class embedded_branding extends rcube_plugin
     public $task = '.*';
 
     private const BRAND = 'Embedded India Mail';
+    private $active_skin = 'outlook';
+
+    private function resolve_active_skin()
+    {
+        $skin_file = getenv('EI_WEBMAIL_SKIN_FILE') ?: dirname(__DIR__, 2) . '/config/ei-skin.json';
+        if (is_file($skin_file) && is_readable($skin_file)) {
+            $raw = @file_get_contents($skin_file);
+            if ($raw !== false) {
+                $data = json_decode($raw, true);
+                if (is_array($data) && isset($data['skin'])) {
+                    $skin = strtolower(trim((string) $data['skin']));
+                    if ($skin === 'default' || $skin === 'outlook') {
+                        return $skin;
+                    }
+                }
+            }
+        }
+        return 'outlook';
+    }
 
     public function init()
     {
+        $this->active_skin = $this->resolve_active_skin();
         $this->include_stylesheet('styles.css');
+        $this->include_script('app.js');
+        if ($this->active_skin === 'outlook') {
+            $this->include_stylesheet('outlook.css');
+            $this->include_script('outlook.js');
+        }
         $this->add_hook('startup', [$this, 'startup']);
         $this->add_hook('settings_actions', [$this, 'settings_actions']);
         $this->add_hook('send_page', [$this, 'send_page']);
@@ -28,12 +53,17 @@ class embedded_branding extends rcube_plugin
         if ($args['task'] === 'settings' && $args['action'] === 'about') {
             $rcmail  = rcmail::get_instance();
             $support = htmlspecialchars((string) $rcmail->config->get('support_url'), ENT_QUOTES);
+            $is_outlook = ($this->active_skin === 'outlook');
+            $accent = $is_outlook ? '#0078d4' : '#007f5f';
+            $logo = $is_outlook
+                ? 'plugins/embedded_branding/assets/outlook-logo-login.svg'
+                : 'plugins/embedded_branding/assets/logo-login.svg';
             header('Content-Type: text/html; charset=UTF-8');
             echo '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>' . self::BRAND . '</title>'
                . '<meta name="viewport" content="width=device-width, initial-scale=1">'
-               . '<style>body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0;padding:32px;color:#192c27}'
-               . 'h1{font-size:20px;margin:16px 0 8px}p{color:#4b5d58;line-height:1.6}a{color:#007f5f}</style></head><body>'
-               . '<img src="plugins/embedded_branding/assets/logo-login.svg" alt="" height="48">'
+               . '<style>body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;margin:0;padding:32px;color:#192c27}'
+               . 'h1{font-size:20px;margin:16px 0 8px}p{color:#4b5d58;line-height:1.6}a{color:' . $accent . '}</style></head><body>'
+               . '<img src="' . $logo . '" alt="" height="48">'
                . '<h1>' . self::BRAND . '</h1>'
                . '<p>Secure business email for embeddedindia.in.</p>'
                . ($support ? '<p>Need help? <a href="' . $support . '" target="_blank" rel="noopener">Contact support</a>.</p>' : '')
@@ -75,6 +105,37 @@ class embedded_branding extends rcube_plugin
             '$1',
             $args['content']
         );
+        if ($this->active_skin === 'outlook') {
+            $args['content'] = preg_replace_callback(
+                '/<html\b([^>]*)>/i',
+                function ($m) {
+                    $attrs = $m[1];
+                    if (preg_match('/\bclass=[\'"]([^\'"]*)[\'"]/i', $attrs)) {
+                        $attrs = preg_replace('/(\bclass=[\'"])([^\'"]*)([\'"])/i', '$1$2 ei-skin-outlook$3', $attrs, 1);
+                    } else {
+                        $attrs .= ' class="ei-skin-outlook"';
+                    }
+                    return '<html' . $attrs . '>';
+                },
+                $args['content'],
+                1
+            );
+            $args['content'] = str_replace(
+                [
+                    'plugins/embedded_branding/assets/logo-login.svg',
+                    'plugins/embedded_branding/assets/logo-mark.svg',
+                    'plugins/embedded_branding/assets/logo.svg',
+                    'plugins/embedded_branding/assets/favicon.svg',
+                ],
+                [
+                    'plugins/embedded_branding/assets/outlook-logo-login.svg',
+                    'plugins/embedded_branding/assets/outlook-logo.svg',
+                    'plugins/embedded_branding/assets/outlook-logo.svg',
+                    'plugins/embedded_branding/assets/outlook-favicon.svg',
+                ],
+                $args['content']
+            );
+        }
         return $args;
     }
 }

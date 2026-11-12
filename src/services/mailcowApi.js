@@ -62,7 +62,14 @@ function humanMessage(msg) {
     max_mailbox_exceeded: 'The domain has reached its maximum number of mailboxes.',
     goto_invalid: 'One of the destination addresses is invalid.',
     alias_invalid: 'The alias address is invalid.',
-    access_denied: 'The mail server refused this action.'
+    access_denied: 'The mail server refused this action.',
+    imapsync_source_name_invalid: 'The IMAP source name is invalid.',
+    imapsync_source_host_invalid: 'The IMAP hostname is invalid.',
+    imapsync_source_port_invalid: 'The IMAP port must be between 1 and 65535.',
+    imapsync_source_enc_invalid: 'Unsupported encryption mode.',
+    imapsync_source_unavailable: 'Selected IMAP source is unavailable.',
+    imapsync_user1_invalid: 'The source email address is invalid.',
+    imapsync_job_running: 'This sync job is currently running.'
   };
   return known[key] || key.replace(/_/g, ' ');
 }
@@ -131,6 +138,15 @@ module.exports = {
   // --- Security -----------------------------------------------------------------
   getFail2ban: () => get('fail2ban'),
   unban: (network) => post('edit/fail2ban', { items: [network], attr: { action: 'unban' } }),
+
+  // --- Sync / Import jobs (imapsync) --------------------------------------------
+  listSyncSources: () => get('syncjob_source/all'),
+  addSyncSource: (attr) => post('add/syncjob_source', attr),
+  listSyncJobs: ({ withLog = false } = {}) => get(withLog ? 'syncjobs/all' : 'syncjobs/all/no_log'),
+  addSyncJob: (attr) => post('add/syncjob', attr),
+  editSyncJob: (id, attr) => post('edit/syncjob', { items: [String(id)], attr }),
+  runSyncJobNow: (id) => post('edit/syncjob/run_next', { items: [String(id)] }),
+  deleteSyncJob: (id) => post('delete/syncjob', [String(id)]),
 
   // --- Logs ---------------------------------------------------------------------
   logs: (service, count) => get(`logs/${enc(service)}/${Number(count) || 100}`),

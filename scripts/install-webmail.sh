@@ -132,6 +132,11 @@ step "7/9 Branding"
 rm -rf "${RC_DIR}/plugins/embedded_branding"
 cp -r "${SRC}/plugins/embedded_branding" "${RC_DIR}/plugins/embedded_branding"
 cp "${SRC}/plugins/embedded_branding/assets/favicon.svg" "${RC_DIR}/favicon.svg"
+SKIN_FILE="${RC_DIR}/config/ei-skin.json"
+if [ ! -f "$SKIN_FILE" ]; then
+  printf '{"skin":"outlook"}\n' > "$SKIN_FILE"
+  note "initialized webmail skin state (outlook)"
+fi
 note "branding plugin installed"
 
 # ------------------------------------------------------------------------------
@@ -148,6 +153,14 @@ for f in "${RC_DIR}/config/config.inc.php" "${RC_DIR}/plugins/password/config.in
          "${RC_DIR}/plugins/managesieve/config.inc.php" "${RC_DIR}/plugins/carddav/config.inc.php" "${TFA}/config.inc.php"; do
   [ -f "$f" ] && { chgrp ${WWW_UID} "$f"; chmod 640 "$f"; }
 done
+# Skin toggle file: writable by the website service user (ubuntu) and readable by php-fpm (www-data)
+APP_USER="${APP_USER:-ubuntu}"
+if id -u "$APP_USER" >/dev/null 2>&1; then
+  chown "${APP_USER}:${WWW_UID}" "$SKIN_FILE"
+else
+  chown "root:${WWW_UID}" "$SKIN_FILE"
+fi
+chmod 664 "$SKIN_FILE"
 
 # ------------------------------------------------------------------------------
 step "9/9 Mail server web routing"
