@@ -14,15 +14,40 @@
 #layout-menu,
 .layout-menu,
 #layout-menu .popover-header,
+#layout-menu .special-buttons,
+#taskmenu .special-buttons,
 #layout-menu #logo {
   background-color: var(--ei-dark) !important;
   color: #e2ebe9 !important;
 }
+html.dark-mode #layout-menu,
+html.dark-mode .layout-menu,
+html.dark-mode #layout-menu .popover-header,
+html.dark-mode #layout-menu .special-buttons,
+html.dark-mode #taskmenu .special-buttons,
+html.dark-mode #layout-menu #logo {
+  background-color: #08100e !important;
+}
+#taskmenu .special-buttons {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
 #layout-menu .special-buttons a,
 #layout-menu a {
   border-radius: 10px;
-  color: #d5e2df !important;
+  color: #e2ebe9 !important;
   background-color: transparent !important;
+}
+#layout-menu #taskmenu a.logout {
+  color: #fca5a5 !important;
+}
+#layout-menu #taskmenu a.logout:hover,
+#layout-menu #taskmenu a.logout:focus {
+  color: #ffffff !important;
+  background-color: rgba(239, 68, 68, 0.28) !important;
+}
+#layout-menu .popover-header a,
+#layout-menu .popover-header .button {
+  color: #e2ebe9 !important;
 }
 #layout-menu a:hover,
 #layout-menu a:focus {
@@ -34,10 +59,40 @@
   color: #ffffff !important;
   background-color: var(--ei-primary) !important;
 }
-/* Keep Compose ("New mail") neutral unless hovered or on the compose task */
-#layout-menu a.compose:not(.selected):not(:hover):not(:focus) {
-  background-color: transparent !important;
-  color: #d5e2df !important;
+/* Keep Compose ("New mail") legible in Default Emerald skin without affecting Outlook skin */
+html:not(.ei-skin-outlook) #layout-menu a.compose:not(.selected):not(:hover):not(:focus) {
+  background-color: rgba(16, 185, 129, 0.14) !important;
+  color: #e2ebe9 !important;
+}
+/* Center Default Emerald rail buttons cleanly inside Elastic's 42px tablet rail */
+@media screen and (min-width: 481px) and (max-width: 1024px) {
+  html:not(.ei-skin-outlook) #layout-menu {
+    position: relative;
+  }
+  html:not(.ei-skin-outlook) #layout-menu #taskmenu .special-buttons {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    overflow: hidden;
+  }
+  html:not(.ei-skin-outlook) #layout-menu #taskmenu a,
+  html:not(.ei-skin-outlook) #layout-menu #taskmenu .special-buttons a {
+    width: 34px !important;
+    min-width: 34px !important;
+    margin: 2px auto !important;
+    box-sizing: border-box !important;
+  }
+}
+/* Floating compose/action FAB on phone layout */
+.floating-action-buttons a.button,
+.floating-action-buttons button.button {
+  background-color: var(--ei-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 18px rgba(0, 127, 95, 0.35) !important;
+}
+.floating-action-buttons a.button:hover,
+.floating-action-buttons button.button:hover {
+  background-color: var(--ei-primary-dark) !important;
 }
 #logo {
   max-height: 44px;

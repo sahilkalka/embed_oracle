@@ -14,7 +14,7 @@
   </div>
 
   <!-- Header & Primary Icon Action Bar -->
-  <header class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white dark:bg-brand-surface p-4 sm:p-5 lg:p-6 rounded-2xl border border-slate-200 dark:border-brand-border shadow-xs w-full max-w-full overflow-hidden">
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white dark:bg-brand-surface p-4 sm:p-5 lg:p-6 rounded-2xl border border-slate-200 dark:border-brand-border shadow-xs w-full max-w-full overflow-hidden">
     <div class="min-w-0 flex-1">
       <div class="flex items-start sm:items-center gap-3 min-w-0">
         <span class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
@@ -62,7 +62,7 @@
         <span>Refresh</span>
       </button>
     </div>
-  </header>
+  </div>
 
   <!-- Global Error / Config Notice -->
   <div id="mailGlobalAlert" class="hidden rounded-2xl border border-rose-500/30 bg-rose-50 dark:bg-rose-950/40 p-4 text-xs text-rose-800 dark:text-rose-200 flex items-start justify-between gap-3">
@@ -257,7 +257,7 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Webmail skin selection">
         <button type="button" id="btnSkinOutlook" data-skin="outlook" role="radio" aria-checked="true"
-                class="flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition cursor-pointer border-sky-500 bg-sky-50/70 dark:bg-sky-950/30">
+                class="flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition cursor-pointer border-sky-500 bg-sky-50 dark:bg-sky-950">
           <span class="w-10 h-10 rounded-xl bg-[#0078d4] text-white flex items-center justify-center shrink-0 shadow-xs">
             <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">mail</span>
           </span>
@@ -273,7 +273,7 @@
         </button>
 
         <button type="button" id="btnSkinDefault" data-skin="default" role="radio" aria-checked="false"
-                class="flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition cursor-pointer border-slate-200 dark:border-brand-border bg-slate-50/70 dark:bg-brand-dark/50 hover:border-emerald-400">
+                class="flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition cursor-pointer border-slate-200 dark:border-brand-border bg-slate-50 dark:bg-brand-dark hover:border-emerald-400">
           <span class="w-10 h-10 rounded-xl bg-[#007f5f] text-white flex items-center justify-center shrink-0 shadow-xs">
             <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">eco</span>
           </span>
@@ -1102,8 +1102,8 @@
       btnOl.setAttribute('aria-checked', isOutlook ? 'true' : 'false');
       btnOl.className = 'flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition cursor-pointer ' +
         (isOutlook
-          ? 'border-sky-500 bg-sky-50/70 dark:bg-sky-950/30'
-          : 'border-slate-200 dark:border-brand-border bg-slate-50/70 dark:bg-brand-dark/50 hover:border-sky-400');
+          ? 'border-sky-500 bg-sky-50 dark:bg-sky-950'
+          : 'border-slate-200 dark:border-brand-border bg-slate-50 dark:bg-brand-dark hover:border-sky-400');
       const pill = btnOl.querySelector('.skin-check-pill');
       if (pill) pill.classList.toggle('hidden', !isOutlook);
     }
@@ -1111,8 +1111,8 @@
       btnDef.setAttribute('aria-checked', !isOutlook ? 'true' : 'false');
       btnDef.className = 'flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition cursor-pointer ' +
         (!isOutlook
-          ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/30'
-          : 'border-slate-200 dark:border-brand-border bg-slate-50/70 dark:bg-brand-dark/50 hover:border-emerald-400');
+          ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950'
+          : 'border-slate-200 dark:border-brand-border bg-slate-50 dark:bg-brand-dark hover:border-emerald-400');
       const pill = btnDef.querySelector('.skin-check-pill');
       if (pill) pill.classList.toggle('hidden', isOutlook);
     }

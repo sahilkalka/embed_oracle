@@ -124,6 +124,12 @@
     });
     syncThemeIcon(themeBtn);
     themeBtn.addEventListener('click', function () { toggleThemeMode(themeBtn); });
+    if (window.MutationObserver) {
+      new MutationObserver(function () { syncThemeIcon(themeBtn); }).observe(
+        document.documentElement,
+        { attributes: true, attributeFilter: ['class'] }
+      );
+    }
 
     var settingsLink = el('a', {
       href: '?_task=settings',

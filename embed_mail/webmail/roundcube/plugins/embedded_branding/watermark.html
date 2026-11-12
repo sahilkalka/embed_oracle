@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Embedded India Mail</title>
+  <style>
+    :root {
+      --wm-bg: #faf9f8;
+      --wm-card: rgba(255, 255, 255, 0.72);
+      --wm-border: rgba(0, 120, 212, 0.14);
+      --wm-text: #605e5c;
+      --wm-sub: #8a8886;
+      --wm-accent: #0078d4;
+    }
+    html.skin-default {
+      --wm-bg: #f8faf9;
+      --wm-border: rgba(0, 127, 95, 0.16);
+      --wm-accent: #007f5f;
+    }
+    html.dark-mode {
+      --wm-bg: #1b1a19;
+      --wm-card: rgba(37, 36, 35, 0.75);
+      --wm-border: rgba(255, 255, 255, 0.08);
+      --wm-text: #c8c6c4;
+      --wm-sub: #a19f9d;
+    }
+    html.skin-default.dark-mode {
+      --wm-bg: #111917;
+      --wm-card: rgba(20, 31, 28, 0.8);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--wm-bg);
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--wm-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .wm-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 14px;
+      padding: 28px 36px;
+      border-radius: 16px;
+      background: var(--wm-card);
+      border: 1px solid var(--wm-border);
+      max-width: 340px;
+      margin: 16px;
+    }
+    .wm-logo {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      opacity: 0.92;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.08));
+    }
+    .wm-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--wm-text);
+      margin: 0;
+    }
+    .wm-hint {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--wm-sub);
+      margin: 0;
+    }
+    .wm-bar {
+      width: 36px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--wm-accent);
+      opacity: 0.65;
+    }
+  </style>
+</head>
+<body>
+  <div class="wm-wrap" role="presentation">
+    <img id="wmLogo" class="wm-logo" src="assets/outlook-logo-login.svg" alt="Embedded India Mail">
+    <div class="wm-bar"></div>
+    <p class="wm-title">Embedded India Mail</p>
+    <p class="wm-hint">Select a message from the list to read it here.</p>
+  </div>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search || '');
+      var html = document.documentElement;
+      var logo = document.getElementById('wmLogo');
+
+      function syncTheme() {
+        var skin = params.get('skin');
+        var isDark = false;
+        try {
+          if (window.parent && window.parent !== window && window.parent.document) {
+            var pHtml = window.parent.document.documentElement;
+            if (!skin) {
+              skin = pHtml.classList.contains('ei-skin-outlook') ? 'outlook' : 'default';
+            }
+            isDark = pHtml.classList.contains('dark-mode');
+          }
+        } catch (e) {}
+
+        if (!isDark) {
+          isDark = /(?:^|;\s*)colorMode=dark(?:;|$)/.test(document.cookie || '') ||
+                   (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        }
+
+        if (skin === 'default') {
+          html.classList.add('skin-default');
+          if (logo) logo.src = 'assets/logo-login.svg';
+        } else {
+          html.classList.remove('skin-default');
+          if (logo) logo.src = 'assets/outlook-logo-login.svg';
+        }
+
+        html.classList.toggle('dark-mode', !!isDark);
+      }
+
+      syncTheme();
+
+      try {
+        if (window.parent && window.parent !== window && window.parent.document && window.MutationObserver) {
+          var obs = new MutationObserver(syncTheme);
+          obs.observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        }
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>

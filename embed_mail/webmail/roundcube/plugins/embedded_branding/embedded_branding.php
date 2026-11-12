@@ -43,8 +43,22 @@ class embedded_branding extends rcube_plugin
             $this->include_script('outlook.js');
         }
         $this->add_hook('startup', [$this, 'startup']);
+        $this->add_hook('render_page', [$this, 'render_page']);
         $this->add_hook('settings_actions', [$this, 'settings_actions']);
         $this->add_hook('send_page', [$this, 'send_page']);
+    }
+
+    /** Point Elastic's blank reading pane iframe at our branded watermark page. */
+    public function render_page($args)
+    {
+        $rcmail = rcmail::get_instance();
+        if (isset($rcmail->output) && method_exists($rcmail->output, 'set_env')) {
+            $rcmail->output->set_env(
+                'blankpage',
+                'plugins/embedded_branding/watermark.html?skin=' . $this->active_skin
+            );
+        }
+        return $args;
     }
 
     /** Serve a branded About page instead of the upstream one. */
@@ -103,6 +117,22 @@ class embedded_branding extends rcube_plugin
         $args['content'] = preg_replace(
             '/(<div\b[^>]*id=[\'"]login-footer[\'"][^>]*>)(?:&nbsp;|&#160;|\s)*(?:&bull;|&#8226;|\x{2022})(?:&nbsp;|&#160;|\s)*/iu',
             '$1',
+            $args['content']
+        );
+        // Replace Elastic's blankpage watermark (Roundcube sphere/cube logo) for both skins.
+        $watermark = 'plugins/embedded_branding/watermark.html?skin=' . $this->active_skin;
+        $fallback_logo = $this->active_skin === 'outlook'
+            ? 'plugins/embedded_branding/assets/outlook-logo-login.svg'
+            : 'plugins/embedded_branding/assets/logo-login.svg';
+        $args['content'] = str_replace(
+            [
+                'skins/elastic/watermark.html',
+                'skins/elastic/images/logo.svg',
+            ],
+            [
+                $watermark,
+                $fallback_logo,
+            ],
             $args['content']
         );
         if ($this->active_skin === 'outlook') {

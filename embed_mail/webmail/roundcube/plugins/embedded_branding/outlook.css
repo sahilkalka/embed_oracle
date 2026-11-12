@@ -41,7 +41,8 @@ html.ei-skin-outlook body {
   right: 0;
   height: var(--ol-topbar-h);
   z-index: 1040;
-  background: linear-gradient(90deg, #0078d4 0%, #006cbe 65%, #005a9e 100%);
+  background-color: #0078d4;
+  background-image: linear-gradient(90deg, #0078d4 0%, #006cbe 65%, #005a9e 100%);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -66,39 +67,54 @@ html.ei-skin-outlook body.ei-has-topbar #layout {
   min-width: 0;
 }
 
-.ei-ol-icon-btn {
+.ei-ol-left {
+  flex: 1 1 auto;
+}
+
+.ei-ol-right {
+  flex: 0 0 auto;
+}
+
+html.ei-skin-outlook #ei-outlook-topbar .ei-ol-icon-btn,
+html.ei-skin-outlook #ei-outlook-topbar a.ei-ol-icon-btn,
+html.ei-skin-outlook #ei-outlook-topbar a.ei-ol-icon-btn:visited {
   width: 36px;
   height: 36px;
   min-width: 36px;
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: #ffffff;
+  color: #ffffff !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   text-decoration: none !important;
+  flex-shrink: 0;
   transition: transform 220ms var(--ol-spring), background-color 160ms var(--ol-ease);
 }
 
-.ei-ol-icon-btn:hover,
-.ei-ol-icon-btn:focus-visible {
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
+html.ei-skin-outlook #ei-outlook-topbar .ei-ol-icon-btn:hover,
+html.ei-skin-outlook #ei-outlook-topbar .ei-ol-icon-btn:focus-visible,
+html.ei-skin-outlook #ei-outlook-topbar a.ei-ol-icon-btn:hover,
+html.ei-skin-outlook #ei-outlook-topbar a.ei-ol-icon-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff !important;
   transform: translateY(-1px) scale(1.06);
   outline: none;
 }
 
-.ei-ol-icon-btn:active {
+html.ei-skin-outlook #ei-outlook-topbar .ei-ol-icon-btn:active {
   transform: scale(0.92);
 }
 
-.ei-ol-brand {
+html.ei-skin-outlook #ei-outlook-topbar .ei-ol-brand,
+html.ei-skin-outlook #ei-outlook-topbar .ei-ol-brand:visited {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
+  max-width: 100%;
   padding: 4px 8px;
   border-radius: 8px;
   color: #ffffff !important;
@@ -148,7 +164,7 @@ html.ei-skin-outlook body.ei-has-topbar #layout {
   border-radius: 14px;
   box-shadow: 0 16px 38px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 12px;
-  z-index: 1060;
+  z-index: 30050;
   display: none;
   transform-origin: top left;
 }
@@ -173,10 +189,12 @@ html.ei-skin-outlook body.ei-has-topbar #layout {
   gap: 6px;
 }
 
-.ei-ol-waffle-item {
+html.ei-skin-outlook .ei-ol-waffle-item,
+html.ei-skin-outlook .ei-ol-waffle-item:visited {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
   padding: 9px 10px;
   border-radius: 10px;
   color: var(--ol-text) !important;
@@ -188,10 +206,10 @@ html.ei-skin-outlook body.ei-has-topbar #layout {
   transition: transform 220ms var(--ol-spring), background-color 150ms ease, border-color 150ms ease;
 }
 
-.ei-ol-waffle-item:hover {
+html.ei-skin-outlook .ei-ol-waffle-item:hover {
   background: var(--ol-blue-soft);
   border-color: var(--ol-blue-border);
-  color: var(--ol-blue) !important;
+  color: var(--ol-blue-pressed) !important;
   transform: translateY(-2px) scale(1.02);
 }
 
@@ -215,41 +233,62 @@ html.ei-skin-outlook body.ei-has-topbar #layout {
 html.ei-skin-outlook #layout-menu,
 html.ei-skin-outlook .layout-menu,
 html.ei-skin-outlook #layout-menu .popover-header,
+html.ei-skin-outlook #layout-menu .special-buttons,
+html.ei-skin-outlook #taskmenu .special-buttons,
 html.ei-skin-outlook #layout-menu #logo {
   background-color: var(--ol-rail-bg) !important;
   color: var(--ol-rail-fg) !important;
+}
+
+html.ei-skin-outlook #layout-menu {
   border-right: 1px solid var(--ol-border) !important;
+}
+
+html.ei-skin-outlook #layout-menu #taskmenu .special-buttons {
+  border-top: 1px solid var(--ol-border) !important;
+  width: 100%;
+  background-image: none !important;
 }
 
 html.ei-skin-outlook body.ei-has-topbar #layout-menu #logo {
   display: none !important;
 }
 
+html.ei-skin-outlook #layout-menu #taskmenu a,
+html.ei-skin-outlook #layout-menu #taskmenu a:visited,
 html.ei-skin-outlook #layout-menu .special-buttons a,
+html.ei-skin-outlook #layout-menu .special-buttons a:not(:focus),
 html.ei-skin-outlook #layout-menu a {
   border-radius: 10px !important;
   color: #323130 !important;
   background-color: transparent !important;
-  margin: 2px 4px;
+  border-bottom: 0 !important;
   position: relative;
   transition: transform 240ms var(--ol-spring), background-color 150ms ease, color 150ms ease !important;
 }
 
+html.ei-skin-outlook #layout-menu #taskmenu a:hover,
+html.ei-skin-outlook #layout-menu #taskmenu a:focus,
+html.ei-skin-outlook #layout-menu .special-buttons a:hover,
+html.ei-skin-outlook #layout-menu .special-buttons a:focus,
 html.ei-skin-outlook #layout-menu a:hover,
 html.ei-skin-outlook #layout-menu a:focus {
-  color: var(--ol-blue) !important;
+  color: var(--ol-blue-pressed) !important;
   background-color: #ffffff !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  transform: scale(1.06);
+  transform: scale(1.04);
 }
 
+html.ei-skin-outlook #layout-menu #taskmenu a:active,
 html.ei-skin-outlook #layout-menu a:active {
-  transform: scale(0.93);
+  transform: scale(0.94);
 }
 
+html.ei-skin-outlook #layout-menu #taskmenu a.selected,
+html.ei-skin-outlook #layout-menu #taskmenu a.active,
 html.ei-skin-outlook #layout-menu a.selected,
 html.ei-skin-outlook #layout-menu a.active {
-  color: var(--ol-blue) !important;
+  color: var(--ol-blue-pressed) !important;
   background-color: #ffffff !important;
   box-shadow: 0 2px 8px rgba(0, 120, 212, 0.14);
 }
@@ -258,7 +297,7 @@ html.ei-skin-outlook #layout-menu a.selected::after,
 html.ei-skin-outlook #layout-menu a.active::after {
   content: "";
   position: absolute;
-  left: -3px;
+  left: -4px;
   top: 22%;
   bottom: 22%;
   width: 3px;
@@ -266,23 +305,105 @@ html.ei-skin-outlook #layout-menu a.active::after {
   background: var(--ol-blue);
 }
 
-/* Prominent Outlook "New mail" (Compose) CTA button */
-html.ei-skin-outlook #layout-menu a.compose {
-  background-color: var(--ol-blue) !important;
+/* High-contrast Logout action on the light rail */
+html.ei-skin-outlook #layout-menu #taskmenu a.logout,
+html.ei-skin-outlook #layout-menu #taskmenu a.logout:visited,
+html.ei-skin-outlook #layout-menu #taskmenu a.logout:not(:focus) {
+  color: #b91c1c !important;
+  background-color: transparent !important;
+}
+
+html.ei-skin-outlook #layout-menu #taskmenu a.logout:hover,
+html.ei-skin-outlook #layout-menu #taskmenu a.logout:focus {
+  color: #991b1b !important;
+  background-color: #fee2e2 !important;
+}
+
+/* Prominent Outlook "New mail" (Compose) CTA button (beats styles.css specificity) */
+html.ei-skin-outlook #layout-menu a.compose,
+html.ei-skin-outlook #layout-menu #taskmenu a.compose,
+html.ei-skin-outlook #layout-menu a.compose:not(.selected):not(:hover):not(:focus),
+html.ei-skin-outlook #layout-menu #taskmenu a.compose:not(.selected):not(:hover):not(:focus) {
+  background-color: #0078d4 !important;
   color: #ffffff !important;
+  font-weight: 600;
   box-shadow: 0 3px 10px rgba(0, 120, 212, 0.28);
 }
 
 html.ei-skin-outlook #layout-menu a.compose:hover,
-html.ei-skin-outlook #layout-menu a.compose:focus {
-  background-color: var(--ol-blue-hover) !important;
+html.ei-skin-outlook #layout-menu a.compose:focus,
+html.ei-skin-outlook #layout-menu #taskmenu a.compose:hover,
+html.ei-skin-outlook #layout-menu #taskmenu a.compose:focus {
+  background-color: #106ebe !important;
   color: #ffffff !important;
-  transform: translateY(-1px) scale(1.07);
+  transform: translateY(-1px) scale(1.05);
 }
 
-html.ei-skin-outlook #layout-menu a.compose:active {
-  background-color: var(--ol-blue-pressed) !important;
-  transform: scale(0.93);
+html.ei-skin-outlook #layout-menu a.compose:active,
+html.ei-skin-outlook #layout-menu #taskmenu a.compose:active {
+  background-color: #005a9e !important;
+  color: #ffffff !important;
+  transform: scale(0.94);
+}
+
+/* Desktop 78px rail centering */
+@media screen and (min-width: 1025px) {
+  html.ei-skin-outlook #layout-menu #taskmenu a {
+    width: 66px !important;
+    margin: 3px 6px !important;
+    padding: 7px 2px !important;
+    box-sizing: border-box;
+  }
+
+  html.ei-skin-outlook #layout-menu #taskmenu .special-buttons a {
+    margin: 3px 6px !important;
+  }
+
+  html.ei-skin-outlook #layout-menu a.selected::after,
+  html.ei-skin-outlook #layout-menu a.active::after {
+    left: -6px;
+  }
+}
+
+/* Tablet 42px icon-only rail (481px..1024px) */
+@media screen and (min-width: 481px) and (max-width: 1024px) {
+  html.ei-skin-outlook #layout-menu {
+    position: relative;
+  }
+
+  html.ei-skin-outlook #layout-menu #taskmenu .special-buttons {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    overflow: hidden;
+  }
+
+  html.ei-skin-outlook #layout-menu #taskmenu a,
+  html.ei-skin-outlook #layout-menu #taskmenu .special-buttons a {
+    width: 32px !important;
+    height: 34px !important;
+    min-width: 32px !important;
+    min-height: 34px !important;
+    margin: 3px auto !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+
+  html.ei-skin-outlook #layout-menu #taskmenu a::before {
+    float: none !important;
+    width: auto !important;
+    height: auto !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+  }
+
+  html.ei-skin-outlook #layout-menu a.selected::after,
+  html.ei-skin-outlook #layout-menu a.active::after {
+    left: -3px;
+  }
 }
 
 /* --- Primary & Toolbar Buttons (Bouncy Fluent Style) ---------------------- */
@@ -327,7 +448,7 @@ html.ei-skin-outlook .header .toolbar a {
 html.ei-skin-outlook .toolbar a.button:hover,
 html.ei-skin-outlook .toolbar a.button.selected,
 html.ei-skin-outlook .header .toolbar a.selected {
-  color: var(--ol-blue) !important;
+  color: var(--ol-blue-pressed) !important;
   background-color: var(--ol-blue-soft) !important;
   transform: translateY(-1px) scale(1.04);
 }
@@ -336,11 +457,32 @@ html.ei-skin-outlook .toolbar a.button:active {
   transform: scale(0.94);
 }
 
+/* Floating Action Button (Mobile Compose) */
+html.ei-skin-outlook .floating-action-buttons a.button,
+html.ei-skin-outlook .floating-action-buttons button.button {
+  background: var(--ol-blue) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(0, 120, 212, 0.36) !important;
+  transition: transform 220ms var(--ol-spring), background-color 150ms ease, box-shadow 180ms ease !important;
+}
+
+html.ei-skin-outlook .floating-action-buttons a.button:hover,
+html.ei-skin-outlook .floating-action-buttons button.button:hover {
+  background: var(--ol-blue-hover) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) scale(1.06);
+}
+
+html.ei-skin-outlook .floating-action-buttons a.button:active {
+  background: var(--ol-blue-pressed) !important;
+  transform: scale(0.93);
+}
+
 /* --- Links, Inputs & Controls --------------------------------------------- */
 html.ei-skin-outlook a,
 html.ei-skin-outlook a:visited,
 html.ei-skin-outlook .link {
-  color: var(--ol-blue);
+  color: var(--ol-blue-pressed);
 }
 
 html.ei-skin-outlook .form-control:focus,
@@ -431,7 +573,7 @@ html.ei-skin-outlook span.unreadcount {
 
 html.ei-skin-outlook .popupmenu li a.active:hover,
 html.ei-skin-outlook .popover .listing li a:hover {
-  color: var(--ol-blue);
+  color: var(--ol-blue-pressed);
 }
 
 html.ei-skin-outlook .popover,
@@ -477,7 +619,7 @@ html.ei-skin-outlook #ei-ol-login-hdr p {
 
 html.ei-skin-outlook #login-form .input-group-append .ei-pass-toggle:hover,
 html.ei-skin-outlook .ei-pass-wrap .ei-pass-toggle:hover {
-  color: var(--ol-blue);
+  color: var(--ol-blue-pressed);
 }
 
 html.ei-skin-outlook #login-form .input-group-append .ei-pass-toggle:focus-visible,
@@ -486,7 +628,7 @@ html.ei-skin-outlook .ei-pass-wrap .ei-pass-toggle:focus-visible {
 }
 
 html.ei-skin-outlook #login-footer a:hover {
-  color: var(--ol-blue) !important;
+  color: var(--ol-blue-pressed) !important;
 }
 
 /* --- Dark Mode Overrides (Outlook Dark) ----------------------------------- */
@@ -500,8 +642,14 @@ html.ei-skin-outlook.dark-mode {
   --ol-text-muted: #a19f9d;
 }
 
+html.ei-skin-outlook.dark-mode body {
+  background-color: #141414 !important;
+  color: #f3f2f1 !important;
+}
+
 html.ei-skin-outlook.dark-mode #ei-outlook-topbar {
-  background: linear-gradient(90deg, #0f2942 0%, #0d2238 65%, #091a2c 100%);
+  background-color: #0f2942;
+  background-image: linear-gradient(90deg, #0f2942 0%, #0d2238 65%, #091a2c 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 }
@@ -512,7 +660,8 @@ html.ei-skin-outlook.dark-mode #ei-ol-waffle-menu {
   border-color: #3b3a39;
 }
 
-html.ei-skin-outlook.dark-mode .ei-ol-waffle-item {
+html.ei-skin-outlook.dark-mode .ei-ol-waffle-item,
+html.ei-skin-outlook.dark-mode .ei-ol-waffle-item:visited {
   background: #1b1a19;
   color: #f3f2f1 !important;
 }
@@ -520,36 +669,74 @@ html.ei-skin-outlook.dark-mode .ei-ol-waffle-item {
 html.ei-skin-outlook.dark-mode .ei-ol-waffle-item:hover {
   background: rgba(0, 120, 212, 0.22);
   border-color: rgba(40, 168, 234, 0.45);
-  color: #6cb8f6 !important;
+  color: #7cc4fa !important;
 }
 
 html.ei-skin-outlook.dark-mode .ei-ol-waffle-dot {
   background: rgba(0, 120, 212, 0.24);
-  color: #6cb8f6;
+  color: #7cc4fa;
 }
 
 html.ei-skin-outlook.dark-mode #layout-menu,
 html.ei-skin-outlook.dark-mode .layout-menu,
 html.ei-skin-outlook.dark-mode #layout-menu .popover-header,
+html.ei-skin-outlook.dark-mode #layout-menu .special-buttons,
+html.ei-skin-outlook.dark-mode #taskmenu .special-buttons,
 html.ei-skin-outlook.dark-mode #layout-menu #logo {
   background-color: #181818 !important;
+  color: #e1dfdd !important;
   border-right-color: #2d2c2b !important;
 }
 
-html.ei-skin-outlook.dark-mode #layout-menu a {
-  color: #d2d0ce !important;
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu .special-buttons {
+  border-top-color: #2d2c2b !important;
 }
 
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a,
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a:visited,
+html.ei-skin-outlook.dark-mode #layout-menu .special-buttons a,
+html.ei-skin-outlook.dark-mode #layout-menu .special-buttons a:not(:focus),
+html.ei-skin-outlook.dark-mode #layout-menu a {
+  color: #e1dfdd !important;
+  background-color: transparent !important;
+}
+
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a:hover,
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a:focus,
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a.selected,
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a.active,
 html.ei-skin-outlook.dark-mode #layout-menu a:hover,
 html.ei-skin-outlook.dark-mode #layout-menu a:focus,
 html.ei-skin-outlook.dark-mode #layout-menu a.selected,
 html.ei-skin-outlook.dark-mode #layout-menu a.active {
   background-color: #292827 !important;
-  color: #6cb8f6 !important;
+  color: #7cc4fa !important;
 }
 
-html.ei-skin-outlook.dark-mode #layout-menu a.compose {
-  background-color: var(--ol-blue) !important;
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a.logout,
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a.logout:visited,
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a.logout:not(:focus) {
+  color: #f87171 !important;
+  background-color: transparent !important;
+}
+
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a.logout:hover,
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a.logout:focus {
+  color: #fecaca !important;
+  background-color: rgba(239, 68, 68, 0.22) !important;
+}
+
+html.ei-skin-outlook.dark-mode #layout-menu a.compose,
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a.compose,
+html.ei-skin-outlook.dark-mode #layout-menu a.compose:not(.selected):not(:hover):not(:focus),
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a.compose:not(.selected):not(:hover):not(:focus) {
+  background-color: #0078d4 !important;
+  color: #ffffff !important;
+}
+
+html.ei-skin-outlook.dark-mode #layout-menu a.compose:hover,
+html.ei-skin-outlook.dark-mode #layout-menu #taskmenu a.compose:hover {
+  background-color: #106ebe !important;
   color: #ffffff !important;
 }
 
@@ -562,19 +749,78 @@ html.ei-skin-outlook.dark-mode #layout-list,
 html.ei-skin-outlook.dark-mode #layout-content {
   background-color: #1f1f1f !important;
   border-right-color: #2d2c2b !important;
+  color: #f3f2f1 !important;
+}
+
+html.ei-skin-outlook.dark-mode #layout > div > .header,
+html.ei-skin-outlook.dark-mode #layout > div > .footer {
+  background-color: #1b1a19 !important;
+  border-color: #2d2c2b !important;
+  color: #f3f2f1 !important;
+}
+
+html.ei-skin-outlook.dark-mode #layout > div > .header a.button,
+html.ei-skin-outlook.dark-mode #layout > div > .footer a.button,
+html.ei-skin-outlook.dark-mode .toolbar a.button {
+  color: #e1dfdd !important;
+}
+
+html.ei-skin-outlook.dark-mode .searchbar {
+  background-color: #252423 !important;
+  border-color: #3b3a39 !important;
+  color: #f3f2f1 !important;
+}
+
+html.ei-skin-outlook.dark-mode .searchbar input,
+html.ei-skin-outlook.dark-mode .form-control,
+html.ei-skin-outlook.dark-mode select.form-control,
+html.ei-skin-outlook.dark-mode textarea.form-control {
+  background-color: #252423 !important;
+  border-color: #3b3a39 !important;
+  color: #f3f2f1 !important;
+}
+
+html.ei-skin-outlook.dark-mode .form-control::placeholder {
+  color: #a19f9d !important;
+}
+
+html.ei-skin-outlook.dark-mode #message-header,
+html.ei-skin-outlook.dark-mode .headers-table {
+  background-color: #1f1f1f !important;
+  border-color: #2d2c2b !important;
+  color: #f3f2f1 !important;
 }
 
 html.ei-skin-outlook.dark-mode a,
 html.ei-skin-outlook.dark-mode a:visited,
 html.ei-skin-outlook.dark-mode .link {
-  color: #6cb8f6;
+  color: #7cc4fa;
 }
 
 html.ei-skin-outlook.dark-mode .toolbar a.button:hover,
 html.ei-skin-outlook.dark-mode .toolbar a.button.selected,
 html.ei-skin-outlook.dark-mode .header .toolbar a.selected {
-  color: #6cb8f6 !important;
-  background-color: rgba(0, 120, 212, 0.22) !important;
+  color: #7cc4fa !important;
+  background-color: rgba(0, 120, 212, 0.24) !important;
+}
+
+html.ei-skin-outlook.dark-mode .floating-action-buttons a.button,
+html.ei-skin-outlook.dark-mode .floating-action-buttons button.button {
+  background: #0078d4 !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+html.ei-skin-outlook.dark-mode .listing li a,
+html.ei-skin-outlook.dark-mode .listing tbody td,
+html.ei-skin-outlook.dark-mode table.messagelist tr td {
+  color: #e1dfdd !important;
+  border-color: #2d2c2b !important;
+}
+
+html.ei-skin-outlook.dark-mode table.messagelist tr.unread td.subject span.subject a,
+html.ei-skin-outlook.dark-mode table.messagelist tr.unread .fromto {
+  color: #ffffff !important;
 }
 
 html.ei-skin-outlook.dark-mode .listing li.selected,
@@ -583,23 +829,43 @@ html.ei-skin-outlook.dark-mode .listing li.selected > div,
 html.ei-skin-outlook.dark-mode table.messagelist tr.selected td,
 html.ei-skin-outlook.dark-mode table.records-table tr.selected,
 html.ei-skin-outlook.dark-mode table.records-table tr.selected td {
-  background-color: rgba(0, 120, 212, 0.26) !important;
+  background-color: rgba(0, 120, 212, 0.28) !important;
   color: #ffffff !important;
 }
 
 html.ei-skin-outlook.dark-mode table.messagelist tr:hover td {
-  background-color: rgba(255, 255, 255, 0.05) !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 html.ei-skin-outlook.dark-mode #folderlist-content li.selected > a,
 html.ei-skin-outlook.dark-mode #folderlist-content li.selected > div a,
 html.ei-skin-outlook.dark-mode .listing li.selected > a {
-  color: #6cb8f6 !important;
+  color: #7cc4fa !important;
 }
 
 html.ei-skin-outlook.dark-mode .unreadcount,
 html.ei-skin-outlook.dark-mode span.unreadcount {
   background-color: var(--ol-blue) !important;
+  color: #ffffff !important;
+}
+
+html.ei-skin-outlook.dark-mode .popover,
+html.ei-skin-outlook.dark-mode .popupmenu,
+html.ei-skin-outlook.dark-mode .ui-dialog {
+  background-color: #252423 !important;
+  border-color: #3b3a39 !important;
+  color: #f3f2f1 !important;
+}
+
+html.ei-skin-outlook.dark-mode .btn-secondary {
+  background-color: #2d2c2b !important;
+  border-color: #484644 !important;
+  color: #f3f2f1 !important;
+}
+
+html.ei-skin-outlook.dark-mode .btn-secondary:hover {
+  background-color: #3b3a39 !important;
+  color: #ffffff !important;
 }
 
 html.ei-skin-outlook.dark-mode body.task-login {
@@ -612,15 +878,21 @@ html.ei-skin-outlook.dark-mode body.task-login #login-form {
   border-top-color: var(--ol-blue-sky);
 }
 
+html.ei-skin-outlook.dark-mode body.task-login #login-form .form-control {
+  background-color: #111827 !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
 html.ei-skin-outlook.dark-mode #ei-ol-login-hdr h1 {
   color: #f8fafc;
 }
 
 html.ei-skin-outlook.dark-mode #ei-ol-login-hdr p {
-  color: #94a3b8;
+  color: #cbd5e1;
 }
 
-/* --- Responsive Breakpoints (Mobile, Tablet, Desktop) --------------------- */
+/* --- Responsive Breakpoints (Mobile Phone Drawer & Narrow Viewports) ----- */
 @media (max-width: 1199px) {
   .ei-ol-pill-badge {
     display: none;
@@ -636,41 +908,207 @@ html.ei-skin-outlook.dark-mode #ei-ol-login-hdr p {
     padding: 0 8px;
   }
 
-  .ei-ol-icon-btn {
-    width: 42px;
-    height: 42px;
-    min-width: 42px;
+  html.ei-skin-outlook #ei-outlook-topbar .ei-ol-icon-btn,
+  html.ei-skin-outlook #ei-outlook-topbar a.ei-ol-icon-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
   }
 
   .ei-ol-brand-title {
     font-size: 0.875rem;
-    max-width: 165px;
-  }
-
-  /* Touch-friendly bottom/drawer icon targets */
-  html.ei-skin-outlook #layout-menu a,
-  html.ei-skin-outlook #layout-menu .special-buttons a {
-    min-height: 44px;
-    min-width: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  html.ei-skin-outlook #layout-menu a.selected::after,
-  html.ei-skin-outlook #layout-menu a.active::after {
-    left: 25%;
-    right: 25%;
-    top: auto;
-    bottom: 2px;
-    width: auto;
-    height: 3px;
   }
 
   html.ei-skin-outlook table.messagelist tr td {
     padding-top: 10px;
     padding-bottom: 10px;
   }
+}
+
+@media (max-width: 360px) {
+  .ei-ol-waffle-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile phone slide-out drawer (Elastic html.layout-phone / <= 480px) */
+html.ei-skin-outlook.layout-phone #layout-menu.hidden {
+  display: none !important;
+}
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) {
+  position: fixed !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: min(272px, 84vw) !important;
+  background-color: var(--ol-surface) !important;
+  border-right: 1px solid var(--ol-border) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  z-index: 30001 !important;
+  overflow: hidden !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.22) !important;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) .popover-header {
+  background-color: #0078d4 !important;
+  background-image: linear-gradient(90deg, #0078d4 0%, #006cbe 100%) !important;
+  color: #ffffff !important;
+  border: 0 !important;
+  height: 54px !important;
+  min-height: 54px !important;
+  line-height: 54px !important;
+  padding: 0 10px 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-shrink: 0;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) .popover-header #logo {
+  display: inline-block !important;
+  max-height: 30px !important;
+  max-width: 150px !important;
+  width: auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) .popover-header a,
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) .popover-header a.cancel {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #ffffff !important;
+  background: transparent !important;
+  border-radius: 10px !important;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) .popover-header a:hover,
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) .popover-header a:focus {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) .popover-header a::before {
+  float: none !important;
+  height: auto !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 10px 10px 14px !important;
+  position: static !important;
+  box-sizing: border-box !important;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu a,
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu .special-buttons a {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  float: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 44px !important;
+  line-height: 1.35 !important;
+  padding: 10px 14px !important;
+  margin: 3px 0 !important;
+  text-align: left !important;
+  font-size: 0.9375rem !important;
+  font-weight: 500;
+  border-radius: 10px !important;
+  border-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu a::before {
+  float: none !important;
+  width: 22px !important;
+  height: auto !important;
+  line-height: 1 !important;
+  margin: 0 12px 0 0 !important;
+  text-align: center !important;
+  flex-shrink: 0 !important;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu span.inner {
+  display: inline !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu a.compose {
+  margin-bottom: 8px !important;
+  font-weight: 600 !important;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu a.selected,
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu a.active {
+  background-color: var(--ol-blue-soft) !important;
+  color: var(--ol-blue-pressed) !important;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu a.selected::after,
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu a.active::after {
+  left: 0 !important;
+  right: auto !important;
+  top: 20% !important;
+  bottom: 20% !important;
+  width: 3px !important;
+  height: auto !important;
+}
+
+html.ei-skin-outlook.layout-phone #layout-menu.popover:not(.hidden) #taskmenu .special-buttons {
+  position: static !important;
+  margin-top: auto !important;
+  padding-top: 8px !important;
+  border-top: 1px solid var(--ol-border) !important;
+  background: transparent !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html.ei-skin-outlook.dark-mode.layout-phone #layout-menu.popover:not(.hidden) {
+  background-color: #1b1a19 !important;
+  border-right-color: #2d2c2b !important;
+}
+
+html.ei-skin-outlook.dark-mode.layout-phone #layout-menu.popover:not(.hidden) .popover-header {
+  background-color: #0f2942 !important;
+  background-image: linear-gradient(90deg, #0f2942 0%, #0d2238 100%) !important;
+}
+
+html.ei-skin-outlook.dark-mode.layout-phone #layout-menu.popover:not(.hidden) #taskmenu a.selected,
+html.ei-skin-outlook.dark-mode.layout-phone #layout-menu.popover:not(.hidden) #taskmenu a.active {
+  background-color: rgba(0, 120, 212, 0.24) !important;
+  color: #7cc4fa !important;
+}
+
+html.ei-skin-outlook.dark-mode.layout-phone #layout-menu.popover:not(.hidden) #taskmenu .special-buttons {
+  border-top-color: #2d2c2b !important;
+  background-color: transparent !important;
 }
 
 /* --- Keyframes & Reduced Motion ------------------------------------------- */
