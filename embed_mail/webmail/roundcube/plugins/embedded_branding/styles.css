@@ -130,27 +130,124 @@ span.unreadcount {
 
 /* Login page */
 body.task-login {
-  background: radial-gradient(circle at top right, #e6f0ee 0%, #f5f7f6 60%) !important;
+  background: radial-gradient(circle at top right, #e6f3ef 0%, #f4f7f6 58%, #eef3f1 100%) !important;
   color: var(--ei-dark);
+}
+body.task-login #layout {
+  min-height: 100dvh;
 }
 body.task-login #layout-content {
   background: transparent !important;
+  min-height: 100dvh;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px 16px;
+}
+body.task-login #logo {
+  position: static !important;
+  top: auto !important;
+  display: block;
+  max-height: 58px;
+  width: auto;
+  max-width: min(100%, 260px);
+  margin: 0 auto !important;
 }
 #login-form {
+  position: static !important;
+  top: auto !important;
+  width: 100% !important;
+  max-width: 400px !important;
+  margin: 0 auto !important;
   background: #ffffff;
   color: var(--ei-dark);
   border: 1px solid #d5e2df;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(13, 23, 21, 0.08);
-  padding: 28px 28px 20px !important;
+  border-radius: 18px;
+  box-shadow: 0 14px 36px rgba(13, 23, 21, 0.08);
+  padding: 32px 28px 24px !important;
 }
-#login-form #logo {
-  max-height: 64px;
-  margin-bottom: 8px;
+#login-form table,
+#login-form tbody,
+#login-form tr {
+  display: block;
+  width: 100%;
+}
+#login-form td.input {
+  display: block;
+  width: 100%;
+  padding-bottom: 12px;
+}
+#login-form .input-group-text {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #475569;
+  min-width: 44px;
+  justify-content: center;
+}
+#login-form input.form-control {
+  min-height: 44px;
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0d1715;
+  font-size: 0.9375rem;
+}
+#login-form input.form-control:-webkit-autofill,
+#login-form input.form-control:-webkit-autofill:hover,
+#login-form input.form-control:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #f8fafc inset !important;
+  -webkit-text-fill-color: #0d1715 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+#login-form .formbuttons {
+  margin: 8px 0 0;
+}
+#rcmloginsubmit {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 10px !important;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+#rcmloginsubmit::before {
+  content: "\f2f6";
+  font-family: "Icons";
+  font-weight: 900;
+  display: inline-block !important;
+  font-style: normal;
+  line-height: 1;
+}
+#login-footer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #e2ece9;
+  text-align: center;
+  font-size: 0 !important;
+}
+#login-footer a,
+#login-footer > div {
+  font-size: 0.8125rem !important;
 }
 #login-footer,
 #login-footer a {
   color: #3a4c47 !important;
+  font-weight: 500;
+}
+#login-footer a:hover {
+  color: var(--ei-primary) !important;
+  text-decoration: underline;
+}
+@media (max-width: 480px) {
+  #login-form {
+    padding: 24px 18px 20px !important;
+    border-radius: 14px;
+  }
 }
 
 /* Dark mode overrides — crisp contrast on dark surfaces */
@@ -205,19 +302,40 @@ html.dark-mode span.unreadcount {
   color: #ffffff !important;
 }
 html.dark-mode body.task-login {
-  background: #0d1715 !important;
+  background: radial-gradient(circle at top right, #122621 0%, #0d1715 62%) !important;
   color: #f1f5f9;
+}
+html.dark-mode body.task-login #logo {
+  background: rgba(255, 255, 255, 0.96);
+  padding: 10px 16px;
+  border-radius: 14px;
+  max-height: 78px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 html.dark-mode #login-form {
   background: #13211e;
   color: #f1f5f9;
   border-color: #243b36;
-  box-shadow: none;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+}
+html.dark-mode #login-form .input-group-text {
+  background: #0d1715;
+  border-color: #2d4a43;
+  color: #a7c0ba;
 }
 html.dark-mode #login-form input.form-control {
   background: #0d1715;
   color: #f8fafc;
   border-color: #2d4a43;
+}
+html.dark-mode #login-form input.form-control:-webkit-autofill,
+html.dark-mode #login-form input.form-control:-webkit-autofill:hover,
+html.dark-mode #login-form input.form-control:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #0d1715 inset !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+html.dark-mode #login-footer {
+  border-top-color: #243b36;
 }
 html.dark-mode #login-footer,
 html.dark-mode #login-footer a {

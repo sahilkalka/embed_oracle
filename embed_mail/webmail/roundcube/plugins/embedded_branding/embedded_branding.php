@@ -69,6 +69,12 @@ class embedded_branding extends rcube_plugin
             '$1Roundcube$2',
             $args['content']
         );
+        // Remove stray separator bullet in #login-footer when productname/version are hidden.
+        $args['content'] = preg_replace(
+            '/(<div\b[^>]*id=[\'"]login-footer[\'"][^>]*>)(?:&nbsp;|&#160;|\s)*(?:&bull;|&#8226;|\x{2022})(?:&nbsp;|&#160;|\s)*/iu',
+            '$1',
+            $args['content']
+        );
         return $args;
     }
 }
