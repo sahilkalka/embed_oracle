@@ -401,10 +401,41 @@
       .replace(/"/g, '&quot;');
   }
 
+  async function persistQueueTopics(topicsList) {
+    try {
+      const csrfToken = (typeof window.getCsrfToken === 'function' ? window.getCsrfToken() : '') ||
+        document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+        document.querySelector('input[name="_csrf"]')?.value ||
+        window.csrfToken || '';
+
+      const res = await fetch('/admin/ai/topics', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({ topics: topicsList, _csrf: csrfToken })
+      });
+      if (res.ok && topicQueueCountBadge) {
+        topicQueueCountBadge.textContent = `${topicsList.length} queued (Saved ✓)`;
+        setTimeout(() => {
+          if (topicQueueCountBadge) {
+            topicQueueCountBadge.textContent = `${topicsList.length} queued`;
+          }
+        }, 2500);
+      }
+    } catch (e) {
+      console.warn('Background sync of topics queue failed:', e);
+    }
+  }
+
   function syncQueueTopics(topicsList) {
-    if (!aiSchedulerTopics) return;
-    aiSchedulerTopics.value = topicsList.join('\n');
+    if (aiSchedulerTopics) {
+      aiSchedulerTopics.value = topicsList.join('\n');
+    }
     renderTopicQueueTable();
+    persistQueueTopics(topicsList);
   }
 
   function renderTopicQueueTable() {

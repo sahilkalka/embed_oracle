@@ -44,7 +44,8 @@ async function getSchedulerSettings() {
   const category = map.ai_auto_gen_category || 'Embedded Electronics';
   const lastRun = map.ai_auto_gen_last_run ? new Date(map.ai_auto_gen_last_run) : null;
 
-  let rawTopics = map.ai_auto_gen_topics;
+  const hasConfiguredTopics = typeof map.ai_auto_gen_topics === 'string';
+  let rawTopics = hasConfiguredTopics ? map.ai_auto_gen_topics : DEFAULT_TOPICS.join('\n');
   let topicsList = [];
   if (rawTopics && rawTopics.trim()) {
     topicsList = rawTopics
@@ -52,7 +53,8 @@ async function getSchedulerSettings() {
       .map(t => t.trim())
       .filter(t => t.length > 0);
   }
-  if (topicsList.length === 0) {
+  // Only fall back to defaults if the setting was never configured/saved in the DB
+  if (!hasConfiguredTopics && topicsList.length === 0) {
     topicsList = DEFAULT_TOPICS;
   }
 
@@ -64,7 +66,7 @@ async function getSchedulerSettings() {
     category,
     lastRun,
     topicsList,
-    rawTopics: map.ai_auto_gen_topics || DEFAULT_TOPICS.join('\n')
+    rawTopics
   };
 }
 
@@ -106,6 +108,7 @@ async function shouldRunScheduledTask() {
  * Select the next technical topic from the configured pool that hasn't been recently written
  */
 async function pickNextTopic(topicsList) {
+  const pool = (topicsList && topicsList.length > 0) ? topicsList : DEFAULT_TOPICS;
   const existingPosts = await prisma.post.findMany({
     select: { title: true, slug: true },
     orderBy: { createdAt: 'desc' },
@@ -115,7 +118,7 @@ async function pickNextTopic(topicsList) {
   const existingTitles = existingPosts.map(p => p.title.toLowerCase());
 
   // Find the first topic from the pool that isn't already a title
-  for (const topic of topicsList) {
+  for (const topic of pool) {
     const isUsed = existingTitles.some(t => t.includes(topic.toLowerCase().slice(0, 25)));
     if (!isUsed) {
       return topic;
@@ -131,7 +134,7 @@ async function pickNextTopic(topicsList) {
   } catch (e) {}
 
   // Fallback to random pick from pool with time-based suffix
-  const baseTopic = topicsList[Math.floor(Math.random() * topicsList.length)];
+  const baseTopic = pool[Math.floor(Math.random() * pool.length)];
   return baseTopic;
 }
 

@@ -39,6 +39,15 @@
       <div class="px-3 py-1.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-900 text-xs font-semibold text-sky-700 dark:text-sky-300">
         Scheduled: <span class="font-extrabold font-mono ml-1"><%= scheduledPosts %></span>
       </div>
+      <% if (scheduledPosts > 0) { %>
+        <form action="/admin/posts/cancel-scheduled" method="POST" onsubmit="return confirm('Convert all <%= scheduledPosts %> scheduled article(s) to Drafts? This immediately stops automatic publishing.')" class="inline">
+          <%- csrfField %>
+          <button type="submit" aria-label="Cancel scheduled publishing and move all to drafts" title="Cancel scheduled publishing and move all to drafts" class="px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-xs font-bold transition inline-flex items-center gap-1.5 cursor-pointer">
+            <svg class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span>Cancel All Scheduled (<%= scheduledPosts %>)</span>
+          </button>
+        </form>
+      <% } %>
       <div class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-brand-dark border border-slate-200 dark:border-brand-border text-xs font-semibold text-slate-600 dark:text-slate-300">
         Reads: <span class="font-extrabold font-mono text-brand-600 dark:text-accent ml-1"><%= totalArticleViews %></span>
       </div>

@@ -991,6 +991,28 @@ router.post('/posts/:id/delete', async (req, res) => {
   }
 });
 
+// POST /admin/posts/cancel-scheduled - Move all scheduled posts back to draft
+router.post('/posts/cancel-scheduled', async (req, res) => {
+  try {
+    const result = await prisma.post.updateMany({
+      where: { status: 'scheduled' },
+      data: { status: 'draft', scheduledAt: null }
+    });
+    invalidateHomepageData();
+    console.log(`[ADMIN] Moved ${result.count} scheduled posts to drafts.`);
+    if (req.xhr || req.headers.accept?.includes('application/json')) {
+      return res.json({ success: true, count: result.count });
+    }
+    res.redirect('/admin/posts?updated=' + result.count);
+  } catch (err) {
+    console.error('[CANCEL SCHEDULED POSTS ERROR]', err);
+    if (req.xhr || req.headers.accept?.includes('application/json')) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+    res.status(500).send('Error cancelling scheduled posts');
+  }
+});
+
 // GET /admin/settings - Manage Site Settings
 router.get('/settings', async (req, res, next) => {
   try {
@@ -1485,6 +1507,7 @@ router.get('/ai', (req, res) => {
 router.post('/ai', async (req, res) => {
   try {
     const fields = { ...req.body };
+    delete fields._csrf;
     // Handle checkbox state for ai_auto_gen_enabled
     fields.ai_auto_gen_enabled = (req.body.ai_auto_gen_enabled === 'true' || req.body.ai_auto_gen_enabled === 'on' || req.body.ai_auto_gen_enabled === '1') ? 'true' : 'false';
 
@@ -1496,10 +1519,40 @@ router.post('/ai', async (req, res) => {
       });
     }
     clearSettingsCache();
+    if (req.xhr || req.headers.accept?.includes('application/json')) {
+      return res.json({ success: true, message: 'Settings saved' });
+    }
     res.redirect('/admin/settings?saved=1#ai-engine');
   } catch (err) {
     console.error('[SAVE AI CONFIG ERROR]', err);
+    if (req.xhr || req.headers.accept?.includes('application/json')) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
     res.status(500).send('Error saving AI configuration');
+  }
+});
+
+// POST /admin/ai/topics - Instant AJAX sync for topic queue
+router.post('/ai/topics', async (req, res) => {
+  try {
+    const { topics } = req.body;
+    let raw = '';
+    if (Array.isArray(topics)) {
+      raw = topics.map(t => String(t || '').trim()).filter(Boolean).join('\n');
+    } else if (typeof topics === 'string') {
+      raw = topics.trim();
+    }
+    await prisma.setting.upsert({
+      where: { key: 'ai_auto_gen_topics' },
+      update: { value: raw },
+      create: { key: 'ai_auto_gen_topics', value: raw }
+    });
+    clearSettingsCache();
+    const count = raw ? raw.split('\n').filter(Boolean).length : 0;
+    res.json({ success: true, count, topics: raw ? raw.split('\n') : [] });
+  } catch (err) {
+    console.error('[SAVE AI TOPICS ERROR]', err);
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
