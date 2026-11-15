@@ -137,7 +137,15 @@
 
   <!-- Cookie Consent Banner -->
   <% if (settings.cookie_banner_enabled !== 'false') { %>
-  <div id="cookie-banner" role="region" aria-labelledby="cookie-banner-title" class="hidden fixed left-3 right-3 sm:left-4 sm:right-auto sm:max-w-md z-[10000] bg-white dark:bg-[#182c27] border border-slate-200 dark:border-brand-border rounded-2xl p-4 shadow-2xl transition overflow-y-auto" style="bottom: calc(4rem + env(safe-area-inset-bottom)); max-height: min(60dvh, 30rem);">
+  <style>
+    @media (min-width: 640px) {
+      #cookie-banner {
+        left: auto !important;
+        right: 1.5rem !important;
+      }
+    }
+  </style>
+  <div id="cookie-banner" role="region" aria-labelledby="cookie-banner-title" class="hidden fixed left-3 right-3 sm:inset-x-auto sm:right-6 sm:max-w-md z-[10000] bg-white dark:bg-[#182c27] border border-slate-200 dark:border-brand-border rounded-2xl p-4 shadow-2xl transition overflow-y-auto" style="bottom: calc(4rem + env(safe-area-inset-bottom)); max-height: min(60dvh, 30rem);">
     <div class="flex items-start gap-4">
       <div class="p-2 bg-brand-50 dark:bg-brand-900/50 rounded-xl text-brand-500 dark:text-accent shrink-0">
         <span class="material-symbols-rounded text-xl leading-none" aria-hidden="true">lock</span>

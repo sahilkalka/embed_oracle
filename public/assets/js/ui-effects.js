@@ -69,7 +69,7 @@
     if (el.dataset.magnetic === 'off') return;
     const rect0 = el.getBoundingClientRect();
     const small = Math.max(rect0.width, rect0.height) < 64;
-    const strength = Number(el.dataset.magneticStrength) || (small ? 0.32 : 0.22);
+    const strength = Number(el.dataset.magneticStrength) || (small ? 0.16 : 0.11);
     const x = new Spring(0, 220, 13), y = new Spring(0, 220, 13);
     const body = {
       update(dt) {
@@ -85,15 +85,15 @@
       const rect = el.getBoundingClientRect();
       const cx = rect.left + rect.width / 2 - x.value;
       const cy = rect.top + rect.height / 2 - y.value;
-      const limit = small ? 10 : 14;
+      const limit = small ? 5 : 7;
       x.target = Math.max(-limit, Math.min(limit, (event.clientX - cx) * strength));
       y.target = Math.max(-limit, Math.min(limit, (event.clientY - cy) * strength));
       wake(body);
     });
     el.addEventListener('pointerleave', () => {
       x.target = 0; y.target = 0;
-      // A release "flick" makes the spring overshoot visibly before settling.
-      x.velocity -= x.value * 6; y.velocity -= y.value * 6;
+      // A release "flick" makes the spring overshoot visibly before settling (reduced by 50%).
+      x.velocity -= x.value * 3; y.velocity -= y.value * 3;
       wake(body);
     });
   }

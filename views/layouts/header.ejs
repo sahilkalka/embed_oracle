@@ -40,8 +40,8 @@
   %>
   <link href="https://fonts.googleapis.com/css2?<%= fontQuery %>&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?<%= fontQuery %>&display=swap" rel="stylesheet"></noscript>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=swap" rel="stylesheet"></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet"></noscript>
 
   <!-- Tailwind CSS -->
   <link rel="preload" href="/css/style.css?v=<%= assetVersion %>" as="style">
@@ -142,6 +142,17 @@
     </style>
   <% } %>
 
+  <style id="header-icon-weights">
+    header .material-symbols-rounded,
+    .public-shell header .material-symbols-rounded,
+    nav.public-desktop-nav a.nav-icon-link > span.material-symbols-rounded,
+    #public-header-actions .material-symbols-rounded,
+    #mobile-menu .material-symbols-rounded {
+      font-weight: 200 !important;
+      font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24 !important;
+    }
+  </style>
+
   <%
     const safeAdsensePubId = /^ca-pub-\d{16}$/.test(settings.adsense_pub_id || '') ? settings.adsense_pub_id : '';
     const safeMetaPixelId = /^\d{5,20}$/.test(String(settings.meta_pixel_id || '')) ? String(settings.meta_pixel_id) : '';
@@ -208,19 +219,6 @@
   <!-- Skip to main content link for accessibility -->
   <a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-500 focus:text-white focus:rounded-lg focus:font-bold focus:text-sm">Skip to main content</a>
 
-  <!-- Top Announcement Bar / Global Promo Bar (Slot 5) -->
-  <% if (settings.promo_banner_active === 'true' || settings.ad_slot_promo_bar === 'true') { %>
-    <aside aria-label="Announcement" class="bg-gradient-to-r from-brand-600 via-brand-500 to-accent text-white text-xs py-1.5 px-3 sm:px-4 text-center font-bold flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 shadow-sm border-b border-black/10 dark:border-white/10">
-      <div class="flex items-center space-x-1.5">
-        <span class="bg-white/20 text-white px-1.5 py-0.5 rounded-full text-[9px] tracking-wider uppercase font-black animate-pulse flex-shrink-0">New</span>
-        <span class="text-white drop-shadow-sm font-bold text-[11px] sm:text-xs"><%= settings.promo_banner_title || 'Engineering Feasibility Consultation Available' %></span>
-      </div>
-      <a href="<%= settings.promo_banner_url || '/contact' %>" class="underline hover:text-white/80 text-white font-black whitespace-nowrap text-[11px] sm:text-xs inline-flex min-h-[44px] items-center px-2 group drop-shadow-sm">
-        <span><%= settings.promo_banner_cta || 'Book Consultation' %></span>
-        <span class="inline-block transform group-hover:translate-x-1 transition ml-0.5">&rarr;</span>
-      </a>
-    </aside>
-  <% } %>
 
   <% if (settings.lab_event_enabled === 'true') { %>
   <!-- Lab Status Top Notice Bar (Above Sticky Header) -->

@@ -7,32 +7,38 @@
   <style>
     :root {
       --wm-bg: #faf9f8;
-      --wm-card: rgba(255, 255, 255, 0.85);
+      --wm-card: rgba(255, 255, 255, 0.88);
       --wm-border: rgba(0, 120, 212, 0.16);
-      --wm-text: #201f1e;
+      --wm-chip-bg: rgba(0, 120, 212, 0.06);
+      --wm-chip-border: rgba(0, 120, 212, 0.14);
+      --wm-text: #1b1a19;
       --wm-sub: #605e5c;
       --wm-accent: #0078d4;
       --wm-badge-bg: linear-gradient(135deg, #0078d4 0%, #28a8ea 100%);
-      --wm-badge-shadow: 0 14px 32px rgba(0, 120, 212, 0.24);
+      --wm-badge-shadow: 0 16px 36px rgba(0, 120, 212, 0.22);
     }
     html.skin-default {
       --wm-bg: #f8faf9;
       --wm-border: rgba(0, 127, 95, 0.18);
+      --wm-chip-bg: rgba(0, 127, 95, 0.06);
+      --wm-chip-border: rgba(0, 127, 95, 0.14);
       --wm-accent: #007f5f;
       --wm-badge-bg: linear-gradient(135deg, #007f5f 0%, #10b981 100%);
-      --wm-badge-shadow: 0 14px 32px rgba(0, 127, 95, 0.22);
+      --wm-badge-shadow: 0 16px 36px rgba(0, 127, 95, 0.22);
     }
     html.dark-mode {
-      --wm-bg: #1f1f1f;
-      --wm-card: rgba(37, 36, 35, 0.88);
-      --wm-border: rgba(255, 255, 255, 0.1);
-      --wm-text: #f3f2f1;
-      --wm-sub: #c8c6c4;
-      --wm-badge-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+      --wm-bg: #141414;
+      --wm-card: rgba(30, 30, 30, 0.92);
+      --wm-border: rgba(255, 255, 255, 0.08);
+      --wm-chip-bg: rgba(255, 255, 255, 0.05);
+      --wm-chip-border: rgba(255, 255, 255, 0.1);
+      --wm-text: #f5f5f5;
+      --wm-sub: #a1a1aa;
+      --wm-badge-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
     }
     html.skin-default.dark-mode {
-      --wm-bg: #111917;
-      --wm-card: rgba(20, 31, 28, 0.88);
+      --wm-bg: #0d1513;
+      --wm-card: rgba(18, 28, 25, 0.92);
     }
     * { box-sizing: border-box; }
     html, body {
@@ -41,12 +47,13 @@
       width: 100%;
       height: 100%;
       background: var(--wm-bg);
-      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       color: var(--wm-text);
       display: flex;
       align-items: center;
       justify-content: center;
       user-select: none;
+      -webkit-font-smoothing: antialiased;
     }
     .wm-wrap {
       display: flex;
@@ -54,25 +61,55 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 16px;
-      padding: 44px 48px;
-      border-radius: 22px;
+      gap: 18px;
+      padding: 40px 36px;
+      border-radius: 24px;
       background: var(--wm-card);
       border: 1px solid var(--wm-border);
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
-      width: min(440px, calc(100% - 32px));
+      box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(12px);
+      width: min(480px, calc(100% - 32px));
       margin: 16px;
+      position: relative;
+    }
+    .wm-satellite {
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      background: var(--wm-card);
+      border: 1px solid var(--wm-border);
+      color: var(--wm-accent);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+    .wm-satellite-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
     }
     .wm-badge {
-      width: 96px;
-      height: 96px;
-      border-radius: 24px;
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
       background: var(--wm-badge-bg);
       box-shadow: var(--wm-badge-shadow);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 14px;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .wm-badge:hover {
+      transform: translateY(-2px);
     }
     .wm-logo {
       width: 100%;
@@ -80,57 +117,123 @@
       object-fit: contain;
       display: block;
     }
+    .wm-headings {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
     .wm-title {
-      font-size: 21px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 800;
       letter-spacing: -0.02em;
       color: var(--wm-text);
       margin: 0;
     }
     .wm-brand-sub {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       color: var(--wm-accent);
-      margin: -8px 0 0;
+      margin: 0;
     }
-    html.dark-mode .wm-brand-sub {
-      color: #7cc4fa;
-    }
-    html.skin-default.dark-mode .wm-brand-sub {
-      color: #34d399;
-    }
+    html.dark-mode .wm-brand-sub { color: #60a5fa; }
+    html.skin-default.dark-mode .wm-brand-sub { color: #34d399; }
     .wm-hint {
-      font-size: 14px;
-      line-height: 1.55;
+      font-size: 13px;
+      line-height: 1.5;
       color: var(--wm-sub);
       margin: 0;
-      max-width: 300px;
+      max-width: 320px;
     }
-    .wm-bar {
-      width: 48px;
-      height: 4px;
-      border-radius: 999px;
-      background: var(--wm-accent);
-      opacity: 0.8;
+    .wm-shortcuts {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 4px;
+      width: 100%;
     }
-    @media (max-width: 420px) {
-      .wm-wrap { padding: 32px 24px; }
-      .wm-badge { width: 80px; height: 80px; border-radius: 20px; }
+    .wm-chip-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: var(--wm-chip-bg);
+      border: 1px solid var(--wm-chip-border);
+      color: var(--wm-text);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .wm-chip-btn:hover {
+      background: var(--wm-border);
+      transform: translateY(-1px);
+    }
+    .wm-chip-icon {
+      font-size: 14px;
+      line-height: 1;
+      display: inline-flex;
+    }
+    .wm-kbd {
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      font-size: 10px;
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--wm-sub);
+    }
+    html.dark-mode .wm-kbd {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.14);
+      color: var(--wm-text);
+    }
+    @media (max-width: 440px) {
+      .wm-wrap { padding: 32px 20px; gap: 14px; }
+      .wm-badge { width: 72px; height: 72px; border-radius: 18px; }
       .wm-title { font-size: 18px; }
+      .wm-shortcuts { gap: 6px; }
+      .wm-chip-btn { padding: 5px 10px; font-size: 11px; }
     }
   </style>
 </head>
 <body>
   <div class="wm-wrap" role="presentation">
+    <div class="wm-satellite">
+      <span class="wm-satellite-dot"></span>
+      <span>READY</span>
+    </div>
     <div class="wm-badge">
       <img id="wmLogo" class="wm-logo" src="assets/outlook-logo.svg" alt="Embedded India Mail">
     </div>
-    <p class="wm-title">Embedded India Mail</p>
-    <p id="wmSkinSub" class="wm-brand-sub">Outlook Webmail</p>
-    <div class="wm-bar"></div>
-    <p class="wm-hint">Select a message from the list to read it here.</p>
+    <div class="wm-headings">
+      <p class="wm-title">Embedded India Mail</p>
+      <p id="wmSkinSub" class="wm-brand-sub">Outlook Webmail</p>
+    </div>
+    <p class="wm-hint">Select a message from the conversation list to read its contents or launch a quick action.</p>
+    <div class="wm-shortcuts">
+      <button type="button" class="wm-chip-btn" id="btnWmCompose" onclick="try{window.parent.rcmail.command('compose','',this)}catch(e){}">
+        <span class="wm-chip-icon">✏️</span>
+        <span>Compose</span>
+        <span class="wm-kbd">C</span>
+      </button>
+      <button type="button" class="wm-chip-btn" id="btnWmSearch" onclick="try{window.parent.document.querySelector('.searchbox input, #quicksearchbox')?.focus()}catch(e){}">
+        <span class="wm-chip-icon">🔍</span>
+        <span>Search</span>
+        <span class="wm-kbd">/</span>
+      </button>
+      <button type="button" class="wm-chip-btn" id="btnWmRefresh" onclick="try{window.parent.rcmail.command('checkmail','',this)}catch(e){}">
+        <span class="wm-chip-icon">🔄</span>
+        <span>Refresh</span>
+        <span class="wm-kbd">R</span>
+      </button>
+    </div>
   </div>
   <script>
     (function () {

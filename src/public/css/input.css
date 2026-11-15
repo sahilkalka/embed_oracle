@@ -114,6 +114,8 @@
     font-size: 1.6rem !important;
     line-height: 1 !important;
     margin: 0 !important;
+    font-weight: 200 !important;
+    font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24 !important;
   }
   .public-shell nav.public-desktop-nav a.nav-icon-link > span:not(.material-symbols-rounded) {
     margin: 0 !important;
@@ -133,11 +135,18 @@
   }
   .public-shell nav.public-desktop-nav a.nav-icon-link > span.material-symbols-rounded {
     font-size: 1.85rem !important;
-    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24 !important;
+    font-weight: 200 !important;
+    font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24 !important;
   }
   .public-shell nav.public-desktop-nav a.nav-icon-link > span:not(.material-symbols-rounded) {
     font-size: 0.78rem !important;
   }
+}
+.public-shell header .material-symbols-rounded,
+.public-shell #public-header-actions .material-symbols-rounded,
+.public-shell #mobile-menu .material-symbols-rounded {
+  font-weight: 200 !important;
+  font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24 !important;
 }
 .public-shell header,
 .admin-shell #adminTopHeader {
@@ -397,7 +406,7 @@
 
 /* Palette tokens (light/dark x 5 presets) are generated from src/data/colorThemes.js
    by src/services/themeEngine.js and emitted inline by both layouts. */
-:root { --spring-curve: cubic-bezier(0.34, 1.56, 0.64, 1); }
+:root { --spring-curve: cubic-bezier(0.34, 1.28, 0.64, 1); }
 :where(.ui-shell) :where(h1, h2, h3, h4, h5, h6) { font-family: var(--font-heading, inherit); }
 /* Multi-line display headings need >= 1.2 leading so ascenders/descenders never collide. */
 .ui-shell :is(h1, h2, h3) { line-height: 1.2; }
@@ -408,38 +417,38 @@
    BOUNCY MOTION & SPRING INTERACTION PHYSICS
    ==================================================================== */
 .spring-bounce {
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.25s cubic-bezier(0.34, 1.28, 0.64, 1);
 }
 
 .spring-card {
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.34, 1.28, 0.64, 1), box-shadow 0.25s cubic-bezier(0.34, 1.28, 0.64, 1), border-color 0.2s ease;
   will-change: transform;
 }
 .spring-card:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 20px 30px -10px var(--glow-color);
+  transform: translateY(-3px) scale(1.005);
+  box-shadow: 0 12px 20px -8px var(--glow-color);
 }
 
 .spring-btn {
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background-color 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.34, 1.28, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s ease;
   will-change: transform;
 }
 .spring-btn:hover {
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-1px) scale(1.01);
 }
 .spring-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.98);
 }
 
 .spring-pill {
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.34, 1.28, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease;
   will-change: transform;
 }
 .spring-pill:hover {
-  transform: translateY(-2px) scale(1.05);
+  transform: translateY(-1px) scale(1.01);
 }
 .spring-pill:active {
-  transform: scale(0.96);
+  transform: scale(0.98);
 }
 
 /* Live Telemetry Radar Pulse */
@@ -758,35 +767,59 @@ article.group:hover {
 }
 
 /* ====================================================================
-   GLOBAL TACTILE SPRING PHYSICS & ACCESSIBILITY GUARDRAILS
+   GLOBAL UNIFORM BUTTON HOVER SPRING PHYSICS & GUARDRAILS
+   (Standardized and reduced by 50% across all buttons)
    ==================================================================== */
 button,
-a,
 [role="button"],
 input[type="button"],
 input[type="submit"],
-input[type="reset"] {
-  transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-              color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+input[type="reset"],
+.btn-shimmer,
+.spring-btn,
+.btn-magnetic,
+.archetype-btn,
+a.btn-shimmer,
+a.spring-btn,
+a[class*="btn-"],
+a[class*=" btn-"] {
+  transition: transform 200ms cubic-bezier(0.34, 1.28, 0.64, 1),
+              box-shadow 200ms cubic-bezier(0.34, 1.28, 0.64, 1),
+              background-color 150ms ease,
+              border-color 150ms ease,
+              color 150ms ease;
+  will-change: transform;
 }
 
 button:hover,
-a.btn,
-a[class*="btn"],
-a[class*="button"],
-[role="button"]:hover {
-  transform: translateY(-2px) scale(1.01);
+[role="button"]:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+a.btn:hover,
+a[class*="btn"]:hover,
+a[class*="button"]:hover,
+.btn-shimmer:hover,
+.spring-btn:hover,
+.btn-magnetic:hover,
+.archetype-btn:hover,
+#copilot-trigger-btn:hover {
+  transform: translateY(-1px) scale(1.01) !important;
 }
 
 button:active,
+[role="button"]:active,
+input[type="button"]:active,
+input[type="submit"]:active,
 a.btn:active,
 a[class*="btn"]:active,
-[role="button"]:active {
-  transform: translateY(0) scale(0.97);
-  transition-duration: 100ms;
+a[class*="button"]:active,
+.btn-shimmer:active,
+.spring-btn:active,
+.btn-magnetic:active,
+.archetype-btn:active,
+#copilot-trigger-btn:active {
+  transform: translateY(0) scale(0.98) !important;
+  transition-duration: 80ms !important;
 }
 
 button:focus-visible,
@@ -1434,7 +1467,7 @@ html:not(.dark) .ui-shell .text-slate-300:not(:where([class*="bg-brand-5"], [cla
    Loaded by the public layout only; the admin dashboard never gets .fx-motion.
    ==================================================================== */
 .public-shell {
-  --fx-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --fx-spring: cubic-bezier(0.34, 1.28, 0.64, 1);
   --fx-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --fx-glare-color: color-mix(in srgb, var(--primary-color, #007f5f) 18%, rgb(255 255 255 / 0.7));
 }

@@ -92,7 +92,7 @@ function resolveTheme(settings = {}) {
   if (cardShadowIntensity === 'subtle') shadowValue = '0 1px 3px 0 rgba(0, 0, 0, 0.08)';
   if (cardShadowIntensity === 'high') shadowValue = '0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.2)';
 
-  let springCurve = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+  let springCurve = 'cubic-bezier(0.34, 1.28, 0.64, 1)';
   if (bounceIntensity === 'subtle') springCurve = 'cubic-bezier(0.25, 1, 0.5, 1)';
   if (bounceIntensity === 'none') springCurve = 'ease';
 

@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       transitionTimingFunction: {
-        'spring-bouncy': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'spring-bouncy': 'cubic-bezier(0.34, 1.28, 0.64, 1)',
         'spring-snappy': 'cubic-bezier(0.22, 1, 0.36, 1)',
         'out-smooth': 'cubic-bezier(0.16, 1, 0.3, 1)',
       },

@@ -46,7 +46,7 @@ async function seed() {
     { key: 'meta_pixel_id', value: '' },
     { key: 'lead_magnet_title', value: 'The 2026 Embedded Hardware & Firmware Design Checklist' },
     { key: 'lead_magnet_file', value: '/downloads/embedded-design-checklist.pdf' },
-    { key: 'promo_banner_active', value: 'true' },
+    { key: 'promo_banner_active', value: 'false' },
     { key: 'promo_banner_title', value: 'Hire Senior Freelance Embedded Engineers' },
     { key: 'promo_banner_text', value: 'Hardware design, deterministic RTOS firmware, TouchGFX/Qt UI & HMI, and prototype testing. Fixed-bid milestone projects or per-hour/per-day billing.' },
     { key: 'promo_banner_cta', value: 'Discuss Project Scope' },

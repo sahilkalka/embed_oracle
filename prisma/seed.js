@@ -42,7 +42,7 @@ async function main() {
     { key: 'meta_pixel_id', value: '' },
     { key: 'lead_magnet_title', value: 'The 2026 Embedded Hardware & Firmware Design Checklist' },
     { key: 'lead_magnet_file', value: '/downloads/embedded-design-checklist.pdf' },
-    { key: 'promo_banner_active', value: 'true' },
+    { key: 'promo_banner_active', value: 'false' },
     { key: 'promo_banner_title', value: 'Accelerate Your Next IoT or High-Speed PCB Project' },
     { key: 'promo_banner_text', value: 'From concept and schematics to full-cycle production and firmware BSP. Partner with India’s leading embedded engineering team.' },
     { key: 'promo_banner_cta', value: 'Book an Engineering Feasibility Call' },
