@@ -231,27 +231,18 @@
       return;
     }
 
-    // Create the Outlook Fluent Send CTA button
+    // Create the native toolbar Send button matching Save, Attach, Signature, Responses
     var sendBtn = document.createElement('a');
     sendBtn.id = 'ei-ol-compose-send';
-    sendBtn.className = 'button send mainaction ei-ol-send-btn';
+    sendBtn.className = 'button send mainaction toolbar-button';
     sendBtn.href = '#';
     sendBtn.setAttribute('role', 'button');
     sendBtn.setAttribute('title', 'Send message');
     sendBtn.setAttribute('data-command', 'send');
 
-    var iconSpan = svgIcon([
-      { d: 'M2.01 21L23 12 2.01 3 2 10l15 2-15 2z' }
-    ], 16);
-    iconSpan.style.marginRight = '6px';
-    iconSpan.style.verticalAlign = 'middle';
-    iconSpan.style.display = 'inline-block';
-
     var textSpan = document.createElement('span');
     textSpan.className = 'inner';
     textSpan.textContent = 'Send';
-
-    sendBtn.appendChild(iconSpan);
     sendBtn.appendChild(textSpan);
 
     sendBtn.addEventListener('click', function (e) {

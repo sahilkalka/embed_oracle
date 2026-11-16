@@ -53,10 +53,22 @@ html.ei-skin-outlook body {
   user-select: none;
 }
 
+html.ei-skin-outlook body.ei-has-topbar {
+  padding-top: var(--ol-topbar-h) !important;
+  box-sizing: border-box !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+}
+
 html.ei-skin-outlook body.ei-has-topbar #layout {
-  height: calc(100dvh - var(--ol-topbar-h)) !important;
-  min-height: calc(100dvh - var(--ol-topbar-h)) !important;
-  margin-top: var(--ol-topbar-h) !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  margin-top: 0 !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
 }
 
 .ei-ol-left,
@@ -1314,72 +1326,70 @@ html.ei-skin-outlook.dark-mode.layout-phone #layout-menu.popover:not(.hidden) #t
 }
 
 /* --- Fluent Outlook Send Button in Compose Command Bar -------------------- */
-html.ei-skin-outlook #ei-ol-compose-send,
-html.ei-skin-outlook a#ei-ol-compose-send {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 34px !important;
-  min-height: 34px !important;
-  padding: 0 16px !important;
-  margin: 0 8px 0 0 !important;
-  border-radius: 6px !important;
-  background-color: var(--ol-blue) !important;
-  color: #ffffff !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  text-decoration: none !important;
-  cursor: pointer !important;
-  border: 0 !important;
-  white-space: nowrap !important;
-  flex-shrink: 0 !important;
-  box-shadow: 0 2px 6px rgba(0, 120, 212, 0.28) !important;
-  transition: transform 200ms var(--ol-spring), background-color 150ms ease, box-shadow 180ms ease !important;
+html.ei-skin-outlook #layout > div > .header a#ei-ol-compose-send,
+html.ei-skin-outlook #layout-content > .header a#ei-ol-compose-send {
+  float: none !important;
+  display: inline-block !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  line-height: 1.15 !important;
+  padding: 2px 10px !important;
+  margin: 0 4px !important;
   vertical-align: middle !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  border-radius: 8px !important;
+  color: var(--ol-blue-pressed) !important;
+  background-color: var(--ol-blue-soft) !important;
+  border: 1px solid var(--ol-blue-border) !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  transition: transform 220ms var(--ol-spring), background-color 150ms ease, color 150ms ease !important;
 }
 
-html.ei-skin-outlook #ei-ol-compose-send:hover,
-html.ei-skin-outlook #ei-ol-compose-send:focus-visible {
-  background-color: var(--ol-blue-hover) !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 12px rgba(0, 120, 212, 0.36) !important;
-  transform: translateY(-1px) scale(1.02);
-  outline: none !important;
+html.ei-skin-outlook #layout > div > .header a#ei-ol-compose-send::before,
+html.ei-skin-outlook #layout-content > .header a#ei-ol-compose-send::before {
+  content: "\e801" !important;
+  font-family: "Icons" !important;
+  font-weight: 900 !important;
+  float: none !important;
+  display: block !important;
+  height: 22px !important;
+  width: auto !important;
+  line-height: 22px !important;
+  margin: 0 auto !important;
+  font-size: 1.25rem !important;
+  color: var(--ol-blue) !important;
 }
 
-html.ei-skin-outlook #ei-ol-compose-send:active {
-  background-color: var(--ol-blue-pressed) !important;
-  transform: scale(0.96);
+html.ei-skin-outlook #layout > div > .header a#ei-ol-compose-send:hover,
+html.ei-skin-outlook #layout-content > .header a#ei-ol-compose-send:hover {
+  background-color: var(--ol-blue-selected) !important;
+  color: var(--ol-blue-pressed) !important;
+  transform: translateY(-1px) scale(1.04);
 }
 
-html.ei-skin-outlook #ei-ol-compose-send svg {
-  fill: currentColor;
-  flex-shrink: 0;
+html.ei-skin-outlook #layout > div > .header a#ei-ol-compose-send:active,
+html.ei-skin-outlook #layout-content > .header a#ei-ol-compose-send:active {
+  transform: scale(0.94);
 }
 
-html.ei-skin-outlook.dark-mode #ei-ol-compose-send,
-html.ei-skin-outlook.dark-mode a#ei-ol-compose-send {
-  background-color: #0078d4 !important;
-  color: #ffffff !important;
+html.ei-skin-outlook.dark-mode #layout > div > .header a#ei-ol-compose-send,
+html.ei-skin-outlook.dark-mode #layout-content > .header a#ei-ol-compose-send {
+  background-color: rgba(0, 120, 212, 0.22) !important;
+  border-color: rgba(40, 168, 234, 0.45) !important;
+  color: #7cc4fa !important;
 }
 
-html.ei-skin-outlook.dark-mode #ei-ol-compose-send:hover {
-  background-color: #106ebe !important;
+html.ei-skin-outlook.dark-mode #layout > div > .header a#ei-ol-compose-send::before,
+html.ei-skin-outlook.dark-mode #layout-content > .header a#ei-ol-compose-send::before {
+  color: #7cc4fa !important;
 }
 
-/* Hide duplicate bottom formbuttons in Outlook theme (Send is now in the top toolbar) */
+/* Hide duplicate bottom formbuttons in Outlook theme (Send is cleanly positioned in the top toolbar) */
 html.ei-skin-outlook #compose-form .formbuttons {
   display: none !important;
-}
-
-/* Ensure editor iframe / textarea always has full comfortable height */
-html.ei-skin-outlook #composebodycontainer,
-html.ei-skin-outlook #compose-body {
-  min-height: 380px !important;
-}
-
-html.ei-skin-outlook .tox.tox-tinymce {
-  min-height: 380px !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
