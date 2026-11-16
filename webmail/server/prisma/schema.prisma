@@ -1,0 +1,125 @@
+// server/prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  signature    String?
+  theme        String   @default("system") // system, light, dark
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Folder {
+  id        String    @id @default(uuid())
+  name      String
+  slug      String    @unique // inbox, sent, drafts, archive, junk, trash, or custom
+  icon      String?
+  sortOrder Int       @default(0)
+  isSystem  Boolean   @default(false)
+  threads   Thread[]
+  messages  Message[]
+}
+
+model Tag {
+  id        String      @id @default(uuid())
+  name      String      @unique
+  color     String      @default("#0078d4")
+  threads   ThreadTag[]
+  createdAt DateTime    @default(now())
+}
+
+model Thread {
+  id             String      @id @default(uuid())
+  subject        String
+  snippet        String?
+  folderId       String
+  folder         Folder      @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  isRead         Boolean     @default(false)
+  isStarred      Boolean     @default(false)
+  isArchived     Boolean     @default(false)
+  hasAttachments Boolean     @default(false)
+  lastMessageAt  DateTime    @default(now())
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  messages       Message[]
+  tags           ThreadTag[]
+
+  @@index([folderId, lastMessageAt])
+}
+
+model ThreadTag {
+  threadId String
+  tagId    String
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([threadId, tagId])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  threadId       String
+  thread         Thread       @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  folderId       String
+  folder         Folder       @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  messageId      String?      @unique // RFC Message-ID
+  inReplyTo      String?
+  references     String?
+  fromName       String?
+  fromEmail      String
+  toRecipients   String       // JSON array of { name, address }
+  ccRecipients   String?      // JSON array of { name, address }
+  bccRecipients  String?      // JSON array of { name, address }
+  replyTo        String?
+  subject        String
+  textBody       String?
+  htmlBody       String?
+  isRead         Boolean      @default(false)
+  isStarred      Boolean      @default(false)
+  isDraft        Boolean      @default(false)
+  sentAt         DateTime?
+  receivedAt     DateTime     @default(now())
+  rawStoragePath String?
+  attachments    Attachment[]
+
+  @@index([threadId, receivedAt])
+  @@index([folderId, receivedAt])
+}
+
+model Attachment {
+  id          String   @id @default(uuid())
+  messageId   String
+  message     Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  filename    String
+  contentType String
+  size        Int
+  storagePath String
+  contentId   String?
+  isInline    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model Contact {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  name            String?
+  frequency       Int      @default(1)
+  lastContactedAt DateTime @default(now())
+}
+
+model Setting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}

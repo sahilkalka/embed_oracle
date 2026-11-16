@@ -30,7 +30,12 @@
     "test:visual:quick": "node tests/visual_audit_runner.js --test --quick",
     "test:visual:reference": "node tests/visual_audit_runner.js --reference",
     "test:visual:approve": "node tests/visual_audit_runner.js --approve",
-    "test:improvement-plan": "node scripts/test-improvement-plan.js"
+    "test:improvement-plan": "node scripts/test-improvement-plan.js",
+    "preview:webmail": "node scripts/preview-outlook-webmail.js",
+    "test:webmail": "playwright test tests/webmail-outlook-ui.spec.ts --project=Desktop-Chrome",
+    "build:webmail": "cd webmail && npm run build",
+    "deploy:all": "bash scripts/deploy-all.sh",
+    "migrate:mail": "node scripts/migrate-emails-to-webmail.js"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

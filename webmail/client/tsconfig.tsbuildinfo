@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/api.ts","./src/main.tsx","./src/types.ts","./src/components/composer.tsx","./src/components/header.tsx","./src/components/readingpane.tsx","./src/components/shortcutsmodal.tsx","./src/components/sidebar.tsx","./src/components/threadlist.tsx"],"version":"5.9.3"}

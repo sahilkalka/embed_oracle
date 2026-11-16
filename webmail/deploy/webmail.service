@@ -1,0 +1,23 @@
+[Unit]
+Description=Modern Fluid Webmail Service (Node.js Express + SQLite WAL)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/var/www/embeddedindia/webmail
+Environment=NODE_ENV=production
+Environment=PORT=3005
+Environment=DATABASE_URL="file:/var/www/embeddedindia/webmail/server/prisma/webmail.db"
+Environment=NODE_OPTIONS="--max-old-space-size=1024"
+ExecStart=/usr/bin/node /var/www/embeddedindia/webmail/server/dist/index.js
+Restart=always
+RestartSec=3
+LimitNOFILE=65535
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=modern-webmail
+
+[Install]
+WantedBy=multi-user.target

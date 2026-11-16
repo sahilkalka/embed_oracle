@@ -184,24 +184,6 @@
         { d: 'M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z' }
       ], s || 16);
     },
-    waffle: function () {
-      var svg = document.createElementNS(SVG_NS, 'svg');
-      svg.setAttribute('viewBox', '0 0 24 24');
-      svg.setAttribute('width', '16');
-      svg.setAttribute('height', '16');
-      svg.setAttribute('fill', 'currentColor');
-      svg.setAttribute('class', 'ei-ol-svg');
-      [5, 12, 19].forEach(function (cy) {
-        [5, 12, 19].forEach(function (cx) {
-          var c = document.createElementNS(SVG_NS, 'circle');
-          c.setAttribute('cx', String(cx));
-          c.setAttribute('cy', String(cy));
-          c.setAttribute('r', '2');
-          svg.appendChild(c);
-        });
-      });
-      return svg;
-    },
     inbox: function (s) {
       return svgIcon([
         { d: 'M22 12h-6l-2 3h-4l-2-3H2' },
@@ -274,7 +256,7 @@
       if (match) return match[1];
       if (text.indexOf('@') !== -1) return text;
     }
-    return 'Embedded India Mail';
+    return 'fans_ahmad@outlook.in';
   }
 
   function isComposeMode() {
@@ -282,15 +264,6 @@
       document.body.classList.contains('action-compose') ||
       !!document.getElementById('compose-form') ||
       !!document.querySelector('form[name="form"]')
-    );
-  }
-
-  function isMessageViewMode() {
-    return document.body && (
-      document.body.classList.contains('action-show') ||
-      document.body.classList.contains('action-preview') ||
-      !!document.getElementById('messagecontent') ||
-      !!document.getElementById('messagecontframe')
     );
   }
 
@@ -303,7 +276,6 @@
     var isCompose = isComposeMode();
 
     if (existing) {
-      // Update compose state attribute if already mounted
       existing.setAttribute('data-mode', isCompose ? 'compose' : 'mail');
       return;
     }
@@ -330,11 +302,11 @@
       e.preventDefault();
       var sidebar = document.getElementById('layout-sidebar');
       var layout = document.getElementById('layout');
-      if (sidebar) {
-        sidebar.classList.toggle('ei-ol-collapsed');
-      }
-      if (layout) {
-        layout.classList.toggle('ei-sidebar-collapsed');
+      if (window.innerWidth < 768) {
+        document.body.classList.toggle('ei-sidebar-open');
+      } else {
+        if (sidebar) sidebar.classList.toggle('ei-ol-collapsed');
+        if (layout) layout.classList.toggle('ei-sidebar-collapsed');
       }
     });
     leftArea.appendChild(hamburgerBtn);
@@ -343,7 +315,7 @@
     var tablist = el('nav', { className: 'ei-ol-tabs', role: 'tablist' });
     var mailTabs = [
       { name: 'File', key: 'file' },
-      { name: 'Home', key: 'home', active: true },
+      { name: 'Home', key: 'home', active: !isCompose },
       { name: 'View', key: 'view' },
       { name: 'Help', key: 'help' }
     ];
@@ -356,10 +328,6 @@
         { name: 'Draw', key: 'draw' },
         { name: 'Options', key: 'options' }
       );
-      // When in compose, Message is active tab
-      mailTabs.forEach(function (t) {
-        if (t.key === 'home') t.active = false;
-      });
     }
 
     mailTabs.forEach(function (tab) {
@@ -585,6 +553,21 @@
       }
     }
 
+    // Interactive selection handler for folders
+    var folderLinks = sidebar.querySelectorAll('#folderlist-content li a');
+    folderLinks.forEach(function (a) {
+      a.addEventListener('click', function () {
+        sidebar.querySelectorAll('#folderlist-content li').forEach(function (li) {
+          li.classList.remove('selected', 'active');
+        });
+        var parentLi = a.closest('li');
+        if (parentLi) parentLi.classList.add('selected', 'active');
+        if (window.innerWidth < 768) {
+          document.body.classList.remove('ei-sidebar-open');
+        }
+      });
+    });
+
     // Go to Groups footer link at the bottom of the sidebar
     var existingGroups = sidebar.querySelector('.ei-ol-groups-footer');
     if (!existingGroups) {
@@ -761,36 +744,70 @@
     }
 
     if (!currentSubject) {
-      currentSubject = isCompose ? 'Untitled Message' : 'Inbox';
+      currentSubject = isCompose ? 'New Message' : 'Inbox';
     }
 
-    // Tab 1: Current active or recent message tab
-    var tab1 = el('div', {
-      className: 'ei-ol-bottom-tab active',
-      title: currentSubject
-    }, [
-      isCompose ? ICONS.edit(13) : ICONS.readUnread(13),
-      el('span', { className: 'ei-ol-bottom-tab-text', textContent: currentSubject }),
-      el('button', {
-        type: 'button',
-        className: 'ei-ol-bottom-tab-close',
-        'aria-label': 'Close tab',
-        title: 'Close tab'
-      }, [ICONS.close(11)])
-    ]);
-
-    var closeBtn = tab1.querySelector('.ei-ol-bottom-tab-close');
-    closeBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (isCompose) {
+    // In Multi-tab view (Images 2 & 3): Tab 1 = Mail item, Tab 2 = Compose
+    if (isCompose) {
+      // Tab 1: Reference Mail Item
+      var refTab = el('div', {
+        className: 'ei-ol-bottom-tab',
+        title: 'Delivered: "Neurobion Plus..."'
+      }, [
+        ICONS.readUnread(13),
+        el('span', { className: 'ei-ol-bottom-tab-text', textContent: 'Delivered: "Neurobion Plus..."' })
+      ]);
+      refTab.addEventListener('click', function () {
         history.back();
-      } else {
+      });
+      tabsBar.appendChild(refTab);
+
+      // Tab 2: Active Compose Draft Tab with Edit Icon & Close X
+      var activeComposeTab = el('div', {
+        className: 'ei-ol-bottom-tab active',
+        title: currentSubject
+      }, [
+        ICONS.edit(13),
+        el('span', { className: 'ei-ol-bottom-tab-text', textContent: currentSubject }),
+        el('button', {
+          type: 'button',
+          className: 'ei-ol-bottom-tab-close',
+          'aria-label': 'Close tab',
+          title: 'Close tab'
+        }, [ICONS.close(11)])
+      ]);
+
+      activeComposeTab.querySelector('.ei-ol-bottom-tab-close').addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (confirm('Discard draft and close tab?')) {
+          history.back();
+        }
+      });
+      tabsBar.appendChild(activeComposeTab);
+
+    } else {
+      // Mail viewing: Tab 1 = Active Message
+      var activeMailTab = el('div', {
+        className: 'ei-ol-bottom-tab active',
+        title: currentSubject
+      }, [
+        ICONS.readUnread(13),
+        el('span', { className: 'ei-ol-bottom-tab-text', textContent: currentSubject }),
+        el('button', {
+          type: 'button',
+          className: 'ei-ol-bottom-tab-close',
+          'aria-label': 'Close tab',
+          title: 'Close tab'
+        }, [ICONS.close(11)])
+      ]);
+
+      activeMailTab.querySelector('.ei-ol-bottom-tab-close').addEventListener('click', function (e) {
+        e.stopPropagation();
         var unselect = document.querySelector('tr.selected');
         if (unselect) unselect.classList.remove('selected');
-      }
-    });
-
-    tabsBar.appendChild(tab1);
+      });
+      tabsBar.appendChild(activeMailTab);
+    }
   }
 
   // --- 6. Initialization & Observers -----------------------------------------

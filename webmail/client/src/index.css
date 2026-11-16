@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  }
+}
+
+/* Custom Outlook-style thin scrollbars with dark theme support */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Tactile Bouncy Micro-Interactions */
+.btn-bouncy {
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.15s ease;
+}
+.btn-bouncy:active {
+  transform: scale(0.94);
+}
+
+.item-bounce {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.item-bounce:hover {
+  transform: translateY(-1px);
+}
+.item-bounce:active {
+  transform: scale(0.99);
+}
+
+/* TipTap Editor ProseMirror Styles */
+.ProseMirror {
+  outline: none;
+  min-height: 140px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #94a3b8;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #0078d4;
+  padding-left: 10px;
+  color: #64748b;
+  margin: 8px 0;
+}
+
+.dark .ProseMirror blockquote {
+  color: #94a3b8;
+}
+
+.ProseMirror pre {
+  background: #f1f5f9;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.dark .ProseMirror pre {
+  background: #1e293b;
+  color: #e2e8f0;
+}
