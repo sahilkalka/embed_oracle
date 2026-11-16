@@ -204,9 +204,99 @@
     form.insertBefore(hdr, form.firstChild);
   }
 
+  function mountComposeSendButton() {
+    // Only target the compose view
+    var isCompose = document.body && (
+      document.body.classList.contains('action-compose') ||
+      document.getElementById('compose-form') ||
+      document.querySelector('form[name="form"]')
+    );
+    if (!isCompose) return;
+
+    var toolbar = document.querySelector('#layout-content .header .toolbar, #layout-content .header .menu.toolbar, .header .toolbar');
+    if (!toolbar) return;
+
+    // If our injected button is already there, make sure it's first
+    var existingInjected = document.getElementById('ei-ol-compose-send');
+    if (existingInjected) {
+      if (toolbar.firstChild !== existingInjected) {
+        toolbar.insertBefore(existingInjected, toolbar.firstChild);
+      }
+      return;
+    }
+
+    // Check if Elastic skin already rendered an active send button in the toolbar
+    var nativeToolbarSend = toolbar.querySelector('a.button.send:not(#ei-ol-compose-send), button.button.send');
+    if (nativeToolbarSend && window.getComputedStyle(nativeToolbarSend).display !== 'none') {
+      return;
+    }
+
+    // Create the Outlook Fluent Send CTA button
+    var sendBtn = document.createElement('a');
+    sendBtn.id = 'ei-ol-compose-send';
+    sendBtn.className = 'button send mainaction ei-ol-send-btn';
+    sendBtn.href = '#';
+    sendBtn.setAttribute('role', 'button');
+    sendBtn.setAttribute('title', 'Send message');
+    sendBtn.setAttribute('data-command', 'send');
+
+    var iconSpan = svgIcon([
+      { d: 'M2.01 21L23 12 2.01 3 2 10l15 2-15 2z' }
+    ], 16);
+    iconSpan.style.marginRight = '6px';
+    iconSpan.style.verticalAlign = 'middle';
+    iconSpan.style.display = 'inline-block';
+
+    var textSpan = document.createElement('span');
+    textSpan.className = 'inner';
+    textSpan.textContent = 'Send';
+
+    sendBtn.appendChild(iconSpan);
+    sendBtn.appendChild(textSpan);
+
+    sendBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (window.rcmail && typeof window.rcmail.command === 'function') {
+        window.rcmail.command('send', '', this, e);
+      } else {
+        var origBtn = document.querySelector('.formbuttons button.send, .formbuttons .button.send, [data-command="send"]');
+        if (origBtn) origBtn.click();
+      }
+    });
+
+    if (toolbar.firstChild) {
+      toolbar.insertBefore(sendBtn, toolbar.firstChild);
+    } else {
+      toolbar.appendChild(sendBtn);
+    }
+  }
+
   function init() {
     mountTopbar();
     enhanceLogin();
+    mountComposeSendButton();
+
+    setTimeout(mountComposeSendButton, 50);
+    setTimeout(mountComposeSendButton, 250);
+    setTimeout(mountComposeSendButton, 600);
+
+    if (window.rcmail && typeof window.rcmail.addEventListener === 'function') {
+      window.rcmail.addEventListener('init', function () {
+        setTimeout(mountComposeSendButton, 50);
+        setTimeout(mountComposeSendButton, 300);
+      });
+    }
+
+    if (typeof MutationObserver === 'function' && document.body) {
+      var observer = new MutationObserver(function () {
+        mountComposeSendButton();
+      });
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
   }
 
   if (document.readyState === 'loading') {

@@ -88,6 +88,19 @@ EOF
   fi
   node src/deployment-check.js
 
+  # Keep Roundcube webmail branding plugin synchronized with repository updates
+  if [ -d "/embed_mail/data/web/rc/plugins/embedded_branding" ]; then
+    echo "==> Syncing webmail branding plugin to /embed_mail/data/web/rc/plugins/embedded_branding..."
+    sudo cp -r "$APP_DIR/embed_mail/webmail/roundcube/plugins/embedded_branding/." "/embed_mail/data/web/rc/plugins/embedded_branding/"
+    sudo chown -R root:root "/embed_mail/data/web/rc/plugins/embedded_branding"
+    sudo find "/embed_mail/data/web/rc/plugins/embedded_branding" -type f -exec chmod 644 {} +
+    sudo find "/embed_mail/data/web/rc/plugins/embedded_branding" -type d -exec chmod 755 {} +
+    sudo rm -rf /embed_mail/data/web/rc/temp/*
+    if command -v docker >/dev/null 2>&1 && [ -f /embed_mail/docker-compose.yml ]; then
+      (cd /embed_mail && sudo docker compose exec -T php-fpm-mailcow sh -c 'kill -USR2 1' 2>/dev/null || true)
+    fi
+  fi
+
   echo "==> [Remote 6/6] Restarting embeddedindia.service and verifying health..."
   sudo systemctl daemon-reload
   sudo systemctl restart embeddedindia.service
