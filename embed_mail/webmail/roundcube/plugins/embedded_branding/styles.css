@@ -556,70 +556,102 @@ html.dark-mode #login-footer a {
   flex-shrink: 0 !important;
 }
 
-#layout-content.selected > .content {
+#layout-content.selected > .content,
+#layout-content.selected > .frame-content {
   flex: 1 1 auto !important;
   min-height: 0 !important;
-  overflow-y: auto !important;
-}
-
-/* Ensure the compose form itself fills the content area and the editor scrolls */
-#compose-content {
+  overflow: hidden !important;
   display: flex !important;
   flex-direction: column !important;
-  height: 100% !important;
-  min-height: 0 !important;
 }
 
-/* The TinyMCE editor wrapper should take remaining space and scroll internally */
-#compose-content #composebodycontainer,
-#compose-content .mce-tinymce,
-#compose-content div.tox.tox-tinymce {
+/* The compose form itself fills and scrolls */
+#compose-form {
+  display: flex !important;
+  flex-direction: column !important;
   flex: 1 1 auto !important;
   min-height: 0 !important;
   overflow: hidden !important;
 }
 
-/* The compose header fields (From, To, Subject, etc.) should not shrink */
-#compose-content .compose-headers,
-#compose-content #compose-headers {
+/* Headers row stays fixed at top */
+#compose-form > table,
+#compose-form > .compose-headers,
+#compose-form > #compose-headers {
   flex-shrink: 0 !important;
 }
 
-/* The editor toolbar should not shrink */
-#compose-content #editor-toolbar,
-#compose-content .tox .tox-toolbar-overlord,
-#compose-content .tox .tox-menubar {
-  flex-shrink: 0 !important;
-}
-
-/* Make the edit area fill remaining space and scroll */
-#compose-content .tox .tox-edit-area {
+/* The editor body area takes remaining space and scrolls */
+#composebodycontainer,
+#compose-body,
+.compose-body {
   flex: 1 1 auto !important;
   min-height: 0 !important;
   overflow-y: auto !important;
 }
 
-/* Plain-text compose textarea should also constrain and scroll */
-#compose-content textarea#composebody {
-  flex: 1 1 auto !important;
+/* TinyMCE editor should fill its container */
+#composebodycontainer .tox.tox-tinymce {
+  height: 100% !important;
   min-height: 0 !important;
+}
+
+/* Plain-text compose textarea should also constrain and scroll */
+textarea#composebody {
+  flex: 1 1 auto !important;
+  min-height: 120px !important;
   resize: none !important;
 }
 
-/* Ensure the formbuttons row (Send / Save Draft) at bottom stays visible */
-#compose-content .formbuttons {
+/* Injected toolbar Send button — prominent green/primary CTA */
+#ei-toolbar-send {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px;
+  padding: 6px 18px !important;
+  margin: 0 6px 0 0 !important;
+  border-radius: 8px !important;
+  background-color: var(--ei-primary) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  border: none !important;
+  white-space: nowrap !important;
   flex-shrink: 0 !important;
-  position: sticky !important;
-  bottom: 0 !important;
-  z-index: 10 !important;
-  padding: 8px 12px !important;
-  background-color: #ffffff !important;
-  border-top: 1px solid #e5e7eb !important;
+  transition: background-color 150ms ease, transform 200ms ease !important;
+  min-height: 34px !important;
+  line-height: 1.2 !important;
+  vertical-align: middle !important;
 }
 
-html.dark-mode #compose-content .formbuttons {
-  background-color: #111b18 !important;
-  border-top-color: #263832 !important;
+#ei-toolbar-send:hover,
+#ei-toolbar-send:focus {
+  background-color: var(--ei-primary-hover) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+#ei-toolbar-send:active {
+  transform: scale(0.96);
+}
+
+#ei-toolbar-send::before {
+  content: "\e801";
+  font-family: "Icons";
+  font-weight: 900;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+html.dark-mode #ei-toolbar-send {
+  background-color: #059669 !important;
+}
+
+html.dark-mode #ei-toolbar-send:hover {
+  background-color: #047857 !important;
 }
 
 /* On narrower screens (< 1000px), the compose toolbar can overflow.
@@ -638,7 +670,8 @@ html.dark-mode #compose-content .formbuttons {
 
   /* Prevent toolbar buttons from shrinking away */
   #layout-content > .header .toolbar a.button,
-  #layout-content > .header .toolbar li {
+  #layout-content > .header .toolbar li,
+  #ei-toolbar-send {
     flex-shrink: 0 !important;
   }
 }

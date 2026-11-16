@@ -1325,63 +1325,99 @@ html.ei-skin-outlook #layout-content.selected > .header {
   flex-shrink: 0 !important;
 }
 
-html.ei-skin-outlook #layout-content.selected > .content {
+html.ei-skin-outlook #layout-content.selected > .content,
+html.ei-skin-outlook #layout-content.selected > .frame-content {
   flex: 1 1 auto !important;
   min-height: 0 !important;
-  overflow-y: auto !important;
-}
-
-html.ei-skin-outlook #compose-content {
+  overflow: hidden !important;
   display: flex !important;
   flex-direction: column !important;
-  height: 100% !important;
-  min-height: 0 !important;
 }
 
-html.ei-skin-outlook #compose-content #composebodycontainer,
-html.ei-skin-outlook #compose-content .mce-tinymce,
-html.ei-skin-outlook #compose-content div.tox.tox-tinymce {
+html.ei-skin-outlook #compose-form {
+  display: flex !important;
+  flex-direction: column !important;
   flex: 1 1 auto !important;
   min-height: 0 !important;
   overflow: hidden !important;
 }
 
-html.ei-skin-outlook #compose-content .compose-headers,
-html.ei-skin-outlook #compose-content #compose-headers {
+html.ei-skin-outlook #compose-form > table,
+html.ei-skin-outlook #compose-form > .compose-headers,
+html.ei-skin-outlook #compose-form > #compose-headers {
   flex-shrink: 0 !important;
 }
 
-html.ei-skin-outlook #compose-content #editor-toolbar,
-html.ei-skin-outlook #compose-content .tox .tox-toolbar-overlord,
-html.ei-skin-outlook #compose-content .tox .tox-menubar {
-  flex-shrink: 0 !important;
-}
-
-html.ei-skin-outlook #compose-content .tox .tox-edit-area {
+html.ei-skin-outlook #composebodycontainer,
+html.ei-skin-outlook #compose-body,
+html.ei-skin-outlook .compose-body {
   flex: 1 1 auto !important;
   min-height: 0 !important;
   overflow-y: auto !important;
 }
 
-html.ei-skin-outlook #compose-content textarea#composebody {
-  flex: 1 1 auto !important;
+html.ei-skin-outlook #composebodycontainer .tox.tox-tinymce {
+  height: 100% !important;
   min-height: 0 !important;
+}
+
+html.ei-skin-outlook textarea#composebody {
+  flex: 1 1 auto !important;
+  min-height: 120px !important;
   resize: none !important;
 }
 
-html.ei-skin-outlook #compose-content .formbuttons {
+/* Injected toolbar Send button — prominent Outlook blue CTA */
+html.ei-skin-outlook #ei-toolbar-send {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px;
+  padding: 6px 20px !important;
+  margin: 0 8px 0 0 !important;
+  border-radius: 8px !important;
+  background-color: var(--ol-blue) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  border: none !important;
+  white-space: nowrap !important;
   flex-shrink: 0 !important;
-  position: sticky !important;
-  bottom: 0 !important;
-  z-index: 10 !important;
-  padding: 8px 12px !important;
-  background-color: var(--ol-surface) !important;
-  border-top: 1px solid var(--ol-border) !important;
+  min-height: 34px !important;
+  line-height: 1.2 !important;
+  vertical-align: middle !important;
+  transition: transform 220ms var(--ol-spring), background-color 150ms ease, box-shadow 180ms ease !important;
 }
 
-html.ei-skin-outlook.dark-mode #compose-content .formbuttons {
-  background-color: #1f1f1f !important;
-  border-top-color: #2d2c2b !important;
+html.ei-skin-outlook #ei-toolbar-send:hover,
+html.ei-skin-outlook #ei-toolbar-send:focus {
+  background-color: var(--ol-blue-hover) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 120, 212, 0.28);
+  transform: translateY(-1px) scale(1.02);
+}
+
+html.ei-skin-outlook #ei-toolbar-send:active {
+  background-color: var(--ol-blue-pressed) !important;
+  transform: scale(0.96);
+}
+
+html.ei-skin-outlook #ei-toolbar-send::before {
+  content: "\e801";
+  font-family: "Icons";
+  font-weight: 900;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+html.ei-skin-outlook.dark-mode #ei-toolbar-send {
+  background-color: #0078d4 !important;
+}
+
+html.ei-skin-outlook.dark-mode #ei-toolbar-send:hover {
+  background-color: #106ebe !important;
 }
 
 @media screen and (max-width: 999px) {
@@ -1397,7 +1433,8 @@ html.ei-skin-outlook.dark-mode #compose-content .formbuttons {
   }
 
   html.ei-skin-outlook #layout-content > .header .toolbar a.button,
-  html.ei-skin-outlook #layout-content > .header .toolbar li {
+  html.ei-skin-outlook #layout-content > .header .toolbar li,
+  html.ei-skin-outlook #ei-toolbar-send {
     flex-shrink: 0 !important;
   }
 }

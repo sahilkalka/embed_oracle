@@ -242,20 +242,107 @@
     adaptHtmlMessageParts(dark);
   }
 
+  /**
+   * Compose view fix: inject a sticky Send button into the top toolbar header
+   * so it's always visible regardless of how long the email body is.
+   * Also ensures the compose content area uses flex layout to constrain height.
+   */
+  function fixComposeSendButton() {
+    // Only act on the compose view
+    var composeForm = document.getElementById('compose-form');
+    if (!composeForm) return;
+
+    // Don't inject twice
+    if (document.getElementById('ei-toolbar-send')) return;
+
+    // Find the original Send button inside .formbuttons
+    var origSend = composeForm.querySelector('.formbuttons .button.send, .formbuttons button.send, .formbuttons [data-command="send"]');
+    if (!origSend) {
+      // Try broader search
+      origSend = composeForm.querySelector('.formbuttons .mainaction');
+    }
+
+    // Find the toolbar header in #layout-content
+    var layoutContent = document.getElementById('layout-content');
+    if (!layoutContent) return;
+    var toolbar = layoutContent.querySelector('.header .toolbar, .header .menu.toolbar');
+    if (!toolbar) {
+      // Fallback: look for the header itself
+      var header = layoutContent.querySelector('.header');
+      if (!header) return;
+      toolbar = header;
+    }
+
+    // Create the Send button for the toolbar
+    var sendBtn = document.createElement('a');
+    sendBtn.id = 'ei-toolbar-send';
+    sendBtn.className = 'button send mainaction';
+    sendBtn.href = '#';
+    sendBtn.setAttribute('role', 'button');
+    sendBtn.setAttribute('title', 'Send');
+    sendBtn.setAttribute('data-command', 'send');
+    sendBtn.innerHTML = '<span class="inner">Send</span>';
+
+    sendBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (window.rcmail && typeof rcmail.command === 'function') {
+        rcmail.command('send', '', this, e);
+      } else if (origSend) {
+        origSend.click();
+      }
+    });
+
+    // Insert Send as the first item in the toolbar
+    if (toolbar.firstChild) {
+      toolbar.insertBefore(sendBtn, toolbar.firstChild);
+    } else {
+      toolbar.appendChild(sendBtn);
+    }
+
+    // Apply flex layout fix to the compose content area via JS
+    // This ensures the compose editor area is height-constrained and scrollable
+    var contentDiv = layoutContent.querySelector('.content, .frame-content');
+    if (contentDiv) {
+      contentDiv.style.display = 'flex';
+      contentDiv.style.flexDirection = 'column';
+      contentDiv.style.minHeight = '0';
+      contentDiv.style.overflow = 'hidden';
+
+      composeForm.style.display = 'flex';
+      composeForm.style.flexDirection = 'column';
+      composeForm.style.flex = '1 1 auto';
+      composeForm.style.minHeight = '0';
+      composeForm.style.overflow = 'hidden';
+
+      // Make the compose body (editor area) the scrollable flex child
+      var composeBody = composeForm.querySelector('#composebodycontainer, .compose-body, #compose-body');
+      if (composeBody) {
+        composeBody.style.flex = '1 1 auto';
+        composeBody.style.minHeight = '0';
+        composeBody.style.overflowY = 'auto';
+      }
+    }
+  }
+
   function init() {
     scanPasswordFields();
     syncDarkBodies();
+    fixComposeSendButton();
     setTimeout(function () {
       scanPasswordFields();
       syncDarkBodies();
+      fixComposeSendButton();
     }, 0);
     setTimeout(syncDarkBodies, 250);
+    setTimeout(fixComposeSendButton, 500);
 
     if (window.rcmail && typeof window.rcmail.addEventListener === 'function') {
       window.rcmail.addEventListener('init', function () {
         setTimeout(function () {
           scanPasswordFields();
           syncDarkBodies();
+          fixComposeSendButton();
         }, 0);
       });
     }
@@ -274,6 +361,7 @@
       var observer = new MutationObserver(function () {
         scanPasswordFields();
         syncDarkBodies();
+        fixComposeSendButton();
       });
       observer.observe(document.body, {
         childList: true,
