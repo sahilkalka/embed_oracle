@@ -68,7 +68,7 @@ class embedded_branding extends rcube_plugin
             $rcmail  = rcmail::get_instance();
             $support = htmlspecialchars((string) $rcmail->config->get('support_url'), ENT_QUOTES);
             $is_outlook = ($this->active_skin === 'outlook');
-            $accent = $is_outlook ? '#0078d4' : '#007f5f';
+            $accent = $is_outlook ? '#107c41' : '#007f5f';
             $logo = $is_outlook
                 ? 'plugins/embedded_branding/assets/outlook-logo-login.svg'
                 : 'plugins/embedded_branding/assets/logo-login.svg';
