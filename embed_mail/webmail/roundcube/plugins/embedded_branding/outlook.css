@@ -1313,6 +1313,95 @@ html.ei-skin-outlook.dark-mode.layout-phone #layout-menu.popover:not(.hidden) #t
   }
 }
 
+/* --- Compose View: keep Send button visible & editor scrollable (Outlook) - */
+html.ei-skin-outlook #layout-content.selected {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+html.ei-skin-outlook #layout-content.selected > .header {
+  flex-shrink: 0 !important;
+}
+
+html.ei-skin-outlook #layout-content.selected > .content {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+html.ei-skin-outlook #compose-content {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+html.ei-skin-outlook #compose-content #composebodycontainer,
+html.ei-skin-outlook #compose-content .mce-tinymce,
+html.ei-skin-outlook #compose-content div.tox.tox-tinymce {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+html.ei-skin-outlook #compose-content .compose-headers,
+html.ei-skin-outlook #compose-content #compose-headers {
+  flex-shrink: 0 !important;
+}
+
+html.ei-skin-outlook #compose-content #editor-toolbar,
+html.ei-skin-outlook #compose-content .tox .tox-toolbar-overlord,
+html.ei-skin-outlook #compose-content .tox .tox-menubar {
+  flex-shrink: 0 !important;
+}
+
+html.ei-skin-outlook #compose-content .tox .tox-edit-area {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+html.ei-skin-outlook #compose-content textarea#composebody {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  resize: none !important;
+}
+
+html.ei-skin-outlook #compose-content .formbuttons {
+  flex-shrink: 0 !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 10 !important;
+  padding: 8px 12px !important;
+  background-color: var(--ol-surface) !important;
+  border-top: 1px solid var(--ol-border) !important;
+}
+
+html.ei-skin-outlook.dark-mode #compose-content .formbuttons {
+  background-color: #1f1f1f !important;
+  border-top-color: #2d2c2b !important;
+}
+
+@media screen and (max-width: 999px) {
+  html.ei-skin-outlook #layout-content > .header .toolbar {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  html.ei-skin-outlook #layout-content > .header .toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  html.ei-skin-outlook #layout-content > .header .toolbar a.button,
+  html.ei-skin-outlook #layout-content > .header .toolbar li {
+    flex-shrink: 0 !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html.ei-skin-outlook *,
   html.ei-skin-outlook *::before,
